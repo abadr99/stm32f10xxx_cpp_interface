@@ -5,11 +5,11 @@
 
 2) Install the compiler by extracting the tar file
     ```
-    cd ~
+    cd /opt
     tar xjf ~/Downloads/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
     ```
 3) Set compiler path to your environment path by adding the following line to ~/.bashrc     file 
     ```
-    export PATH="~/gcc-arm-none-eabi-10.3-2021.10/bin:$PATH"
+    export PATH="/opt/gcc-arm-none-eabi-10.3-2021.10/bin:$PATH"
     source ~/.bashrc
     ```
