@@ -1,5 +1,15 @@
-#ifndef _BIT_MANIPULATION_H_
-#define _BIT_MANIPULATION_H_
+/**
+ * @file BitManipulation.h
+ * @author abadr99 (abdelrhmanezzbadr@outlook.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-02-22
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#ifndef DEV_UTILS_INC_BITMANIPULATION_H_
+#define DEV_UTILS_INC_BITMANIPULATION_H_
 
 #include <stdint.h>
 
@@ -22,12 +32,15 @@ inline constexpr T GetOnes(const T NumberOfOnes) {
 
 template<typename T, uint8_t startBit, uint8_t endBit = startBit>
 constexpr T ExtractBits(const T value) {
-    static_assert(startBit <= endBit,  
+    static_assert(startBit <= endBit,
                   "Calling ExtractBits with startBit first");
     uint8_t numberOfBits = endBit - startBit + 1;
     return (value >> startBit) & (utils::GetOnes<uint8_t>(numberOfBits));
 }
 
-}}}} // stm32::dev::utils::bit_manipulation
+}  // namespace bit_manipulation
+}  // namespace utils
+}  // namespace dev
+}  // namespace stm32
 
-#endif // _BIT_MANIPULATION_H_
+#endif  // DEV_UTILS_INC_BITMANIPULATION_H_

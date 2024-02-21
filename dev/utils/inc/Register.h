@@ -14,7 +14,7 @@ public:
         pReg_ = reinterpret_cast<volatile TRegWidth *>(address);
         return *this;
     }
-    
+
     template<uint8_t TBitNumber>
     inline constexpr Register& SetBit() {
         *pReg_ |=  (1 << TBitNumber);
@@ -51,21 +51,21 @@ public:
         *pReg_ ^=  (1 << TBitNumber);
         return *this;
     }
-    
+
     template<TRegWidth TVal, uint8_t TStart, uint8_t TEnd = TStart>
     inline constexpr Register& WriteBits() {
-        static_assert(TStart <= TEnd, "Calling WriteBits with startBit first"); 
-        static_assert(sizeof(TRegWidth)*8 > TStart, "large integer implicitly truncated to unsigned type"); 
-        TRegWidth ones = utils::GetOnes<TRegWidth>(static_cast<TRegWidth>(TEnd - TStart) + 1); 
-        TRegWidth mask = ~(ones << TStart); 
+        static_assert(TStart <= TEnd, "Calling WriteBits with startBit first");
+        static_assert(sizeof(TRegWidth)*8 > TStart, "large integer implicitly truncated to unsigned type");
+        TRegWidth ones = utils::GetOnes<TRegWidth>(static_cast<TRegWidth>(TEnd - TStart) + 1);
+        TRegWidth mask = ~(ones << TStart);
         *pReg_ = (*pReg_ & mask) | (TVal << TStart);
         return *this;
     }
 
     template<uint8_t TStart, uint8_t TEnd = TStart>
     inline constexpr Register& WriteBits(TRegWidth val) {
-        static_assert(TStart <= TEnd, "Calling WriteBits with startBit first"); 
-        static_assert(sizeof(TRegWidth)*8 > TStart, "large integer implicitly truncated to unsigned type"); 
+        static_assert(TStart <= TEnd, "Calling WriteBits with startBit first");
+        static_assert(sizeof(TRegWidth)*8 > TStart, "large integer implicitly truncated to unsigned type");     //NOLINT
         TRegWidth ones = utils::GetOnes<TRegWidth>(static_cast<TRegWidth>(TEnd - TStart) + 1); 
         TRegWidth mask = ~(ones << TStart);
         *pReg_ = (*pReg_ & mask) | (val << TStart);

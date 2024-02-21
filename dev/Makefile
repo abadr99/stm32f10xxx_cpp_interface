@@ -6,12 +6,15 @@ SRC_NAMES:= $(notdir $(SOURCES))
 SOURCES_COUNT:= $(words $(SOURCES))
 SOURCES_CTR:=0
 INC:=  $(foreach dir,$(DIRS), -I$(dir)/inc)
-
+LINT_PATH:= ../tools/cppliny.py
 include build/stm32.mk
 
 .PHONY: all clean build build-opt 
 
 all:build
+
+cpplint:
+	python3 $(LINT_PATH)  --recursive .
 
 # ------------------------------------------
 # Rule to build for debug and test mode 

@@ -6,5 +6,6 @@ namespace dev {
 namespace utils {
 namespace math {
 
-}}}} // stm32::dev::utils::math
-#endif 
+}}}}  
+
+#endif  // _MATH_H_
