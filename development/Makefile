@@ -1,7 +1,7 @@
 INPUT_FILE ?= ./build/modules.in
 DIRS := ./mcal ./hal ./utils
 SOURCES := $(shell cat "$(INPUT_FILE)")
-SOURCES += $(wildcard ./development/utils/src/*.cpp) # ALl utils should be added with all modules
+SOURCES += $(wildcard ./utils/src/*.cpp) # ALl utils should be added with all modules
 SRC_NAMES:= $(notdir $(SOURCES))
 SOURCES_COUNT:= $(words $(SOURCES))
 SOURCES_CTR:=0
@@ -36,3 +36,4 @@ clean:
 	@rm -rf *.elf
 	@rm -rf *.hex
 	@rm -rf .build
+	@rm -rf build.map
