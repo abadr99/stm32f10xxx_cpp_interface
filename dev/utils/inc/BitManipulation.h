@@ -28,7 +28,7 @@ inline constexpr T GetAllOnes() {
 // Example: GetOnes(4) --> 0b1111
 template<typename T>
 inline constexpr T GetOnes(const T NumberOfOnes) {
-    return (1 << NumberOfOnes) - 1
+    return (1 << NumberOfOnes) - 1;
 }
 
 template<typename T, uint8_t startBit, uint8_t endBit = startBit>
