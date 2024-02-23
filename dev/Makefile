@@ -14,7 +14,7 @@ include build/stm32.mk
 all:build
 
 cpplint:
-	python3 $(LINT_PATH)  --recursive .
+	@python3 $(LINT_PATH)  --recursive .
 
 # ------------------------------------------
 # Rule to build for debug and test mode 

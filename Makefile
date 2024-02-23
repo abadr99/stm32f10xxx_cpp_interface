@@ -1,10 +1,12 @@
 
-.PHONY: all clean build build-opt style-check 
+.PHONY: all clean build build-opt cpplint
 
-all:build build-opt style-check
+all:build build-opt cpplint
 
 cpplint:
-	make -C dev cpplint
+	make -C dev   cpplint
+	make -C tests cpplint
+
 build:
 	make -C dev build
 

@@ -1,6 +1,6 @@
 /**
  * @file BitManipulation.h
- * @author abadr99 (abdelrhmanezzbadr@outlook.com)
+ * @author 
  * @brief 
  * @version 0.1
  * @date 2024-02-22
@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2024
  * 
  */
+
 #ifndef DEV_UTILS_INC_BITMANIPULATION_H_
 #define DEV_UTILS_INC_BITMANIPULATION_H_
 
