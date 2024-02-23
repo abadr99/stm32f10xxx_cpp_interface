@@ -21,7 +21,11 @@ This repo introduce an interface with stm32 mcu family using C++. for now we are
     export PATH="/opt/gcc-arm-none-eabi-10.3-2021.10/bin:$PATH"
     source ~/.bashrc
     ```
-5) build the repo 
+4) Check if installing compiler is done successfully
+   ```
+   arm-none-eabi-g++ --help
+   ```
+6) build the repo 
    ```
    make build 
    ```
