@@ -11,8 +11,10 @@ This repo introduce an interface with stm32 mcu family using C++. for now we are
     ```
 3) Install the compiler by extracting the tar file
     ```
-    cd /opt
+    cd ~/Downloads
     tar -xvjf ~/Downloads/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
+    cd /opt
+    mv ~/Downloads/gcc-arm-none-eabi-10.3-2021.10 .
     ```
 4) Set compiler path to your environment path by adding the following line to ~/.bashrc     file 
     ```
