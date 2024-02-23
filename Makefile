@@ -13,8 +13,5 @@ build:
 build-opt:
 	make -C dev build-opt
 
-style-check:
-	@echo "[style-check]: NOT SUPPORTED"
-
 clean:
 	@echo "[clean]: NOT SUPPORTED"
