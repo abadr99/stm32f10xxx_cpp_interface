@@ -36,7 +36,7 @@ constexpr T ExtractBits(const T value) {
     static_assert(startBit <= endBit,
                   "Calling ExtractBits with startBit first");
     uint8_t numberOfBits = endBit - startBit + 1;
-    return (value >> startBit) & (utils::GetOnes<uint8_t>(numberOfBits));
+    return (value >> startBit) & (GetOnes<uint8_t>(numberOfBits));
 }
 
 }  // namespace bit_manipulation
