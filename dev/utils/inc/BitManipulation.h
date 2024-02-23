@@ -21,7 +21,7 @@ namespace bit_manipulation {
 
 template<typename T>
 inline constexpr T GetAllOnes() {
-    return static_cast<T>(-1);
+    return static_cast<T>(-1)
 }
 
 // Return specific number of ones
