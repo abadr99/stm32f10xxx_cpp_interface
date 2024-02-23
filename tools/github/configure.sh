@@ -7,4 +7,4 @@ cd /opt
 tar -xvjf /opt/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2?rev=78196d3461ba4c9089a67b5f33edf82a
 cd -
 
-export PATH="/opt/gcc-arm-none-eabi-10.3-2021.10/bin:$PATH"
+echo "/opt/gcc-arm-none-eabi-10.3-2021.10/bin" >> $GITHUB_PATH
