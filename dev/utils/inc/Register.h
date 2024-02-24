@@ -12,6 +12,11 @@
 #ifndef DEV_UTILS_INC_REGISTER_H_
 #define DEV_UTILS_INC_REGISTER_H_
 
+namespace stm32 {
+namespace dev {
+namespace utils {
+namespace register {
+    
 template<typename TRegWidth>
 class Register {
  public:
@@ -102,5 +107,8 @@ class Register {
  private:
     volatile TRegWidth* pReg_;
 };
-
+}  // namespace register
+}  // namespace utils
+}  // namespace dev
+}  // namespace stm32
 #endif  // DEV_UTILS_INC_REGISTER_H_
