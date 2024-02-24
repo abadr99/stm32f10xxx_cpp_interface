@@ -16,7 +16,7 @@ namespace stm32 {
 namespace dev {
 namespace utils {
 namespace register {
-    
+
 template<typename TRegWidth>
 class Register {
  public:
