@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Dev-Style-Check 
-      run:  make -C dev   cpplint
+      run:  make -C dev cpplint
   test-style-checking:
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +28,7 @@ jobs:
     - name: Configure Building
       run: sh /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/tools/github/configure.sh
     - name: Building For STM32f103 Target
-      run: make build
+      run: make -C dev build
     - name: Upload objects artifact
       uses: actions/upload-artifact@v2
       with:
@@ -43,6 +43,6 @@ jobs:
     - name: Configure gtest
       run: sh /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/tools/github/configure-test.sh
     - name: Building tests
-      run: make build-unittests
+      run: make -C tests build-unittests
     - name: Running tests
-      run: make run-unittests
+      run: make -C tests run-unittests
