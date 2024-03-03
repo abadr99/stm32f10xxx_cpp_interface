@@ -1,4 +1,25 @@
 LINT_PATH:= ../tools/cppliny.py
 
+U_CXX:= g++
+U_CXX_OPT := -std=c++17 -Wall -Wextra
+U_SRCS_DIR := $(shell find ./unittests -maxdepth 5 -type d)
+U_SRC:= $(foreach S,$(U_SRCS_DIR),$(wildcard $(S)/*.cpp))
+#U_SRC := $(notdir $(U_SRCS_NAME))
+U_TARGET := unittests/unittests.elf
+U_LD := -lgtest -lpthread 
+U_INC := -I../dev
+
 cpplint:
 	@python3 $(LINT_PATH)  --recursive .
+
+build-unittests:
+	$(U_CXX) $(U_CXX_OPT) $(U_SRC) $(U_LD) $(U_INC) -o $(U_TARGET)
+
+run-unittests:
+	./$(U_TARGET)
+
+debug:
+	echo $(U_SRC)
+
+clean:
+	rm -rf unittests/*.elf
