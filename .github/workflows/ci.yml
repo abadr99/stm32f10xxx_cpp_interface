@@ -7,18 +7,22 @@ on:
     branches: [ "main" ]
 
 jobs:
-  style-checking:
+  dev-style-checking:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Dev-Style-Check 
       run:  make -C dev   cpplint
-    - name: Test-Style-Check 
+  test-style-checking:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Test-Style-Check
       run:  make -C tests cpplint
 
   build:
     runs-on: ubuntu-latest
-    needs: [style-checking]
+    needs: [dev-style-checking, test-style-checking]
     steps:
     - uses: actions/checkout@v3
     - name: Configure Building
@@ -31,3 +35,14 @@ jobs:
         name: objects-artifact
         path: /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/dev/.build/
 
+  test:
+    runs-on: ubuntu-latest
+    needs: [dev-style-checking, test-style-checking, build]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure gtest
+      run: sh /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/tools/github/configure-test.sh
+    - name: Building tests
+      run: make build-unittests
+    - name: Running tests
+      run: make run-unittests
