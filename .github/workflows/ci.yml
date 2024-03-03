@@ -37,7 +37,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking]
+    needs: [dev-style-checking, test-style-checking, build]
     steps:
     - uses: actions/checkout@v3
     - name: Configure gtest
