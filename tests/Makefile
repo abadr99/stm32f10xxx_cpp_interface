@@ -12,7 +12,7 @@ U_INC := -I../dev
 cpplint:
 	@python3 $(LINT_PATH)  --recursive .
 
-build-unittests:
+build-unittests: cpplint
 	$(U_CXX) $(U_CXX_OPT) $(U_SRC) $(U_LD) $(U_INC) -o $(U_TARGET)
 
 run-unittests:

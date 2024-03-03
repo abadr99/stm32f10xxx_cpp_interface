@@ -1,3 +1,14 @@
+/**
+ * @file main.cpp
+
+ * @brief 
+ * @version 0.1
+ * @date 2024-03-03
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #include <gtest/gtest.h>
 
 int main(int argc, char **argv) {
