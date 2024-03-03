@@ -14,10 +14,10 @@ build-opt:
 	make -C dev build-opt
 
 build-unittests:
-	make -C test build-unittests
+	make -C tests build-unittests
 
 run-unittests:
-	make -C test run-unittests
+	make -C tests run-unittests
 
 clean:
 	@echo "[clean]: NOT SUPPORTED"
