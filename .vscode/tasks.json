@@ -1,0 +1,62 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Style-Check",
+            "type": "shell",
+            "command": "make -s -C ${workspaceFolder}/dev cpplint && make -s -C ${workspaceFolder}/tests cpplint ",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "make -s -C ${workspaceFolder}/dev build",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": ["Style-Check"],
+        },
+        {
+            "label": "Build-tests",
+            "type": "shell",
+            "command": "make -s -C ${workspaceFolder}/tests build-unittests",
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "dependsOn": ["Style-Check"],
+        },
+        {
+            "label": "Run-test",
+            "type": "shell",
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "command": "${workspaceFolder}/tests/unittests/unittests.elf --gtest_filter=${input:test-name}",
+            "dependsOn": ["Style-Check"],
+        }
+    ],
+    "inputs": [
+        {
+            "id": "test-name",
+            "description": "Test case",
+            "type": "promptString",
+            "default": "*"
+        }
+    ]
+}
