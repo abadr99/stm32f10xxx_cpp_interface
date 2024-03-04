@@ -20,6 +20,7 @@ cpplint:
 
 build-unittests: cpplint
 	$(U_CXX) $(U_CXX_OPT) $(U_SRC) $(U_LD) $(U_INC) $(U_OBJ) -o $(U_TARGET)
+	@echo "[MAKEFILE]: Build Successfully ..."
 
 run-unittests:
 	./$(U_TARGET)
