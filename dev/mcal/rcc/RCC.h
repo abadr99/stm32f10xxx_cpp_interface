@@ -82,19 +82,18 @@ enum AHBPrescaler_t {
 };
 
 enum APBPrescaler_t {
-    APB_NOT_DIVIDED       = 0b000, 
-    APB_CLK_DIVIDED_BY_2  = 0b100,  
-    APB_CLK_DIVIDED_BY_4  = 0b101,  
-    APB_CLK_DIVIDED_BY_8  = 0b110,  
+    APB_NOT_DIVIDED       = 0b000,
+    APB_CLK_DIVIDED_BY_2  = 0b100,
+    APB_CLK_DIVIDED_BY_4  = 0b101,
+    APB_CLK_DIVIDED_BY_8  = 0b110,
     APB_CLK_DIVIDED_BY_16 = 0b111
-
 };
 
 enum MCOModes_t {
     SystemClock,
     HSI_CLOCK,
     HSE_CLOCK,
-	PLL_CLOCK
+    PLL_CLOCK
 };
 
 class RCC {
@@ -106,9 +105,9 @@ class RCC {
     static void SetMCOPinClk(MCOModes_t mode);
 };
 
-}// namespace stm32
-}// namespace dev
-}// namespace mcal
-}// namespace rcc
+}  // namespace stm32
+}  // namespace dev
+}  // namespace mcal
+}  // namespace rcc
 
-#endif /* DEV_MCAL_RCC_H */
+#endif  // DEV_MCAL_RCC_H_
