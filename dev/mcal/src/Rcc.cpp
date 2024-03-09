@@ -9,7 +9,7 @@
  *
  */
 
-#include "BitManipulation.h"
-#include "Math.h"
+#include "utils/inc/BitManipulation.h"
+#include "utils/inc/Math.h"
 
-#include "Rcc.h"
+#include "mcal/inc/Rcc.h"
