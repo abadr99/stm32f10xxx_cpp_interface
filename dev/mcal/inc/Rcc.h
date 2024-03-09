@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_MCAL_RCC_RCC_H_
-#define DEV_MCAL_RCC_RCC_H_
+#ifndef DEV_MCAL_INC_RCC_H_
+#define DEV_MCAL_INC_RCC_H_
 
 namespace stm32 {
 namespace dev {
@@ -17,7 +17,6 @@ namespace mcal {
 namespace rcc {
 
 enum ClkConfig {
-
 };
 
 enum AHP_ClockDivider {
@@ -40,7 +39,7 @@ enum APB_ClockDivider  {
     kApbDiv16      = 0b111
 };
 
-enum McoModes { 
+enum McoModes {
     kSystemClock,
     kHsi,
     kHse,
@@ -61,4 +60,4 @@ class RCC {
 }  // namespace dev
 }  // namespace stm32
 
-#endif  // DEV_MCAL_RCC_RCC_H_
+#endif  // DEV_MCAL_INC_RCC_H_
