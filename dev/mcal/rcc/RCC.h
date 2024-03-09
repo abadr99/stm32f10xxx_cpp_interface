@@ -11,13 +11,12 @@
 #ifndef DEV_MCAL_RCC_H_
 #define DEV_MCAL_RCC_H_
 
-namespace stm32{
-namespace dev{
-namespace mcal{
-namespace rcc{
+namespace stm32 {
+namespace dev {
+namespace mcal {
+namespace rcc {
 
-enum ClkConfig_t
-{
+enum ClkConfig_t {
     HSI = 0b00,
     HSE_DIV = 0b10,
 
@@ -70,8 +69,7 @@ enum ClkConfig_t
     PLL_HSE_DIV_2_MUL_16 = 0b1110111
 };
 
-enum AHBPrescaler_t
-{
+enum AHBPrescaler_t {
     AHP_NOT_DIVIDED        = 0b0000,
     AHP_CLK_DIVIDED_BY_2   = 0b1000,
     AHP_CLK_DIVIDED_BY_4   = 0b1001,
@@ -83,8 +81,7 @@ enum AHBPrescaler_t
     AHP_CLK_DIVIDED_BY_512 = 0b1111
 };
 
-enum APBPrescaler_t
-{
+enum APBPrescaler_t {
     APB_NOT_DIVIDED       = 0b000, 
     APB_CLK_DIVIDED_BY_2  = 0b100,  
     APB_CLK_DIVIDED_BY_4  = 0b101,  
@@ -93,17 +90,15 @@ enum APBPrescaler_t
 
 };
 
-enum MCOModes_t
-{
-	SystemClock,
-	HSI_CLOCK,
-	HSE_CLOCK,
+enum MCOModes_t {
+    SystemClock,
+    HSI_CLOCK,
+    HSE_CLOCK,
 	PLL_CLOCK
 };
 
-class RCC
-{ 
-    public:
+class RCC {
+ public:
     static void InitSysClock(ClkConfig_t systemClk);
     static void SetAHBPrescaler(AHBPrescaler_t prescaler);
     static void SetAPB1Prescaler(APBPrescaler_t prescaler);
@@ -111,9 +106,9 @@ class RCC
     static void SetMCOPinClk(MCOModes_t mode);
 };
 
-}//namespace stm32
-}//namespace dev
-}//namespace mcal
-}//namespace rcc
+}// namespace stm32
+}// namespace dev
+}// namespace mcal
+}// namespace rcc
 
 #endif /* DEV_MCAL_RCC_H */
