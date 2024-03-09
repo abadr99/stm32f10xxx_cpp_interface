@@ -3,7 +3,7 @@
 LINT_PATH:= ../tools/cppliny.py
 
 U_CXX:= g++
-U_CXX_OPT := -std=c++17 -Wall -Wextra
+U_CXX_OPT := -std=c++17 -Wall -Wextra -g
 
 U_SRCS_DIR := $(shell find ./unittests -maxdepth 5 -type d)
 U_SRC:= $(foreach S,$(U_SRCS_DIR),$(wildcard $(S)/*.cpp))
@@ -18,7 +18,7 @@ U_INC := -I../dev
 cpplint:
 	@python3 $(LINT_PATH)  --recursive .
 
-build-unittests: cpplint
+build-unittests:
 	$(U_CXX) $(U_CXX_OPT) $(U_SRC) $(U_LD) $(U_INC) $(U_OBJ) -o $(U_TARGET)
 	@echo "[MAKEFILE]: Build Successfully ..."
 

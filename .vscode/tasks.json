@@ -25,7 +25,7 @@
             "dependsOn": ["Style-Check"],
         },
         {
-            "label": "Build-tests",
+            "label": "Build-Tests",
             "type": "shell",
             "command": "make -s -C ${workspaceFolder}/tests build-unittests",
             "problemMatcher": [],

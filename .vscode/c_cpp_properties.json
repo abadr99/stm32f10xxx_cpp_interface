@@ -1,4 +1,3 @@
-// https://www.youtube.com/watch?v=cTE0ec3IurE
 {
     "configurations": [
         {
@@ -6,13 +5,15 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/include/gtest",
-                "/usr/include"
+                "/usr/include",
+                "/usr/include/x86_64-linux-gnu"
             ],
             "defines": [],
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "linux-gcc-x64",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "intelliSenseMode": "${default}",
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "compilerPath": "/usr/bin/g++"
         }
     ],
     "version": 4
