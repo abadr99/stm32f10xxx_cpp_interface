@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#include "../../utils/inc/BitManipulation.h"
-#include "../../utils/inc/Math.h"
-#include "../../utils/inc/Register.h"
+
+#include "BitManipulation.h"
+#include "Math.h"
 
 #include "Rcc.h"
