@@ -1,4 +1,3 @@
-// https://www.youtube.com/watch?v=cTE0ec3IurE
 {
     "configurations": [
         {
@@ -6,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/include/gtest",
-                "/usr/include"
+                "/usr/include",
+                "/usr/include/x86_64-linux-gnu"
             ],
             "defines": [],
             "cStandard": "c11",
