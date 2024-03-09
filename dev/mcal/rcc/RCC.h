@@ -1,5 +1,15 @@
-#ifndef DEV_MCAL_RCC_H
-#define DEV_MCAL_RCC_H
+/**
+ * @file RCC.h
+ * @author 
+ * @brief
+ * @version 0.1
+ * @date 2024-03-8
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+#ifndef DEV_MCAL_RCC_H_
+#define DEV_MCAL_RCC_H_
 
 namespace stm32{
 namespace dev{
@@ -9,8 +19,8 @@ namespace rcc{
 enum ClkConfig_t
 {
     HSI = 0b00,
-    HSE_DIV_1 = 0b010,
-    HSE_DIV_2 = 0b110,
+    HSE_DIV = 0b10,
+
     PLL_HSI_MUL_2  = 0b000001,
     PLL_HSI_MUL_3  = 0b000101,
     PLL_HSI_MUL_4  = 0b001001,
@@ -92,8 +102,8 @@ enum MCOModes_t
 };
 
 class RCC
-{
-public:
+{ 
+    public:
     static void InitSysClock(ClkConfig_t systemClk);
     static void SetAHBPrescaler(AHBPrescaler_t prescaler);
     static void SetAPB1Prescaler(APBPrescaler_t prescaler);
@@ -101,12 +111,9 @@ public:
     static void SetMCOPinClk(MCOModes_t mode);
 };
 
-} //namespace stm32
-} //namespace dev  
-} //namespace mcal
-} //namespace rcc
-
-
-
+}//namespace stm32
+}//namespace dev
+}//namespace mcal
+}//namespace rcc
 
 #endif /* DEV_MCAL_RCC_H */
