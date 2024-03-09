@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_MCAL_RCC_H_
-#define DEV_MCAL_RCC_H_
+#ifndef DEV_MCAL_RCC_RCC_H_
+#define DEV_MCAL_RCC_RCC_H_
 
 namespace stm32 {
 namespace dev {
@@ -105,9 +105,9 @@ class RCC {
     static void SetMCOPinClk(MCOModes_t mode);
 };
 
-}  // namespace stm32
-}  // namespace dev
-}  // namespace mcal
 }  // namespace rcc
+}  // namespace mcal
+}  // namespace dev
+}  // namespace stm32
 
-#endif  // DEV_MCAL_RCC_H_
+#endif  // DEV_MCAL_RCC_RCC_H_
