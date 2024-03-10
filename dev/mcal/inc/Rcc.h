@@ -17,6 +17,28 @@ namespace mcal {
 namespace rcc {
 
 enum ClkConfig {
+    kHsi,
+    kHse,
+    kHseDivBy2
+};
+enum ClkMultFactor{
+    Clkx1  = 0b11111,
+    Clkx2  = 0b0000,
+    Clkx3  = 0b0001,
+    Clkx4  = 0b0010,
+    Clkx5  = 0b0011,
+    Clkx6  = 0b0100,
+    Clkx7  = 0b0101,
+    Clkx8  = 0b0110,
+    Clkx9  = 0b0111,
+    Clkx10 = 0b1000,
+    Clkx11 = 0b1001,
+    Clkx12 = 0b1010,
+    Clkx13 = 0b1011,
+    Clkx14 = 0b1100,
+    Clkx15 = 0b1101,
+    Clkx16 = 0b1110,
+    Clkx16 = 0b1111
 };
 
 enum AHP_ClockDivider {
@@ -40,15 +62,15 @@ enum APB_ClockDivider  {
 };
 
 enum McoModes {
-    kSystemClock,
-    kHsi,
-    kHse,
-    kPll
+    kMcoSystemClock,
+    kMcoHsi,
+    kMcoHse,
+    kMcoPll
 };
 
 class RCC {
  public:
-    static void InitSysClock(ClkConfig systemClk);
+    static void InitSysClock(ClkConfig config, ClkMultFactor multFactor);
     static void SetAHBPrescaler(AHP_ClockDivider prescaler);
     static void SetAPB1Prescaler(APB_ClockDivider prescaler);
     static void SetAPB2Prescaler(APB_ClockDivider prescaler);

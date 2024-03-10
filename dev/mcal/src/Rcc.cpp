@@ -13,3 +13,4 @@
 #include "utils/inc/Math.h"
 
 #include "mcal/inc/Rcc.h"
+#include "mcal/inc/stm32f103xx.h"
