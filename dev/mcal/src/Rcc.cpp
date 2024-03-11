@@ -86,3 +86,48 @@ void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor)
     }
     
 }
+
+
+void SetAHBPrescaler(AHP_ClockDivider divFactor)
+{
+    if ( divFactor >= kAhpNotDivided && divFactor <= kAhpDiv512)
+    {
+        RCC->CFGR.HPRE = divFactor;
+    }else
+    {
+        /* do nothing */
+    }
+}
+
+void SetAPB1Prescaler(APB_ClockDivider divFactor)
+{
+    if ( divFactor >= kApbNotDivided && divFactor <= kApbDiv16)
+    {
+        RCC->CFGR.PPRE1 = divFactor;
+    }else
+    {
+        /* do nothing */
+    }
+}
+void SetAPB2Prescaler(APB_ClockDivider divFactor)
+{
+    if ( divFactor >= kApbNotDivided && divFactor <= kApbDiv16)
+    {
+        RCC->CFGR.PPRE2 = divFactor;
+    }else
+    {
+        /* do nothing */
+    }
+}
+void SetMCOPinClk(McoModes mode)
+{
+        /* Validate input argument */
+    if ( mode == kMcoNoClock || mode == kMcoHsi || 
+         mode == kMcoHse     || mode == kMcoPll) 
+    {
+        RCC->CFGR.MCO = mode;
+    }else 
+    {
+        /* Do Nothing */
+    }
+}

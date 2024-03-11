@@ -61,7 +61,8 @@ enum APB_ClockDivider  {
 };
 
 enum McoModes {
-    kMcoSystemClock,
+    kMcoNoClock,
+    kMcoSystemClock=4,
     kMcoHsi,
     kMcoHse,
     kMcoPll
@@ -70,9 +71,9 @@ enum McoModes {
 class RCC {
  public:
     void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor);
-    void SetAHBPrescaler(AHP_ClockDivider prescaler);
-    void SetAPB1Prescaler(APB_ClockDivider prescaler);
-    void SetAPB2Prescaler(APB_ClockDivider prescaler);
+    void SetAHBPrescaler(AHP_ClockDivider divFactor);
+    void SetAPB1Prescaler(APB_ClockDivider divFactor);
+    void SetAPB2Prescaler(APB_ClockDivider divFactor);
     void SetMCOPinClk(McoModes mode);
 };
 
