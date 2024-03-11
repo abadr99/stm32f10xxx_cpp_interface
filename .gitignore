@@ -33,3 +33,4 @@
 
 # vscode stuff
 ./vscode/**
+*.elf
