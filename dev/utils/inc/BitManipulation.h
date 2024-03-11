@@ -15,7 +15,6 @@
 #include <stdint.h>
 
 namespace stm32 {
-namespace dev {
 namespace utils {
 namespace bit_manipulation {
 
@@ -41,7 +40,6 @@ constexpr T ExtractBits(const T value) {
 
 }  // namespace bit_manipulation
 }  // namespace utils
-}  // namespace dev
 }  // namespace stm32
 
 #endif  // DEV_UTILS_INC_BITMANIPULATION_H_
