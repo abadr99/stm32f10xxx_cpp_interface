@@ -84,4 +84,5 @@ void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor)
         /* Switch to PLL */
         RCC->CFGR.SW = 2;
     }
+    
 }
