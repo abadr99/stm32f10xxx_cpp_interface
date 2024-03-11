@@ -27,36 +27,36 @@ namespace rcc {
 struct RccRegDef{
     union CR {
         struct {
-            uint8_t HSION   :1; /* High-speed internal oscillator enable */
-            uint8_t HSIRDY  :1; /* High-speed internal oscillator ready */
-            uint8_t         :1; /* Reserved */
-            uint8_t HSITRIM :5; /* High-speed internal oscillator trimming */
-            uint8_t HSICAL  :8; /* High-speed internal oscillator calibration*/
-            uint8_t HSEON   :1; /* High-speed external oscillator enable */
-            uint8_t HSERDY  :1; /* High-speed external oscillator ready */
-            uint8_t HSEBYP  :1; /* High-speed external oscillator bypass */
-            uint8_t CSSON   :1; /* Clock security system enable */
-            uint8_t         :4; /* Reserved */
-            uint8_t PLLON   :1; /* Phase-locked loop enable */
-            uint8_t PLLRDY  :1; /* Phase-locked loop ready */
+            uint32_t HSION   :1; /* High-speed internal oscillator enable */
+            uint32_t HSIRDY  :1; /* High-speed internal oscillator ready */
+            uint32_t         :1; /* Reserved */
+            uint32_t HSITRIM :5; /* High-speed internal oscillator trimming */
+            uint32_t HSICAL  :8; /* High-speed internal oscillator calibration*/
+            uint32_t HSEON   :1; /* High-speed external oscillator enable */
+            uint32_t HSERDY  :1; /* High-speed external oscillator ready */
+            uint32_t HSEBYP  :1; /* High-speed external oscillator bypass */
+            uint32_t CSSON   :1; /* Clock security system enable */
+            uint32_t         :4; /* Reserved */
+            uint32_t PLLON   :1; /* Phase-locked loop enable */
+            uint32_t PLLRDY  :1; /* Phase-locked loop ready */
         };
         uint32_t registerVal;   /** RCC control register  */
     }CR;
 
     union CFGR{
         struct {
-            uint8_t SW        :2; /* System clock switch */
-            uint8_t SWS       :2; /* System clock switch status */
-            uint8_t HPRE      :4; /* AHB prescaler */
-            uint8_t PPRE1     :3; /* APB low-speed prescaler (APB1) */
-            uint8_t PPRE2     :3; /* APB high-speed prescaler (APB2) */
-            uint8_t ADCPRE    :2; /* ADC prescaler */
-            uint8_t PLLSRC    :1; /* PLL entry clock source */
-            uint8_t PLLXTPRE  :1; /* HSE divider for PLL entry */
-            uint8_t PLLMUL    :4; /* PLL multiplication factor */
-            uint8_t USBPRE    :1; /* USB prescaler */
-            uint8_t MCO       :3; /* MicroController clock output */
-            uint8_t           :5; /* Reserved  */
+            uint32_t SW        :2; /* System clock switch */
+            uint32_t SWS       :2; /* System clock switch status */
+            uint32_t HPRE      :4; /* AHB prescaler */
+            uint32_t PPRE1     :3; /* APB low-speed prescaler (APB1) */
+            uint32_t PPRE2     :3; /* APB high-speed prescaler (APB2) */
+            uint32_t ADCPRE    :2; /* ADC prescaler */
+            uint32_t PLLSRC    :1; /* PLL entry clock source */
+            uint32_t PLLXTPRE  :1; /* HSE divider for PLL entry */
+            uint32_t PLLMUL    :4; /* PLL multiplication factor */
+            uint32_t USBPRE    :1; /* USB prescaler */
+            uint32_t MCO       :3; /* MicroController clock output */
+            uint32_t           :5; /* Reserved  */
         };
         uint32_t registerVal; /* Clock configuration register */
     }CFGR; /* Clock configuration register */

@@ -18,49 +18,71 @@
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::registers::rcc;
 
-static void InitSysClock(ClkConfig config, ClkMultFactor multFactor)
+void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor)
 {
-    /*pll off*/
-    RCC->CR.PLLON = 0;
-    if (multFactor == Clkx1)
+
+    if ( config == kHsi  && mulFactor == kClock_1x)
     {
-        /*do nothing*/
-    }
-    else
+        /* Enable HSI */
+        RCC->CR.HSION = 1;
+        /*wait until hsi is ready*/
+        while (RCC->CR.HSIRDY == 0);
+
+        /* Switch to HSI */
+        RCC->CFGR.SW=0;
+
+    }else if ( config == kHse && mulFactor == kClock_1x)
     {
-        RCC->CFGR.PLLMUL = multFactor;
-    }
-    /*config clk sys*/
-    switch (config){
-        case kHsi:
+        /* Enable HSE */
+        RCC->CR.HSEON = 1;
+        /*wait until hse is ready*/
+        while (RCC->CR.HSERDY == 0);
+        /* Switch to HSE */
+        RCC->CFGR.SW=1;
+
+    }else if ( mulFactor != kClock_1x )
+    {
+        /* Disable PLL before configuring the PLL */
+        RCC->CR.PLLON = 0;
+        /* Set Multiplication factor */
+        RCC->CFGR.PLLMUL = mulFactor;
+        /* Chose PLL entry */
+        if ( config == kHsi )
+        {
+            /* Enable HSI */
             RCC->CR.HSION = 1;
             /*wait until hsi is ready*/
             while (RCC->CR.HSIRDY == 0);
-            /*set if pll*/
+            /* Chose HSI as PLL entry clock source */
             RCC->CFGR.PLLSRC = 0;
-        break;
-        case kHse :
+
+        }else if ( config == kHse || config == kHseDivBy2)
+        {
+            /* Enable HSE */
             RCC->CR.HSEON = 1;
-            RCC->CFGR.PLLXTPRE = 0;
             /*wait until hse is ready*/
             while (RCC->CR.HSERDY == 0);
-            /*set if pll*/
+            /* Chose HSE as PLL entry clock source */
             RCC->CFGR.PLLSRC = 1;
-        break;
-        case kHseDivBy2 :
-            RCC->CR.HSEON = 1;
-            RCC->CFGR.PLLXTPRE = 1;
-            /*wait until hse is ready*/
-            while (RCC->CR.HSERDY == 0);
-            /*set if pll*/
-            RCC->CFGR.PLLSRC = 1;
-        break;
+
+            /* Set HSE divider */
+            if ( config == kHse)
+            {
+                /* HSE is not divided */
+                RCC->CFGR.PLLXTPRE =1;
+            }else
+            {
+                /* HSE is not divided */
+                RCC->CFGR.PLLXTPRE =0;
+            }
+        }
+        /*Enable PLL */
+        RCC->CR.PLLON = 1;
+        /*wait until hse is ready*/
+        while (RCC->CR.PLLON == 0);
+
+        /* Switch to PLL */
+        RCC->CFGR.SW = 2;
     }
-    /*pll on*/
-    RCC->CR.PLLON = 1;
-    /*wait until hse is ready*/
-    while (RCC->CR.PLLON == 0);
-    /*enable clk sys*/
-
-
+    
 }

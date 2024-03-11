@@ -21,23 +21,23 @@ enum ClkConfig {
     kHse,
     kHseDivBy2
 };
-enum ClkMultFactor{
-    Clkx1  = 0b11111,
-    Clkx2  = 0b0000,
-    Clkx3  = 0b0001,
-    Clkx4  = 0b0010,
-    Clkx5  = 0b0011,
-    Clkx6  = 0b0100,
-    Clkx7  = 0b0101,
-    Clkx8  = 0b0110,
-    Clkx9  = 0b0111,
-    Clkx10 = 0b1000,
-    Clkx11 = 0b1001,
-    Clkx12 = 0b1010,
-    Clkx13 = 0b1011,
-    Clkx14 = 0b1100,
-    Clkx15 = 0b1101,
-    Clkx16 = 0b1110
+enum PLL_MulFactor{
+    kClock_1x  = 0b11111,
+    kClock_2x  = 0b0000,
+    kClock_3x  = 0b0001,
+    kClock_4x  = 0b0010,
+    kClock_5x  = 0b0011,
+    kClock_6x  = 0b0100,
+    kClock_7x  = 0b0101,
+    kClock_8x  = 0b0110,
+    kClock_9x  = 0b0111,
+    kClock_10x = 0b1000,
+    kClock_11x = 0b1001,
+    kClock_12x = 0b1010,
+    kClock_13x = 0b1011,
+    kClock_14x = 0b1100,
+    kClock_15x = 0b1101,
+    kClock_16x = 0b1110
 };
 
 enum AHP_ClockDivider {
@@ -69,11 +69,11 @@ enum McoModes {
 
 class RCC {
  public:
-    static void InitSysClock(ClkConfig config, ClkMultFactor multFactor);
-    static void SetAHBPrescaler(AHP_ClockDivider prescaler);
-    static void SetAPB1Prescaler(APB_ClockDivider prescaler);
-    static void SetAPB2Prescaler(APB_ClockDivider prescaler);
-    static void SetMCOPinClk(McoModes mode);
+    void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor);
+    void SetAHBPrescaler(AHP_ClockDivider prescaler);
+    void SetAPB1Prescaler(APB_ClockDivider prescaler);
+    void SetAPB2Prescaler(APB_ClockDivider prescaler);
+    void SetMCOPinClk(McoModes mode);
 };
 
 }  // namespace rcc
