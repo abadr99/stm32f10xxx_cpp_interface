@@ -68,7 +68,7 @@ enum McoModes {
     kMcoPll
 };
 
-class RCC {
+class Rcc {
  public:
     void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor);
     void SetAHBPrescaler(AHP_ClockDivider divFactor);

@@ -11,15 +11,28 @@
 
 #include "utils/inc/BitManipulation.h"
 #include "utils/inc/Math.h"
-
+#include "utils/inc/Assert.h"
 #include "mcal/inc/Rcc.h"
 #include "mcal/inc/stm32f103xx.h"
 
-using namespace stm32::dev::mcal::rcc;
-using namespace stm32::registers::rcc;
+using namespace stm32::dev::mcal::rcc; // NOLINT[build/namespaces] 
+using namespace stm32::registers::rcc; // NOLINT[build/namespaces] 
 
-void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor)
-{
+// Some asserts to make sure RCC struct members are in correct orders
+ASSERT_STRUCT_SIZE(RccRegDef, (sizeof(RegWidth_t) * 10));
+
+ASSERT_MEMBER_OFFSET(RccRegDef, CR,         0);
+ASSERT_MEMBER_OFFSET(RccRegDef, CFGR,       sizeof(RegWidth_t) * 1);
+ASSERT_MEMBER_OFFSET(RccRegDef, CIR,        sizeof(RegWidth_t) * 2);
+ASSERT_MEMBER_OFFSET(RccRegDef, APB2RSTR,   sizeof(RegWidth_t) * 3);
+ASSERT_MEMBER_OFFSET(RccRegDef, APB1RSTR,   sizeof(RegWidth_t) * 4);
+ASSERT_MEMBER_OFFSET(RccRegDef, AHBENR,     sizeof(RegWidth_t) * 5);
+ASSERT_MEMBER_OFFSET(RccRegDef, APB2ENR,    sizeof(RegWidth_t) * 6);
+ASSERT_MEMBER_OFFSET(RccRegDef, APB1ENR,    sizeof(RegWidth_t) * 7);
+ASSERT_MEMBER_OFFSET(RccRegDef, BDCR,       sizeof(RegWidth_t) * 8);
+ASSERT_MEMBER_OFFSET(RccRegDef, CSR,        sizeof(RegWidth_t) * 9);
+
+void Rcc::InitSysClock(ClkConfig config, PLL_MulFactor mulFactor) {
 
     if ( config == kHsi  && mulFactor == kClock_1x)
     {
@@ -88,7 +101,7 @@ void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor)
 }
 
 
-void SetAHBPrescaler(AHP_ClockDivider divFactor)
+void Rcc::SetAHBPrescaler(AHP_ClockDivider divFactor)
 {
     if ( divFactor >= kAhpNotDivided && divFactor <= kAhpDiv512)
     {
@@ -99,7 +112,7 @@ void SetAHBPrescaler(AHP_ClockDivider divFactor)
     }
 }
 
-void SetAPB1Prescaler(APB_ClockDivider divFactor)
+void Rcc::SetAPB1Prescaler(APB_ClockDivider divFactor)
 {
     if ( divFactor >= kApbNotDivided && divFactor <= kApbDiv16)
     {
@@ -109,7 +122,7 @@ void SetAPB1Prescaler(APB_ClockDivider divFactor)
         /* do nothing */
     }
 }
-void SetAPB2Prescaler(APB_ClockDivider divFactor)
+void Rcc::SetAPB2Prescaler(APB_ClockDivider divFactor)
 {
     if ( divFactor >= kApbNotDivided && divFactor <= kApbDiv16)
     {
@@ -119,7 +132,7 @@ void SetAPB2Prescaler(APB_ClockDivider divFactor)
         /* do nothing */
     }
 }
-void SetMCOPinClk(McoModes mode)
+void Rcc::SetMCOPinClk(McoModes mode)
 {
         /* Validate input argument */
     if ( mode == kMcoNoClock || mode == kMcoHsi || 
