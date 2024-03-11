@@ -25,7 +25,7 @@ namespace rcc {
 /********************** RCC Register Definition  **********************/
 
 struct RccRegDef{
-    union RCC_CRbits {
+    union CR {
         struct {
             uint8_t HSION   :1; /* High-speed internal oscillator enable */
             uint8_t HSIRDY  :1; /* High-speed internal oscillator ready */
@@ -40,10 +40,10 @@ struct RccRegDef{
             uint8_t PLLON   :1; /* Phase-locked loop enable */
             uint8_t PLLRDY  :1; /* Phase-locked loop ready */
         };
-        uint32_t RCC_CR;   /** RCC control register  */
-    };
+        uint32_t registerVal;   /** RCC control register  */
+    }CR;
 
-    union RCC_CFGRbits{
+    union CFGR{
         struct {
             uint8_t SW        :2; /* System clock switch */
             uint8_t SWS       :2; /* System clock switch status */
@@ -58,8 +58,8 @@ struct RccRegDef{
             uint8_t MCO       :3; /* MicroController clock output */
             uint8_t           :5; /* Reserved  */
         };
-        uint32_t RCC_CFGR; /* Clock configuration register */
-    }; /* Clock configuration register */
+        uint32_t registerVal; /* Clock configuration register */
+    }CFGR; /* Clock configuration register */
 
     uint32_t RCC_CIR;
     uint32_t RCC_APB2RSTR;
@@ -74,7 +74,7 @@ struct RccRegDef{
 /**
  * @brief Clock configuration register
  */
-#define RCC  ((volatile RccRegDef&)RCC_BASE_ADDRESS)
+#define RCC  (reinterpret_cast<volatile RccRegDef*>RCC_BASE_ADDRESS)
 
 }  // namespace rcc
 }  // namespace registers

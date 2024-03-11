@@ -37,8 +37,7 @@ enum ClkMultFactor{
     Clkx13 = 0b1011,
     Clkx14 = 0b1100,
     Clkx15 = 0b1101,
-    Clkx16 = 0b1110,
-    Clkx16 = 0b1111
+    Clkx16 = 0b1110
 };
 
 enum AHP_ClockDivider {
