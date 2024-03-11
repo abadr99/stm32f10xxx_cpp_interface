@@ -17,6 +17,7 @@
 
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::registers::rcc;
+
 static void InitSysClock(ClkConfig config, ClkMultFactor multFactor)
 {
     /*pll off*/
@@ -60,6 +61,6 @@ static void InitSysClock(ClkConfig config, ClkMultFactor multFactor)
     /*wait until hse is ready*/
     while (RCC->CR.PLLON == 0);
     /*enable clk sys*/
-    
+
 
 }
