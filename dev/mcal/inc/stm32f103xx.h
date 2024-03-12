@@ -14,12 +14,6 @@
 
 #include "utils/inc/Types.h"
 
-#ifdef UNIT_TEST
-#include "baseAddress-test.h"
-#else
-#include "mcal/inc/BaseAddress.h"
-#endif  // UNIT_TEST
-
 using RegWidth_t = stm32::utils::types::RegWidth_t;
 namespace stm32 {
 namespace registers {
