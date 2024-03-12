@@ -42,6 +42,7 @@ struct RccRegDef{
             RegWidth_t         :4; /* Reserved */
             RegWidth_t PLLON   :1; /* Phase-locked loop enable */
             RegWidth_t PLLRDY  :1; /* Phase-locked loop ready */
+            RegWidth_t         :6; /* Reserved */
         };
         RegWidth_t registerVal;   /** RCC control register  */
     }CR;
@@ -58,6 +59,7 @@ struct RccRegDef{
             RegWidth_t PLLXTPRE  :1; /* HSE divider for PLL entry */
             RegWidth_t PLLMUL    :4; /* PLL multiplication factor */
             RegWidth_t USBPRE    :1; /* USB prescaler */
+            RegWidth_t           :1; /* Reserved */
             RegWidth_t MCO       :3; /* MicroController clock output */
             RegWidth_t           :5; /* Reserved  */
         };
