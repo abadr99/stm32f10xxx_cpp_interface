@@ -30,80 +30,114 @@ ASSERT_MEMBER_OFFSET(RccRegDef, APB1ENR,    sizeof(RegWidth_t) * 7);
 ASSERT_MEMBER_OFFSET(RccRegDef, BDCR,       sizeof(RegWidth_t) * 8);
 ASSERT_MEMBER_OFFSET(RccRegDef, CSR,        sizeof(RegWidth_t) * 9);
 
+// We have three modes to initiate system clock:
+// 1) Using Internal High Speed Clock i.e. HSI
+// 2) Using External High Speed Clock i.e. HSE
+// 3) Using PLL with certain multiplication factor and source where PLL sources:
+//    3.a) HSI   3.b) HSE   3.c) HSE/2
 
-void Rcc::InitSysClock(ClkConfig config, PLL_MulFactor mulFactor) {
-    if (config == kHsi  && mulFactor == kClock_1x) {
-        RCC->CR.HSION = 1;
-        WaitToReady(config);
-        RCC->CFGR.SW = 0;
+void Rcc::InitSysClock(const ClkConfig& config,
+                       const PLL_MulFactor& mulFactor) {
+    if (config == kHsi  && mulFactor == kClock_1x) {          // 1) -- HSI
+        SetInternalHighSpeedClk();
         return;
-    } else if (config == kHse && mulFactor == kClock_1x) {
-        RCC->CR.HSEON = 1;
-        WaitToReady(config);
-        RCC->CFGR.SW = 1;
-        RCC->CR.CSSON = 1;
+    } else if (config == kHse && mulFactor == kClock_1x) {    // 2) -- HSE
+        SetExternalHighSpeedClk();
         return;
     }
-    //  Disable PLL before configuring the PLL
-    RCC->CR.PLLON = 0;
-    if (mulFactor != kClock_1x) {
-        RCC->CFGR.PLLMUL = mulFactor;
-    }
-    if (config == kHsi) {
-        RCC->CR.HSION = 1;
-        WaitToReady(config);
-        RCC->CFGR.PLLSRC = 0;
-    } else if (config == kHse || config == kHseDivBy2) {
-        RCC->CR.HSEON = 1;
-        WaitToReady(config);
-        // Chose HSE as PLL entry clock source
-        RCC->CFGR.PLLSRC = 1;
-        RCC->CFGR.PLLXTPRE = config == kHse ? 0 : 1;
+
+    // 3) -- PLL
+    auto GetPllSrc = [&]() -> PllSource {
+        switch (config) {
+            case kHsi:       return PllSource::kPllSource_Hsi;
+            case kHse:       return PllSource::kPllSource_Hse;
+            case kHseDivBy2: return PllSource::kPllSource_HseDiv2;
+            default:         return PllSource::kPllSource_Unkown;
         }
-        RCC->CR.PLLON = 1;
-        WaitToReady(config);
+    };
 
-        // Switch to PLL
-        RCC->CFGR.SW = 2;
-    }
+    // --- DISABLE PLL BEFORE CONFIGURE
+    RCC->CR.PLLON = 0;
 
-void Rcc::SetAHBPrescaler(AHP_ClockDivider divFactor) {
-    if (divFactor >= kAhpNotDivided && divFactor <= kAhpDiv512) {
-        RCC->CFGR.HPRE = divFactor;
-    }
+
+    SetPllFactor(mulFactor);
+
+    SetPllSource(GetPllSrc());
+
+    // --- ENABLE PLL AFTER CONFIGURATION
+    RCC->CR.PLLON = 1;
+    WaitToReady(kPLLRDY);
+    RCC->CFGR.SW = 2;    // Switch to PLL
 }
 
-void Rcc::SetAPB1Prescaler(APB_ClockDivider divFactor) {
-    if (divFactor >= kApbNotDivided && divFactor <= kApbDiv16) {
-        RCC->CFGR.PPRE1 = divFactor;
-    }
-}
-void Rcc::SetAPB2Prescaler(APB_ClockDivider divFactor) {
-    if (divFactor >= kApbNotDivided && divFactor <= kApbDiv16) {
-        RCC->CFGR.PPRE2 = divFactor;
-    }
-}
-void Rcc::SetMCOPinClk(McoModes mode) {
-    if (mode == kMcoNoClock || mode == kMcoHsi ||
-        mode == kMcoHse     || mode == kMcoPll) {
-        RCC->CFGR.MCO = mode;
-    }
+void Rcc::SetAHBPrescaler(const AHP_ClockDivider& divFactor) {
+    STM32_ASSERT(divFactor >= kAhpNotDivided && divFactor <= kAhpDiv512);
+    RCC->CFGR.HPRE = divFactor;
 }
 
-void Rcc::WaitToReady(ClkConfig config) {
+void Rcc::SetAPB1Prescaler(const APB_ClockDivider& divFactor) {
+    STM32_ASSERT(divFactor >= kApbNotDivided && divFactor <= kApbDiv16);
+    RCC->CFGR.PPRE1 = divFactor;
+}
 
-    uint16_t countTimeOut = 0;
-    switch(config) {
-        case kHsi: 
-            while (RCC->CR.HSIRDY == 0 && countTimeOut != RCC_TIMEOUT && ++countTimeOut);       // NOLINT
-            break;
-        case kHse:
-            while (RCC->CR.HSERDY == 0 && countTimeOut != RCC_TIMEOUT && ++countTimeOut);       // NOLINT
-            break;
-        case kPll:
-        case kHseDivBy2:
-            while (RCC->CR.PLLRDY == 0 && countTimeOut != RCC_TIMEOUT && ++countTimeOut);       // NOLINT
-            break;
+void Rcc::SetAPB2Prescaler(const APB_ClockDivider& divFactor) {
+    STM32_ASSERT(divFactor >= kApbNotDivided && divFactor <= kApbDiv16);
+    RCC->CFGR.PPRE2 = divFactor;
+}
+
+void Rcc::SetMCOPinClk(const McoModes& mode) {
+    STM32_ASSERT(mode == kMcoNoClock ||
+                 mode == kMcoHsi ||
+                 mode == kMcoHse ||
+                 mode == kMcoPll);
+    RCC->CFGR.MCO = mode;
+}
+
+void Rcc::WaitToReady(Flags flag) {
+    uint16_t ctr = 0;
+
+    switch (flag) {
+        case kHSIRDY: while ((!(RCC->CR.HSIRDY)) && (ctr != RCC_TIMEOUT) && (++ctr));  break;    // NOLINT
+        case kHSERDY: while ((!(RCC->CR.HSERDY)) && (ctr != RCC_TIMEOUT) && (++ctr));  break;    // NOLINT
+        case kPLLRDY: while ((!(RCC->CR.PLLRDY)) && (ctr != RCC_TIMEOUT) && (++ctr));  break;    // NOLINT
     }
-    STM32_ASSERT(countTimeOut != RCC_TIMEOUT);
+
+    STM32_ASSERT(ctr != RCC_TIMEOUT);
+}
+
+void Rcc::SetInternalHighSpeedClk() {
+    RCC->CR.HSION = 1;
+    WaitToReady(kHSIRDY);
+    RCC->CFGR.SW = 0;
+}
+
+void Rcc::SetExternalHighSpeedClk() {
+    RCC->CR.HSEON = 1;
+    WaitToReady(kHSERDY);
+    RCC->CFGR.SW = 1;
+    RCC->CR.CSSON = 1;
+}
+
+void Rcc::SetPllFactor(PLL_MulFactor factor) {
+    if (factor == PLL_MulFactor::kClock_1x) {
+        return;
+    }
+    RCC->CFGR.PLLMUL = factor;
+}
+
+void Rcc::SetPllSource(PllSource src) {
+    switch (src) {
+        case kPllSource_Hsi:
+            RCC->CR.HSION = 1;
+            WaitToReady(kPLLRDY);
+            RCC->CFGR.PLLSRC = 0;
+            return;
+        case kPllSource_Hse:
+        case kPllSource_HseDiv2:
+            RCC->CR.HSEON = 1;
+            WaitToReady(kPLLRDY);
+            RCC->CFGR.PLLSRC = 1;
+            RCC->CFGR.PLLXTPRE = src == kPllSource_Hse ? 0 : 1;
+            return;
+    }
 }

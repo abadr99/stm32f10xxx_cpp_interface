@@ -25,4 +25,5 @@
     static_assert(offsetof(struct_type, member_name) == expected_offset, \
         "Member offset mismatch. The member order may have been modified.");
 
+#define ERROR(msg_)
 #endif  // DEV_UTILS_INC_ASSERT_H_

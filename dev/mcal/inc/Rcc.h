@@ -72,13 +72,25 @@ enum McoModes {
 
 class Rcc {
  public:
-    static void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor);
-    static void SetAHBPrescaler(AHP_ClockDivider divFactor);
-    static void SetAPB1Prescaler(APB_ClockDivider divFactor);
-    static void SetAPB2Prescaler(APB_ClockDivider divFactor);
-    static void SetMCOPinClk(McoModes mode);
+    static void InitSysClock(const ClkConfig& config = kHse,
+                             const PLL_MulFactor& mulFactor = kClock_1x);
+    static void SetAHBPrescaler(const AHP_ClockDivider& divFactor);
+    static void SetAPB1Prescaler(const APB_ClockDivider& divFactor);
+    static void SetAPB2Prescaler(const APB_ClockDivider& divFactor);
+    static void SetMCOPinClk(const McoModes& mode);
  private:
-    static void WaitToReady(ClkConfig config);
+    enum Flags { kHSIRDY, kHSERDY, kPLLRDY, };
+    enum PllSource {
+        kPllSource_Unkown,
+        kPllSource_Hsi     = ClkConfig::kHsi ,
+        kPllSource_Hse     = ClkConfig::kHse ,
+        kPllSource_HseDiv2 = ClkConfig::kHseDivBy2,
+    };
+    static void WaitToReady(Flags flag);
+    static void SetInternalHighSpeedClk();
+    static void SetExternalHighSpeedClk();
+    static void SetPllFactor(PLL_MulFactor factor);
+    static void SetPllSource(PllSource src);
 };
 
 }  // namespace rcc
