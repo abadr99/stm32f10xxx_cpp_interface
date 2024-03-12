@@ -18,7 +18,7 @@ namespace rcc {
 
 uint32_t RccReg[10]={};
 #define RCC_BASE_ADDRESS (RccReg)
-c
+
 }  // namespace rcc
 }  // namespace registers
 }  // namespace stm32
