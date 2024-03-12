@@ -11,8 +11,8 @@
 #ifndef DEV_UTILS_INC_ASSERT_H_
 #define DEV_UTILS_INC_ASSERT_H_
 
-#include <cstddef>
 #include <assert.h>
+#include <cstddef>
 
 #define STM32_ASSERT(cond_)\
     assert(cond_)

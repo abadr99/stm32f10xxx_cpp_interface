@@ -24,4 +24,4 @@ using RegWidth_t = uint32_t;
 }  // namespace utils
 }  // namespace stm32
 
-#endif //  DEV_UTILS_INC_TYPES_H_
+#endif  //  DEV_UTILS_INC_TYPES_H_
