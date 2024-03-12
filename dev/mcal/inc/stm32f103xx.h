@@ -12,6 +12,12 @@
 #ifndef DEV_MCAL_INC_STM32F103XX_H_
 #define DEV_MCAL_INC_STM32F103XX_H_
 
+#ifdef UNIT_TEST
+#include "../../../tests/unittests/mcal/BaseAddress-test.h"
+#else
+#include "mcal/inc/BaseAddress.h"
+#endif
+
 #include "utils/inc/Types.h"
 
 using RegWidth_t = stm32::utils::types::RegWidth_t;

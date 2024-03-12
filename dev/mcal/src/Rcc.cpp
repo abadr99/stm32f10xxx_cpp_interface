@@ -9,10 +9,9 @@
  *
  */
 
+#include "mcal/inc/stm32f103xx.h"
 #include "utils/inc/Assert.h"
 #include "mcal/inc/Rcc.h"
-#include "mcal/inc/BaseAddress.h"
-#include "mcal/inc/stm32f103xx.h"
 
 using namespace stm32::dev::mcal::rcc; // NOLINT[build/namespaces]
 using namespace stm32::registers::rcc; // NOLINT[build/namespaces]

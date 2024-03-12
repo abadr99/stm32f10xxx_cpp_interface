@@ -9,13 +9,15 @@
  */
 #include <gtest/gtest.h>
 #include "utils/inc/BitManipulation.h"
-#include "BaseAddress-test.h"
 #include "mcal/inc/stm32f103xx.h"
 #include "mcal/inc/Rcc.h"
+
+uint32_t RccReg[10] = {};
 
 using namespace stm32::utils::bit_manipulation;  // NOLINT [build/namespaces]
 using namespace stm32::dev::mcal::rcc;  // NOLINT [build/namespaces]
 using namespace stm32::registers::rcc;  // NOLINT [build/namespaces]
+
 
 TEST(RccTest, SetAHBPrescaler) {
 // no div

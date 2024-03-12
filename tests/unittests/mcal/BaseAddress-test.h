@@ -9,18 +9,14 @@
  * 
  */
 
-#ifndef DEV_MCAL_INC_BASEADDRESS_TEST_H_
-#define DEV_MCAL_INC_BASEADDRESS_TEST_H_
+#ifndef TESTS_UNITTESTS_MCAL_BASEADDRESS_TEST_H_
+#define TESTS_UNITTESTS_MCAL_BASEADDRESS_TEST_H_
 
-namespace stm32 {
-namespace registers {
-namespace rcc {
+#include <stdint.h>
 
-uint32_t RccReg[10]={};
-#define RCC_BASE_ADDRESS (RccReg)
+#define RCC_BASE_ADDRESS (&RccReg[0])
 
-}  // namespace rcc
-}  // namespace registers
-}  // namespace stm32
+extern uint32_t RccReg[10];
 
-#endif  // DEV_MCAL_INC_BASEADDRESS_TEST_H_
+
+#endif  // TESTS_UNITTESTS_MCAL_BASEADDRESS_TEST_H_
