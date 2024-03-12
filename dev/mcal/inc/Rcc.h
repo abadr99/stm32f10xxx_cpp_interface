@@ -77,6 +77,8 @@ class Rcc {
     static void SetAPB1Prescaler(APB_ClockDivider divFactor);
     static void SetAPB2Prescaler(APB_ClockDivider divFactor);
     static void SetMCOPinClk(McoModes mode);
+ private:
+    static void WaitToReady(ClkConfig config);
 };
 
 }  // namespace rcc
