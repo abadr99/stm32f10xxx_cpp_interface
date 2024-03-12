@@ -9,6 +9,7 @@
  */
 #include <gtest/gtest.h>
 #include "utils/inc/BitManipulation.h"
+#include "BaseAddress-test.h"
 #include "mcal/inc/stm32f103xx.h"
 #include "mcal/inc/Rcc.h"
 
