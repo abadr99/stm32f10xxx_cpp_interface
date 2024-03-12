@@ -70,11 +70,11 @@ enum McoModes {
 
 class Rcc {
  public:
-    void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor);
-    void SetAHBPrescaler(AHP_ClockDivider divFactor);
-    void SetAPB1Prescaler(APB_ClockDivider divFactor);
-    void SetAPB2Prescaler(APB_ClockDivider divFactor);
-    void SetMCOPinClk(McoModes mode);
+    static void InitSysClock(ClkConfig config, PLL_MulFactor mulFactor);
+    static void SetAHBPrescaler(AHP_ClockDivider divFactor);
+    static void SetAPB1Prescaler(APB_ClockDivider divFactor);
+    static void SetAPB2Prescaler(APB_ClockDivider divFactor);
+    static void SetMCOPinClk(McoModes mode);
 };
 
 }  // namespace rcc
