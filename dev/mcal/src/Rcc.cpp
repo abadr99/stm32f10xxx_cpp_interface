@@ -9,8 +9,6 @@
  *
  */
 
-#include "utils/inc/BitManipulation.h"
-#include "utils/inc/Math.h"
 #include "utils/inc/Assert.h"
 #include "mcal/inc/Rcc.h"
 #include "mcal/inc/stm32f103xx.h"
@@ -32,115 +30,108 @@ ASSERT_MEMBER_OFFSET(RccRegDef, APB1ENR,    sizeof(RegWidth_t) * 7);
 ASSERT_MEMBER_OFFSET(RccRegDef, BDCR,       sizeof(RegWidth_t) * 8);
 ASSERT_MEMBER_OFFSET(RccRegDef, CSR,        sizeof(RegWidth_t) * 9);
 
+static void WaitToReady(ClkConfig config);
+
 void Rcc::InitSysClock(ClkConfig config, PLL_MulFactor mulFactor) {
 
-    if ( config == kHsi  && mulFactor == kClock_1x)
+    if (config == kHsi  && mulFactor == kClock_1x)
     {
-        /* Enable HSI */
         RCC->CR.HSION = 1;
-        /*wait until hsi is ready*/
-        while (RCC->CR.HSIRDY == 0);
-
-        /* Switch to HSI */
+        WaitToReady(config);
         RCC->CFGR.SW=0;
 
-    }else if ( config == kHse && mulFactor == kClock_1x)
+    }else if (config == kHse && mulFactor == kClock_1x)
     {
-        /* Enable HSE */
         RCC->CR.HSEON = 1;
-        /*wait until hse is ready*/
-        while (RCC->CR.HSERDY == 0);
-        /* Switch to HSE */
+        WaitToReady(config);
         RCC->CFGR.SW=1;
 
-    }else if ( mulFactor != kClock_1x )
+        // Enable Clk Dector to detect when clock failure
+        RCC->CR.CSSON = 1;
+
+    }else if (config == kPll)
     {
-        /* Disable PLL before configuring the PLL */
+        //  Disable PLL before configuring the PLL
         RCC->CR.PLLON = 0;
-        /* Set Multiplication factor */
-        RCC->CFGR.PLLMUL = mulFactor;
-        /* Chose PLL entry */
-        if ( config == kHsi )
-        {
-            /* Enable HSI */
+        if (mulFactor != kClock_1x) {
+            RCC->CFGR.PLLMUL = mulFactor;
+        }
+        if (config == kHsi) {
             RCC->CR.HSION = 1;
-            /*wait until hsi is ready*/
-            while (RCC->CR.HSIRDY == 0);
-            /* Chose HSI as PLL entry clock source */
+            WaitToReady(config);
             RCC->CFGR.PLLSRC = 0;
 
-        }else if ( config == kHse || config == kHseDivBy2)
+        }else if (config == kHse || config == kHseDivBy2)
         {
-            /* Enable HSE */
             RCC->CR.HSEON = 1;
-            /*wait until hse is ready*/
-            while (RCC->CR.HSERDY == 0);
-            /* Chose HSE as PLL entry clock source */
+            WaitToReady(config);
+
+            // Chose HSE as PLL entry clock source
             RCC->CFGR.PLLSRC = 1;
 
-            /* Set HSE divider */
-            if ( config == kHse)
+            // Set HSE divider
+            if (config == kHse)
             {
-                /* HSE is not divided */
-                RCC->CFGR.PLLXTPRE =1;
+                RCC->CFGR.PLLXTPRE =0;
             }else
             {
-                /* HSE is not divided */
-                RCC->CFGR.PLLXTPRE =0;
+                RCC->CFGR.PLLXTPRE =1;
             }
         }
-        /*Enable PLL */
         RCC->CR.PLLON = 1;
-        /*wait until hse is ready*/
-        while (RCC->CR.PLLON == 0);
+        WaitToReady(config);
 
-        /* Switch to PLL */
+        // Switch to PLL
         RCC->CFGR.SW = 2;
     }
-    
 }
-
 
 void Rcc::SetAHBPrescaler(AHP_ClockDivider divFactor)
 {
-    if ( divFactor >= kAhpNotDivided && divFactor <= kAhpDiv512)
+    if (divFactor >= kAhpNotDivided && divFactor <= kAhpDiv512)
     {
         RCC->CFGR.HPRE = divFactor;
-    }else
-    {
-        /* do nothing */
     }
 }
 
 void Rcc::SetAPB1Prescaler(APB_ClockDivider divFactor)
 {
-    if ( divFactor >= kApbNotDivided && divFactor <= kApbDiv16)
+    if (divFactor >= kApbNotDivided && divFactor <= kApbDiv16)
     {
         RCC->CFGR.PPRE1 = divFactor;
-    }else
-    {
-        /* do nothing */
     }
 }
 void Rcc::SetAPB2Prescaler(APB_ClockDivider divFactor)
 {
-    if ( divFactor >= kApbNotDivided && divFactor <= kApbDiv16)
+    if (divFactor >= kApbNotDivided && divFactor <= kApbDiv16)
     {
         RCC->CFGR.PPRE2 = divFactor;
-    }else
-    {
-        /* do nothing */
     }
 }
 void Rcc::SetMCOPinClk(McoModes mode)
 {
-        /* Validate input argument */
-    if ( mode == kMcoNoClock || mode == kMcoHsi || 
-         mode == kMcoHse     || mode == kMcoPll) 
+    if (mode == kMcoNoClock || mode == kMcoHsi || 
+        mode == kMcoHse     || mode == kMcoPll) 
     {
         RCC->CFGR.MCO = mode;
-    }else 
-    {
-        /* Do Nothing */
     }
+}
+void WaitToReady(ClkConfig config) {
+    uint16_t countTimeOut = 0;
+    if (config == kHsi) {
+        while (RCC->CR.HSIRDY == 0 && countTimeOut != RCC_TIMEOUT) {
+            countTimeOut++;
+        }
+    }
+    else if (config == kHse) {
+        while (RCC->CR.HSERDY == 0 && countTimeOut != RCC_TIMEOUT) {
+            countTimeOut++;
+        }
+    }
+    else {
+        while (RCC->CR.PLLRDY == 0 && countTimeOut != RCC_TIMEOUT) {
+            countTimeOut++;
+        }
+    }
+    STM32_ASSERT(countTimeOut != RCC_TIMEOUT);
 }

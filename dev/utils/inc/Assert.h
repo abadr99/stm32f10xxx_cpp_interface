@@ -14,7 +14,7 @@
 #include <cstddef>
 #include <assert.h>
 
-#define STM32_ASSERT(cond_, msg_)\
+#define STM32_ASSERT(cond_)\
     assert(cond_)
 
 #define ASSERT_STRUCT_SIZE(struct_type, expected_size) \

@@ -11,6 +11,7 @@
 #ifndef DEV_MCAL_INC_RCC_H_
 #define DEV_MCAL_INC_RCC_H_
 
+#define RCC_TIMEOUT    (400)
 namespace stm32 {
 namespace dev {
 namespace mcal {
@@ -19,7 +20,8 @@ namespace rcc {
 enum ClkConfig {
     kHsi,
     kHse,
-    kHseDivBy2
+    kHseDivBy2,
+    kPll
 };
 enum PLL_MulFactor{
     kClock_1x  = 0b11111,
