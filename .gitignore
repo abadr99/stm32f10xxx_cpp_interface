@@ -30,4 +30,7 @@
 *.exe
 *.out
 *.app
+
+# vscode stuff
+./vscode/**
 *.elf
