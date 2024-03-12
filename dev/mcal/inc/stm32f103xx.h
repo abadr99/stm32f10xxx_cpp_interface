@@ -34,7 +34,7 @@ struct RccRegDef{
             RegWidth_t HSIRDY  :1; /* High-speed internal oscillator ready */
             RegWidth_t         :1; /* Reserved */
             RegWidth_t HSITRIM :5; /* High-speed internal oscillator trimming */
-            RegWidth_t HSICAL  :8; /* High-speed internal oscillator calibration*/
+            RegWidth_t HSICAL  :8; /* High-speed internal oscillator calibration*/  // NOLINT
             RegWidth_t HSEON   :1; /* High-speed external oscillator enable */
             RegWidth_t HSERDY  :1; /* High-speed external oscillator ready */
             RegWidth_t HSEBYP  :1; /* High-speed external oscillator bypass */
@@ -47,7 +47,7 @@ struct RccRegDef{
         RegWidth_t registerVal;   /** RCC control register  */
     }CR;
 
-    union CFGR{
+    union CFGR {
         struct {
             RegWidth_t SW        :2; /* System clock switch */
             RegWidth_t SWS       :2; /* System clock switch status */

@@ -1,6 +1,6 @@
 /**
  * @file RCC.h
- * @author 
+ * @author
  * @brief
  * @version 0.1
  * @date 2024-03-8
@@ -64,7 +64,7 @@ enum APB_ClockDivider  {
 
 enum McoModes {
     kMcoNoClock,
-    kMcoSystemClock=4,
+    kMcoSystemClock = 4,
     kMcoHsi,
     kMcoHse,
     kMcoPll
