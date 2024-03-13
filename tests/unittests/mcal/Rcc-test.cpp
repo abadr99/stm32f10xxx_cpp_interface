@@ -34,17 +34,54 @@ Rcc::SetAHBPrescaler(kAhpDiv8);
 EXPECT_EQ(0b1010,       (ExtractBits<uint32_t, 4, 7>(RCC->CFGR.registerVal)));
 // 16
 Rcc::SetAHBPrescaler(kAhpDiv16);
-EXPECT_EQ(0b1011,       (ExtractBits<RegWidth_t, 4, 7>(RCC->CFGR.registerVal)));
+EXPECT_EQ(0b1011,       (ExtractBits<uint32_t, 4, 7>(RCC->CFGR.registerVal)));
 // 64
 Rcc::SetAHBPrescaler(kAhpDiv64);
-EXPECT_EQ(0b1100,       (ExtractBits<RegWidth_t, 4, 7>(RCC->CFGR.registerVal)));
+EXPECT_EQ(0b1100,       (ExtractBits<uint32_t, 4, 7>(RCC->CFGR.registerVal)));
 // 128
 Rcc::SetAHBPrescaler(kAhpDiv128);
-EXPECT_EQ(0b1101,       (ExtractBits<RegWidth_t, 4, 7>(RCC->CFGR.registerVal)));
+EXPECT_EQ(0b1101,       (ExtractBits<uint32_t, 4, 7>(RCC->CFGR.registerVal)));
 // 256
 Rcc::SetAHBPrescaler(kAhpDiv256);
-EXPECT_EQ(0b1110,       (ExtractBits<RegWidth_t, 4, 7>(RCC->CFGR.registerVal)));
+EXPECT_EQ(0b1110,       (ExtractBits<uint32_t, 4, 7>(RCC->CFGR.registerVal)));
 // 512
 Rcc::SetAHBPrescaler(kAhpDiv512);
-EXPECT_EQ(0b1111,       (ExtractBits<RegWidth_t, 4, 7>(RCC->CFGR.registerVal)));
+EXPECT_EQ(0b1111,       (ExtractBits<uint32_t, 4, 7>(RCC->CFGR.registerVal)));
 }
+
+TEST(RccTest, SetAPB1Prescaler) {
+// no div
+Rcc::SetAPB1Prescaler(kApbNotDivided);
+EXPECT_EQ(0b000,       (ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal)));
+// 2
+Rcc::SetAPB1Prescaler(kApbDiv2);
+EXPECT_EQ(0b100,       (ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal)));
+// 4
+Rcc::SetAPB1Prescaler(kApbDiv4);
+EXPECT_EQ(0b101,       (ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal)));
+// 8
+Rcc::SetAPB1Prescaler(kApbDiv8);
+EXPECT_EQ(0b110,       (ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal)));
+// 16
+Rcc::SetAPB1Prescaler(kApbDiv16);
+EXPECT_EQ(0b111,       (ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal)));
+}
+
+TEST(RccTest, SetAPB2Prescaler) {
+// no div
+Rcc::SetAPB2Prescaler(kApbNotDivided);
+EXPECT_EQ(0b000,       (ExtractBits<uint32_t, 11, 13>(RCC->CFGR.registerVal)));
+// 2
+Rcc::SetAPB2Prescaler(kApbDiv2);
+EXPECT_EQ(0b100,       (ExtractBits<uint32_t, 11, 13>(RCC->CFGR.registerVal)));
+// 4
+Rcc::SetAPB2Prescaler(kApbDiv4);
+EXPECT_EQ(0b101,       (ExtractBits<uint32_t, 11, 13>(RCC->CFGR.registerVal)));
+// 8
+Rcc::SetAPB2Prescaler(kApbDiv8);
+EXPECT_EQ(0b110,       (ExtractBits<uint32_t, 11, 13>(RCC->CFGR.registerVal)));
+// 16
+Rcc::SetAPB2Prescaler(kApbDiv16);
+EXPECT_EQ(0b111,       (ExtractBits<uint32_t, 11, 13>(RCC->CFGR.registerVal)));
+}
+
