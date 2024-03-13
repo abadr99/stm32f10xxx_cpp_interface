@@ -18,7 +18,6 @@ using namespace stm32::utils::bit_manipulation;  // NOLINT [build/namespaces]
 using namespace stm32::dev::mcal::rcc;  // NOLINT [build/namespaces]
 using namespace stm32::registers::rcc;  // NOLINT [build/namespaces]
 
-
 TEST(RccTest, SetAHBPrescaler) {
 // no div
 Rcc::SetAHBPrescaler(kAhpNotDivided);
@@ -83,5 +82,23 @@ EXPECT_EQ(0b110,       (ExtractBits<uint32_t, 11, 13>(RCC->CFGR.registerVal)));
 // 16
 Rcc::SetAPB2Prescaler(kApbDiv16);
 EXPECT_EQ(0b111,       (ExtractBits<uint32_t, 11, 13>(RCC->CFGR.registerVal)));
+}
+
+TEST(RccTest, SetMCOPinClk) {
+// no clock
+Rcc::SetMCOPinClk(kMcoNoClock);
+EXPECT_EQ(0b000,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
+// system clock
+/*Rcc::SetMCOPinClk(kMcoSystemClock);
+EXPECT_EQ(0b100,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));*/
+// HSI clock 
+Rcc::SetMCOPinClk(kMcoHsi);
+EXPECT_EQ(0b101,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
+// HSE clock
+Rcc::SetMCOPinClk(kMcoHse);
+EXPECT_EQ(0b110,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
+// PLL clock
+Rcc::SetMCOPinClk(kMcoPll);
+EXPECT_EQ(0b111,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
 }
 
