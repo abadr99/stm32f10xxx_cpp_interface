@@ -18,6 +18,25 @@ using namespace stm32::utils::bit_manipulation;  // NOLINT [build/namespaces]
 using namespace stm32::dev::mcal::rcc;  // NOLINT [build/namespaces]
 using namespace stm32::registers::rcc;  // NOLINT [build/namespaces]
 
+TEST(RccTest, InitSysClock) {
+// Testing HSI with kClock_1x
+RCC->CR.HSIRDY=1;
+Rcc::InitSysClock(kHsi,kClock_1x);
+EXPECT_EQ(1,           (ExtractBits<uint32_t, 0>(RCC->CR.registerVal)));
+EXPECT_EQ(0b00,        (ExtractBits<uint32_t, 0,1>(RCC->CFGR.registerVal)));
+RCC->CR.HSIRDY=0;
+//Testing HSE with kClock_1x
+RCC->CR.HSERDY=1;
+Rcc::InitSysClock(kHse,kClock_1x);
+EXPECT_EQ(1,           (ExtractBits<uint32_t, 16>(RCC->CR.registerVal)));
+EXPECT_EQ(0b01,        (ExtractBits<uint32_t, 0,1>(RCC->CFGR.registerVal)));
+EXPECT_EQ(1,           (ExtractBits<uint32_t, 19>(RCC->CR.registerVal)));
+RCC->CR.HSERDY=0;
+//Testing PLL with kClock_1x
+//Rcc::InitSysClock(kPll,kClock_git4x);
+//EXPECT_EQ(0,           (ExtractBits<uint32_t, 24>(RCC->CR.registerVal)));
+//EXPECT_EQ(0b0010,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+}
 TEST(RccTest, SetAHBPrescaler) {
 // no div
 Rcc::SetAHBPrescaler(kAhpNotDivided);
