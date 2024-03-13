@@ -91,7 +91,7 @@ EXPECT_EQ(0b000,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
 // system clock
 /*Rcc::SetMCOPinClk(kMcoSystemClock);
 EXPECT_EQ(0b100,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));*/
-// HSI clock 
+// HSI clock
 Rcc::SetMCOPinClk(kMcoHsi);
 EXPECT_EQ(0b101,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
 // HSE clock
