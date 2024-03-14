@@ -20,22 +20,58 @@ using namespace stm32::registers::rcc;  // NOLINT [build/namespaces]
 
 TEST(RccTest, InitSysClock) {
 // Testing HSI with kClock_1x
-RCC->CR.HSIRDY=1;
+RCC->CR.HSIRDY = 1;
 Rcc::InitSysClock(kHsi,kClock_1x);
 EXPECT_EQ(1,           (ExtractBits<uint32_t, 0>(RCC->CR.registerVal)));
-EXPECT_EQ(0b00,        (ExtractBits<uint32_t, 0,1>(RCC->CFGR.registerVal)));
+EXPECT_EQ(0b00,        (ExtractBits<uint32_t, 0, 1>(RCC->CFGR.registerVal)));
 RCC->CR.HSIRDY=0;
-//Testing HSE with kClock_1x
-RCC->CR.HSERDY=1;
-Rcc::InitSysClock(kHse,kClock_1x);
+// Testing HSE with kClock_1x
+RCC->CR.HSERDY = 1;
+Rcc::InitSysClock(kHse, kClock_1x);
 EXPECT_EQ(1,           (ExtractBits<uint32_t, 16>(RCC->CR.registerVal)));
-EXPECT_EQ(0b01,        (ExtractBits<uint32_t, 0,1>(RCC->CFGR.registerVal)));
+EXPECT_EQ(0b01,        (ExtractBits<uint32_t, 0, 1>(RCC->CFGR.registerVal)));
 EXPECT_EQ(1,           (ExtractBits<uint32_t, 19>(RCC->CR.registerVal)));
 RCC->CR.HSERDY=0;
-//Testing PLL with kClock_1x
-//Rcc::InitSysClock(kPll,kClock_git4x);
-//EXPECT_EQ(0,           (ExtractBits<uint32_t, 24>(RCC->CR.registerVal)));
-//EXPECT_EQ(0b0010,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+
+}
+TEST(RccTest, PllInitSysClock) {
+    RCC->CR.PLLRDY = 1;
+    Rcc::InitSysClock(kHse,kClock_2x);
+    EXPECT_EQ(0b0000,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    EXPECT_EQ(1,           (ExtractBits<uint32_t, 16>(RCC->CR.registerVal)));
+    EXPECT_EQ(1,        (ExtractBits<uint32_t, 16>(RCC->CFGR.registerVal)));
+    EXPECT_EQ(1,           (ExtractBits<uint32_t, 24>(RCC->CR.registerVal)));
+    EXPECT_EQ(0b10,        (ExtractBits<uint32_t, 0, 1>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_3x);
+    EXPECT_EQ(0b0001,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_4x);
+    EXPECT_EQ(0b0010,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_5x);
+    EXPECT_EQ(0b0011,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_6x);
+    EXPECT_EQ(0b0100,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_7x);
+    EXPECT_EQ(0b0101,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_8x);
+    EXPECT_EQ(0b0110,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_9x);
+    EXPECT_EQ(0b0111,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_10x);
+    EXPECT_EQ(0b1000,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_11x);
+    EXPECT_EQ(0b1001,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_12x);
+    EXPECT_EQ(0b1010,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_13x);
+    EXPECT_EQ(0b1011,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_14x);
+    EXPECT_EQ(0b1100,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_15x);
+    EXPECT_EQ(0b1101,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    Rcc::InitSysClock(kHse,kClock_16x);
+    EXPECT_EQ(0b1110,        (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    RCC->CR.PLLRDY = 0;
+
 }
 TEST(RccTest, SetAHBPrescaler) {
 // no div
