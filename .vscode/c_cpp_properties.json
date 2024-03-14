@@ -11,9 +11,9 @@
             "defines": [],
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "${default}",
+            "intelliSenseMode": "linux-gcc-x64",
             "configurationProvider": "ms-vscode.makefile-tools",
-            "compilerPath": "/usr/bin/g++"
+            "compilerPath": "/usr/bin/g++-9"
         }
     ],
     "version": 4

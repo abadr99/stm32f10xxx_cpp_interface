@@ -5,7 +5,7 @@ SOURCES += $(wildcard ./utils/src/*.cpp) # ALl utils should be added with all mo
 SRC_NAMES:= $(notdir $(SOURCES))
 SOURCES_COUNT:= $(words $(SOURCES))
 SOURCES_CTR:=0
-INC:=  $(foreach dir,$(DIRS), -I$(dir)/inc)
+INC:=  -I.
 LINT_PATH:= ../tools/cppliny.py
 include build/stm32.mk
 
