@@ -3,7 +3,7 @@
 LINT_PATH:= ../tools/cppliny.py
 
 U_CXX:= g++
-U_CXX_OPT := -std=c++17 -Wall -Wextra -g
+U_CXX_OPT := -std=c++17 -Wall -Wextra -g -DUNIT_TEST
 
 U_SRCS_DIR := $(shell find ./unittests -maxdepth 5 -type d)
 U_SRC:= $(foreach S,$(U_SRCS_DIR),$(wildcard $(S)/*.cpp))
