@@ -1,4 +1,5 @@
 CXX:= arm-none-eabi-g++
+OBJ_COPY:= arm-none-eabi-objcopy
 MCU:= stm32f103c8t6
 CLK:= 8000000
 CPU:= cortex-m3 
@@ -7,6 +8,7 @@ CXX_FLAGS:=   	 	 -mthumb -g -Wall -mcpu=$(CPU) -O0 -Werror -std=c++17 -mcpu=cor
 OPT_CXX_FLAGS:= 	 -mthumb -g -Wall -mcpu=$(CPU) -O3 -Werror -std=c++17
 CXX_TEST_FLAGS:=	 -mthumb -g -Wall -mcpu=$(CPU) -O2 -Werror -std=c++17
 LDFLAGS = -Wl,--gc-sections,-Map=$@.map,-cref,-u,Reset_Handler
+OBJ_COPY_OPTS:= -O ihex
 
 TARGET:= stm32
 OBJDIR := .build/obj
@@ -17,8 +19,8 @@ HEX_TARGET:= $(TARGET).hex
 ELF_TARGET:=$(TARGET).elf
 
 
-upload: $(HEX)
-	@echo "NOT-SUPPORTED"
+FLASH:= st-flash
+UPLOAD_OPT:= write 0x08000000
 
 $(OBJDIR)/%.o : **/src/%.cpp
 	mkdir -p $(OBJDIR)
