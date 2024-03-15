@@ -29,3 +29,6 @@ This repo introduce an interface with stm32 mcu family using C++. for now we are
    ```
    make build 
    ```
+## How to upload?
+1) Install St-link
+   $ sudo apt install stlink-tools
