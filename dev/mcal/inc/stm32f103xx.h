@@ -82,6 +82,69 @@ struct RccRegDef{
 #define RCC  (reinterpret_cast<volatile RccRegDef*>(RCC_BASE_ADDRESS))
 
 }  // namespace rcc
+
+namespace gpio {
+struct GpioRegDef {
+    union CRL {
+        struct {
+            RegWidth_t MODE0    :2; //Port x mode bits
+            RegWidth_t CNF0     :2; //Port x configuration bits
+            RegWidth_t MODE1    :2;
+            RegWidth_t CNF1     :2;
+            RegWidth_t MODE2    :2;
+            RegWidth_t CNF2     :2;
+            RegWidth_t MODE3    :2;
+            RegWidth_t CNF3     :2;
+            RegWidth_t MODE4    :2;
+            RegWidth_t CNF4     :2;
+            RegWidth_t MODE5    :2;
+            RegWidth_t CNF5     :2;
+            RegWidth_t MODE6    :2;
+            RegWidth_t CNF6     :2;
+            RegWidth_t MODE7    :2;
+            RegWidth_t CNF7     :2;
+        };
+        RegWidth_t registerVal; //Port configuration register low
+    }CRL; //Port configuration register low
+
+    union CRH {
+        struct {
+            RegWidth_t MODE8     :2; //Port x mode bits
+            RegWidth_t CNF8      :2; //Port x configuration bits
+            RegWidth_t MODE9     :2;
+            RegWidth_t CNF9      :2;
+            RegWidth_t MODE10    :2;
+            RegWidth_t CNF10     :2;
+            RegWidth_t MODE11    :2;
+            RegWidth_t CNF11     :2;
+            RegWidth_t MODE12    :2;
+            RegWidth_t CNF12     :2;
+            RegWidth_t MODE13    :2;
+            RegWidth_t CNF13     :2;
+            RegWidth_t MODE14    :2;
+            RegWidth_t CNF14     :2;
+            RegWidth_t MODE15    :2;
+            RegWidth_t CNF15     :2;
+        };
+        RegWidth_t registerVal; //Port configuration register High
+    }CRH; //Port configuration register High
+
+    RegWidth_t IDR;
+    RegWidth_t ODR;
+    RegWidth_t BSRR;
+    RegWidth_t BRR;
+    RegWidth_t LCKR;
+};
+
+#define GPIOA  (reinterpret_cast<volatile GpioRegDef*>(GPIOA_BASE_ADDRESS))
+#define GPIOB  (reinterpret_cast<volatile GpioRegDef*>(GPIOB_BASE_ADDRESS))
+#define GPIOC  (reinterpret_cast<volatile GpioRegDef*>(GPIOC_BASE_ADDRESS))
+#define GPIOD  (reinterpret_cast<volatile GpioRegDef*>(GPIOD_BASE_ADDRESS))
+#define GPIOE  (reinterpret_cast<volatile GpioRegDef*>(GPIOE_BASE_ADDRESS))
+#define GPIOF  (reinterpret_cast<volatile GpioRegDef*>(GPIOF_BASE_ADDRESS))
+#define GPIOG  (reinterpret_cast<volatile GpioRegDef*>(GPIOG_BASE_ADDRESS))
+
+}  // namespace gpio
 }  // namespace registers
 }  // namespace stm32
 
