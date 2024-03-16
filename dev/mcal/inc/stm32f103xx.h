@@ -87,8 +87,8 @@ namespace gpio {
 struct GpioRegDef {
     union CRL {
         struct {
-            RegWidth_t MODE0    :2; // Port x mode bits
-            RegWidth_t CNF0     :2; // Port x configuration bits
+            RegWidth_t MODE0    :2;   // Port x mode bits
+            RegWidth_t CNF0     :2;   // Port x configuration bits
             RegWidth_t MODE1    :2;
             RegWidth_t CNF1     :2;
             RegWidth_t MODE2    :2;
@@ -104,13 +104,13 @@ struct GpioRegDef {
             RegWidth_t MODE7    :2;
             RegWidth_t CNF7     :2;
         };
-        RegWidth_t registerVal; // Port configuration register low
-    }CRL; // Port configuration register low
+        RegWidth_t registerVal;   // Port configuration register low
+    }CRL;   // Port configuration register low
 
     union CRH {
         struct {
-            RegWidth_t MODE8     :2; // Port x mode bits
-            RegWidth_t CNF8      :2; // Port x configuration bits
+            RegWidth_t MODE8     :2;   // Port x mode bits
+            RegWidth_t CNF8      :2;   // Port x configuration bits
             RegWidth_t MODE9     :2;
             RegWidth_t CNF9      :2;
             RegWidth_t MODE10    :2;
@@ -126,8 +126,8 @@ struct GpioRegDef {
             RegWidth_t MODE15    :2;
             RegWidth_t CNF15     :2;
         };
-        RegWidth_t registerVal; // Port configuration register High
-    }CRH; // Port configuration register High
+        RegWidth_t registerVal;   // Port configuration register High
+    }CRH;   // Port configuration register High
 
     RegWidth_t IDR;
     RegWidth_t ODR;
