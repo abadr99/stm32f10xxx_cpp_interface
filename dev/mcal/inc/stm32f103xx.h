@@ -85,50 +85,9 @@ struct RccRegDef{
 
 namespace gpio {
 struct GpioRegDef {
-    union CRL {
-        struct {
-            RegWidth_t MODE0    :2;   // Port x mode bits
-            RegWidth_t CNF0     :2;   // Port x configuration bits
-            RegWidth_t MODE1    :2;
-            RegWidth_t CNF1     :2;
-            RegWidth_t MODE2    :2;
-            RegWidth_t CNF2     :2;
-            RegWidth_t MODE3    :2;
-            RegWidth_t CNF3     :2;
-            RegWidth_t MODE4    :2;
-            RegWidth_t CNF4     :2;
-            RegWidth_t MODE5    :2;
-            RegWidth_t CNF5     :2;
-            RegWidth_t MODE6    :2;
-            RegWidth_t CNF6     :2;
-            RegWidth_t MODE7    :2;
-            RegWidth_t CNF7     :2;
-        };
-        RegWidth_t registerVal;   // Port configuration register low
-    }CRL;   // Port configuration register low
 
-    union CRH {
-        struct {
-            RegWidth_t MODE8     :2;   // Port x mode bits
-            RegWidth_t CNF8      :2;   // Port x configuration bits
-            RegWidth_t MODE9     :2;
-            RegWidth_t CNF9      :2;
-            RegWidth_t MODE10    :2;
-            RegWidth_t CNF10     :2;
-            RegWidth_t MODE11    :2;
-            RegWidth_t CNF11     :2;
-            RegWidth_t MODE12    :2;
-            RegWidth_t CNF12     :2;
-            RegWidth_t MODE13    :2;
-            RegWidth_t CNF13     :2;
-            RegWidth_t MODE14    :2;
-            RegWidth_t CNF14     :2;
-            RegWidth_t MODE15    :2;
-            RegWidth_t CNF15     :2;
-        };
-        RegWidth_t registerVal;   // Port configuration register High
-    }CRH;   // Port configuration register High
-
+    RegWidth_t CRL;     // Port configuration register low
+    RegWidth_t CRH;     // Port configuration register High
     RegWidth_t IDR;
     RegWidth_t ODR;
     RegWidth_t BSRR;
@@ -139,12 +98,64 @@ struct GpioRegDef {
 #define GPIOA  (reinterpret_cast<volatile GpioRegDef*>(GPIOA_BASE_ADDRESS))
 #define GPIOB  (reinterpret_cast<volatile GpioRegDef*>(GPIOB_BASE_ADDRESS))
 #define GPIOC  (reinterpret_cast<volatile GpioRegDef*>(GPIOC_BASE_ADDRESS))
-#define GPIOD  (reinterpret_cast<volatile GpioRegDef*>(GPIOD_BASE_ADDRESS))
-#define GPIOE  (reinterpret_cast<volatile GpioRegDef*>(GPIOE_BASE_ADDRESS))
-#define GPIOF  (reinterpret_cast<volatile GpioRegDef*>(GPIOF_BASE_ADDRESS))
-#define GPIOG  (reinterpret_cast<volatile GpioRegDef*>(GPIOG_BASE_ADDRESS))
 
 }  // namespace gpio
+
+namespace afio{
+struct AfioRegDef {
+    union EVCR{
+        struct {
+            RegWidth_t PIN      :4;
+            RegWidth_t PORT     :3;
+            RegWidth_t EVOE     :1;
+            RegWidth_t          :24;        //Reserved
+        };
+        RegWidth_t registerVal;
+    }EVCR;
+    union MAPR{
+        struct {
+            RegWidth_t SPI1_REMAP           :1;
+            RegWidth_t I2C1_REMAP           :1;
+            RegWidth_t USART1_REMAP         :1;
+            RegWidth_t USART2_REMAP         :1;
+            RegWidth_t USART3_REMAP         :2;
+            RegWidth_t TIM1_REMAP           :2;
+            RegWidth_t TIM2_REMAP           :2;
+            RegWidth_t TIM3_REMAP           :2;
+            RegWidth_t TIM4_REMAP           :1;
+            RegWidth_t CAN_REMAP            :2;
+            RegWidth_t PD01_REMAP           :1;
+            RegWidth_t TIM5CH4_IREMAP       :1;
+            RegWidth_t ADC1_ETRGINJ_REMAP   :1;
+            RegWidth_t ADC1_ETRGREG_REMAP   :1;
+            RegWidth_t ADC2_ETRGINJ_REMAP   :1;
+            RegWidth_t ADC2_ETRGREG_REMAP   :1;
+            RegWidth_t                      :3;
+            RegWidth_t SWJ_CFG              :3;
+            RegWidth_t                      :5;
+        };
+        RegWidth_t registerVal;
+    }MAPR;
+    RegWidth_t EXTICR1;
+    RegWidth_t EXTICR2;
+    RegWidth_t EXTICR3;
+    RegWidth_t EXTICR4;
+    union MAPR2 {
+        struct {
+            RegWidth_t                      :5;
+            RegWidth_t TIM9_REMAP           :1;
+            RegWidth_t TIM10_REMAP          :1;
+            RegWidth_t TIM11_REMAP          :1;
+            RegWidth_t TIM13_REMAP          :1;
+            RegWidth_t TIM14_REMAP          :1;
+            RegWidth_t FSMC_NADV            :1;
+            RegWidth_t                      :20;           
+        };
+        RegWidth_t registerVal;
+    }MAPR2;
+};
+
+}  //namespace afio
 }  // namespace registers
 }  // namespace stm32
 
