@@ -15,8 +15,33 @@ namespace stm32 {
 namespace dev {
 namespace mcal {
 namespace gpio {
-
-
+enum Direction{
+    kinput,
+    koutput
+};
+enum Mode{
+    kanalog,
+    kfloating,
+    kpullup,
+    kpulldown,
+    kpushpull,
+    kopendrain,
+    kaf_pushpull,
+    kaf_opendrain
+};
+enum Speed{
+    k10MHZ,
+    k2MHZ,
+    k50MHZ,
+    knoSpeed
+};
+class Gpio{
+ public:
+    template<Speed speed = knoSpeed>
+    static void SetPinDirection(uint32_t pin, Direction direction, Mode mode);
+    static void SetPinVal(uint32_t pin, uint32_t val);
+    static uint32_t  GetPinVal(uint32_t pin);
+};
 }  // namespace gpio
 }  // namespace mcal
 }  // namespace dev
