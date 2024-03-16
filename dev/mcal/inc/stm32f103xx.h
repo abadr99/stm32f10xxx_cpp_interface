@@ -85,7 +85,6 @@ struct RccRegDef{
 
 namespace gpio {
 struct GpioRegDef {
-
     RegWidth_t CRL;     // Port configuration register low
     RegWidth_t CRH;     // Port configuration register High
     RegWidth_t IDR;
@@ -101,18 +100,18 @@ struct GpioRegDef {
 
 }  // namespace gpio
 
-namespace afio{
+namespace afio {
 struct AfioRegDef {
-    union EVCR{
+    union EVCR {
         struct {
             RegWidth_t PIN      :4;
             RegWidth_t PORT     :3;
             RegWidth_t EVOE     :1;
-            RegWidth_t          :24;        //Reserved
+            RegWidth_t          :24;        // Reserved
         };
         RegWidth_t registerVal;
     }EVCR;
-    union MAPR{
+    union MAPR {
         struct {
             RegWidth_t SPI1_REMAP           :1;
             RegWidth_t I2C1_REMAP           :1;
@@ -149,13 +148,13 @@ struct AfioRegDef {
             RegWidth_t TIM13_REMAP          :1;
             RegWidth_t TIM14_REMAP          :1;
             RegWidth_t FSMC_NADV            :1;
-            RegWidth_t                      :20;           
+            RegWidth_t                      :20;
         };
         RegWidth_t registerVal;
     }MAPR2;
 };
 
-}  //namespace afio
+}  // namespace afio
 }  // namespace registers
 }  // namespace stm32
 
