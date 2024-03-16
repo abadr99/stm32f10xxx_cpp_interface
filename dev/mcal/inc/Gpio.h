@@ -35,12 +35,30 @@ enum Speed{
     k50MHZ,
     knoSpeed
 };
+enum Pin{
+    kpin0,
+    kpin1,
+    kpin2,
+    kpin3,
+    kpin4,
+    kpin5,
+    kpin6,
+    kpin7,
+    kpin8,
+    kpin9,
+    kpin10,
+    kpin11,
+    kpin12,
+    kpin13,
+    kpin14,
+    kpin15,
+};
 class Gpio{
  public:
     template<Speed speed = knoSpeed>
-    static void SetPinDirection(uint32_t pin, Direction direction, Mode mode);
-    static void SetPinVal(uint32_t pin, uint32_t val);
-    static uint32_t  GetPinVal(uint32_t pin);
+    static void SetPinDirection(Pin pinNum, Direction direction, Mode mode);
+    static void SetPinVal(Pin pinNum, uint32_t val);
+    static uint32_t  GetPinVal(Pin pinNum);
 };
 }  // namespace gpio
 }  // namespace mcal
