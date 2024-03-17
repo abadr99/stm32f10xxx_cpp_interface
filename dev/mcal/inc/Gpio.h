@@ -15,26 +15,26 @@ namespace stm32 {
 namespace dev {
 namespace mcal {
 namespace gpio {
-enum Direction{
-    kinput,
-    koutput
-};
+
 enum Mode{
-    kanalog,
-    kfloating,
-    kpullup,
-    kpulldown,
-    kpushpull,
-    kopendrain,
-    kaf_pushpull,
-    kaf_opendrain
+    kIN_analog,
+    kIN_floating,
+    kIN_pullup,
+    kIN_pulldown,
+    kOP_pushpull_10MHZ = 1,
+    kOP_pushpull_2MHZ = 2,
+    kOP_pushpull_50MHZ = 3,
+    kOP_opendrain_10MHZ = 5,
+    kOP_opendrain_2MHZ = 6,
+    kOP_opendrain_50MHZ = 7,
+    kaf_pushpull_10MHZ = 9,
+    kaf_pushpull_2MHZ = 10,
+    kaf_pushpull_50MHZ = 11,
+    kaf_opendrain_10MHZ = 13,
+    kaf_opendrain_2MHZ = 14,
+    kaf_opendrain_50MHZ = 15,
 };
-enum Speed{
-    k10MHZ,
-    k2MHZ,
-    k50MHZ,
-    knoSpeed
-};
+
 enum Pin{
     kpin0,
     kpin1,
@@ -55,10 +55,9 @@ enum Pin{
 };
 class Gpio{
  public:
-    template<Speed speed = knoSpeed>
-    static void SetPinDirection(Pin pinNum, Direction direction, Mode mode);
-    static void SetPinVal(Pin pinNum, uint32_t val);
-    static uint32_t  GetPinVal(Pin pinNum);
+    static void SetPinDirection(volatile GpioRegDef* GPIOX, Pin pinNum, Mode mode); // NOLINT
+    static void SetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, uint32_t val);
+    static uint32_t  GetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum);
 };
 }  // namespace gpio
 }  // namespace mcal
