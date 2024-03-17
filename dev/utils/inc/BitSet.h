@@ -8,8 +8,8 @@
  * 
  */
 
-#ifndef DEV_BITSET_INC_MATH_H_
-#define DEV_BITSET_INC_MATH_H_
+#ifndef DEV_UTILS_INC_BITSET_H_
+#define DEV_UTILS_INC_BITSET_H_
 
 #include "BitManipulation.h"
 
@@ -20,21 +20,19 @@ namespace bitset {
 template <typename T>
 class BitSet {
  public:
-    BitSet(const T bits) : bits_(bits)
+    explicit BitSet(const T bits) : bits_(bits)
     { }
-
     template <T FROM, T TO = FROM>
     inline constexpr void SetValue(T val) {
-        bits_ = stm32::utils::bit_manipulation::WriteBits<T, FROM, TO>(bits_, val);
+        bits_ = stm32::utils::bit_manipulation::WriteBits<T, FROM, TO>(bits_, val);   // NOLINT [whitespace/end_of_line]
     }
-    
+
     template <T FROM, T TO = FROM>
     constexpr T GetValue() {
         return stm32::utils::bit_manipulation::ExtractBits<T, FROM, TO>(bits_);
     }
-
     T operator[](T idx) {
-        return ((bits_ & (1<<idx))>>idx);
+        return ((bits_ & (1 << idx)) >> idx);
     }
 
  private:
@@ -44,5 +42,4 @@ class BitSet {
 }   // namespace bitset
 }   // namespace utils
 }   // namespace stm32
-
-#endif // DEV_BITSET_INC_MATH_H_
+#endif  // DEV_UTILS_INC_BITSET_H_

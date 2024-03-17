@@ -1,11 +1,11 @@
 /**
  * @file BitSet-test.cpp
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-03-18
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 
 #include <stdint.h>
@@ -17,19 +17,17 @@ using stm32::utils::bitset::BitSet;
 
 TEST(BitSet, BasicTest1) {
     BitSet<uint8_t> bs(0b11110000);
-    
-    bs.SetValue<0,3>(0b1010);
-    EXPECT_EQ((bs.GetValue<0,3>()), 0b1010);
-    EXPECT_EQ((bs.GetValue<4,7>()), 0b1111);
-    
-    bs.SetValue<4,7>(0);
-    EXPECT_EQ((bs.GetValue<4,7>()), 0);
-    
+
+    bs.SetValue<0, 3>(0b1010);
+    EXPECT_EQ((bs.GetValue<0, 3>()), 0b1010);
+    EXPECT_EQ((bs.GetValue<4, 7>()), 0b1111);
+
+    bs.SetValue<4, 7>(0);
+    EXPECT_EQ((bs.GetValue<4, 7>()), 0);
+
     EXPECT_EQ((bs[5]), 0);
     EXPECT_EQ((bs[0]), 0);
     EXPECT_EQ((bs[1]), 1);
-
-    EXPECT_EQ(sizeof(bs), 1);
 }
 
 TEST(BitSet, Sizeof) {
