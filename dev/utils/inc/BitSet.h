@@ -20,23 +20,21 @@ namespace bitset {
 template <typename T>
 class BitSet {
  public:
-
-    using utils = stm32::utils::bit_manipulation;
     BitSet(const T bits) : bits_(bits)
     { }
 
     template <T FROM, T TO = FROM>
     inline constexpr void SetValue(T val) {
-        utils::WriteBits<T. FROM, TO>(bits_);
+        bits_ = stm32::utils::bit_manipulation::WriteBits<T, FROM, TO>(bits_, val);
     }
     
     template <T FROM, T TO = FROM>
     constexpr T GetValue() {
-        return utils::ExtractBits<FROM, TO>(bits_);
+        return stm32::utils::bit_manipulation::ExtractBits<T, FROM, TO>(bits_);
     }
 
     T operator[](T idx) {
-        return utils::ExtractBits<FROM, TO>(bits_);
+        return ((bits_ & (1<<idx))>>idx);
     }
 
  private:

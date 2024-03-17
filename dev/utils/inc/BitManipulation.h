@@ -41,11 +41,11 @@ constexpr T ExtractBits(const T value) {
 
 
 template<typename T, uint8_t TStart, uint8_t TEnd = TStart>
-inline constexpr uint32_t WriteBits(T val) {
+inline constexpr uint32_t WriteBits(T container, T val) {
     static_assert(TStart <= TEnd, "Calling WriteBits with startBit first");
-    T ones = utils::GetOnes<T>(static_cast<T>(TEnd - TStart) + 1);
+    T ones = GetOnes<T>(static_cast<T>(TEnd - TStart) + 1);
     T mask = ~(ones << TStart); 
-    return (val & mask) | (TVal << TStart);
+    return (container & mask) | (val << TStart);
 }
 
 }  // namespace bit_manipulation
