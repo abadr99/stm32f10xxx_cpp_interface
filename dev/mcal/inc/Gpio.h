@@ -71,10 +71,19 @@ enum Pin{
     kpin14,
     kpin15,
 };
+#define ISPIN_LOWREG(PIN) ((PIN == kpin0) || (PIN == kpin1) || \
+                           (PIN == kpin2) || (PIN == kpin3) || \
+                           (PIN == kpin4) || (PIN == kpin5) || \
+                           (PIN == kpin6) || (PIN == kpin7))
 
+#define ISPIN_HIGHREG(PIN) ((PIN == kpin8) || (PIN == kpin9) || \
+                           (PIN == kpin10) || (PIN == kpin11) || \
+                           (PIN == kpin12) || (PIN == kpin13) || \
+                           (PIN == kpin14) || (PIN == kpin15) )
 class Gpio{
  public:
     static void SetPinDirection(volatile GpioRegDef* GPIOX, Pin pinNum, Mode mode); // NOLINT
+    static void SetPortDirection(volatile GpioRegDef* GPIOX, Mode mode ,Pin start = kpin0, Pin end = kpin15) ; // NOLINT
     static void SetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, State pinState);  // NOLINT
     static void GetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, uint32_t * ReturnVal);    // NOLINT
 };

@@ -17,8 +17,10 @@ using namespace stm32::registers::gpio; // NOLINT[build/namespaces]
 
 void Gpio::SetPinDirection(volatile GpioRegDef* GPIOX, Pin pinNum, Mode mode) {
     STM32_ASSERT(ISMODE_VALID(mode));
+    STM32_ASSERT(ISPIN_LOWREG(pinNum) || ISPIN_HIGHREG(pinNum));
+
     uint32_t configReg;
-    if (pinNum <= kpin7) {
+    if (ISPIN_LOWREG(pinNum)) {
         configReg = GPIOX->CRL;
     } else {
         configReg = GPIOX->CRH;
@@ -26,6 +28,18 @@ void Gpio::SetPinDirection(volatile GpioRegDef* GPIOX, Pin pinNum, Mode mode) {
     configReg &= (~(0b1111 << (pinNum*4)));
     configReg |= (mode << (pinNum*4));
 }
+/*void Gpio::SetPortDirection(volatile GpioRegDef* GPIOX, Mode mode, Pin start , Pin end ) { //NOLINT
+    uint32_t configReg;
+    for (uint32_t pin = start; pin <= end; pin++) {
+      if (ISPIN_LOWREG(pin)) {
+         configReg = GPIOX->CRL;
+    } else {
+         configReg = GPIOX->CRH;
+    }
+    configReg &= (~(0b1111 << (pin*4)));
+    configReg |= (mode << (pin*4));
+    }
+}*/
 void Gpio::SetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, State pinState) {
     if (pinState == kLow) {
         GPIOX -> ODR &= ~(1 << pinNum);
