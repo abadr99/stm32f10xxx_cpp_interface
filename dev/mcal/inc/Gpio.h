@@ -16,6 +16,11 @@ namespace dev {
 namespace mcal {
 namespace gpio {
 
+enum State{
+    kLow,
+    kHigh,
+};
+
 enum Mode{
     kIN_analog,
     kIN_floating,
@@ -56,8 +61,8 @@ enum Pin{
 class Gpio{
  public:
     static void SetPinDirection(volatile GpioRegDef* GPIOX, Pin pinNum, Mode mode); // NOLINT
-    static void SetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, uint32_t val);
-    static uint32_t  GetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum);
+    static void SetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, State pinState);  // NOLINT
+    static void GetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, uint32_t * ReturnVal);    // NOLINT
 };
 }  // namespace gpio
 }  // namespace mcal
