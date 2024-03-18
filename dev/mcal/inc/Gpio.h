@@ -22,10 +22,10 @@ enum State{
 };
 
 enum Mode{
-    kIN_analog,
-    kIN_floating,
-    kIN_pullup,
-    kIN_pulldown,
+    kIN_analog = 0,
+    kIN_floating = 4,
+    kIN_pullup = 8,
+    kIN_pulldown = 20,
     kOP_pushpull_10MHZ = 1,
     kOP_pushpull_2MHZ = 2,
     kOP_pushpull_50MHZ = 3,
@@ -39,7 +39,20 @@ enum Mode{
     kaf_opendrain_2MHZ = 14,
     kaf_opendrain_50MHZ = 15,
 };
-
+#define ISMODE_VALID(MODE) ((MODE == kIN_analog) || (MODE == kIN_floating) || \
+                       (MODE == kIN_pullup) || (MODE == kIN_pulldown)  || \
+                       (MODE == kOP_pushpull_10MHZ) || \
+                       (MODE == kOP_pushpull_2MHZ) || \
+                       (MODE == kOP_pushpull_50MHZ) || \
+                       (MODE == kOP_opendrain_10MHZ) || \
+                       (MODE == kOP_opendrain_2MHZ) || \
+                       (MODE == kOP_opendrain_50MHZ) || \
+                       (MODE == kaf_pushpull_10MHZ) || \
+                       (MODE == kaf_pushpull_2MHZ) || \
+                       (MODE == kaf_pushpull_50MHZ) || \
+                       (MODE == kaf_opendrain_10MHZ) || \
+                       (MODE == kaf_opendrain_2MHZ) || \
+                       (MODE == kaf_opendrain_50MHZ))
 enum Pin{
     kpin0,
     kpin1,
@@ -58,6 +71,7 @@ enum Pin{
     kpin14,
     kpin15,
 };
+
 class Gpio{
  public:
     static void SetPinDirection(volatile GpioRegDef* GPIOX, Pin pinNum, Mode mode); // NOLINT
