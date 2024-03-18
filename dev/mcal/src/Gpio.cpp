@@ -15,13 +15,15 @@
 using namespace stm32::dev::mcal::gpio; // NOLINT[build/namespaces]
 using namespace stm32::registers::gpio; // NOLINT[build/namespaces]
 
-void Gpio::SetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, State pinState)
-{
-    if (pinState == kLow){
+void Gpio::SetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, State pinState) {
+    if (pinState == kLow) {
         GPIOX -> ODR &= ~(1 << pinNum);
         //  GPIOX -> BRR |= (1 << pinNum);
-    }else if (pinState == kHigh){
+    } else if (pinState == kHigh) {
         GPIOX -> ODR |= (1 << pinNum);
         //  GPIOX -> BSRR |= (1 << pinNum);
     }
+}
+void Gpio::GetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, uint32_t * ReturnVal) {    // NOLINT
+    *ReturnVal = GPIOX ->IDR &(1 << pinNum) >> pinNum;
 }
