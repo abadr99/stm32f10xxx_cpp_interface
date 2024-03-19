@@ -39,6 +39,14 @@ constexpr T ExtractBits(const T value) {
     return (value >> startBit) & (GetOnes<T>(numberOfBits));
 }
 
+template<typename T, uint8_t TStart, uint8_t TEnd = TStart>
+inline constexpr uint32_t WriteBits(T container, T val) {
+    static_assert(TStart <= TEnd, "Calling WriteBits with startBit first");
+    T ones = GetOnes<T>(static_cast<T>(TEnd - TStart) + 1);
+    T mask = ~(ones << TStart);
+    return (container & mask) | (val << TStart);
+}
+
 }  // namespace bit_manipulation
 }  // namespace utils
 }  // namespace stm32
