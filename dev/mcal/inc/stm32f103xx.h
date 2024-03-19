@@ -84,14 +84,20 @@ struct RccRegDef{
 }  // namespace rcc
 
 namespace gpio {
+/**
+ * @brief Structure defining GPIO Register Definitions
+ *
+ * This structure defines the layout of GPIO registers for controlling
+ * the behavior and state of GPIO pins on a microcontroller.
+ */
 struct GpioRegDef {
-    RegWidth_t CRL;     // Port configuration register low
-    RegWidth_t CRH;     // Port configuration register High
-    RegWidth_t IDR;
-    RegWidth_t ODR;
-    RegWidth_t BSRR;
-    RegWidth_t BRR;
-    RegWidth_t LCKR;
+    RegWidth_t CRL;     // Port configuration register low 
+    RegWidth_t CRH;     // Port configuration register high
+    RegWidth_t IDR;     // Input data register 
+    RegWidth_t ODR;     // Output data register 
+    RegWidth_t BSRR;    // Bit set/reset register 
+    RegWidth_t BRR;     // Bit reset register 
+    RegWidth_t LCKR;    // Lock register 
 };
 
 #define GPIOA  (reinterpret_cast<volatile GpioRegDef*>(GPIOA_BASE_ADDRESS))
@@ -101,57 +107,66 @@ struct GpioRegDef {
 }  // namespace gpio
 
 namespace afio {
+/**
+ * @brief Structure defining AFIO (Alternate Function I/O) Register Definitions
+ *
+ * This structure defines the layout of AFIO registers used for configuring
+ * alternate functions of GPIO pins on a microcontroller.
+ */
 struct AfioRegDef {
     union EVCR {
         struct {
-            RegWidth_t PIN      :4;
-            RegWidth_t PORT     :3;
-            RegWidth_t EVOE     :1;
-            RegWidth_t          :24;        // Reserved
+            RegWidth_t PIN      :4;    //Event Output Pin
+            RegWidth_t PORT     :3;    //Event Output Port
+            RegWidth_t EVOE     :1;    //Event Output Enable
+            RegWidth_t          :24;   // Reserved 
         };
-        RegWidth_t registerVal;
-    }EVCR;
+        RegWidth_t registerVal; //  Register value
+    } EVCR;                     //  Event Output Configuration Register
+
     union MAPR {
         struct {
-            RegWidth_t SPI1_REMAP           :1;
-            RegWidth_t I2C1_REMAP           :1;
-            RegWidth_t USART1_REMAP         :1;
-            RegWidth_t USART2_REMAP         :1;
-            RegWidth_t USART3_REMAP         :2;
-            RegWidth_t TIM1_REMAP           :2;
-            RegWidth_t TIM2_REMAP           :2;
-            RegWidth_t TIM3_REMAP           :2;
-            RegWidth_t TIM4_REMAP           :1;
-            RegWidth_t CAN_REMAP            :2;
-            RegWidth_t PD01_REMAP           :1;
-            RegWidth_t TIM5CH4_IREMAP       :1;
-            RegWidth_t ADC1_ETRGINJ_REMAP   :1;
-            RegWidth_t ADC1_ETRGREG_REMAP   :1;
-            RegWidth_t ADC2_ETRGINJ_REMAP   :1;
-            RegWidth_t ADC2_ETRGREG_REMAP   :1;
-            RegWidth_t                      :3;
-            RegWidth_t SWJ_CFG              :3;
-            RegWidth_t                      :5;
+            RegWidth_t SPI1_REMAP           :1; // SPI1 remapping
+            RegWidth_t I2C1_REMAP           :1; // I2C1 remapping
+            RegWidth_t USART1_REMAP         :1; // USART1 remapping
+            RegWidth_t USART2_REMAP         :1; // USART2 remapping
+            RegWidth_t USART3_REMAP         :2; // USART3 remapping
+            RegWidth_t TIM1_REMAP           :2; // TIM1 remapping
+            RegWidth_t TIM2_REMAP           :2; // TIM2 remapping
+            RegWidth_t TIM3_REMAP           :2; // TIM3 remapping
+            RegWidth_t TIM4_REMAP           :1; // TIM4 remapping
+            RegWidth_t CAN_REMAP            :2; // CAN remapping
+            RegWidth_t PD01_REMAP           :1; // Port D0/Port D1 remapping
+            RegWidth_t TIM5CH4_IREMAP       :1; // TIM5 Channel4 Input Capture 4 remapping
+            RegWidth_t ADC1_ETRGINJ_REMAP   :1; // ADC1 External Trigger Injected Conversion remapping
+            RegWidth_t ADC1_ETRGREG_REMAP   :1; // ADC1 External Trigger Regular Conversion remapping
+            RegWidth_t ADC2_ETRGINJ_REMAP   :1; // ADC2 External Trigger Injected Conversion remapping
+            RegWidth_t ADC2_ETRGREG_REMAP   :1; // ADC2 External Trigger Regular Conversion remapping
+            RegWidth_t                      :3; // Reserved
+            RegWidth_t SWJ_CFG              :3; // Serial Wire JTAG configuration
+            RegWidth_t                      :5; // Reserved
         };
-        RegWidth_t registerVal;
-    }MAPR;
-    RegWidth_t EXTICR1;
-    RegWidth_t EXTICR2;
-    RegWidth_t EXTICR3;
-    RegWidth_t EXTICR4;
+        RegWidth_t registerVal; // Register value 
+    } MAPR; // AF remap and debug I/O configuration register
+
+    RegWidth_t EXTICR1; // External interrupt configuration register 1
+    RegWidth_t EXTICR2; // External interrupt configuration register 2
+    RegWidth_t EXTICR3; // External interrupt configuration register 3
+    RegWidth_t EXTICR4; // External interrupt configuration register 4
+
     union MAPR2 {
         struct {
-            RegWidth_t                      :5;
-            RegWidth_t TIM9_REMAP           :1;
-            RegWidth_t TIM10_REMAP          :1;
-            RegWidth_t TIM11_REMAP          :1;
-            RegWidth_t TIM13_REMAP          :1;
-            RegWidth_t TIM14_REMAP          :1;
-            RegWidth_t FSMC_NADV            :1;
-            RegWidth_t                      :20;
+            RegWidth_t                      :5; // Reserved
+            RegWidth_t TIM9_REMAP           :1; // TIM9 remapping
+            RegWidth_t TIM10_REMAP          :1; // TIM10 remapping
+            RegWidth_t TIM11_REMAP          :1; // TIM11 remapping
+            RegWidth_t TIM13_REMAP          :1; // TIM13 remapping
+            RegWidth_t TIM14_REMAP          :1; // TIM14 remapping
+            RegWidth_t FSMC_NADV            :1; // FSMC NADV signal
+            RegWidth_t                      :20; // Reserved
         };
-        RegWidth_t registerVal;
-    }MAPR2;
+        RegWidth_t registerVal; // Register value
+    } MAPR2; // AF remap and debug I/O configuration register 2
 };
 
 }  // namespace afio

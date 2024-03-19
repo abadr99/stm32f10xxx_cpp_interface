@@ -62,29 +62,44 @@ enum Pin{
 class Gpio{
  public:
  /**
- * @brief Set the direction of a GPIO pin
+ * @brief Set the Mode of a GPIO pin
  * 
- * @param GPIOX Pointer to the GPIO port register structure
- * @param pinNum Pin number to set direction for
- * @param mode Desired mode for the pin (Input, Output, Alternate, Analog)
+ * @param GPIOx     [GPIOA, GPIOB, GPIOC]
+ * @param pinNum    [kpin0 --> kpin15]
+ * @param mode      options : 1- kIN_analog
+ *                            2- kIN_floating
+ *                            3- kIN_pullup
+ *                            4- kIN_pulldown
+ *                            5- kOP_pushpull_10MHZ
+ *                            6- kOP_pushpull_2MHZ
+ *                            7- kOP_pushpull_50MHZ
+ *                            8- kOP_opendrain_10MHZ
+ *                            9- kOP_opendrain_2MHZ
+ *                            10- kOP_opendrain_50MHZ
+ *                            11- kaf_pushpull_10MHZ
+ *                            12- kaf_pushpull_2MHZ
+ *                            13- kaf_pushpull_50MHZ
+ *                            14- kaf_opendrain_10MHZ
+ *                            15- kaf_opendrain_2MHZ
+ *                            16- kaf_opendrain_50MHZ
  */
-    static void SetPinDirection(volatile GpioRegDef* GPIOX, Pin pinNum, Mode mode); // NOLINT
+    static void SetPinMode(volatile GpioRegDef* GPIOx, Pin pinNum, Mode mode); // NOLINT
 /**
  * @brief Set the value of a GPIO pin
  * 
- * @param GPIOX Pointer to the GPIO port register structure
- * @param pinNum Pin number to set value for
- * @param pinState Desired state of the pin (High or Low)
+ * @param GPIOx     [GPIOA, GPIOB, GPIOC]
+ * @param pinNum    [kpin0 --> kpin15]
+ * @param pinState  [klow, khigh]
  */
-    static void SetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, State pinState);  // NOLINT
+    static void SetPinValue(volatile GpioRegDef* GPIOx, Pin pinNum, State pinState);  // NOLINT
  /**
  * @brief Get the value of a GPIO pin
  * 
- * @param GPIOX Pointer to the GPIO port register structure
- * @param pinNum Pin number to get value for
+ * @param GPIOx     [GPIOA, GPIOB, GPIOC]
+ * @param pinNum    [kpin0 --> kpin15]
  * @param ReturnVal Pointer to store the returned value
  */
-    static void GetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, uint32_t * ReturnVal);    // NOLINT
+    static void GetPinValue(volatile GpioRegDef* GPIOx, Pin pinNum, uint32_t * pPinValue);    // NOLINT
 };
 }  // namespace gpio
 }  // namespace mcal
