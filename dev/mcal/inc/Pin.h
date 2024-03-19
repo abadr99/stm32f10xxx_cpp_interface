@@ -1,11 +1,11 @@
 /**
  * @file Pin.h
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-03-19
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 
 #ifndef DEV_MCAL_INC_PIN_H_
@@ -74,10 +74,13 @@ class Pin {
     PinMode GetPinMode() const;
  private:
     using DataType = stm32::utils::bitset::BitSet<uint8_t>;
-    DataType data_;  /** < Holds important class data as following:
-                           Bits 0 .. 1: Holds port 
-                           Bits 2 .. 5: Holds pin number
-                           Bits 6 .. 7: Holds Pin Mode >*/
+    /**
+     * @brief Holds important class data as following:
+     *      Bits 0 .. 1: Holds port
+     *      Bits 2 .. 5: Holds pin number
+     *      Bits 6 .. 7: Holds Pin Mode
+     */
+    DataType data_;
 };
 
 }   // namespace pin
@@ -85,4 +88,4 @@ class Pin {
 }   // namespace dev
 }   // namespace stm32
 
-#endif // DEV_MCAL_INC_PIN_H_
+#endif   // DEV_MCAL_INC_PIN_H_
