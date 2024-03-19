@@ -32,6 +32,16 @@ using namespace stm32::registers::gpio; // NOLINT[build/namespaces]
                        (MODE == kaf_opendrain_2MHZ) || \
                        (MODE == kaf_opendrain_50MHZ))
 
+ASSERT_STRUCT_SIZE(GpioRegDef, (sizeof(RegWidth_t) * 7));
+
+ASSERT_MEMBER_OFFSET(GpioRegDef, CRL, 0);
+ASSERT_MEMBER_OFFSET(GpioRegDef, CRH, sizeof(RegWidth_t) * 1);
+ASSERT_MEMBER_OFFSET(GpioRegDef, IDR, sizeof(RegWidth_t) * 2);
+ASSERT_MEMBER_OFFSET(GpioRegDef, ODR, sizeof(RegWidth_t) * 3);
+ASSERT_MEMBER_OFFSET(GpioRegDef, BSRR, sizeof(RegWidth_t) * 4);
+ASSERT_MEMBER_OFFSET(GpioRegDef, BRR, sizeof(RegWidth_t) * 5);
+ASSERT_MEMBER_OFFSET(GpioRegDef, LCKR, sizeof(RegWidth_t) * 6);
+
 void Gpio::SetPinDirection(volatile GpioRegDef* GPIOX, Pin pinNum, Mode mode) {
     STM32_ASSERT(ISMODE_VALID(mode));
     STM32_ASSERT((pinNum >= 0 && pinNum <= 7) || (pinNum >= 8 && pinNum <= 15));    // NOLINT
@@ -44,18 +54,6 @@ void Gpio::SetPinDirection(volatile GpioRegDef* GPIOX, Pin pinNum, Mode mode) {
         GPIOX->CRH |= (mode << (pinNum*4));
     }
 }
-/*void Gpio::SetPortDirection(volatile GpioRegDef* GPIOX, Mode mode, Pin start , Pin end ) { //NOLINT
-    uint32_t configReg;
-    for (uint32_t pin = start; pin <= end; pin++) {
-      if ((pinNum >= 0 && pinNum <= 7)) {
-         configReg = GPIOX->CRL;
-    } else {
-         configReg = GPIOX->CRH;
-    }
-    configReg &= (~(0b1111 << (pin*4)));
-    configReg |= (mode << (pin*4));
-    }
-}*/
 void Gpio::SetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, State pinState) {
     STM32_ASSERT((pinNum >= 0 && pinNum <= 7) || (pinNum >= 8 && pinNum <= 15));    // NOLINT
     if (pinState == kLow) {

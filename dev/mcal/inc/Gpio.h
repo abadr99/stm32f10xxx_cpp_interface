@@ -61,9 +61,29 @@ enum Pin{
 
 class Gpio{
  public:
+ /**
+ * @brief Set the direction of a GPIO pin
+ * 
+ * @param GPIOX Pointer to the GPIO port register structure
+ * @param pinNum Pin number to set direction for
+ * @param mode Desired mode for the pin (Input, Output, Alternate, Analog)
+ */
     static void SetPinDirection(volatile GpioRegDef* GPIOX, Pin pinNum, Mode mode); // NOLINT
-    static void SetPortDirection(volatile GpioRegDef* GPIOX, Mode mode ,Pin start = kpin0, Pin end = kpin15) ; // NOLINT
+/**
+ * @brief Set the value of a GPIO pin
+ * 
+ * @param GPIOX Pointer to the GPIO port register structure
+ * @param pinNum Pin number to set value for
+ * @param pinState Desired state of the pin (High or Low)
+ */
     static void SetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, State pinState);  // NOLINT
+ /**
+ * @brief Get the value of a GPIO pin
+ * 
+ * @param GPIOX Pointer to the GPIO port register structure
+ * @param pinNum Pin number to get value for
+ * @param ReturnVal Pointer to store the returned value
+ */
     static void GetPinVal(volatile GpioRegDef* GPIOX, Pin pinNum, uint32_t * ReturnVal);    // NOLINT
 };
 }  // namespace gpio
