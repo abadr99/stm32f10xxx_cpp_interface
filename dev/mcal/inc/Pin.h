@@ -10,7 +10,7 @@
 
 #ifndef DEV_MCAL_INC_PIN_H_
 #define DEV_MCAL_INC_PIN_H_
-
+#include "../../utils/inc/BitSet.h"
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -26,7 +26,7 @@ enum class InputMode {
     kAnalog     = 0,
     kFloating   = 4,
     kPullup     = 8,
-    kPulldown   = 20,
+    kPulldown   = 8,
 };
 
 enum class OutputMode {
@@ -69,11 +69,12 @@ class Pin {
     void SetInputMode(InputMode inputMode);
     void SetOutputMode(OutputMode outputMode);
     void SetAlternativeMode(AlternativeMode alternativeMode);
-    Port GetPort() const;
-    PinNumber GetPinNumber() const;
-    PinMode GetPinMode() const;
+    Port GetPort() ;
+    PinNumber GetPinNumber() ;
+    PinMode GetPinMode() ;
  private:
     using DataType = stm32::utils::bitset::BitSet<uint8_t>;
+    void Helper_SetInputMode(InputMode inputMode);
     /**
      * @brief Holds important class data as following:
      *      Bits 0 .. 1: Holds port
