@@ -20,6 +20,7 @@ namespace bitset {
 template <typename T>
 class BitSet {
  public:
+    using Bit_t = uint8_t;
     explicit BitSet(const T bits) : bits_(bits)
     { }
     template <T FROM, T TO = FROM>
@@ -31,7 +32,7 @@ class BitSet {
     constexpr T GetValue() {
         return stm32::utils::bit_manipulation::ExtractBits<T, FROM, TO>(bits_);
     }
-    T operator[](T idx) {
+    Bit_t operator[](uint8_t idx) {
         return ((bits_ & (1 << idx)) >> idx);
     }
 
