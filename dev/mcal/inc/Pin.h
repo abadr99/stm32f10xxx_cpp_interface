@@ -26,7 +26,7 @@ enum class InputMode {
     kAnalog     = 0,
     kFloating   = 4,
     kPullup     = 8,
-    kPulldown   = 8,
+    kPulldown   = 20,
 };
 
 enum class OutputMode {
@@ -69,12 +69,15 @@ class Pin {
     void SetInputMode(InputMode inputMode);
     void SetOutputMode(OutputMode outputMode);
     void SetAlternativeMode(AlternativeMode alternativeMode);
-    Port GetPort() ;
-    PinNumber GetPinNumber() ;
-    PinMode GetPinMode() ;
+    Port GetPort();
+    PinNumber GetPinNumber();
+    PinMode GetPinMode();
+
  private:
     using DataType = stm32::utils::bitset::BitSet<uint8_t>;
     void Helper_SetInputMode(InputMode inputMode);
+    void Helper_SetOutputMode(OutputMode outputMode);
+    void Helper_AlternateMode(AlternativeMode alternateMode);
     /**
      * @brief Holds important class data as following:
      *      Bits 0 .. 1: Holds port
