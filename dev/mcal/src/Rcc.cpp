@@ -59,7 +59,6 @@ void Rcc::InitSysClock(const ClkConfig& config,
     // --- DISABLE PLL BEFORE CONFIGURE
     RCC->CR.PLLON = 0;
 
-
     SetPllFactor(mulFactor);
 
     SetPllSource(GetPllSrc());

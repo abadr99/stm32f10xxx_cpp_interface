@@ -79,7 +79,6 @@ class Rcc {
     static void SetAPB1Prescaler(const APB_ClockDivider& divFactor);
     static void SetAPB2Prescaler(const APB_ClockDivider& divFactor);
     static void SetMCOPinClk(const McoModes& mode);
-    static void AdjustHSICalibrationValue(uint32_t HSICalibrationValue);
  private:
     enum Flags { kHSIRDY, kHSERDY, kPLLRDY, };
     enum PllSource {
