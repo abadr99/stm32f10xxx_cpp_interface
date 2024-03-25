@@ -101,6 +101,11 @@ void Rcc::SetMCOPinClk(const McoModes& mode) {
     RCC->CFGR.MCO = mode;
 }
 
+void Rcc::AdjustInternalClock(uint8_t CalibrationValue) {
+    RCC->CR.registerVal &= 0xF8FFFFF7;
+    RCC->CR.registerVal |= (CalibrationValue <<3);
+}
+
 void Rcc::WaitToReady(Flags flag) {
     uint16_t ctr = 0;
 
