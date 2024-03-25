@@ -70,6 +70,14 @@ void Rcc::InitSysClock(const ClkConfig& config,
     RCC->CFGR.SW = 2;    // Switch to PLL
 }
 
+void Rcc::SetExternalCrystal() {
+    RCC->CR.HSEON = 1;
+    WaitToReady(kHSERDY);
+    RCC->CFGR.SW = 1;
+    RCC->CR.CSSON = 1;
+    RCC->CR.HSEBYP = 0;
+}
+
 void Rcc::SetAHBPrescaler(const AHP_ClockDivider& divFactor) {
     STM32_ASSERT(divFactor >= kAhpNotDivided && divFactor <= kAhpDiv512);
     RCC->CFGR.HPRE = divFactor;
@@ -87,6 +95,7 @@ void Rcc::SetAPB2Prescaler(const APB_ClockDivider& divFactor) {
 
 void Rcc::SetMCOPinClk(const McoModes& mode) {
     STM32_ASSERT(mode == kMcoNoClock ||
+                 mode == kMcoSystemClock ||
                  mode == kMcoHsi ||
                  mode == kMcoHse ||
                  mode == kMcoPll);
