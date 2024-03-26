@@ -102,8 +102,7 @@ void Rcc::SetMCOPinClk(const McoModes& mode) {
 }
 
 void Rcc::AdjustInternalClock(uint8_t CalibrationValue) {
-    RCC->CR.registerVal &= 0xF8FFFFF7;
-    RCC->CR.registerVal |= (CalibrationValue <<3);
+    RCC->CR.HSITRIM = CalibrationValue;
 }
 
 void Rcc::WaitToReady(Flags flag) {
