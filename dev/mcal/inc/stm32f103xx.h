@@ -82,6 +82,29 @@ struct RccRegDef{
 #define RCC  (reinterpret_cast<volatile RccRegDef*>(RCC_BASE_ADDRESS))
 
 }  // namespace rcc
+
+namespace gpio {
+/**
+ * @brief Structure defining GPIO Register Definitions
+ *
+ * This structure defines the layout of GPIO registers for controlling
+ * the behavior and state of GPIO pins on a microcontroller.
+ */
+struct GpioRegDef {
+    RegWidth_t CRL;     // Port configuration register low
+    RegWidth_t CRH;     // Port configuration register high
+    RegWidth_t IDR;     // Input data register
+    RegWidth_t ODR;     // Output data register
+    RegWidth_t BSRR;    // Bit set/reset register
+    RegWidth_t BRR;     // Bit reset register
+    RegWidth_t LCKR;    // Lock register
+};
+
+#define GPIOA  (reinterpret_cast<volatile GpioRegDef*>(GPIOA_BASE_ADDRESS))
+#define GPIOB  (reinterpret_cast<volatile GpioRegDef*>(GPIOB_BASE_ADDRESS))
+#define GPIOC  (reinterpret_cast<volatile GpioRegDef*>(GPIOC_BASE_ADDRESS))
+
+}  // namespace gpio
 }  // namespace registers
 }  // namespace stm32
 
