@@ -12,11 +12,14 @@
 #include "mcal/inc/stm32f103xx.h"
 #include "utils/inc/BitSet.h"
 #include "utils/inc/Assert.h"
+#include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Pin.h"
 
 using  namespace stm32::dev::mcal::pin;
 using  namespace stm32::registers::gpio;
 using  namespace stm32::utils::bitset;
+using  namespace stm32::utils::bit_manipulation;
+
 
 volatile GpioRegDef *GPIOx[3] = {GPIOA, GPIOB, GPIOC};
 
@@ -67,35 +70,30 @@ PinMode Pin::GetPinMode() {
 }
 
 void Pin::Helper_SetInputMode(InputMode inputMode) {
-    uint8_t lcoInputMode = static_cast<uint8_t>(inputMode) & 0x0F;
+    uint32_t lcoInputMode = static_cast<uint8_t>(inputMode) & 0x0F;
+    uint8_t startBit = (GetPinNumber()*4);
     if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin7)) {
-        GPIOx[GetPort()]->CRL &= (~(0b1111 << GetPinNumber()*4));  //  Clear bits before modify it // NOLINT [whitespace/line_length]
-        GPIOx[GetPort()]->CRL |= (lcoInputMode << GetPinNumber()*4);
-        //  reinterpret_cast<volatile GpioRegDef*>((GPIOA_BASE_ADDRESS+(0x400)* static_cast<uint8_t>(GetPort())))->CRL &= (~(0b1111 << GetPinNumber()*4));  // NOLINT [whitespace/line_length]
-        //  reinterpret_cast<volatile GpioRegDef*>((GPIOA_BASE_ADDRESS+(0x400)* static_cast<uint8_t>(GetPort())))->CRL |= (lcoInputMode << GetPinNumber()*4); // NOLINT [whitespace/line_length]
+        WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRL, lcoInputMode);  // NOLINT [whitespace/line_length]
     } else if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin15)) {
-        GPIOx[GetPort()]->CRH &= (~(0b1111 << GetPinNumber()*4));  //  Clear bits before modify it // NOLINT [whitespace/line_length]
-        GPIOx[GetPort()]->CRH |= (lcoInputMode << GetPinNumber()*4);
+        WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRH, lcoInputMode);  // NOLINT [whitespace/line_length]
     }
 }
 
 void Pin::Helper_SetOutputMode(OutputMode outputMode) {
     uint8_t lcoOutputMode = static_cast<uint8_t>(outputMode) & 0x0F;
+    uint8_t startBit = (GetPinNumber()*4);
     if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin7)) {
-        GPIOx[GetPort()]->CRL &= (~(0b1111 << GetPinNumber()*4));  //  Clear bits before modify it // NOLINT [whitespace/line_length]
-        GPIOx[GetPort()]->CRL |= (lcoOutputMode << GetPinNumber()*4);
+        WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRL, lcoOutputMode);  // NOLINT [whitespace/line_length]
     } else if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin15)) {
-        GPIOx[GetPort()]->CRH &= (~(0b1111 << GetPinNumber()*4));  //  Clear bits before modify it // NOLINT [whitespace/line_length]
-        GPIOx[GetPort()]->CRH |= (lcoOutputMode << GetPinNumber()*4);
+        WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRH, lcoOutputMode);  // NOLINT [whitespace/line_length]
     }
 }
 void Pin::Helper_AlternateMode(AlternativeMode alternateMode) {
     uint8_t lcoAlternateMode = static_cast<uint8_t>(alternateMode) & 0x0F;
+    uint8_t startBit = (GetPinNumber()*4);
     if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin7)) {
-        GPIOx[GetPort()]->CRL &= (~(0b1111 << GetPinNumber()*4));  //  Clear bits before modify it // NOLINT [whitespace/line_length]
-        GPIOx[GetPort()]->CRL |= (lcoAlternateMode << GetPinNumber()*4);
+        WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRL, lcoAlternateMode);  // NOLINT [whitespace/line_length]
     } else if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin15)) {
-        GPIOx[GetPort()]->CRH &= (~(0b1111 << GetPinNumber()*4));  //  Clear bits before modify it // NOLINT [whitespace/line_length]
-        GPIOx[GetPort()]->CRH |= (lcoAlternateMode << GetPinNumber()*4);
+        WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRH, lcoAlternateMode);  // NOLINT [whitespace/line_length]
     }
 }
