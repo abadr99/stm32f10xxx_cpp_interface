@@ -13,7 +13,7 @@
 #define DEV_UTILS_INC_BITMANIPULATION_H_
 
 #include <stdint.h>
-
+#include <assert.h>
 namespace stm32 {
 namespace utils {
 namespace bit_manipulation {
@@ -37,6 +37,21 @@ constexpr T ExtractBits(const T value) {
                   "Calling ExtractBits with startBit first");
     uint8_t numberOfBits = endBit - startBit + 1;
     return (value >> startBit) & (GetOnes<T>(numberOfBits));
+}
+
+template<typename T, uint8_t TStart, uint8_t TEnd = TStart>
+inline constexpr uint32_t WriteBits(T container, T val) {
+    static_assert(TStart <= TEnd, "Calling WriteBits with startBit first");
+    T ones = GetOnes<T>(static_cast<T>(TEnd - TStart) + 1);
+    T mask = ~(ones << TStart);
+    return (container & mask) | (val << TStart);
+}
+template<typename T>
+inline constexpr uint32_t WriteBits(uint8_t start, uint8_t end , T container, T val) {  // NOLINT [whitespace/line_length]
+    assert(start <= end && "Calling WriteBits with startBit first");
+    T ones = GetOnes<T>(static_cast<T>(end - start) + 1);
+    T mask = ~(ones << start);
+    return (container & mask) | (val << start);
 }
 
 }  // namespace bit_manipulation
