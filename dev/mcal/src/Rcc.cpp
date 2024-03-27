@@ -36,6 +36,15 @@ ASSERT_MEMBER_OFFSET(RccRegDef, CSR,        sizeof(RegWidth_t) * 9);
 // 3) Using PLL with certain multiplication factor and source where PLL sources:
 //    3.a) HSI   3.b) HSE   3.c) HSE/2
 
+void Rcc::ConfigureExternalClock(const HSE_Type HseType ) {
+    RCC->CR.HSEON = 0;
+    if (HseType == kHseCrystal) {
+        RCC->CR.HSEBYP = 0;
+    } else if (HseType == kHseRC) {
+        RCC->CR.HSEBYP = 1;
+    }
+}
+
 void Rcc::InitSysClock(const ClkConfig& config,
                        const PLL_MulFactor& mulFactor) {
     if (config == kHsi  && mulFactor == kClock_1x) {          // 1) -- HSI
@@ -58,7 +67,6 @@ void Rcc::InitSysClock(const ClkConfig& config,
 
     // --- DISABLE PLL BEFORE CONFIGURE
     RCC->CR.PLLON = 0;
-
 
     SetPllFactor(mulFactor);
 
@@ -87,10 +95,15 @@ void Rcc::SetAPB2Prescaler(const APB_ClockDivider& divFactor) {
 
 void Rcc::SetMCOPinClk(const McoModes& mode) {
     STM32_ASSERT(mode == kMcoNoClock ||
+                 mode == kMcoSystemClock ||
                  mode == kMcoHsi ||
                  mode == kMcoHse ||
                  mode == kMcoPll);
     RCC->CFGR.MCO = mode;
+}
+
+void Rcc::AdjustInternalClock(uint8_t CalibrationValue) {
+    RCC->CR.HSITRIM = CalibrationValue;
 }
 
 void Rcc::WaitToReady(Flags flag) {

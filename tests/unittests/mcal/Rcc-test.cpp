@@ -49,7 +49,7 @@ EXPECT_EQ(1,           (ExtractBits<uint32_t, 17>(RCC->CFGR.registerVal)));
 Rcc::InitSysClock(kHsi, kClock_2x);
 EXPECT_EQ(1,           (ExtractBits<uint32_t, 0>(RCC->CR.registerVal)));
 EXPECT_EQ(0,           (ExtractBits<uint32_t, 16>(RCC->CFGR.registerVal)));
-// Testing multiplication favtor
+// Testing multiplication factor
 Rcc::InitSysClock(kHse, kClock_3x);
 EXPECT_EQ(0b0001,      (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal))); // NOLINT
 Rcc::InitSysClock(kHse, kClock_4x);
@@ -80,6 +80,12 @@ Rcc::InitSysClock(kHse, kClock_16x);
 EXPECT_EQ(0b1110,      (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal))); // NOLINT
 RCC->CR.PLLRDY = 0;
 }
+
+TEST(RccTest, ConfigureExternalClock) {
+Rcc::ConfigureExternalClock(kHseCrystal);
+EXPECT_EQ(0,          (ExtractBits<uint32_t, 18>(RCC->CR.registerVal)));
+}
+
 TEST(RccTest, SetAHBPrescaler) {
 // no div
 Rcc::SetAHBPrescaler(kAhpNotDivided);
@@ -151,8 +157,8 @@ TEST(RccTest, SetMCOPinClk) {
 Rcc::SetMCOPinClk(kMcoNoClock);
 EXPECT_EQ(0b000,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
 // system clock
-/*Rcc::SetMCOPinClk(kMcoSystemClock);
-EXPECT_EQ(0b100,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));*/
+Rcc::SetMCOPinClk(kMcoSystemClock);
+EXPECT_EQ(0b100,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
 // HSI clock
 Rcc::SetMCOPinClk(kMcoHsi);
 EXPECT_EQ(0b101,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
@@ -164,3 +170,7 @@ Rcc::SetMCOPinClk(kMcoPll);
 EXPECT_EQ(0b111,       (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
 }
 
+TEST(RccTest, AdjustInternalClock) {
+Rcc::AdjustInternalClock(5);
+EXPECT_EQ(5,   (ExtractBits<uint32_t, 3, 7>(RCC->CR.registerVal)));
+}
