@@ -81,13 +81,9 @@ EXPECT_EQ(0b1110,      (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal))); 
 RCC->CR.PLLRDY = 0;
 }
 
-TEST(RccTest, SetExternalCrystal) {
-RCC->CR.HSERDY = 1;
-Rcc::SetExternalCrystal();
-EXPECT_EQ(0b1,          (ExtractBits<uint32_t, 16>(RCC->CR.registerVal)));
-EXPECT_EQ(0b10,         (ExtractBits<uint32_t, 18, 19>(RCC->CR.registerVal)));
-EXPECT_EQ(0b01,         (ExtractBits<uint32_t, 0, 1>(RCC->CFGR.registerVal)));
-RCC->CR.HSERDY = 0;
+TEST(RccTest, ConfigureExternalClock) {
+Rcc::ConfigureExternalClock(kHseCrystal);
+EXPECT_EQ(0,          (ExtractBits<uint32_t, 18>(RCC->CR.registerVal)));
 }
 
 TEST(RccTest, SetAHBPrescaler) {

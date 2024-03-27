@@ -37,15 +37,11 @@ ASSERT_MEMBER_OFFSET(RccRegDef, CSR,        sizeof(RegWidth_t) * 9);
 //    3.a) HSI   3.b) HSE   3.c) HSE/2
 
 void Rcc::ConfigureExternalClock(const HSE_Type HseType ) {
-    if (((RCC->CR.HSERDY) == 1)) {
-        return;
-    }
+    RCC->CR.HSEON = 0;
     if (HseType == kHseCrystal) {
-        RCC->CR.HSEON = 1;
         RCC->CR.HSEBYP = 0;
     } else if (HseType == kHseRC) {
         RCC->CR.HSEBYP = 1;
-        RCC->CR.HSEON = 1;
     }
 }
 
