@@ -36,6 +36,19 @@ ASSERT_MEMBER_OFFSET(RccRegDef, CSR,        sizeof(RegWidth_t) * 9);
 // 3) Using PLL with certain multiplication factor and source where PLL sources:
 //    3.a) HSI   3.b) HSE   3.c) HSE/2
 
+void Rcc::ConfigureExternalClock(const HSE_Type HseType ) {
+    if (((RCC->CR.HSERDY) == 1)) {
+        return;
+    }
+    if (HseType == kHseCrystal) {
+        RCC->CR.HSEON = 1;
+        RCC->CR.HSEBYP = 0;
+    } else if (HseType == kHseRC) {
+        RCC->CR.HSEBYP = 1;
+        RCC->CR.HSEON = 1;
+    }
+}
+
 void Rcc::InitSysClock(const ClkConfig& config,
                        const PLL_MulFactor& mulFactor) {
     if (config == kHsi  && mulFactor == kClock_1x) {          // 1) -- HSI
@@ -67,14 +80,6 @@ void Rcc::InitSysClock(const ClkConfig& config,
     RCC->CR.PLLON = 1;
     WaitToReady(kPLLRDY);
     RCC->CFGR.SW = 2;    // Switch to PLL
-}
-
-void Rcc::SetExternalCrystal() {
-    RCC->CR.HSEON = 1;
-    WaitToReady(kHSERDY);
-    RCC->CFGR.SW = 1;
-    RCC->CR.CSSON = 1;
-    RCC->CR.HSEBYP = 0;
 }
 
 void Rcc::SetAHBPrescaler(const AHP_ClockDivider& divFactor) {
