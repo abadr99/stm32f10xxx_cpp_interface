@@ -37,13 +37,10 @@ void Gpio::SetPinValue(Pin pin, State pinState) {
         GPIOx[pin.GetPort()]->BRR |= (1 << pin.GetPinNumber());
         // GPIOx -> BRR |= (1 << pinNum);
     } else if (pinState == kHigh) {
-        GPIOx[pin.GetPort()]->ODR |= (1 << pin.GetPinNumber());
-       // GPIOx -> ODR |= (1 << pinNum);
+       GPIOx[pin.GetPort()]->ODR |= (1 << pin.GetPinNumber());
        GPIOx[pin.GetPort()]->BSRR |= (1 << pin.GetPinNumber());
-        //  GPIOx -> BSRR |= (1 << pinNum);
     }
 }
-/*void Gpio::GetPinValue(volatile GpioRegDef* GPIOx, Pin pinNum, uint32_t * pPinValue) {    // NOLINT
-    STM32_ASSERT((pinNum >= 0 && pinNum <= 7) || (pinNum >= 8 && pinNum <= 15));    // NOLINT
-    *pPinValue = GPIOx ->IDR &(1 << pinNum) >> pinNum;
-}*/
+void Gpio::GetPinValue(Pin pin, uint32_t * pPinValue) {
+  *pPinValue = GPIOx[pin.GetPort()]->IDR & (1 << pin.GetPinNumber()) >> pin.GetPinNumber(); //NOLINT
+}

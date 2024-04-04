@@ -27,20 +27,16 @@ class Gpio{
  public:
 /**
  * @brief Set the value of a GPIO pin
- * 
- * @param GPIOx     [GPIOA, GPIOB, GPIOC]
- * @param pinNum    [kpin0 --> kpin15]
+ * @param pin object from class Pin
  * @param pinState  [klow, khigh]
  */
 void SetPinValue(Pin pin, State pinState);
  /**
  * @brief Get the value of a GPIO pin
- * 
- * @param GPIOx     [GPIOA, GPIOB, GPIOC]
- * @param pinNum    [kpin0 --> kpin15]
+ * @param pin object from class Pin
  * @param ReturnVal Pointer to store the returned value
  */
-   // static void GetPinValue(volatile GpioRegDef* GPIOx, Pin pinNum, uint32_t * pPinValue);    // NOLINT
+static void GetPinValue(Pin pin, uint32_t * pPinValue);
 };
 }  // namespace gpio
 }  // namespace mcal
