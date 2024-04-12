@@ -108,8 +108,7 @@ struct GpioRegDef {
 namespace systick {
 struct SystickRegDef {
     union CTRL {
-        struct
-        {
+        struct {
             RegWidth_t ENABLE   :1;   // Counter enable
             RegWidth_t TICKINT  :1;   // SysTick exception request enable
             RegWidth_t CLKSOURCE:1;   // Clock source selection
@@ -117,17 +116,15 @@ struct SystickRegDef {
             RegWidth_t COUNTFLAG:1;   // Counter flag
             RegWidth_t          :15;  // Reserved
         };
-        RegWidth_t registerVal; // CTRL
+        RegWidth_t registerVal;  // CTRL
     }CTRL;
 
-    RegWidth_t LOAD; // Reload value
-    RegWidth_t VAL;  // Current value
-
-
+    RegWidth_t LOAD;  // Reload value
+    RegWidth_t VAL;   // Current value
 };
-#define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(SYSTICK_BASE_ADDRESS))
+#define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(SYSTICK_BASE_ADDRESS))  // NOLINT
 
-}  // systick
+}  // namespace systick
 }  // namespace registers
 }  // namespace stm32
 

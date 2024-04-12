@@ -7,8 +7,8 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#ifndef _SYSTICK_H_
-#define _SYSTICK_H_
+#ifndef DEV_MCAL_INC_SYSTICK_H_
+#define DEV_MCAL_INC_SYSTICK_H_
 
 namespace stm32 {
 namespace dev {
@@ -21,8 +21,7 @@ enum CLKSource {
     kAHB_Div_8,
     kAHB
 };
-class Systick
-{
+class Systick {
  public:
     Systick();
     void delay_ms(CLKSource clksource, uint32_t value);
@@ -32,9 +31,9 @@ class Systick
 };
 
 
-}  // systick
-}  // mcal
-}  // dev
-}  // stm32
+}  // namespace systick
+}  // namespace mcal
+}  // namespace dev
+}  // namespace stm32
 
-#endif //  _SYSTICK_H_
+#endif  // DEV_MCAL_INC_SYSTICK_H_
