@@ -32,14 +32,14 @@ void Systick::delay_ms(CLKSource clksource, uint32_t value) {
     STM32_ASSERT((value*1000) <= SYSTICK_MAX_VALUE);
     SYSTICK->CTRL.CLKSOURCE = clksource;
     SYSTICK->LOAD = value * 1000;
-    while (SYSTICK->CTRL.COUNTFLAG == 0){}
+    while (SYSTICK->CTRL.COUNTFLAG == 0) {}
     SYSTICK->CTRL.COUNTFLAG = 0;
 }
 void Systick::delay_micro_s(CLKSource clksource, uint32_t value) {
     STM32_ASSERT(value <= SYSTICK_MAX_VALUE);
     SYSTICK->CTRL.CLKSOURCE = clksource;
     SYSTICK->LOAD = value;
-    while (SYSTICK->CTRL.COUNTFLAG == 0){}
+    while (SYSTICK->CTRL.COUNTFLAG == 0) {}
     SYSTICK->CTRL.COUNTFLAG = 0;
 }
 void Systick::Counter(CLKSource clksource, uint32_t value, void (*func)(void)) {
