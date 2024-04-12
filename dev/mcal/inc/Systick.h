@@ -15,13 +15,12 @@ namespace dev {
 namespace mcal {
 namespace systick {
 
-//@TODO Assert , message
 #define SYSTICK_MAX_VALUE   (16777216)  //  24 bit
+
 enum CLKSource {
     kAHB_Div_8,
     kAHB
 };
-
 class Systick
 {
  public:
@@ -30,13 +29,7 @@ class Systick
     void delay_micro_s(CLKSource clksource, uint32_t value);
     void Counter(CLKSource clksource, uint32_t value, void (*func)(void));
     uint32_t GetElapsedTime(void);
- private:
-    /* data */
 };
-
-
-
-
 
 
 }  // systick
