@@ -20,10 +20,13 @@
 #define GPIOB_BASE_ADDRESS  (&GPIOBReg[0])
 #define GPIOC_BASE_ADDRESS  (&GPIOCReg[0])
 
+#define SYSTICK_BASE_ADDRESS  (&SYSTICKReg[0])
+
 extern uint32_t RccReg[10];
 extern uint32_t GPIOAReg[10];
 extern uint32_t GPIOBReg[10];
 extern uint32_t GPIOCReg[10];
+extern uint32_t SYSTICKReg[3];
 
 
 #endif  // TESTS_UNITTESTS_MCAL_BASEADDRESS_TEST_H_
