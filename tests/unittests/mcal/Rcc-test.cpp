@@ -17,7 +17,7 @@ uint32_t RccReg[10] = {};
 using namespace stm32::utils::bit_manipulation;   // NOLINT [build/namespaces]
 using namespace stm32::dev::mcal::rcc;            // NOLINT [build/namespaces]
 using namespace stm32::registers::rcc;            // NOLINT [build/namespaces]
-using ExpectedVal = uint32;
+using ExpectedVal = uint32_t;
 
 static void TestMultiplicationFactor(PLL_MulFactor M, ExpectedVal E) {
     Rcc::InitSysClock(kHse, M);
@@ -25,11 +25,11 @@ static void TestMultiplicationFactor(PLL_MulFactor M, ExpectedVal E) {
 }
 
 static void TestAHBPrescaler(AHP_ClockDivider A, ExpectedVal E) {
-    Rcc::SetAHBPrescaler(ADD_FAILURE);
+    Rcc::SetAHBPrescaler(A);
     EXPECT_EQ(E, (ExtractBits<uint32_t, 4, 7>(RCC->CFGR.registerVal)));
 }
 
-static TestMCO(McoModes M,  ExpectedVal E) {
+static void TestMCO(McoModes M,  ExpectedVal E) {
     Rcc::SetMCOPinClk(M);
     EXPECT_EQ(E, (ExtractBits<uint32_t, 24, 26>(RCC->CFGR.registerVal)));
 }
@@ -111,15 +111,15 @@ TEST(RccTest, SetAHBPrescaler) {
 TEST(RccTest, SetAPB1Prescaler) {
     // no div
     Rcc::SetAPB1Prescaler(kApbNotDivided);
-    EXPECT_EQ(0b000, ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal));
+    EXPECT_EQ(0b000, (ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal)));
 
     // 2
     Rcc::SetAPB1Prescaler(kApbDiv2);
-    EXPECT_EQ(0b100, ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal));
+    EXPECT_EQ(0b100, (ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal)));
 
     // 4
     Rcc::SetAPB1Prescaler(kApbDiv4);
-    EXPECT_EQ(0b101, ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal));
+    EXPECT_EQ(0b101, (ExtractBits<uint32_t, 8, 10>(RCC->CFGR.registerVal)));
 
     // 8
     Rcc::SetAPB1Prescaler(kApbDiv8);
