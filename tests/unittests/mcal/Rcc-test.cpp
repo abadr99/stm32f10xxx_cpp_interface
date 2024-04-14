@@ -46,9 +46,9 @@ TEST(RccTest, InitSysClock) {
     // Testing HSE clock source with kClock_1x
     RCC->CR.HSERDY = 1;
     Rcc::InitSysClock(kHse, kClock_1x);
-    EXPECT_EQ(1,           (ExtractBits<uint32_t, 16>(RCC->CR.registerVal)));
-    EXPECT_EQ(0b01,        (ExtractBits<uint32_t, 0, 1>(RCC->CFGR.registerVal)));
-    EXPECT_EQ(1,           (ExtractBits<uint32_t, 19>(RCC->CR.registerVal)));
+    EXPECT_EQ(1,    (ExtractBits<uint32_t, 16>(RCC->CR.registerVal)));
+    EXPECT_EQ(0b01, (ExtractBits<uint32_t, 0, 1>(RCC->CFGR.registerVal)));
+    EXPECT_EQ(1,    (ExtractBits<uint32_t, 19>(RCC->CR.registerVal)));
     RCC->CR.HSERDY = 0;
 
     // Testing PLL clock source
@@ -56,21 +56,21 @@ TEST(RccTest, InitSysClock) {
 
     // Testing HSE as a PLLsource
     Rcc::InitSysClock(kHse, kClock_2x);
-    EXPECT_EQ(0b0000,      (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
-    EXPECT_EQ(1,           (ExtractBits<uint32_t, 16>(RCC->CR.registerVal)));
-    EXPECT_EQ(1,           (ExtractBits<uint32_t, 16>(RCC->CFGR.registerVal)));
-    EXPECT_EQ(1,           (ExtractBits<uint32_t, 24>(RCC->CR.registerVal)));
-    EXPECT_EQ(0,           (ExtractBits<uint32_t, 17>(RCC->CFGR.registerVal)));
-    EXPECT_EQ(0b10,        (ExtractBits<uint32_t, 0, 1>(RCC->CFGR.registerVal)));
+    EXPECT_EQ(0b0000, (ExtractBits<uint32_t, 18, 21>(RCC->CFGR.registerVal)));
+    EXPECT_EQ(1,      (ExtractBits<uint32_t, 16>(RCC->CR.registerVal)));
+    EXPECT_EQ(1,      (ExtractBits<uint32_t, 16>(RCC->CFGR.registerVal)));
+    EXPECT_EQ(1,      (ExtractBits<uint32_t, 24>(RCC->CR.registerVal)));
+    EXPECT_EQ(0,      (ExtractBits<uint32_t, 17>(RCC->CFGR.registerVal)));
+    EXPECT_EQ(0b10,   (ExtractBits<uint32_t, 0, 1>(RCC->CFGR.registerVal)));
 
     // Testing kHseDivBy2 as a PLLsource
     Rcc::InitSysClock(kHseDivBy2, kClock_2x);
-    EXPECT_EQ(1,           (ExtractBits<uint32_t, 17>(RCC->CFGR.registerVal)));
+    EXPECT_EQ(1, (ExtractBits<uint32_t, 17>(RCC->CFGR.registerVal)));
 
     // Testing HSI as a PLLsource
     Rcc::InitSysClock(kHsi, kClock_2x);
-    EXPECT_EQ(1,           (ExtractBits<uint32_t, 0>(RCC->CR.registerVal)));
-    EXPECT_EQ(0,           (ExtractBits<uint32_t, 16>(RCC->CFGR.registerVal)));
+    EXPECT_EQ(1, (ExtractBits<uint32_t, 0>(RCC->CR.registerVal)));
+    EXPECT_EQ(0, (ExtractBits<uint32_t, 16>(RCC->CFGR.registerVal)));
 
     // Testing multiplication factor
     TestMultiplicationFactor(kClock_3x, 0b0001);
