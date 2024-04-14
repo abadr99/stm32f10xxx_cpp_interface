@@ -23,6 +23,7 @@ enum ClkConfig {
     kHseDivBy2,
     kPll
 };
+
 enum PLL_MulFactor{
     kClock_1x  = 0b11111,
     kClock_2x  = 0b0000,
