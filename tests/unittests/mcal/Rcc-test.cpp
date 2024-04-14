@@ -92,7 +92,7 @@ TEST(RccTest, InitSysClock) {
 }
 
 TEST(RccTest, ConfigureExternalClock) {
-    Rcc::ConfigureExternalClock(kHseCrystal);
+    Rcc::SetExternalClock(kHseCrystal);
     EXPECT_EQ(0,          (ExtractBits<uint32_t, 18>(RCC->CR.registerVal)));
 }
 
