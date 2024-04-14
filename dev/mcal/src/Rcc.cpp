@@ -35,16 +35,6 @@ ASSERT_MEMBER_OFFSET(RccRegDef, CSR,        sizeof(RegWidth_t) * 9);
 // 2) Using External High Speed Clock i.e. HSE
 // 3) Using PLL with certain multiplication factor and source where PLL sources:
 //    3.a) HSI   3.b) HSE   3.c) HSE/2
-
-void Rcc::ConfigureExternalClock(const HSE_Type HseType ) {
-    RCC->CR.HSEON = 0;
-    if (HseType == kHseCrystal) {
-        RCC->CR.HSEBYP = 0;
-    } else if (HseType == kHseRC) {
-        RCC->CR.HSEBYP = 1;
-    }
-}
-
 void Rcc::InitSysClock(const ClkConfig& config,
                        const PLL_MulFactor& mulFactor) {
     if (config == kHsi  && mulFactor == kClock_1x) {          // 1) -- HSI
@@ -139,6 +129,9 @@ void Rcc::SetPllFactor(PLL_MulFactor factor) {
 }
 
 void Rcc::SetPllSource(PllSource src) {
+    STM32_ASSERT(src == kPllSource_Hsi || 
+                 src == kPllSource_Hse ||
+                 src == kPllSource_HseDiv2);
     switch (src) {
         case kPllSource_Hsi:
             RCC->CR.HSION = 1;
@@ -153,4 +146,9 @@ void Rcc::SetPllSource(PllSource src) {
             RCC->CFGR.PLLXTPRE = src == kPllSource_Hse ? 0 : 1;
             return;
     }
+}
+void Rcc::SetExternalClock(const HSE_Type HseType ) {
+    STM32_ASSERT(HseType == kHseCrystal || HseType == kHseRC);
+    RCC->CR.HSEON = 0;
+    RCC->CR.HSEBYP = HseType == kHseCrystal ? 0 : 1;
 }
