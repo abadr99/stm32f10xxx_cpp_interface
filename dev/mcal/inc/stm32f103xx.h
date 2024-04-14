@@ -70,7 +70,26 @@ struct RccRegDef{
     RegWidth_t APB2RSTR;
     RegWidth_t APB1RSTR;
     RegWidth_t AHBENR;
-    RegWidth_t APB2ENR;
+    union APB2ENR {
+        struct {
+            RegWidth_t AFIOEN   :1; /* Alternative function clock enable  */
+            RegWidth_t          :1; /* Reserved  */
+            RegWidth_t IOPAEN   :1; /* Port A clock enable  */
+            RegWidth_t IOPBEN   :1; /* Port B clock enable  */
+            RegWidth_t IOPCEN   :1; /* Port C clock enable  */
+            RegWidth_t IOPDEN   :1; /* Port D clock enable  */
+            RegWidth_t IOPEEN   :1; /* Port E clock enable  */
+            RegWidth_t          :2; /* Reserved  */
+            RegWidth_t ADC1EN   :1; /* ADC 1 clock enable  */
+            RegWidth_t ADC2EN   :1; /* ADC 2 clock enable  */
+            RegWidth_t TIM1EN   :1; /* TIM1 clock enable  */
+            RegWidth_t SPI1EN   :1; /* SPI1 clock enable  */
+            RegWidth_t          :1; /* Reserved  */
+            RegWidth_t USART1EN :1; /* USART1 clock enable  */
+            RegWidth_t          :17; /* Reserved  */
+        };
+        RegWidth_t registerVal; /* APB2 peripheral Clock enable register */
+    }APB2ENR; /* APB2 peripheral Clock enable register */
     RegWidth_t APB1ENR;
     RegWidth_t BDCR;
     RegWidth_t CSR;

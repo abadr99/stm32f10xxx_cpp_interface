@@ -30,13 +30,13 @@ class Gpio{
  * @param pin object from class Pin
  * @param pinState  [klow, khigh]
  */
-void SetPinValue(Pin pin, State pinState);
+static void SetPinValue(Pin pin, State pinState);
  /**
  * @brief Get the value of a GPIO pin
  * @param pin object from class Pin
- * @param ReturnVal Pointer to store the returned value
  */
-static void GetPinValue(Pin pin, uint32_t * pPinValue);
+static uint32_t  GetPinValue(Pin pin);
+static void EnablePin(Pin pin);
 };
 }  // namespace gpio
 }  // namespace mcal

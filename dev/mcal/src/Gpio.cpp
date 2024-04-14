@@ -33,14 +33,16 @@ extern volatile GpioRegDef *GPIOx[3];
 void Gpio::SetPinValue(Pin pin, State pinState) {
     if (pinState == kLow) {
         GPIOx[pin.GetPort()]->ODR &= ~(1 << pin.GetPinNumber());
-        // GPIOx -> ODR &= ~(1 << pinNum);
         GPIOx[pin.GetPort()]->BRR |= (1 << pin.GetPinNumber());
-        // GPIOx -> BRR |= (1 << pinNum);
     } else if (pinState == kHigh) {
        GPIOx[pin.GetPort()]->ODR |= (1 << pin.GetPinNumber());
        GPIOx[pin.GetPort()]->BSRR |= (1 << pin.GetPinNumber());
     }
 }
-void Gpio::GetPinValue(Pin pin, uint32_t * pPinValue) {
-  *pPinValue = GPIOx[pin.GetPort()]->IDR & (1 << pin.GetPinNumber()) >> pin.GetPinNumber(); //NOLINT
+uint32_t  Gpio::GetPinValue(Pin pin) {
+  return GPIOx[pin.GetPort()]->IDR & (1 << pin.GetPinNumber()) >> pin.GetPinNumber(); //NOLINT
+}
+void Gpio::EnablePin(Pin pin) {
+    //Port port = pin.GetPort();
+    // call rcc func
 }
