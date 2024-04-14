@@ -129,7 +129,7 @@ void Rcc::SetPllFactor(PLL_MulFactor factor) {
 }
 
 void Rcc::SetPllSource(PllSource src) {
-    STM32_ASSERT(src == kPllSource_Hsi || 
+    STM32_ASSERT(src == kPllSource_Hsi ||
                  src == kPllSource_Hse ||
                  src == kPllSource_HseDiv2);
     switch (src) {
