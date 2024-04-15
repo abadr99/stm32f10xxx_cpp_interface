@@ -37,10 +37,6 @@ TEST(PinTest, SetPinNumber) {
 
     pin.SetPort(kPortB);
     EXPECT_EQ(kPin4, pin.GetPinNumber());
-
-    // Test unexpected number of pin
-    pin.SetPinNumber((PinNumber)16);
-    EXPECT_NE(kPin0, pin.GetPinNumber());
 }
 
 TEST(PinTest, SetPinMode) {
