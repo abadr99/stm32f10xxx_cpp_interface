@@ -36,7 +36,7 @@ void Pin::SetPinMode(PinMode pinMode) {
 }
 
 void Pin::SetInputMode(InputMode inputMode) {
-    STM32_ASSERT(GetPinMode() != PinMode::kInput);
+    STM32_ASSERT(GetPinMode() == PinMode::kInput);
     Helper_SetInputMode(inputMode);
     /* check  whether the pin mode is set as pull-up or pull-down */
     if (inputMode == InputMode::kPullup) {
@@ -47,12 +47,12 @@ void Pin::SetInputMode(InputMode inputMode) {
 }
 
 void Pin::SetOutputMode(OutputMode outputMode) {
-    STM32_ASSERT(GetPinMode() != PinMode::kOutput);
+    STM32_ASSERT(GetPinMode() == PinMode::kOutput);
     Helper_SetOutputMode(outputMode);
 }
 
 void Pin::SetAlternativeMode(AlternativeMode alternativeMode) {
-    STM32_ASSERT(GetPinMode() != PinMode::kAlternative);
+    STM32_ASSERT(GetPinMode() == PinMode::kAlternative);
     Helper_AlternateMode(alternativeMode);
 }
 
