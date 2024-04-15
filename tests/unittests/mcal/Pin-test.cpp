@@ -37,10 +37,10 @@ TEST(PinTest, SetPinNumber) {
 
     pin.SetPort(kPortB);
     EXPECT_EQ(kPin4, pin.GetPinNumber());
-/*  // Test unexpected number of pin
+
+    // Test unexpected number of pin
     pin.SetPinNumber((PinNumber)16);
     EXPECT_NE(kPin0, pin.GetPinNumber());
-*/
 }
 
 TEST(PinTest, SetPinMode) {
@@ -72,16 +72,14 @@ TEST(PinTest, SetInputMode) {
     EXPECT_EQ(0b1, (ExtractBits<uint32_t, 15>(GPIOA->ODR)));
 
     // Test Floating Mode
-
     pin.SetInputMode(InputMode::kFloating);
-    EXPECT_EQ(0b01, (ExtractBits<uint32_t, 30, 31>(GPIOA->CRH)));  //#### doesn't detect 0b01 , always read 0b00 ####
-    
+    EXPECT_EQ(0b01, (ExtractBits<uint32_t, 30, 31>(GPIOA->CRH)));
+
     // Test Floating Pull UP/Down
     pin.SetInputMode(InputMode::kPulldown);
     EXPECT_EQ(0b0, (ExtractBits<uint32_t, 15>(GPIOA->ODR)));
     pin.SetInputMode(InputMode::kPullup);
     EXPECT_EQ(0b1, (ExtractBits<uint32_t, 15>(GPIOA->ODR)));
-
 }
 
 TEST(PinTest, SetOutputMode) {
@@ -94,32 +92,32 @@ TEST(PinTest, SetOutputMode) {
     pin.SetPinNumber(kPin9);
     pin.SetOutputMode(OutputMode::kPushPull_2MHZ);
     EXPECT_EQ(0b00, (ExtractBits<uint32_t, 6, 7>(GPIOA->CRH)));
-    EXPECT_EQ(0b10, (ExtractBits<uint32_t, 4, 5>(GPIOA->CRH)));  // #### doesn't detect 0b10 , always read 0b00 ####
+    EXPECT_EQ(0b10, (ExtractBits<uint32_t, 4, 5>(GPIOA->CRH)));
     // Test Push Pull Speed 50MHZ  of Pin 14
     pin.SetPinNumber(kPin14);
     pin.SetOutputMode(OutputMode::kPushPull_50MHZ);
     EXPECT_EQ(0b00, (ExtractBits<uint32_t, 26, 27>(GPIOA->CRH)));
-    EXPECT_EQ(0b11, (ExtractBits<uint32_t, 24, 25>(GPIOA->CRH)));  // #### doesn't detect 0b11 , always read 0b00 ####
+    EXPECT_EQ(0b11, (ExtractBits<uint32_t, 24, 25>(GPIOA->CRH)));
 
     // Test Open Drain Speed 10MHZ  of Pin 0
     pin.SetPinNumber(kPin0);
-    pin.SetOutputMode(OutputMode::kPushPull_10MHZ);
+    pin.SetOutputMode(OutputMode::kOpenDrain_10MHZ);
     EXPECT_EQ(0b01, (ExtractBits<uint32_t, 2, 3>(GPIOA->CRL)));
     EXPECT_EQ(0b01, (ExtractBits<uint32_t, 0, 1>(GPIOA->CRL)));
     // Test Open Drain Speed 2MHZ  of Pin 9
     pin.SetPinNumber(kPin9);
-    pin.SetOutputMode(OutputMode::kPushPull_2MHZ);
+    pin.SetOutputMode(OutputMode::kOpenDrain_2MHZ);
     EXPECT_EQ(0b01, (ExtractBits<uint32_t, 6, 7>(GPIOA->CRH)));
     EXPECT_EQ(0b10, (ExtractBits<uint32_t, 4, 5>(GPIOA->CRH)));
     // Test Open Drain Speed 50MHZ  of Pin 14
     pin.SetPinNumber(kPin14);
-    pin.SetOutputMode(OutputMode::kPushPull_50MHZ);
+    pin.SetOutputMode(OutputMode::kOpenDrain_50MHZ);
     EXPECT_EQ(0b01, (ExtractBits<uint32_t, 26, 27>(GPIOA->CRH)));
     EXPECT_EQ(0b11, (ExtractBits<uint32_t, 24, 25>(GPIOA->CRH)));
 }
 
 TEST(PinTest, SetAlternativeMode) {
-    Pin pin(kPortA, kPin0, PinMode::kOutput);
+    Pin pin(kPortA, kPin0, PinMode::kAlternative);
     // Test Push Pull Speed 10MHZ  of Pin 0
     pin.SetAlternativeMode(AlternativeMode::kPushPull_10MHZ);
     EXPECT_EQ(0b10, (ExtractBits<uint32_t, 2, 3>(GPIOA->CRL)));
@@ -137,17 +135,17 @@ TEST(PinTest, SetAlternativeMode) {
 
     // Test Open Drain Speed 10MHZ  of Pin 0
     pin.SetPinNumber(kPin0);
-    pin.SetAlternativeMode(AlternativeMode::kPushPull_10MHZ);
+    pin.SetAlternativeMode(AlternativeMode::kOpenDrain_10MHZ);
     EXPECT_EQ(0b11, (ExtractBits<uint32_t, 2, 3>(GPIOA->CRL)));
     EXPECT_EQ(0b01, (ExtractBits<uint32_t, 0, 1>(GPIOA->CRL)));
     // Test Open Drain Speed 2MHZ  of Pin 9
     pin.SetPinNumber(kPin9);
-    pin.SetAlternativeMode(AlternativeMode::kPushPull_2MHZ);
+    pin.SetAlternativeMode(AlternativeMode::kOpenDrain_2MHZ);
     EXPECT_EQ(0b11, (ExtractBits<uint32_t, 6, 7>(GPIOA->CRH)));
     EXPECT_EQ(0b10, (ExtractBits<uint32_t, 4, 5>(GPIOA->CRH)));
     // Test Open Drain Speed 50MHZ  of Pin 14
     pin.SetPinNumber(kPin14);
-    pin.SetAlternativeMode(AlternativeMode::kPushPull_50MHZ);
+    pin.SetAlternativeMode(AlternativeMode::kOpenDrain_50MHZ);
     EXPECT_EQ(0b11, (ExtractBits<uint32_t, 26, 27>(GPIOA->CRH)));
     EXPECT_EQ(0b11, (ExtractBits<uint32_t, 24, 25>(GPIOA->CRH)));
 }

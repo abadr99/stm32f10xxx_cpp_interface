@@ -34,6 +34,7 @@ void Pin::SetPort(Port port) {
 }
 
 void Pin::SetPinNumber(PinNumber pinNumber) {
+    STM32_ASSERT(pinNumber >= kPin0 && pinNumber <= kPin15);
     data_.SetValue<2, 5>(pinNumber);
 }
 
@@ -103,9 +104,9 @@ void Pin::Helper_AlternateMode(AlternativeMode alternateMode) {
     uint8_t startBit = 0;
     if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin7)) {
         startBit = (GetPinNumber()*4);
-        GPIOx[GetPort()]->CRL = WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRL, lcoAlternateMode);  // NOLINT [whitespace/line_length]
+        GPIOx[GetPort()]->CRL = WriteBits<uint32_t>(startBit, startBit + 3, GPIOx[GetPort()]->CRL, lcoAlternateMode);  // NOLINT [whitespace/line_length]
     } else if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin15)) {
         startBit = ((GetPinNumber()-8) * 4);
-        GPIOx[GetPort()]->CRH = WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRH, lcoAlternateMode);  // NOLINT [whitespace/line_length]
+        GPIOx[GetPort()]->CRH = WriteBits<uint32_t>(startBit, startBit + 3, GPIOx[GetPort()]->CRH, lcoAlternateMode);  // NOLINT [whitespace/line_length]
     }
 }
