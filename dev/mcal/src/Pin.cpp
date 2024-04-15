@@ -77,29 +77,35 @@ PinMode Pin::GetPinMode() {
 
 void Pin::Helper_SetInputMode(InputMode inputMode) {
     uint32_t lcoInputMode = static_cast<uint8_t>(inputMode) & 0x0F;
-    uint8_t startBit = (GetPinNumber()*4);
+    uint8_t startBit = 0;
     if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin7)) {
-        WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRL, lcoInputMode);  // NOLINT [whitespace/line_length]
+        startBit = (GetPinNumber()*4);
+        WriteBits<uint32_t>(startBit, startBit + 3, GPIOx[GetPort()]->CRL, lcoInputMode);  // NOLINT [whitespace/line_length]
     } else if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin15)) {
-        WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRH, lcoInputMode);  // NOLINT [whitespace/line_length]
+        startBit = ((GetPinNumber()-8) * 4);
+        WriteBits<uint32_t>(startBit, startBit + 3, GPIOx[GetPort()]->CRH, lcoInputMode);  // NOLINT [whitespace/line_length]
     }
 }
 
 void Pin::Helper_SetOutputMode(OutputMode outputMode) {
     uint8_t lcoOutputMode = static_cast<uint8_t>(outputMode) & 0x0F;
-    uint8_t startBit = (GetPinNumber()*4);
+    uint8_t startBit = 0;
     if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin7)) {
-        WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRL, lcoOutputMode);  // NOLINT [whitespace/line_length]
+        startBit = (GetPinNumber()*4);
+        WriteBits<uint32_t>(startBit, startBit + 3, GPIOx[GetPort()]->CRL, lcoOutputMode);  // NOLINT [whitespace/line_length]
     } else if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin15)) {
-        WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRH, lcoOutputMode);  // NOLINT [whitespace/line_length]
+        startBit = ((GetPinNumber()-8) * 4);
+        WriteBits<uint32_t>(startBit, startBit + 3, GPIOx[GetPort()]->CRH, lcoOutputMode);  // NOLINT [whitespace/line_length]
     }
 }
 void Pin::Helper_AlternateMode(AlternativeMode alternateMode) {
     uint8_t lcoAlternateMode = static_cast<uint8_t>(alternateMode) & 0x0F;
-    uint8_t startBit = (GetPinNumber()*4);
+    uint8_t startBit = 0;
     if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin7)) {
+        startBit = (GetPinNumber()*4);
         WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRL, lcoAlternateMode);  // NOLINT [whitespace/line_length]
     } else if (GetPinNumber() <= static_cast<uint8_t>(PinNumber::kPin15)) {
+        startBit = ((GetPinNumber()-8) * 4);
         WriteBits<uint32_t>(startBit, startBit + 4, GPIOx[GetPort()]->CRH, lcoAlternateMode);  // NOLINT [whitespace/line_length]
     }
 }

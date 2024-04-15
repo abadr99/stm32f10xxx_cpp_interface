@@ -26,7 +26,7 @@ enum class InputMode {
     kAnalog     = 0,
     kFloating   = 4,
     kPullup     = 8,
-    kPulldown   = 20,
+    kPulldown   = 24,
 };
 
 enum class OutputMode {

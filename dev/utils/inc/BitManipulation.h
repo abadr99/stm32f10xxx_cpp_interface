@@ -44,6 +44,7 @@ inline constexpr uint32_t WriteBits(T container, T val) {
     static_assert(TStart <= TEnd, "Calling WriteBits with startBit first");
     T ones = GetOnes<T>(static_cast<T>(TEnd - TStart) + 1);
     T mask = ~(ones << TStart);
+    container = (container & mask) | (val << TStart);
     return (container & mask) | (val << TStart);
 }
 template<typename T>
@@ -51,6 +52,7 @@ inline constexpr uint32_t WriteBits(uint8_t start, uint8_t end , T container, T 
     assert(start <= end && "Calling WriteBits with startBit first");
     T ones = GetOnes<T>(static_cast<T>(end - start) + 1);
     T mask = ~(ones << start);
+    container = (container & mask) | (val << start);
     return (container & mask) | (val << start);
 }
 

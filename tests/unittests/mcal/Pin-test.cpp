@@ -71,19 +71,17 @@ TEST(PinTest, SetInputMode) {
     pin.SetInputMode(InputMode::kPullup);
     EXPECT_EQ(0b1, (ExtractBits<uint32_t, 15>(GPIOA->ODR)));
 
-/*  // Test Floating Mode
+    // Test Floating Mode
+
     pin.SetInputMode(InputMode::kFloating);
-    pin.SetPinNumber((kPin0));
-    EXPECT_EQ(0b01, (ExtractBits<uint32_t, 2, 3>(GPIOA->CRL)));  //#### doesn't detect 0b01 , always read 0b00 ####
-    pin.SetPinNumber((kPin15));
-    EXPECT_EQ(0b01, (ExtractBits<uint32_t, 30, 31>(GPIOA->CRH)));
+    EXPECT_EQ(0b01, (ExtractBits<uint32_t, 30, 31>(GPIOA->CRH)));  //#### doesn't detect 0b01 , always read 0b00 ####
     
     // Test Floating Pull UP/Down
     pin.SetInputMode(InputMode::kPulldown);
     EXPECT_EQ(0b0, (ExtractBits<uint32_t, 8>(GPIOA->ODR)));
     pin.SetInputMode(InputMode::kPullup);
     EXPECT_EQ(0b1, (ExtractBits<uint32_t, 8>(GPIOA->ODR)));
-*/
+
 }
 /*
 TEST(PinTest, SetOutputMode) {
