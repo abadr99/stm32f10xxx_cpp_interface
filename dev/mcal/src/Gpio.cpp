@@ -16,7 +16,7 @@
 using namespace stm32::dev::mcal::pin; // NOLINT[build/namespaces]
 using namespace stm32::registers::gpio; // NOLINT[build/namespaces]
 using namespace stm32::dev::mcal::gpio; // NOLINT[build/namespaces]
-
+using namespace stm32::registers::rcc; // NOLINT[build/namespaces]
 
 ASSERT_STRUCT_SIZE(GpioRegDef, (sizeof(RegWidth_t) * 7));
 
@@ -43,6 +43,10 @@ uint32_t  Gpio::GetPinValue(Pin pin) {
   return GPIOx[pin.GetPort()]->IDR & (1 << pin.GetPinNumber()) >> pin.GetPinNumber(); //NOLINT
 }
 void Gpio::EnablePin(Pin pin) {
-    //Port port = pin.GetPort();
-    // call rcc func
+    Port port = pin.GetPort();
+        switch (port) {
+            case kPortA:       RCC->APB2ENR.IOPAEN = 1; break;
+            case kPortB:       RCC->APB2ENR.IOPBEN = 1; break;
+            case kPortC:       RCC->APB2ENR.IOPCEN = 1; break;
+        }
 }
