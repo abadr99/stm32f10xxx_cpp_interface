@@ -1,12 +1,10 @@
 /**
- * @file Pin-test.cpp
- * @author
- * @brief 
- * @version 0.1
- * @date 2024-03-26
- * 
+ * @file  Pin-test.cpp
+ * @author ManarAbdelraoouf
+ * @brief Test for Pin Driver
+ * @version  0.1
+ * @date 2024-04-15
  * @copyright Copyright (c) 2024
- * 
  */
 #include <gtest/gtest.h>
 #include "utils/inc/BitManipulation.h"
@@ -18,8 +16,8 @@ uint32_t GPIOBReg[7] = {};
 uint32_t GPIOCReg[7] = {};
 
 using namespace stm32::utils::bit_manipulation;  // NOLINT [build/namespaces]
-using namespace stm32::dev::mcal::pin;
-using namespace stm32::registers::gpio;
+using namespace stm32::dev::mcal::pin;           // NOLINT [build/namespaces]
+using namespace stm32::registers::gpio;          // NOLINT [build/namespaces]
 
 
 TEST(PinTest, SetPort) {

@@ -23,6 +23,12 @@ using  namespace stm32::utils::bit_manipulation;
 
 volatile GpioRegDef *GPIOx[3] = {GPIOA, GPIOB, GPIOC};
 
+Pin::Pin(Port port, PinNumber pinNumber, PinMode pinMode):data_(0) {
+    data_.SetValue<0, 1>(port);
+    data_.SetValue<2, 5>(pinNumber);
+    data_.SetValue<6, 7>(static_cast<uint8_t>(pinMode));
+}
+
 void Pin::SetPort(Port port) {
     data_.SetValue<0, 1>(port);
 }
