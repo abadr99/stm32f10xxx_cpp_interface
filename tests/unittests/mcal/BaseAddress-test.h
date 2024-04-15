@@ -21,9 +21,9 @@
 #define GPIOC_BASE_ADDRESS  (&GPIOCReg[0])
 
 extern uint32_t RccReg[10];
-extern uint32_t GPIOAReg[10];
-extern uint32_t GPIOBReg[10];
-extern uint32_t GPIOCReg[10];
+extern uint32_t GPIOAReg[7];
+extern uint32_t GPIOBReg[7];
+extern uint32_t GPIOCReg[7];
 
 
 #endif  // TESTS_UNITTESTS_MCAL_BASEADDRESS_TEST_H_
