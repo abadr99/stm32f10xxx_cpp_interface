@@ -78,12 +78,12 @@ TEST(PinTest, SetInputMode) {
     
     // Test Floating Pull UP/Down
     pin.SetInputMode(InputMode::kPulldown);
-    EXPECT_EQ(0b0, (ExtractBits<uint32_t, 8>(GPIOA->ODR)));
+    EXPECT_EQ(0b0, (ExtractBits<uint32_t, 15>(GPIOA->ODR)));
     pin.SetInputMode(InputMode::kPullup);
-    EXPECT_EQ(0b1, (ExtractBits<uint32_t, 8>(GPIOA->ODR)));
+    EXPECT_EQ(0b1, (ExtractBits<uint32_t, 15>(GPIOA->ODR)));
 
 }
-/*
+
 TEST(PinTest, SetOutputMode) {
     Pin pin(kPortA, kPin0, PinMode::kOutput);
     // Test Push Pull Speed 10MHZ  of Pin 0
@@ -151,7 +151,7 @@ TEST(PinTest, SetAlternativeMode) {
     EXPECT_EQ(0b11, (ExtractBits<uint32_t, 26, 27>(GPIOA->CRH)));
     EXPECT_EQ(0b11, (ExtractBits<uint32_t, 24, 25>(GPIOA->CRH)));
 }
-*/
+
 TEST(PinTest, GetPort) {
     Pin pin(kPortA, kPin0, PinMode::kOutput);
     EXPECT_EQ(kPortA, pin.GetPort());
