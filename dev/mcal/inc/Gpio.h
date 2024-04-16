@@ -36,7 +36,7 @@ static void SetPinValue(Pin pin, State pinState);
  * @param pin object from class Pin
  */
 static uint32_t  GetPinValue(Pin pin);
-static void EnablePin(Pin pin);
+static void EnablePort(Port port);
 };
 }  // namespace gpio
 }  // namespace mcal
