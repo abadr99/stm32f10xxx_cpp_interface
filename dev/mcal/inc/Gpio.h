@@ -10,7 +10,7 @@
  */
 #ifndef DEV_MCAL_INC_GPIO_H_
 #define DEV_MCAL_INC_GPIO_H_
-using namespace stm32::dev::mcal::pin; // NOLINT[build/namespaces]
+using namespace stm32::dev::mcal::pin;  // NOLINT[build/namespaces]
 using namespace stm32::registers::gpio; // NOLINT[build/namespaces]
 namespace stm32 {
 namespace dev {
@@ -22,7 +22,30 @@ enum State{
     kHigh,
 };
 
+enum class InputMode {
+    kAnalog     = 0,
+    kFloating   = 4,
+    kPullup     = 8,
+    kPulldown   = 20,
+};
 
+enum class OutputMode {
+    kPushPull_10MHZ  = 1,
+    kPushPull_2MHZ   = 2,
+    kPushPull_50MHZ  = 3,
+    kOpenDrain_10MHZ = 5,
+    kOpenDrain_2MHZ  = 6,
+    kOpenDrain_50MHZ = 7,
+};
+
+enum class AlternativeMode {
+    kPushPull_10MHZ   = 9,
+    kPushPull_2MHZ    = 10,
+    kPushPull_50MHZ   = 11,
+    kOpenDrain_10MHZ  = 13,
+    kOpenDrain_2MHZ   = 14,
+    kOpenDrain_50MHZ  = 15,
+};
 class Gpio{
  public:
 /**
@@ -37,6 +60,14 @@ static void SetPinValue(Pin pin, State pinState);
  */
 static uint32_t  GetPinValue(Pin pin);
 static void EnablePort(Port port);
+static void SetInputMode(Pin pin, InputMode inputMode);
+static void SetOutputMode(Pin pin, OutputMode outputMode);
+static void SetAlternativeMode(Pin pin, AlternativeMode alternativeMode);
+
+ private:
+    static void Helper_SetInputMode(Pin pin, InputMode inputMode);
+    static void Helper_SetOutputMode(Pin pin, OutputMode outputMode);
+    static void Helper_AlternateMode(Pin pin, AlternativeMode alternateMode);
 };
 }  // namespace gpio
 }  // namespace mcal
