@@ -22,31 +22,6 @@ enum class PinMode {
     kAlternative,
 };
 
-enum class InputMode {
-    kAnalog     = 0,
-    kFloating   = 4,
-    kPullup     = 8,
-    kPulldown   = 24,
-};
-
-enum class OutputMode {
-    kPushPull_10MHZ  = 1,
-    kPushPull_2MHZ   = 2,
-    kPushPull_50MHZ  = 3,
-    kOpenDrain_10MHZ = 5,
-    kOpenDrain_2MHZ  = 6,
-    kOpenDrain_50MHZ = 7,
-};
-
-enum class AlternativeMode {
-    kPushPull_10MHZ   = 9,
-    kPushPull_2MHZ    = 10,
-    kPushPull_50MHZ   = 11,
-    kOpenDrain_10MHZ  = 13,
-    kOpenDrain_2MHZ   = 14,
-    kOpenDrain_50MHZ  = 15,
-};
-
 enum PinNumber {
     kPin0, kPin1, kPin2, kPin3, kPin4, kPin5, kPin6, kPin7, kPin8, kPin9,
     kPin10, kPin11, kPin12, kPin13, kPin14, kPin15,
@@ -66,18 +41,12 @@ class Pin {
     void SetPort(Port port);
     void SetPinNumber(PinNumber pinNumber);
     void SetPinMode(PinMode pinMode);
-    void SetInputMode(InputMode inputMode);
-    void SetOutputMode(OutputMode outputMode);
-    void SetAlternativeMode(AlternativeMode alternativeMode);
     Port GetPort();
     PinNumber GetPinNumber();
     PinMode GetPinMode();
 
  private:
     using DataType = stm32::utils::bitset::BitSet<uint8_t>;
-    void Helper_SetInputMode(InputMode inputMode);
-    void Helper_SetOutputMode(OutputMode outputMode);
-    void Helper_AlternateMode(AlternativeMode alternateMode);
     /**
      * @brief Holds important class data as following:
      *      Bits 0 .. 1: Holds port
