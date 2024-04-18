@@ -105,6 +105,26 @@ struct GpioRegDef {
 #define GPIOC  (reinterpret_cast<volatile GpioRegDef*>(GPIOC_BASE_ADDRESS))
 
 }  // namespace gpio
+namespace nvic {
+/**
+ * @brief Structure defining NVIC Register Definitions
+ *
+ * This structure defines the layout of NVIC registers for controlling
+ */
+    struct NVIC {
+    RegWidth_t ISER[8];
+    RegWidth_t RESERVED0[24];
+    RegWidth_t ICER[8];
+    RegWidth_t RESERVED1[24];
+    RegWidth_t ISPR[8];
+    RegWidth_t RESERVED2[24];
+    RegWidth_t ICPR[8];
+    RegWidth_t RESERVED3[24];
+    RegWidth_t IABR[8];
+    RegWidth_t RESERVED4[56];
+        // TO DO THE REST
+    };
+}  // namespace nvic
 }  // namespace registers
 }  // namespace stm32
 
