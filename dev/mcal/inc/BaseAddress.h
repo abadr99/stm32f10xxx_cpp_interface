@@ -13,11 +13,16 @@
 #define DEV_MCAL_INC_BASEADDRESS_H_
 
 #define RCC_BASE_ADDRESS    (0x40021000)
+
 #define GPIOA_BASE_ADDRESS  (0x40010800)
 #define GPIOB_BASE_ADDRESS  (0x40010C00)
 #define GPIOC_BASE_ADDRESS  (0x40011000)
 
 #define NVIC_BASE_ADDRESS   (0xE000E100)
+
+#define AFIO_BASE_ADDRESS   (0x40010000)
+
+
 namespace stm32 {
 namespace registers {
 namespace rcc {
