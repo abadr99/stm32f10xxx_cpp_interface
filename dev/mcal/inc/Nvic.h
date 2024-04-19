@@ -46,8 +46,8 @@ typedef enum {
     DMA1_Channel6 = 16,      /*!< DMA1 Channel 6 global Interrupt */
     DMA1_Channel7 = 17,      /*!< DMA1 Channel 7 global Interrupt */
     ADC1_2 = 18,             /*!< ADC1 and ADC2 global Interrupt */
-    USB_HP_CAN1_TX = 19,     /*!< USB Device High Priority or CAN1 TX Interrupts */
-    USB_LP_CAN1_RX0 = 20,    /*!< USB Device Low Priority or CAN1 RX0 Interrupts */
+    USB_HP_CAN1_TX = 19,     /*!< USB Device High Priority or CAN1 TX Interrupts */ // NOLINT
+    USB_LP_CAN1_RX0 = 20,    /*!< USB Device Low Priority or CAN1 RX0 Interrupts */ // NOLINT
     CAN1_RX1 = 21,           /*!< CAN1 RX1 Interrupt */
     CAN1_SCE = 22,           /*!< CAN1 SCE Interrupt */
     EXTI9_5 = 23,            /*!< EXTI Line[9:5] Interrupts */
@@ -69,7 +69,7 @@ typedef enum {
     USART3 = 39,             /*!< USART3 global Interrupt */
     EXTI15_10 = 40,          /*!< EXTI Line[15:10] Interrupts */
     RTCAlarm = 41,           /*!< RTC Alarm through EXTI Line Interrupt */
-    USBWakeUp = 42,          /*!< USB WakeUp from suspend through EXTI Line Interrupt */
+    USBWakeUp = 42,          /*!< USB WakeUp from suspend through EXTI Line Interrupt */ // NOLINT
 }interruptID;
 class nvic {
  public:

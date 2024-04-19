@@ -12,15 +12,23 @@
 #include "utils/inc/BitSet.h"
 #include "utils/inc/Assert.h"
 #include "utils/inc/BitManipulation.h"
-void nvic::EnableInterrupt(interruptID id) {
+#include "Nvic.h"
+
+using namespace stm32::dev::mcal::nvic; // NOLINT[build/namespaces]
+using namespace stm32::registers::nvic; // NOLINT[build/namespaces]
+
+void EnableInterrupt(interruptID id) {
 NVIC->ISER[((uint32_t)id) >> 5] = (1 << ((uint32_t)id) & 0x1f);
 }
-void nvic::DisableInterrupt(interruptID id) {
+void DisableInterrupt(interruptID id) {
 NVIC->ICER[((uint32_t)id) >> 5] = (1 << ((uint32_t)id) & 0x1f);
 }
-void nvic::SetPendingFlag(interruptID id) {
+void SetPendingFlag(interruptID id) {
 NVIC->ISPR[((uint32_t)id) >> 5] = (1 << ((uint32_t)id) & 0x1f);
 }
-void nvic::ClearPendingFlag(interruptID id) {
+void ClearPendingFlag(interruptID id) {
 NVIC->ICPR[((uint32_t)id) >> 5] = (1 << ((uint32_t)id) & 0x1f);
+}
+uint8_t GetActiveFlag(interruptID id) {
+    return (NVIC->IABR[((uint32_t)id) >> 5] >> ((((uint32_t)id) & 0x1f)) & 0x1);
 }

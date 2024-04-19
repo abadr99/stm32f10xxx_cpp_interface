@@ -111,7 +111,7 @@ namespace nvic {
  *
  * This structure defines the layout of NVIC registers for controlling
  */
-    struct NVIC {
+struct NvicRegDef {
     RegWidth_t ISER[8];
     RegWidth_t RESERVED0[24];
     RegWidth_t ICER[8];
@@ -122,8 +122,11 @@ namespace nvic {
     RegWidth_t RESERVED3[24];
     RegWidth_t IABR[8];
     RegWidth_t RESERVED4[56];
-        // TO DO THE REST
-    };
+    // TO DO THE REST
+};
+
+#define NVIC   (reinterpret_cast<volatile NvicRegDef*>(NVIC_BASE_ADDRESS))
+
 }  // namespace nvic
 }  // namespace registers
 }  // namespace stm32

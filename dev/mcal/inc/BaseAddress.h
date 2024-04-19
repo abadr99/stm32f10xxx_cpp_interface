@@ -16,6 +16,8 @@
 #define GPIOA_BASE_ADDRESS  (0x40010800)
 #define GPIOB_BASE_ADDRESS  (0x40010C00)
 #define GPIOC_BASE_ADDRESS  (0x40011000)
+
+#define NVIC_BASE_ADDRESS   (0xE000E100)
 namespace stm32 {
 namespace registers {
 namespace rcc {
