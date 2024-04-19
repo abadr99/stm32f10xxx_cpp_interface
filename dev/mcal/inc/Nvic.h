@@ -71,13 +71,14 @@ typedef enum {
     RTCAlarm = 41,           /*!< RTC Alarm through EXTI Line Interrupt */
     USBWakeUp = 42,          /*!< USB WakeUp from suspend through EXTI Line Interrupt */ // NOLINT
 }interruptID;
-class nvic {
+class Nvic {
  public:
 static void EnableInterrupt(interruptID id);
 static void DisableInterrupt(interruptID id);
 static void SetPendingFlag(interruptID id);
 static void ClearPendingFlag(interruptID id);
 static uint8_t GetActiveFlag(interruptID id);
+static void SetPriority(interruptID id, uint8_t priority);
 };
 }   // namespace nvic
 }   // namespace mcal

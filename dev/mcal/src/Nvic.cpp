@@ -17,18 +17,21 @@
 using namespace stm32::dev::mcal::nvic; // NOLINT[build/namespaces]
 using namespace stm32::registers::nvic; // NOLINT[build/namespaces]
 
-void EnableInterrupt(interruptID id) {
+void Nvic:: EnableInterrupt(interruptID id) {
 NVIC->ISER[((uint32_t)id) >> 5] = (1 << ((uint32_t)id) & 0x1f);
 }
-void DisableInterrupt(interruptID id) {
+void Nvic:: DisableInterrupt(interruptID id) {
 NVIC->ICER[((uint32_t)id) >> 5] = (1 << ((uint32_t)id) & 0x1f);
 }
-void SetPendingFlag(interruptID id) {
+void Nvic:: SetPendingFlag(interruptID id) {
 NVIC->ISPR[((uint32_t)id) >> 5] = (1 << ((uint32_t)id) & 0x1f);
 }
-void ClearPendingFlag(interruptID id) {
+void Nvic:: ClearPendingFlag(interruptID id) {
 NVIC->ICPR[((uint32_t)id) >> 5] = (1 << ((uint32_t)id) & 0x1f);
 }
-uint8_t GetActiveFlag(interruptID id) {
+uint8_t Nvic:: GetActiveFlag(interruptID id) {
     return (NVIC->IABR[((uint32_t)id) >> 5] >> ((((uint32_t)id) & 0x1f)) & 0x1);
+}
+void Nvic:: SetPriority(interruptID id, uint8_t priority) {
+    NVIC->IPR[id] = priority << 4;
 }
