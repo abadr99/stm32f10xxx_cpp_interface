@@ -143,7 +143,7 @@ struct NvicRegDef {
     RegWidth_t IABR[8];
     RegWidth_t RESERVED4[56];
     RegWidth_t IPR[60];     // uint8_t instead 32
-    RegWidth_t RESERVED0[240];
+    RegWidth_t RESERVED5[240];
     RegWidth_t STIR;
     // TO DO THE REST
 };
