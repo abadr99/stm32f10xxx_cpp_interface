@@ -33,12 +33,3 @@ s.delay_micro_s(kAHB, 10);
 EXPECT_EQ(0b101,           (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));   // NOLINT
 EXPECT_EQ(10, SYSTICK->LOAD);
 }
-/*TEST(SystickTest, Counter) {
-Systick s;
-SYSTICK->CTRL.COUNTFLAG = 1;
-void mockISR();
-s.Counter(kAHB_Div_8, 100, &mockISR);
-EXPECT_EQ(0b011,           (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));   // NOLINT
-EXPECT_EQ(100, SYSTICK->LOAD);
-//EXPECT_EQ(&mockISR, SysTick_Handler);
-}*/
