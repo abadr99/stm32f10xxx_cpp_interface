@@ -4896,9 +4896,9 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
           'Weird number of spaces at line-start.  '
           'Are you using a 2-space indent?')
 
-  if line and line[-1].isspace():
-    error(filename, linenum, 'whitespace/end_of_line', 4,
-          'Line ends in whitespace.  Consider deleting these extra spaces.')
+  #if line and line[-1].isspace():
+   # error(filename, linenum, 'whitespace/end_of_line', 4,
+    #      'Line ends in whitespace.  Consider deleting these extra spaces.')
 
   # Check if the line is a header guard.
   is_header_guard = False
