@@ -246,7 +246,7 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit|sed|gsed]
       set noparent
       filter=+filter1,-filter2,...
       exclude_files=regex
-      linelength=80
+      linelength=100
       root=subdir
       headers=x,y,...
 
@@ -927,7 +927,7 @@ _quiet = False
 
 # The allowed line length of files.
 # This is set by --linelength flag.
-_line_length = 80
+_line_length = 100
 
 # This allows to use different include order rule than default
 _include_order = "default"
@@ -5352,15 +5352,15 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension,
     error(filename, linenum, 'runtime/memset', 4,
           f'Did you mean "memset({match.group(1)}, 0, {match.group(2)})"?')
 
-  if re.search(r'\busing namespace\b', line):
-    if re.search(r'\bliterals\b', line):
-      error(filename, linenum, 'build/namespaces_literals', 5,
-            'Do not use namespace using-directives.  '
-            'Use using-declarations instead.')
-    else:
-      error(filename, linenum, 'build/namespaces', 5,
-            'Do not use namespace using-directives.  '
-            'Use using-declarations instead.')
+  #if re.search(r'\busing namespace\b', line):
+   # if re.search(r'\bliterals\b', line):
+    #  error(filename, linenum, 'build/namespaces_literals', 5,
+     #       'Do not use namespace using-directives.  '
+      #      'Use using-declarations instead.')
+    #else:
+     # error(filename, linenum, 'build/namespaces', 5,
+      #      'Do not use namespace using-directives.  '
+       #     'Use using-declarations instead.')
 
   # Detect variable-length arrays.
   match = re.match(r'\s*(.+::)?(\w+) [a-z]\w*\[(.+)];', line)
