@@ -16,8 +16,6 @@ namespace dev {
 namespace mcal {
 namespace systick {
 
-#define SYSTICK_MAX_VALUE   (16777216)  //  24 bit
-
 enum CLKSource {
     kAHB_Div_8,
     kAHB
@@ -25,9 +23,9 @@ enum CLKSource {
 class Systick {
  public:
     Systick();
-    void delay_ms(CLKSource clksource, uint32_t value);
-    void delay_micro_s(CLKSource clksource, uint32_t value);
-    void Counter(CLKSource clksource, uint32_t value, pFunction * func);
+    static void Delay_ms(CLKSource clksource, uint32_t value);
+    static void Delay_micro_s(CLKSource clksource, uint32_t value);
+    static void Delay_By_Exception(CLKSource clksource, uint32_t value, pFunction * func);
     uint32_t GetElapsedTime(void);
 };
 

@@ -188,8 +188,6 @@ struct AfioRegDef {
 };
 
 }  // namespace afio
-}  // namespace registers
-}  // namespace stm32
 namespace systick {
 struct SystickRegDef {
     union CTRL {
@@ -210,6 +208,7 @@ struct SystickRegDef {
 #define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(SYSTICK_BASE_ADDRESS))  // NOLINT
 
 }  // namespace systick
-
+}  // namespace registers
+}  // namespace stm32
 
 #endif  // DEV_MCAL_INC_STM32F103XX_H_
