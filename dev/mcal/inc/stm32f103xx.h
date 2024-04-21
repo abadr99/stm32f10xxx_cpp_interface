@@ -133,11 +133,11 @@ namespace nvic {
  */
 struct NvicRegDef {
     RegWidth_t ISER[8];        // Interrupt Set Enable Register
-    RegWidth_t RESERVED0[24];  
+    RegWidth_t RESERVED0[24];
     RegWidth_t ICER[8];        // Interrupt Clear Enable Register
-    RegWidth_t RESERVED1[24];  
+    RegWidth_t RESERVED1[24];
     RegWidth_t ISPR[8];        // Interrupt Set Pending Register
-    RegWidth_t RESERVED2[24];  
+    RegWidth_t RESERVED2[24];
     RegWidth_t ICPR[8];        // Interrupt Clear Pending Register
     RegWidth_t RESERVED3[24];
     RegWidth_t IABR[8];        // Interrupt Active Bit Register
