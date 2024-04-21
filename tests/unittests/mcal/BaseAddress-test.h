@@ -23,9 +23,9 @@
 #define SYSTICK_BASE_ADDRESS  (&SYSTICKReg[0])
 
 extern uint32_t RccReg[10];
-extern uint32_t GPIOAReg[10];
-extern uint32_t GPIOBReg[10];
-extern uint32_t GPIOCReg[10];
+extern uint32_t GPIOAReg[7];
+extern uint32_t GPIOBReg[7];
+extern uint32_t GPIOCReg[7];
 extern uint32_t SYSTICKReg[3];
 
 

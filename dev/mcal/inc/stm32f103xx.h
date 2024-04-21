@@ -70,7 +70,26 @@ struct RccRegDef{
     RegWidth_t APB2RSTR;
     RegWidth_t APB1RSTR;
     RegWidth_t AHBENR;
-    RegWidth_t APB2ENR;
+    union APB2ENR {
+        struct {
+            RegWidth_t AFIOEN   :1; /* Alternative function clock enable  */
+            RegWidth_t          :1; /* Reserved  */
+            RegWidth_t IOPAEN   :1; /* Port A clock enable  */
+            RegWidth_t IOPBEN   :1; /* Port B clock enable  */
+            RegWidth_t IOPCEN   :1; /* Port C clock enable  */
+            RegWidth_t IOPDEN   :1; /* Port D clock enable  */
+            RegWidth_t IOPEEN   :1; /* Port E clock enable  */
+            RegWidth_t          :2; /* Reserved  */
+            RegWidth_t ADC1EN   :1; /* ADC 1 clock enable  */
+            RegWidth_t ADC2EN   :1; /* ADC 2 clock enable  */
+            RegWidth_t TIM1EN   :1; /* TIM1 clock enable  */
+            RegWidth_t SPI1EN   :1; /* SPI1 clock enable  */
+            RegWidth_t          :1; /* Reserved  */
+            RegWidth_t USART1EN :1; /* USART1 clock enable  */
+            RegWidth_t          :17; /* Reserved  */
+        };
+        RegWidth_t registerVal; /* APB2 peripheral Clock enable register */
+    }APB2ENR; /* APB2 peripheral Clock enable register */
     RegWidth_t APB1ENR;
     RegWidth_t BDCR;
     RegWidth_t CSR;
@@ -105,6 +124,72 @@ struct GpioRegDef {
 #define GPIOC  (reinterpret_cast<volatile GpioRegDef*>(GPIOC_BASE_ADDRESS))
 
 }  // namespace gpio
+namespace afio {
+/**
+ * @brief Structure defining AFIO (Alternate Function I/O) Register Definitions
+ *
+ * This structure defines the layout of AFIO registers used for configuring
+ * alternate functions of GPIO pins on a microcontroller.
+ */
+struct AfioRegDef {
+    union EVCR {
+        struct {
+            RegWidth_t PIN      :4;    // Event Output Pin
+            RegWidth_t PORT     :3;    // Event Output Port
+            RegWidth_t EVOE     :1;    // Event Output Enable
+            RegWidth_t          :24;   // Reserved
+        };
+        RegWidth_t registerVal;  //  Register value
+    } EVCR;                     //  Event Output Configuration Register
+
+    union MAPR {
+        struct {
+            RegWidth_t SPI1_REMAP           :1;  // SPI1 remapping
+            RegWidth_t I2C1_REMAP           :1;  // I2C1 remapping
+            RegWidth_t USART1_REMAP         :1;  // USART1 remapping
+            RegWidth_t USART2_REMAP         :1;  // USART2 remapping
+            RegWidth_t USART3_REMAP         :2;  // USART3 remapping
+            RegWidth_t TIM1_REMAP           :2;  // TIM1 remapping
+            RegWidth_t TIM2_REMAP           :2;  // TIM2 remapping
+            RegWidth_t TIM3_REMAP           :2;  // TIM3 remapping
+            RegWidth_t TIM4_REMAP           :1;  // TIM4 remapping
+            RegWidth_t CAN_REMAP            :2;  // CAN remapping
+            RegWidth_t PD01_REMAP           :1;  // Port D0/Port D1 remapping   // NOLINT
+            RegWidth_t TIM5CH4_IREMAP       :1;  // TIM5 Channel4 Input Capture 4 remapping     // NOLINT
+            RegWidth_t ADC1_ETRGINJ_REMAP   :1;  // ADC1 External Trigger Injected Conversion remapping     // NOLINT
+            RegWidth_t ADC1_ETRGREG_REMAP   :1;  // ADC1 External Trigger Regular Conversion remapping      // NOLINT
+            RegWidth_t ADC2_ETRGINJ_REMAP   :1;  // ADC2 External Trigger Injected Conversion remapping     // NOLINT
+            RegWidth_t ADC2_ETRGREG_REMAP   :1;  // ADC2 External Trigger Regular Conversion remapping      // NOLINT
+            RegWidth_t                      :3;  // Reserved
+            RegWidth_t SWJ_CFG              :3;  // Serial Wire JTAG configuration   // NOLINT
+            RegWidth_t                      :5;  // Reserved
+        };
+        RegWidth_t registerVal;  // Register value
+    } MAPR;  // AF remap and debug I/O configuration register
+
+    RegWidth_t EXTICR1;  // External interrupt configuration register 1
+    RegWidth_t EXTICR2;  // External interrupt configuration register 2
+    RegWidth_t EXTICR3;  // External interrupt configuration register 3
+    RegWidth_t EXTICR4;  // External interrupt configuration register 4
+
+    union MAPR2 {
+        struct {
+            RegWidth_t                      :5;  // Reserved
+            RegWidth_t TIM9_REMAP           :1;  // TIM9 remapping
+            RegWidth_t TIM10_REMAP          :1;  // TIM10 remapping
+            RegWidth_t TIM11_REMAP          :1;  // TIM11 remapping
+            RegWidth_t TIM13_REMAP          :1;  // TIM13 remapping
+            RegWidth_t TIM14_REMAP          :1;  // TIM14 remapping
+            RegWidth_t FSMC_NADV            :1;  // FSMC NADV signal
+            RegWidth_t                      :20;  // Reserved
+        };
+        RegWidth_t registerVal;  // Register value
+    } MAPR2;  // AF remap and debug I/O configuration register 2
+};
+
+}  // namespace afio
+}  // namespace registers
+}  // namespace stm32
 namespace systick {
 struct SystickRegDef {
     union CTRL {
@@ -125,7 +210,6 @@ struct SystickRegDef {
 #define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(SYSTICK_BASE_ADDRESS))  // NOLINT
 
 }  // namespace systick
-}  // namespace registers
-}  // namespace stm32
+
 
 #endif  // DEV_MCAL_INC_STM32F103XX_H_

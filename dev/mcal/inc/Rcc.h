@@ -23,6 +23,7 @@ enum ClkConfig {
     kHseDivBy2,
     kPll
 };
+
 enum PLL_MulFactor{
     kClock_1x  = 0b11111,
     kClock_2x  = 0b0000,
@@ -70,14 +71,21 @@ enum McoModes {
     kMcoPll
 };
 
+enum HSE_Type {
+    kHseCrystal,
+    kHseRC,
+};
+
 class Rcc {
  public:
+    static void SetExternalClock(const HSE_Type HseType);
     static void InitSysClock(const ClkConfig& config = kHse,
                              const PLL_MulFactor& mulFactor = kClock_1x);
     static void SetAHBPrescaler(const AHP_ClockDivider& divFactor);
     static void SetAPB1Prescaler(const APB_ClockDivider& divFactor);
     static void SetAPB2Prescaler(const APB_ClockDivider& divFactor);
     static void SetMCOPinClk(const McoModes& mode);
+    static void AdjustInternalClock(uint8_t CalibrationValue);
  private:
     enum Flags { kHSIRDY, kHSERDY, kPLLRDY, };
     enum PllSource {
