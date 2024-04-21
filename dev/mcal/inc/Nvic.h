@@ -14,7 +14,7 @@ namespace stm32 {
 namespace dev   {
 namespace mcal  {
 namespace nvic   {
-typedef enum {
+enum interruptID {
     // Cortex-M Processor Exceptions
     NonMaskableInt = -14,    /*!< 2 Non Maskable Interrupt */
     HardFault = -13,         /*!< 3 Cortex-M0 Hard Fault Interrupt */
@@ -32,7 +32,7 @@ typedef enum {
     TAMPER = 2,              /*!< Tamper Interrupt */
     RTC = 3,                 /*!< RTC global Interrupt */
     FLASH = 4,               /*!< FLASH global Interrupt */
-    RCC = 5,                 /*!< RCC global Interrupt */
+    RCC_ID = 5,                 /*!< RCC global Interrupt */
     EXTI0 = 6,               /*!< EXTI Line0 Interrupt */
     EXTI1 = 7,               /*!< EXTI Line1 Interrupt */
     EXTI2 = 8,               /*!< EXTI Line2 Interrupt */
@@ -70,15 +70,24 @@ typedef enum {
     EXTI15_10 = 40,          /*!< EXTI Line[15:10] Interrupts */
     RTCAlarm = 41,           /*!< RTC Alarm through EXTI Line Interrupt */
     USBWakeUp = 42,          /*!< USB WakeUp from suspend through EXTI Line Interrupt */ // NOLINT
-}interruptID;
+};
+
+enum PriorityGroup {
+    SCB_4GROUP_0SUBGROUP = 0x05FA0300,
+    SCB_3GROUP_1SUBGROUP = 0x05FA0400,
+    SCB_2GROUP_2SUBGROUP = 0x05FA0500,
+    SCB_1GROUP_3SUBGROUP = 0x05FA0600,
+    SCB_0GROUP_4SUBGROUP = 0x05FA0700,
+};
 class Nvic {
  public:
-static void EnableInterrupt(interruptID id);
-static void DisableInterrupt(interruptID id);
-static void SetPendingFlag(interruptID id);
-static void ClearPendingFlag(interruptID id);
-static uint8_t GetActiveFlag(interruptID id);
-static void SetPriority(interruptID id, uint8_t priority);
+    static void EnableInterrupt(interruptID id);
+    static void DisableInterrupt(interruptID id);
+    static void SetPendingFlag(interruptID id);
+    static void ClearPendingFlag(interruptID id);
+    static uint8_t GetActiveFlag(interruptID id);
+    static void SetPriority(interruptID id, uint8_t priority);
+    static void SetPriorityGroup(PriorityGroup group);
 };
 }   // namespace nvic
 }   // namespace mcal

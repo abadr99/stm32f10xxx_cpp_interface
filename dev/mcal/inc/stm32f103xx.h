@@ -147,8 +147,30 @@ struct NvicRegDef {
     RegWidth_t STIR;
     // TO DO THE REST
 };
+struct  SCBRegDef {
+    RegWidth_t CPUID;   // CPUID Base Register
+    RegWidth_t ICSR;    // Interrupt Control and State Register
+    RegWidth_t VTOR;    // Vector Table Offset Register
+    RegWidth_t AIRCR;   // Application Interrupt and Reset Control Register
+    RegWidth_t SCR;     // System Control Register
+    RegWidth_t CCR;     // Configuration and Control Register
+    RegWidth_t SHPR1;   // System Handler Priority Register 1
+    RegWidth_t SHPR2;   // System Handler Priority Register 2
+    RegWidth_t SHPR3;   // System Handler Priority Register 3
+    RegWidth_t SHCRS;   // System Handler Control and State Register
+    RegWidth_t CFSR;    // Configurable Fault Status Register
+    RegWidth_t MMSR;    // MemManage Fault Status Register
+    RegWidth_t BFSR;    // BusFault Status Register
+    RegWidth_t UFSR;    // UsageFault Status Register
+    RegWidth_t HFSR;    // HardFault Status Register
+    RegWidth_t MMAR;    // MemManage Fault Address Register
+    RegWidth_t BFAR;    // BusFault Address Register
+    RegWidth_t AFSR;    // Auxiliary Fault Status Register
+};
+
 
 #define NVIC   (reinterpret_cast<volatile NvicRegDef*>(NVIC_BASE_ADDRESS))
+#define SCB    (reinterpret_cast<volatile SCBRegDef*>(SCB_BASE_ADDRESS))
 
 }  // namespace nvic
 
