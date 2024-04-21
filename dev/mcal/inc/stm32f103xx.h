@@ -132,20 +132,19 @@ namespace nvic {
  * This structure defines the layout of NVIC registers for controlling
  */
 struct NvicRegDef {
-    RegWidth_t ISER[8];
-    RegWidth_t RESERVED0[24];
-    RegWidth_t ICER[8];
-    RegWidth_t RESERVED1[24];
-    RegWidth_t ISPR[8];
-    RegWidth_t RESERVED2[24];
-    RegWidth_t ICPR[8];
+    RegWidth_t ISER[8];        // Interrupt Set Enable Register
+    RegWidth_t RESERVED0[24];  
+    RegWidth_t ICER[8];        // Interrupt Clear Enable Register
+    RegWidth_t RESERVED1[24];  
+    RegWidth_t ISPR[8];        // Interrupt Set Pending Register
+    RegWidth_t RESERVED2[24];  
+    RegWidth_t ICPR[8];        // Interrupt Clear Pending Register
     RegWidth_t RESERVED3[24];
-    RegWidth_t IABR[8];
+    RegWidth_t IABR[8];        // Interrupt Active Bit Register
     RegWidth_t RESERVED4[56];
-    RegWidth_t IPR[60];     // uint8_t instead 32
-    RegWidth_t RESERVED5[240];
-    RegWidth_t STIR;
-    // TO DO THE REST
+    uint8_t IPR[240];          // Interrupt Priority Register
+    RegWidth_t RESERVED5[644];
+    RegWidth_t STIR;           // Software Trigger Interrupt Register
 };
 struct  SCBRegDef {
     RegWidth_t CPUID;   // CPUID Base Register
