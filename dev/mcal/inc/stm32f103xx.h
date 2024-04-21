@@ -674,6 +674,7 @@ struct DMARegDef {
 #define DMA (reinterpret_cast<volatile DMARegDef*>(DMA_BASE_ADDRESS))
 
 }  // namespace dma
+
 namespace iwdg {
 struct IWDGRegDef {
     RegWidth_t KR;
