@@ -8,9 +8,11 @@
  * 
  */
 #include "mcal/inc/stm32f103xx.h"
+#include "utils/inc/Types.h"
 #include "mcal/inc/Systick.h"
 #include "utils/inc/Assert.h"
 
+using namespace stm32::utils::types;
 using namespace stm32::dev::mcal::systick;  // NOLINT[build/namespaces]
 using namespace stm32::registers::systick;  // NOLINT[build/namespaces]
 
@@ -42,12 +44,12 @@ void Systick::delay_micro_s(CLKSource clksource, uint32_t value) {
     while (SYSTICK->CTRL.COUNTFLAG == 0) {}
     SYSTICK->CTRL.COUNTFLAG = 0;
 }
-void Systick::Counter(CLKSource clksource, uint32_t value, void (*func)(void)) {
+void Systick::Counter(CLKSource clksource, uint32_t value, pFunction * func) {
     STM32_ASSERT(func != NULL && value <= SYSTICK_MAX_VALUE);
     SYSTICK->CTRL.CLKSOURCE = clksource;
     SYSTICK->CTRL.TICKINT = 1;
     SYSTICK->LOAD = value;
-    PointerToISR = func;
+    PointerToISR = *func;
 }
 uint32_t Systick::GetElapsedTime(void) {
     return SYSTICK->LOAD - SYSTICK->VAL;

@@ -19,6 +19,7 @@ namespace types {
 
 using IO = volatile uint32_t;
 using RegWidth_t = uint32_t;
+using pFunction = void(*)();
 
 }  // namespace types
 }  // namespace utils
