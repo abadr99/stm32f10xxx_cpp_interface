@@ -19,17 +19,17 @@ using namespace stm32::utils::bit_manipulation;  // NOLINT [build/namespaces]
 using namespace stm32::dev::mcal::systick;  // NOLINT [build/namespaces]
 using namespace stm32::registers::systick;  // NOLINT [build/namespaces]
 
-TEST(SystickTest, delay_ms) {
+TEST(SystickTest, Delay_ms) {
     Systick s;
     SYSTICK->CTRL.COUNTFLAG = 1;
-    s.delay_ms(kAHB_Div_8, 1);
+    Systick::Delay_ms(kAHB_Div_8, 1);
     EXPECT_EQ(0b001,           (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));   // NOLINT
     EXPECT_EQ(1000, SYSTICK->LOAD);
 }
-TEST(SystickTest, delay_micro_s) {
+TEST(SystickTest, Delay_micro_s) {
     Systick s;
     SYSTICK->CTRL.COUNTFLAG = 1;
-    s.delay_micro_s(kAHB, 10);
+    Systick::Delay_micro_s(kAHB, 10);
     EXPECT_EQ(0b101,           (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));   // NOLINT
     EXPECT_EQ(10, SYSTICK->LOAD);
 }
