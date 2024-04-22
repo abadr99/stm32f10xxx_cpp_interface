@@ -30,7 +30,7 @@ ASSERT_MEMBER_OFFSET(SystickRegDef, VAL,          sizeof(RegWidth_t) * 2);
 /*Global Pointer to Function isr*/
 static void(*PointerToISR)(void) = NULL;
 
-Systick::Systick() {
+void Systick::Enable(void) {
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->CTRL.TICKINT = 0;
 }

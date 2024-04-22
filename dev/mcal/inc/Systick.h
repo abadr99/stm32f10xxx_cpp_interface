@@ -22,7 +22,7 @@ enum CLKSource {
 };
 class Systick {
  public:
-    Systick();
+    static void Enable(void);
     static void Delay_ms(CLKSource clksource, uint32_t value);
     static void Delay_micro_s(CLKSource clksource, uint32_t value);
     static void Delay_By_Exception(CLKSource clksource, uint32_t value, pFunction * func);
