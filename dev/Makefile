@@ -22,6 +22,7 @@ cpplint:
 # ------------------------------------------
 build: $(OBJS) 
 	$(CXX) $(CXX_FLAGS) $(OBJS) ./main.cpp $(LDFLAGS) -T build/$(MCU).ld -o $(ELF_TARGET)
+	$(OBJ_COPY) $(OBJ_COPY_OPTS) $(ELF_TARGET) $(HEX_TARGET)
 	@echo "\n[Makefile][build] : Compiled successfully."
 
 # ------------------------------------------
@@ -29,8 +30,15 @@ build: $(OBJS)
 # make opt-build
 # ------------------------------------------
 build-opt: $(OBJS) 
-	@$(CXX) $(OPT_CXX_FLAGS) $(OBJS) ./main.cpp -o $(ELF_TARGET)
+	$(CXX) $(OPT_CXX_FLAGS) $(OBJS) ./main.cpp -o $(ELF_TARGET)
 	@echo "\n[Makefile][opt-build] : Compiled successfully."	
+
+# ------------------------------------------
+# Rule to upload hex file to mcu
+# make upload
+# ------------------------------------------
+upload:
+	$(FLASH) write $(ELF_TARGET) 0x08000000 
 
 clean:
 	@rm -rf *.o
