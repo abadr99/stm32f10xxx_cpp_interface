@@ -23,13 +23,13 @@ TEST(SystickTest, Delay_ms) {
     Systick s;
     SYSTICK->CTRL.COUNTFLAG = 1;
     Systick::Delay_ms(kAHB_Div_8, 1);
-    EXPECT_EQ(0b001,           (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));   // NOLINT
+    EXPECT_EQ(0b001, (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));
     EXPECT_EQ(1000, SYSTICK->LOAD);
 }
 TEST(SystickTest, Delay_micro_s) {
     Systick s;
     SYSTICK->CTRL.COUNTFLAG = 1;
     Systick::Delay_micro_s(kAHB, 10);
-    EXPECT_EQ(0b101,           (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));   // NOLINT
+    EXPECT_EQ(0b101, (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));
     EXPECT_EQ(10, SYSTICK->LOAD);
 }
