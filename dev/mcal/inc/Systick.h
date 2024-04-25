@@ -20,13 +20,16 @@ enum CLKSource {
     kAHB_Div_8,
     kAHB
 };
+
 class Systick {
  public:
     static void Enable(void);
     static void Delay_ms(CLKSource clksource, uint32_t value);
-    static void Delay_micro_s(CLKSource clksource, uint32_t value);
-    static void Delay_By_Exception(CLKSource clksource, uint32_t value, pFunction * func);
-    uint32_t GetElapsedTime(void);
+    static void Delay_us(CLKSource clksource, uint32_t value);
+    static void Delay_By_Exception(CLKSource clksource, uint32_t value, pFunction func);
+    uint32_t GetElapsedTime();
+ private:
+    static pFunction PointerToISR;
 };
 
 
@@ -34,8 +37,5 @@ class Systick {
 }  // namespace mcal
 }  // namespace dev
 }  // namespace stm32
-// Name function
-// static
-// function 
 
 #endif  // DEV_MCAL_INC_SYSTICK_H_
