@@ -27,6 +27,7 @@ ASSERT_MEMBER_OFFSET(SystickRegDef, VAL,  sizeof(RegWidth_t) * 2);
 
 #define SYSTICK_MAX_VALUE   GetOnes<uint32_t>(24)  //  24 bit
 
+pFunction Systick::PointerToISR = nullptr;
 
 void Systick::Set_PointerToISR(pFunction func) {
     Systick::PointerToISR = func;
