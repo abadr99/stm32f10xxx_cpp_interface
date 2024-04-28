@@ -23,11 +23,14 @@ enum CLKSource {
 
 class Systick {
  public:
-    static void Enable(void);
-    static void Delay_ms(CLKSource clksource, uint32_t value);
-    static void Delay_us(CLKSource clksource, uint32_t value);
-    static void Delay_By_Exception(CLKSource clksource, uint32_t value, pFunction func);
+    static void Enable(CLKSource clksource);
+    static void Delay_ms(uint32_t value);
+    static void Delay_us(uint32_t value);
+    static void Delay_By_Exception(uint32_t value, pFunction func);
     uint32_t GetElapsedTime();
+    static void Disable();
+    static void Set_PointerToISR(pFunction func);
+    static pFunction Get_PointerToISR();
  private:
     static pFunction PointerToISR;
 };

@@ -27,43 +27,53 @@ ASSERT_MEMBER_OFFSET(SystickRegDef, VAL,  sizeof(RegWidth_t) * 2);
 
 #define SYSTICK_MAX_VALUE   GetOnes<uint32_t>(24)  //  24 bit
 
-/*Global Pointer to Function isr*/
-pFunction Systick::PointerToISR = nullptr;
 
-void Systick::Enable(void) {
-    SYSTICK->CTRL.ENABLE = 1;
-    SYSTICK->CTRL.TICKINT = 0;
+void Systick::Set_PointerToISR(pFunction func) {
+    Systick::PointerToISR = func;
+}
+pFunction Systick::Get_PointerToISR() {
+    return Systick::PointerToISR;
 }
 
-void Systick::Delay_ms(CLKSource clksource, uint32_t value) {
-    STM32_ASSERT((value*1000) <= SYSTICK_MAX_VALUE);
+void Systick::Enable(CLKSource clksource) {
+    SYSTICK->CTRL.ENABLE = 1;
+    SYSTICK->CTRL.TICKINT = 0;
     SYSTICK->CTRL.CLKSOURCE = clksource;
+    Set_PointerToISR(nullptr);
+}
+
+void Systick::Delay_ms(uint32_t value) {
+    STM32_ASSERT((value*1000) <= SYSTICK_MAX_VALUE);
     SYSTICK->LOAD = value * 1000;
     while (SYSTICK->CTRL.COUNTFLAG == 0) {}
     SYSTICK->CTRL.COUNTFLAG = 0;
 }
 
-void Systick::Delay_us(CLKSource clksource, uint32_t value) {
+void Systick::Delay_us(uint32_t value) {
     STM32_ASSERT(value <= SYSTICK_MAX_VALUE);
-    SYSTICK->CTRL.CLKSOURCE = clksource;
     SYSTICK->LOAD = value;
     while (SYSTICK->CTRL.COUNTFLAG == 0) {}
     SYSTICK->CTRL.COUNTFLAG = 0;
 }
 
-void Systick::Delay_By_Exception(CLKSource clksource, uint32_t value, pFunction func) {
+void Systick::Delay_By_Exception(uint32_t value, pFunction func) {
     STM32_ASSERT(func != NULL && value <= SYSTICK_MAX_VALUE);
-    SYSTICK->CTRL.CLKSOURCE = clksource;
     SYSTICK->CTRL.TICKINT = 1;
     SYSTICK->LOAD = value;
-    PointerToISR = func;
+    Set_PointerToISR(func);
 }
 
 uint32_t Systick::GetElapsedTime() {
     return SYSTICK->LOAD - SYSTICK->VAL;
 }
 
+void Systick::Disable() {
+    SYSTICK->CTRL.ENABLE = 0;
+    SYSTICK->CTRL.CLKSOURCE = kAHB;
+    Set_PointerToISR(nullptr);
+}
+
 // void SysTick_Handler(void) {
-//     PointerToISR();
+//     Get_PointerToISR()();
 //     SYSTICK->CTRL.COUNTFLAG = 0;
 // }
