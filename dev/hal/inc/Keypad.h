@@ -10,13 +10,13 @@
  */
 #ifndef DEV_HAL_INC_KEYPAD_H_
 #define DEV_HAL_INC_KEYPAD_H_
-
-template<uint8_t row, uint8_t coloumn>
+using namespace stm32::dev::mcal::pin; 
+using namespace stm32::dev::mcal::gpio;
+template<uint8_t Rows, uint8_t Columns>
 class Keypad {
  public:
       void KeypadInit();
- private:
-      Pin KeypadRow[row];
-      pin KeypadCol[coloumn];
+      Pin KeypadRow[Rows];
+      Pin KeypadCol[Columns];
 };
 #endif  //  DEV_HAL_INC_KEYPAD_H_
