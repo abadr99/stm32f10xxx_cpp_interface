@@ -20,6 +20,7 @@
 
 #define AFIO_BASE_ADDRESS   (0x40010000)
 
+#define SYSTICK_BASE_ADDRESS  (0xE000E010)
 namespace stm32 {
 namespace registers {
 namespace rcc {
