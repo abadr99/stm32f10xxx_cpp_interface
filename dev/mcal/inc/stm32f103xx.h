@@ -15,10 +15,10 @@
 #ifdef UNIT_TEST
 #include "../../../tests/unittests/mcal/BaseAddress-test.h"
 #else
-#include "mcal/inc/BaseAddress.h"
+#include "BaseAddress.h"
 #endif
 
-#include "utils/inc/Types.h"
+#include "../../utils/inc/Types.h"
 
 using RegWidth_t = stm32::utils::types::RegWidth_t;
 namespace stm32 {
