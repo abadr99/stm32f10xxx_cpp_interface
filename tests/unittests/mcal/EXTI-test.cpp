@@ -1,9 +1,9 @@
 /**
- * @file GPIO-test.cpp
- * @author Mohamed Refat
+ * @file EXTI-test.cpp
+ * @author Manar
  * @brief 
  * @version 0.1
- * @date 2024-04-18
+ * @date 2024-04-29
  * 
  * @copyright Copyright (c) 2024
  * 
@@ -14,6 +14,7 @@
 #include "mcal/inc/Pin.h"
 
 using namespace stm32::utils::bit_manipulation;
-using namespace stm32::registers::gpio;
+using namespace stm32::registers::exti;
 
-volatile GpioRegDef *GPIOx[3] = {GPIOA, GPIOB, GPIOC};
+uint32_t AFIOReg[7] = {0x0};
+uint32_t EXTIReg[6] = {0x0};

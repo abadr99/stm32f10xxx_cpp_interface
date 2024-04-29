@@ -22,11 +22,17 @@
 
 #define SYSTICK_BASE_ADDRESS  (&SYSTICKReg[0])
 
+#define AFIO_BASE_ADDRESS  (&AFIOReg[0])
+#define EXTI_BASE_ADDRESS  (&EXTIReg[0])
+
 extern uint32_t RccReg[10];
 extern uint32_t GPIOAReg[7];
 extern uint32_t GPIOBReg[7];
 extern uint32_t GPIOCReg[7];
 extern uint32_t SYSTICKReg[3];
+
+extern uint32_t AFIOReg[7];
+extern uint32_t EXTIReg[6];
 
 
 #endif  // TESTS_UNITTESTS_MCAL_BASEADDRESS_TEST_H_
