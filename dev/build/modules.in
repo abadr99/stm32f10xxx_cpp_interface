@@ -2,3 +2,4 @@ mcal/Rcc.cpp
 mcal/Pin.cpp
 mcal/Systick.cpp
 mcal/Gpio.cpp
+mcal/Spi.cpp
