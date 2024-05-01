@@ -12,6 +12,10 @@
 #define DEV_HAL_INC_KEYPAD_H_
 using namespace stm32::dev::mcal::pin; 
 using namespace stm32::dev::mcal::gpio;
+namespace stm32 {
+namespace dev {
+namespace hal {
+namespace keypad {
 template<uint8_t Rows, uint8_t Columns>
 class Keypad {
  public:
@@ -23,4 +27,8 @@ class Keypad {
       Pin KeypadRow[Rows];
       Pin KeypadCol[Columns];
 };
+}  // namespace keypad
+}  // namespace hal
+}  // namespace dev
+}  // namespace stm32
 #endif  //  DEV_HAL_INC_KEYPAD_H_

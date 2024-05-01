@@ -13,8 +13,10 @@
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
 #include "hal/inc/Keypad.h"
+
 using  namespace stm32::dev::mcal::pin;
 using  namespace stm32::dev::mcal::gpio;
+using namespace stm32::dev::hal::keypad;
 
 template<uint8_t Rows, uint8_t Columns>
 void Keypad<Rows, Columns>::SetRowArr(Pin rows[Rows]) {
