@@ -231,9 +231,39 @@ struct SpiRegDef {
         };
         RegWidth_t registerVal;  //  CR1
     }CR1;
+    union CR2 {
+        struct {
+            RegWidth_t RXDMAEN    :1;   //  Rx buffer DMA enable
+            RegWidth_t TXDMAEN    :1;   //  Tx buffer DMA enable
+            RegWidth_t SSOE       :1;   //  SS output enable
+            RegWidth_t            :2;   //  Reserved
+            RegWidth_t ERRIE      :1;   //  Error interrupt enable
+            RegWidth_t RXNEIE     :1;   //  RX buffer not empty interrupt enable
+            RegWidth_t TXEIE      :1;   //  TX buffer empty interrupt enable
+            RegWidth_t            :8;   //  Reserved bits 15:8
+        };
+        RegWidth_t registerVal;  //  CR2
+    }CR2;
+    union SR {
+        struct {
+            RegWidth_t RXNE       :1;   //  Receive buffer not empty
+            RegWidth_t TXE        :1;   //  Transmit buffer empty
+            RegWidth_t CHSIDE     :1;   //  Channel side
+            RegWidth_t UDR        :1;   //  Underrun flag
+            RegWidth_t CRCERR     :1;   //  CRC error flag
+            RegWidth_t MODF       :1;   //  Mode fault
+            RegWidth_t OVR        :1;   //  Overrun flag
+            RegWidth_t BSY        :1;   //  Busy flag
+            RegWidth_t            :8;   //  Reserved bits 15:8
+        };
+        RegWidth_t registerVal;  // SR
+    }SR;
+    RegWidth_t DR;
+    RegWidth_t CRC;
+    RegWidth_t RXCRCR;
+    RegWidth_t TXCRCR;
 };
 #define SPI (reinterpret_cast<volatile SpiRegDef*>(SPI_BASE_ADDRESS))
-
 }  // namespace spi
 }  // namespace registers
 }  // namespace stm32
