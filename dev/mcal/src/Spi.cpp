@@ -19,6 +19,71 @@ using namespace stm32::registers::spi;
 
 void Spi::SpiMasterInit(const SpiConfig& config) {
     // baud rate
+    Helper_MasterBaudRate(config);
+    // CPOL & CPHA
+    Helper_SetClockMode(config);
+    // DDF
+    Helper_SetDataFrame(config);
+    // LSBFIRST
+    Helper_SetFrameFormat(config);
+    // HW or SW slave manage
+    if (config.slave == HW) {
+        SPI->CR1.SSM = 0;
+    } else if (config.slave == SW) {
+        SPI->CR1.SSM = 1;
+        SPI->CR1.SSI = 1;
+    }
+    // set master
+    SPI->CR1.SPE = 1;
+    SPI->CR1.MSTR = 1;
+}
+void Spi::SpiSlaveInit(const SpiConfig& config) {
+    // DDF
+    Helper_SetDataFrame(config);
+    // CPOL & CPHA
+    Helper_SetClockMode(config);
+    // LSBFIRST
+    Helper_SetFrameFormat(config);
+    // HW or SW slave manage
+    if (config.slave == HW) {
+        SPI->CR1.SSM = 0;
+    } else if (config.slave == SW) {
+        SPI->CR1.SSM = 1;
+        SPI->CR1.SSI = 0;
+    }
+    // set salve
+    SPI->CR1.SPE = 1;
+    SPI->CR1.MSTR = 0;
+}
+void Spi::Helper_SetDataFrame(const SpiConfig& config) {
+    if (config.data == SPI_8bit) {
+        SPI->CR1.DFF = 0;
+    } else if (config.data == SPI_16bt) {
+        SPI->CR1.DFF = 1;
+    }
+}
+void Spi::Helper_SetClockMode(const SpiConfig& config) {
+    if (config.clk == MODE0) {
+        SPI->CR1.registerVal &= ~(0x03);
+    } else if (config.clk == MODE1) {
+        SPI->CR1.registerVal &= ~(0x03);
+        SPI->CR1.registerVal |=  (0x01);
+    } else if (config.clk == MODE2) {
+        SPI->CR1.registerVal &= ~(0x03);
+        SPI->CR1.registerVal |=  (0x02);
+    } else if (config.clk == MODE3) {
+        SPI->CR1.registerVal &= ~(0x03);
+        SPI->CR1.registerVal |=  (0x03);
+    } 
+}
+void Spi::Helper_SetFrameFormat(const SpiConfig& config) {
+    if (config.frame == MSB) {
+        SPI->CR1.LSBFIRST = 0;
+    } else if (config.frame == LSB) {
+        SPI->CR1.LSBFIRST = 1;
+    }
+}
+void Spi::Helper_MasterBaudRate(const SpiConfig& config) {
     if (config.br == F_DIV_2) {
         SPI->CR1.BR = 0;
     } else if (config.br == F_DIV_4) {
@@ -36,36 +101,4 @@ void Spi::SpiMasterInit(const SpiConfig& config) {
     } else if (config.br == F_DIV_256) {
         SPI->CR1.BR = 7;
     }
-    // CPOL & CPHA
-    if (config.clk == MODE0) {
-        SPI->CR1.registerVal &= ~(0x03);
-    } else if (config.clk == MODE1) {
-        SPI->CR1.registerVal &= ~(0x03);
-        SPI->CR1.registerVal |=  (0x01);
-    } else if (config.clk == MODE2) {
-        SPI->CR1.registerVal &= ~(0x03);
-        SPI->CR1.registerVal |=  (0x02);
-    } else if (config.clk == MODE3) {
-        SPI->CR1.registerVal &= ~(0x03);
-        SPI->CR1.registerVal |=  (0x03);
-    }
-    // DDF
-    if (config.data == SPI_8bit) {
-        SPI->CR1.DFF = 0;
-    } else if (config.data == SPI_16bt) {
-        SPI->CR1.DFF = 1;
-    }
-    // LSBFIRST
-    if (config.frame == MSB) {
-        SPI->CR1.LSBFIRST = 0;
-    } else if (config.frame == LSB) {
-        SPI->CR1.LSBFIRST = 1;
-    }
-    if (config.slave == HW) {
-        SPI->CR1.SSM = 0;
-    } else if (config.slave == SW) {
-        SPI->CR1.SSM = 1;
-    }
-    // set 
-    SPI->CR1.SPE = 1;
 }

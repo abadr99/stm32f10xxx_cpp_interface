@@ -56,6 +56,11 @@ class Spi {
     static void SpiSlaveInit(const SpiConfig& config);
     static void SpiWrite(uint8_t data);
     static uint8_t SpiRead();
+ private:
+    static void Helper_SetDataFrame(const SpiConfig& config);
+    static void Helper_SetClockMode(const SpiConfig& config);
+    static void Helper_SetFrameFormat(const SpiConfig& config);
+    static void Helper_MasterBaudRate(const SpiConfig& config);
 };
 }   // namespace spi
 }   // namespace mcal
