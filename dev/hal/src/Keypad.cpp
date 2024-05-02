@@ -9,6 +9,7 @@
  */
 
 #include <stdint.h>
+#include <cstdlib>
 #include "mcal/inc/stm32f103xx.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
@@ -18,36 +19,51 @@ using  namespace stm32::dev::mcal::pin;
 using  namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::keypad;
 
-template<uint8_t Rows, uint8_t Columns>
-void Keypad<Rows, Columns>::SetRowArr(Pin rows[Rows]) {
-    for (uint8_t numRow =0 ; numRow <Rows; numRow++) {
+Keypad::Keypad(uint8_t numRows, uint8_t numCols) {
+    rowsNum = numRows;
+    colNum = numCols;
+    KeypadRow = static_cast<Pin*>(malloc(rowsNum * sizeof(Pin)));
+    KeypadCol = static_cast<Pin*>(malloc(colNum * sizeof(Pin)));
+}
+
+void Keypad::SetRowArr(Pin* rows) {
+    for (uint8_t numRow =0 ; numRow <rowsNum; numRow++) {
         KeypadRow[numRow] = rows[numRow];
     }
 }
-template<uint8_t Rows, uint8_t Columns>
-void Keypad<Rows, Columns>::setColArr(Pin cols[Columns]) {
-    for (uint8_t numCol =0; numCol <Columns; numCol++) {
+
+void Keypad::setColArr(Pin* cols) {
+    for (uint8_t numCol =0; numCol <colNum; numCol++) {
         KeypadCol[numCol] = cols[numCol];
     }
 }
-template<uint8_t Rows, uint8_t Columns>
-void Keypad<Rows, Columns>::KeypadInit() {
-    for (uint8_t numRow =0 ; numRow <Rows; numRow++) {
-        SetInputMode(KeypadRow[numRow], InputMode::kPullup);
+
+void Keypad::KeypadInit() {
+    for (uint8_t numRow =0 ; numRow <rowsNum; numRow++) {
+        Gpio::SetInputMode(KeypadRow[numRow], InputMode::kPullup);
     }
-    for (uint8_t numCol =0; numCol <Columns; numCol++) {
-        SetOutputMode(KeypadCol[numCol], OutputMode::kPushPull_2MHZ);
+    for (uint8_t numCol =0; numCol <colNum; numCol++) {
+        Gpio::SetOutputMode(KeypadCol[numCol], OutputMode::kPushPull_2MHZ);
     }
 }
-template<uint8_t Rows, uint8_t Columns>
-uint8_t Keypad<Rows, Columns>::GetPressed(uint8_t keypadButtons[Rows][Columns]) {
-    for (uint8_t numCol =0; numCol <Columns; numCol++) {
-        SetPinValue(KeypadCol[numCol], kLow);
-        for (uint8_t numRow =0 ; numRow <Rows; numRow++) {
-            if (GetPinValue(KeypadRow[numRow]) == kLow) {
-                return keypadButtons[numRow][numCol];
+
+uint8_t Keypad::GetPressed(uint8_t** keypadButtons) {
+    uint8_t buttonVal = 0xff;
+    for (uint8_t numCol =0; numCol <colNum; numCol++) {
+        Gpio::SetPinValue(KeypadCol[numCol], kLow);
+        for (uint8_t numRow =0 ; numRow <rowsNum; numRow++) {
+            if (Gpio::GetPinValue(KeypadRow[numRow]) == kLow) {
+                buttonVal = keypadButtons[numRow][numCol];
             }
+            while (Gpio::GetPinValue(KeypadRow[numRow]) == kLow) {
+            }
+            return buttonVal;
         }
-        SetPinValue(KeypadCol[numCol], kHigh);
+        Gpio::SetPinValue(KeypadCol[numCol], kHigh);
     }
+    return buttonVal;
+}
+Keypad::~Keypad() {
+    free(KeypadRow);
+    free(KeypadCol);
 }

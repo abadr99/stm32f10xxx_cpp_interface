@@ -16,16 +16,20 @@ namespace stm32 {
 namespace dev {
 namespace hal {
 namespace keypad {
-template<uint8_t Rows, uint8_t Columns>
+
 class Keypad {
  public:
-      void SetRowArr(Pin rows[Rows]);
-      void setColArr(Pin cols[Columns]);
+      Keypad(uint8_t numRows, uint8_t numCols);
+      ~Keypad();
+      void SetRowArr(Pin* rows);
+      void setColArr(Pin* cols);
       void KeypadInit();
-      uint8_t GetPressed(uint8_t keypadButtons[Rows][Columns]);
+      uint8_t GetPressed(uint8_t** keypadButtons);
  private:
-      Pin KeypadRow[Rows];
-      Pin KeypadCol[Columns];
+      uint8_t rowsNum;
+      uint8_t colNum;
+      Pin* KeypadRow;
+      Pin* KeypadCol;
 };
 }  // namespace keypad
 }  // namespace hal
