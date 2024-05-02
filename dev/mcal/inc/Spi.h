@@ -32,10 +32,28 @@ enum SlaveManage {
     HW,
     SW,
 };
+enum BaudRate {
+    F_DIV_2,
+    F_DIV_4,
+    F_DIV_8,
+    F_DIV_16,
+    F_DIV_32,
+    F_DIV_64,
+    F_DIV_128,
+    F_DIV_256,
+};
+struct SpiConfig {
+    DataFrame data;
+    FrameFormat frame;
+    ClkMode clk;
+    SlaveManage slave;
+    BaudRate br;
+};
+
 class Spi {
  public:
-    static void SpiMasterInit(const DataFrame data, const FrameFormat frame, ClkMode clk, SlaveManage slave); // NOLINT
-    static void SpiSlaveInit(const DataFrame data, const FrameFormat frame, ClkMode clk);
+    static void SpiMasterInit(const SpiConfig& config);
+    static void SpiSlaveInit(const SpiConfig& config);
     static void SpiWrite(uint8_t data);
     static uint8_t SpiRead();
 };

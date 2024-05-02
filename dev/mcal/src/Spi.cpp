@@ -17,33 +17,55 @@ using namespace stm32::utils::bit_manipulation;
 using namespace stm32::dev::mcal::spi;
 using namespace stm32::registers::spi;
 
-void Spi::SpiMasterInit(const DataFrame data, const FrameFormat frame, ClkMode clk, SlaveManage slave) { // NOLINT
-    // it's missed baud rate and enable
-    if (clk == MODE0) {
+void Spi::SpiMasterInit(const SpiConfig& config) {
+    // baud rate
+    if (config.br == F_DIV_2) {
+        SPI->CR1.BR = 0;
+    } else if (config.br == F_DIV_4) {
+        SPI->CR1.BR = 1;
+    } else if (config.br == F_DIV_8) {
+        SPI->CR1.BR = 2;
+    } else if (config.br == F_DIV_16) {
+        SPI->CR1.BR = 3;
+    } else if (config.br == F_DIV_32) {
+        SPI->CR1.BR = 4;
+    } else if (config.br == F_DIV_64) {
+        SPI->CR1.BR = 5;
+    } else if (config.br == F_DIV_128) {
+        SPI->CR1.BR = 6;
+    } else if (config.br == F_DIV_256) {
+        SPI->CR1.BR = 7;
+    }
+    // CPOL & CPHA
+    if (config.clk == MODE0) {
         SPI->CR1.registerVal &= ~(0x03);
-    } else if (clk == MODE1) {
+    } else if (config.clk == MODE1) {
         SPI->CR1.registerVal &= ~(0x03);
         SPI->CR1.registerVal |=  (0x01);
-    } else if (clk == MODE2) {
+    } else if (config.clk == MODE2) {
         SPI->CR1.registerVal &= ~(0x03);
         SPI->CR1.registerVal |=  (0x02);
-    } else if (clk == MODE3) {
+    } else if (config.clk == MODE3) {
         SPI->CR1.registerVal &= ~(0x03);
         SPI->CR1.registerVal |=  (0x03);
     }
-    if (data == SPI_8bit) {
+    // DDF
+    if (config.data == SPI_8bit) {
         SPI->CR1.DFF = 0;
-    } else if (data == SPI_16bt) {
+    } else if (config.data == SPI_16bt) {
         SPI->CR1.DFF = 1;
     }
-    if (frame == MSB) {
+    // LSBFIRST
+    if (config.frame == MSB) {
         SPI->CR1.LSBFIRST = 0;
-    } else if (frame == LSB) {
+    } else if (config.frame == LSB) {
         SPI->CR1.LSBFIRST = 1;
     }
-    if (slave == HW) {
+    if (config.slave == HW) {
         SPI->CR1.SSM = 0;
-    } else if (slave == SW) {
+    } else if (config.slave == SW) {
         SPI->CR1.SSM = 1;
     }
+    // set 
+    SPI->CR1.SPE = 1;
 }

@@ -213,21 +213,21 @@ namespace spi {
 struct SpiRegDef {
     union CR1 {
         struct {
-            uint32_t CPHA      : 1;   //  Clock Phase
-            uint32_t CPOL      : 1;   //  Clock Polarity
-            uint32_t MSTR      : 1;   //  Master Selection
-            uint32_t BR        : 3;   //  Baud Rate Control
-            uint32_t SPE       : 1;   //  SPI Enable
-            uint32_t LSBFIRST  : 1;   //  Frame Format
-            uint32_t SSI       : 1;   //  Internal Slave Select
-            uint32_t SSM       : 1;   //  Software Slave Management
-            uint32_t RXONLY    : 1;   //  Receive Only
-            uint32_t DFF       : 1;   //  Data Frame Format
-            uint32_t CRCNEXT   : 1;   //  Transmit CRC Next
-            uint32_t CRCEN     : 1;   //  Hardware CRC Calculation Enable
-            uint32_t BIDIOE    : 1;   //  Output Enable in Bidirectional Mode
-            uint32_t BIDIMODE  : 1;   //  Bidirectional Data Mode Enable
-            uint32_t           : 16;  //  Reserved
+            RegWidth_t CPHA      : 1;   //  Clock Phase
+            RegWidth_t CPOL      : 1;   //  Clock Polarity
+            RegWidth_t MSTR      : 1;   //  Master Selection
+            RegWidth_t BR        : 3;   //  Baud Rate Control
+            RegWidth_t SPE       : 1;   //  SPI Enable
+            RegWidth_t LSBFIRST  : 1;   //  Frame Format
+            RegWidth_t SSI       : 1;   //  Internal Slave Select
+            RegWidth_t SSM       : 1;   //  Software Slave Management
+            RegWidth_t RXONLY    : 1;   //  Receive Only
+            RegWidth_t DFF       : 1;   //  Data Frame Format
+            RegWidth_t CRCNEXT   : 1;   //  Transmit CRC Next
+            RegWidth_t CRCEN     : 1;   //  Hardware CRC Calculation Enable
+            RegWidth_t BIDIOE    : 1;   //  Output Enable in Bidirectional Mode
+            RegWidth_t BIDIMODE  : 1;   //  Bidirectional Data Mode Enable
+            RegWidth_t           : 16;  //  Reserved
         };
         RegWidth_t registerVal;  //  CR1
     }CR1;
