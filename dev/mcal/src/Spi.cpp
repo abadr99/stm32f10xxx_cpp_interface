@@ -55,6 +55,16 @@ void Spi::SpiSlaveInit(const SpiConfig& config) {
     SPI->CR1.SPE = 1;
     SPI->CR1.MSTR = 0;
 }
+void Spi::SpiWrite(uint8_t data) {
+    SPI->DR = data;
+    while (SPI->SR.BSY) {
+    }
+}
+uint8_t Spi::SpiRead() {
+    while (SPI->SR.BSY) {
+    }
+    return SPI->DR;
+}
 void Spi::Helper_SetDataFrame(const SpiConfig& config) {
     if (config.data == SPI_8bit) {
         SPI->CR1.DFF = 0;
