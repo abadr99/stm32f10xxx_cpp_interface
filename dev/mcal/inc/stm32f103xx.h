@@ -15,10 +15,10 @@
 #ifdef UNIT_TEST
 #include "../../../tests/unittests/mcal/BaseAddress-test.h"
 #else
-#include "mcal/inc/BaseAddress.h"
+#include "BaseAddress.h"
 #endif
 
-#include "utils/inc/Types.h"
+#include "../../utils/inc/Types.h"
 
 using RegWidth_t = stm32::utils::types::RegWidth_t;
 namespace stm32 {
@@ -124,7 +124,6 @@ struct GpioRegDef {
 #define GPIOC  (reinterpret_cast<volatile GpioRegDef*>(GPIOC_BASE_ADDRESS))
 
 }  // namespace gpio
-
 namespace nvic {
 /**
  * @brief Structure defining NVIC Register Definitions
@@ -172,8 +171,6 @@ struct  SCBRegDef {
 #define SCB    (reinterpret_cast<volatile SCBRegDef*>(SCB_BASE_ADDRESS))
 
 }  // namespace nvic
-
-
 namespace afio {
 /**
  * @brief Structure defining AFIO (Alternate Function I/O) Register Definitions
@@ -238,7 +235,26 @@ struct AfioRegDef {
 };
 
 }  // namespace afio
+namespace systick {
+struct SystickRegDef {
+    union CTRL {
+        struct {
+            RegWidth_t ENABLE   :1;   // Counter enable
+            RegWidth_t TICKINT  :1;   // SysTick exception request enable
+            RegWidth_t CLKSOURCE:1;   // Clock source selection
+            RegWidth_t          :13;  // Reserved
+            RegWidth_t COUNTFLAG:1;   // Counter flag
+            RegWidth_t          :15;  // Reserved
+        };
+        RegWidth_t registerVal;  // CTRL
+    }CTRL;
 
+    RegWidth_t LOAD;  // Reload value
+    RegWidth_t VAL;   // Current value
+};
+#define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(SYSTICK_BASE_ADDRESS))  // NOLINT
+
+}  // namespace systick
 }  // namespace registers
 }  // namespace stm32
 

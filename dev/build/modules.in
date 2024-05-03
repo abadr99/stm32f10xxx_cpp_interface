@@ -1,4 +1,5 @@
 mcal/Rcc.cpp
 mcal/Pin.cpp
-mcal/Gpio.cpp
 mcal/Nvic.cpp
+mcal/Systick.cpp
+mcal/Gpio.cpp
