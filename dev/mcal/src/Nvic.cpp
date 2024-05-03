@@ -18,7 +18,7 @@ using namespace stm32::dev::mcal::nvic; // NOLINT[build/namespaces]
 using namespace stm32::registers::nvic; // NOLINT[build/namespaces]
 
 void Nvic::EnableInterrupt(interruptID id) {
-     NVIC->ISER[static_cast<uint32_t>(id) >> 5] = (1 << (static_cast<uint32_t>(id) & 0x1f));
+    NVIC->ISER[static_cast<uint32_t>(id) >> 5] = (1 << (static_cast<uint32_t>(id) & 0x1f));
 }
 void Nvic::DisableInterrupt(interruptID id) {
     NVIC->ICER[static_cast<uint32_t>(id) >> 5] = (1 << (static_cast<uint32_t>(id)) & 0x1f);
