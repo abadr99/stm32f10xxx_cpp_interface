@@ -29,10 +29,10 @@ class Systick {
     static void Delay_By_Exception(uint32_t value, pFunction func);
     uint32_t GetElapsedTime();
     static void Disable();
-    static void Set_PointerToISR(pFunction func);
-    static pFunction Get_PointerToISR();
  private:
     static pFunction PointerToISR;
+    static void Helper_SetPointerToISR(pFunction func);
+    static pFunction Helper_GetPointerToISR();
 };
 
 

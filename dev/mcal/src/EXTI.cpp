@@ -11,6 +11,7 @@
 #include "mcal/inc/stm32f103xx.h"
 #include "mcal/inc/Pin.h"
 #include "utils/inc/BitManipulation.h"
+#include "utils/inc/Assert.h"
 #include "mcal/inc/EXTI.h"
 
 using namespace stm32::registers::exti;
@@ -18,6 +19,16 @@ using namespace stm32::registers::afio;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::exti;
 using namespace stm32::utils::bit_manipulation;
+
+// Some asserts to make sure EXTI struct members are in correct orders
+ASSERT_STRUCT_SIZE(EXTIRegDef, (sizeof(RegWidth_t) * 6));
+
+ASSERT_MEMBER_OFFSET(EXTIRegDef, IMR, 0);
+ASSERT_MEMBER_OFFSET(EXTIRegDef, EMR,   sizeof(RegWidth_t) * 1);
+ASSERT_MEMBER_OFFSET(EXTIRegDef, RTSR,  sizeof(RegWidth_t) * 2);
+ASSERT_MEMBER_OFFSET(EXTIRegDef, FTSR,  sizeof(RegWidth_t) * 3);
+ASSERT_MEMBER_OFFSET(EXTIRegDef, SWIER, sizeof(RegWidth_t) * 4);
+ASSERT_MEMBER_OFFSET(EXTIRegDef, PR,    sizeof(RegWidth_t) * 5);
 
 void Exti::Enable(const EXTI_Config& config) {
     Exti::Helper_InitAFIOReg(config.line, config.port);
