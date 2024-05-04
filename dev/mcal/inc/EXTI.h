@@ -53,7 +53,10 @@ struct EXTI_Config {
     Line line;
     Trigger trigger;
 };
-
+/**
+ * @brief : Manage EXTIx.
+ * @note  : Don't forget to Enable NVIC Befor Using EXTIx.
+ */
 class Exti {
  public:
     static void Enable(const EXTI_Config& config);
@@ -62,7 +65,10 @@ class Exti {
     static void ClearPendingFlag(const EXTI_Config& config);
     uint8_t GetPendingFlag(const EXTI_Config& config);
  private:
-    static void Helper_InitAFIOReg(const EXTI_Config& config);
+    static void Helper_InitAFIOReg(Line line, Port port);
+    static void Helper_SetTrigger(Line line, Trigger trigger);
+    static void Helper_ClrTrigger(Line line, Trigger trigger);
+    static uint8_t Helper_GetPendingBit(Line line);
 };
 
 }  // namespace exti
