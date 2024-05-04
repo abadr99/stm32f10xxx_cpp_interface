@@ -13,7 +13,7 @@
 #include "mcal/inc/Nvic.h"
 
 
-uint32_t NvicReg[7] = {};
+uint32_t NvicReg[905] = {};
 uint32_t ScbReg[18] = {};
 
 using namespace stm32::utils::bit_manipulation;
