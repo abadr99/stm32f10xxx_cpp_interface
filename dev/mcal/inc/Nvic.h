@@ -85,7 +85,7 @@ class Nvic {
     static void DisableInterrupt(interruptID id);
     static void SetPendingFlag(interruptID id);
     static void ClearPendingFlag(interruptID id);
-    bool GetActiveFlag(interruptID id);
+    static bool GetActiveFlag(interruptID id);
     static void SetPriority(interruptID id, uint8_t priority);
     static void SetPriorityGroup(PriorityGroup group);
 };
