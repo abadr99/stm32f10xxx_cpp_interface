@@ -10,8 +10,8 @@
  */
 #ifndef DEV_MCAL_INC_GPIO_H_
 #define DEV_MCAL_INC_GPIO_H_
-using namespace stm32::dev::mcal::pin;  // NOLINT[build/namespaces]
-using namespace stm32::registers::gpio; // NOLINT[build/namespaces]
+using namespace stm32::dev::mcal::pin;
+using namespace stm32::registers::gpio;
 namespace stm32 {
 namespace dev {
 namespace mcal {
