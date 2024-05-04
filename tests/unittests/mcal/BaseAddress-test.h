@@ -30,7 +30,7 @@ extern uint32_t GPIOAReg[7];
 extern uint32_t GPIOBReg[7];
 extern uint32_t GPIOCReg[7];
 
-extern uint32_t NvicReg[7];
+extern uint32_t NvicReg[905];
 extern uint32_t ScbReg[18];
 
 extern uint32_t SYSTICKReg[3];
