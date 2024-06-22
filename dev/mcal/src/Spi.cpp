@@ -14,6 +14,7 @@
 #include "mcal/inc/Spi.h"
 
 using namespace stm32::utils::bit_manipulation;
+using namespace stm32::registers::rcc; 
 using namespace stm32::dev::mcal::spi;
 using namespace stm32::registers::spi;
 
@@ -55,6 +56,10 @@ void Spi::SpiSlaveInit(const SpiConfig& config) {
     SPI->CR1.SPE = 1;
     SPI->CR1.MSTR = 0;
 }
+void Spi::SpiEnable() {
+    RCC->APB2ENR.SPI1EN = 1;
+}
+
 void Spi::SpiWrite(uint8_t data) {
     SPI->DR = data;
     while (SPI->SR.BSY) {
@@ -94,6 +99,7 @@ void Spi::Helper_SetFrameFormat(const SpiConfig& config) {
     }
 }
 void Spi::Helper_MasterBaudRate(const SpiConfig& config) {
+    STM32_ASSERT(config.br >= F_DIV_2 && config.br <= F_DIV_256);
     if (config.br == F_DIV_2) {
         SPI->CR1.BR = 0;
     } else if (config.br == F_DIV_4) {
