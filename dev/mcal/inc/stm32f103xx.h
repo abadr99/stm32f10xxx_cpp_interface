@@ -213,9 +213,7 @@ struct UsartRegDef {
     RegWidth_t SR;    //  Status register
     RegWidth_t DR;    //  Data register
     RegWidth_t BRR;   //  Baud rate register
-    RegWidth_t CR1;   //  Control register 1
-    RegWidth_t CR2;   //  Control register 2
-    RegWidth_t CR3;   //  Control register 3
+    RegWidth_t CR[3];   //  Control register 1
     RegWidth_t GTPR;  //  Guard time and prescaler register
 };
 #define USART (reinterpret_cast<volatile UsartRegDef*>(USART_BASE_ADDRESS))  // NOLINT
