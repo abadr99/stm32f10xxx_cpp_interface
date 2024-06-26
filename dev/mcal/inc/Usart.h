@@ -18,7 +18,7 @@ class Usart {
  public:
     static void Init(uint32_t baudRate, uint8_t wordLength, uint8_t parity, uint8_t stopBit);
     static void Transmit(uint8_t data);
-    static uint8_t Receive();
+    static uint8_t Receive(uint32_t timeout);
 };
 }   // namespace usart
 }   // namespace mcal

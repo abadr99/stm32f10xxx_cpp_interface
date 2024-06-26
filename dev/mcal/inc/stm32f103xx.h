@@ -210,10 +210,65 @@ struct SystickRegDef {
 }  // namespace systick
 namespace usart {
 struct UsartRegDef {
-    RegWidth_t SR;    //  Status register
+    union SR {
+      struct {
+        RegWidth_t PE      :1;     //  Parity error
+        RegWidth_t FE      :1;     //  Framing error
+        RegWidth_t NE      :1;     //  Noise error flag
+        RegWidth_t ORE     :1;     //  Overrun error
+        RegWidth_t IDLE    :1;     //  IDLE line detected
+        RegWidth_t RXNE    :1;     //  Read data register not empty
+        RegWidth_t TC      :1;     //  Transmission complete
+        RegWidth_t TXE     :1;     //  Transmit data register empty
+        RegWidth_t LBD     :1;     //  LIN break detection flag
+        RegWidth_t CTS     :1;     //  CTS flag
+        RegWidth_t        :21;     //  Reserved
+      };
+        RegWidth_t registerVal;     //  SR
+    }SR;    //  Status register
+    
     RegWidth_t DR;    //  Data register
     RegWidth_t BRR;   //  Baud rate register
-    RegWidth_t CR[3];   //  Control register 1
+    union CR1 {
+        struct {
+            RegWidth_t SBK     :1;     //  Send Break
+            RegWidth_t RWU     :1;     //  Receiver wakeup
+            RegWidth_t RE      :1;     //  Receiver enable
+            RegWidth_t TE      :1;     //  Transmitter enable
+            RegWidth_t IDLEIE  :1;     //  IDLE interrupt enable
+            RegWidth_t RXNEIE  :1;     //  RXNE interrupt enable
+            RegWidth_t TCIE    :1;     //  Transmission complete interrupt enable
+            RegWidth_t TXEIE   :1;     //  TXE interrupt enable
+            RegWidth_t PEIE    :1;     //  PE interrupt enable
+            RegWidth_t PS      :1;     //  Parity selection
+            RegWidth_t PCE     :1;     //  Parity control enable
+            RegWidth_t WAKE    :1;     //  Wakeup method
+            RegWidth_t M       :1;     //  Word length
+            RegWidth_t UE      :1;     //  USART enable
+            RegWidth_t         :17;    // Reserved
+        };
+        RegWidth_t registerVal;     //  CR1
+    }CR1;   //  Control register 1
+
+    union CR2 {
+        struct {
+            RegWidth_t ADD     :4;     //  Address of the USART node
+            RegWidth_t         :1;     //  Reserved
+            RegWidth_t LBDL    :1;     //  lin break detection length
+            RegWidth_t LBDIE   :1;     //  LIN break detection interrupt enable
+            RegWidth_t         :1;     //  Reserved
+            RegWidth_t LBCL    :1;     //  Last bit clock pulse
+            RegWidth_t CHPA    :1;     //  Clock phase
+            RegWidth_t CPOL    :1;     //  Clock polarity
+            RegWidth_t CLKEN   :1;     //  Clock enable
+            RegWidth_t STOP    :2;     //  STOP bits
+            RegWidth_t LINEN   :1;     //  LIN mode enable
+            RegWidth_t         :16;    // Reserved
+        };
+        RegWidth_t registerVal;     //  CR2
+    }CR2;   //  Control register 2
+
+    RegWidth_t CR3;   //  Control register 3
     RegWidth_t GTPR;  //  Guard time and prescaler register
 };
 #define USART (reinterpret_cast<volatile UsartRegDef*>(USART_BASE_ADDRESS))  // NOLINT
