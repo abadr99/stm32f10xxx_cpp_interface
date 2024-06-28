@@ -45,10 +45,10 @@ TEST(NvicTest, ClearPendingFlag) {
 }
 TEST(NvicTest, SetPriority) {
     Nvic::SetPriority(EXTI0, 5);
-    EXPECT_EQ(5,   (ExtractBits<uint32_t, 4,7>(NVIC->IPR[EXTI0])));
-    EXPECT_EQ(80,   (ExtractBits<uint32_t, 0,7>(NVIC->IPR[EXTI0])));
+    EXPECT_EQ(5,   (ExtractBits<uint32_t, 4, 7>(NVIC->IPR[EXTI0])));
+    EXPECT_EQ(80,   (ExtractBits<uint32_t, 0, 7>(NVIC->IPR[EXTI0])));
 }
 TEST(NvicTest, SetPriorityGroup) {
     Nvic::SetPriorityGroup(SCB_0GROUP_4SUBGROUP);
-    EXPECT_EQ(SCB_0GROUP_4SUBGROUP,   (ExtractBits<uint32_t, 0,31>(SCB->AIRCR)));
+    EXPECT_EQ(SCB_0GROUP_4SUBGROUP,   (ExtractBits<uint32_t, 0, 31>(SCB->AIRCR)));
 }
