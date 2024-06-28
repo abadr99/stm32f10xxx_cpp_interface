@@ -31,12 +31,12 @@ TEST(NvicTest, DisableInterrupt) {
     Nvic::DisableInterrupt(USART3);
     EXPECT_EQ(0,   (ExtractBits<uint32_t, 7>(NVIC->ICER[1])));
 }
-/*TEST(NvicTest, SetPendingFlag) {
+TEST(NvicTest, SetPendingFlag) {
     Nvic::SetPendingFlag(EXTI0);
     EXPECT_EQ(1,   (ExtractBits<uint32_t, 6>(NVIC->ISPR[0])));
     Nvic::SetPendingFlag(USART3);
     EXPECT_EQ(1,   (ExtractBits<uint32_t, 7>(NVIC->ISPR[1])));
-}*/
+}
 TEST(NvicTest, ClearPendingFlag) {
     Nvic::ClearPendingFlag(EXTI0);
     EXPECT_EQ(0,   (ExtractBits<uint32_t, 6>(NVIC->ICPR[0])));

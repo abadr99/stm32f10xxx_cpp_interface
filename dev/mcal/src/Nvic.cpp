@@ -24,7 +24,7 @@ void Nvic::DisableInterrupt(interruptID id) {
     NVIC->ICER[static_cast<uint32_t>(id) >> 5] = (1 << (static_cast<uint32_t>(id)) & 0x1f);
 }
 void Nvic::SetPendingFlag(interruptID id) {
-    NVIC->ISPR[static_cast<uint32_t>(id) >> 5] = (1 << (static_cast<uint32_t>(id)) & 0x1f);
+    NVIC->ISPR[static_cast<uint32_t>(id) >> 5] = (1 << ((static_cast<uint32_t>(id)) & 0x1f));
 }
 void Nvic::ClearPendingFlag(interruptID id) {
     NVIC->ICPR[static_cast<uint32_t>(id) >> 5] = (1 << (static_cast<uint32_t>(id)) & 0x1f);
