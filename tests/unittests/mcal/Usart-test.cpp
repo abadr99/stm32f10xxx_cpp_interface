@@ -13,8 +13,11 @@
 #include "mcal/inc/stm32f103xx.h"
 #include "mcal/inc/Usart.h"
 
-uint32_t USARTReg[7] = {0x0};
+uint32_t USART1Reg[7] ={};
+uint32_t USART2Reg[7] ={};
+uint32_t USART3Reg[7] ={};
 
 using namespace stm32::utils::bit_manipulation;
-using namespace stm32::dev::mcal::usart;
+using namespace stm32::dev::mcal::inc::usart;
 using namespace stm32::registers::usart;
+

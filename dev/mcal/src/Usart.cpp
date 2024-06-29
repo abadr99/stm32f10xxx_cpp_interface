@@ -15,6 +15,8 @@ using namespace stm32::registers::rcc;
 using namespace stm32::registers::usart;
 using namespace stm32::dev::mcal::inc::usart;
 
+volatile UsartRegDef* USARTx[3];
+
 ASSERT_STRUCT_SIZE(UsartRegDef, (sizeof(RegWidth_t) * 7));
 
 ASSERT_MEMBER_OFFSET(UsartRegDef, SR,         0);
@@ -25,7 +27,6 @@ ASSERT_MEMBER_OFFSET(UsartRegDef, CR2,         sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(UsartRegDef, CR3,         sizeof(RegWidth_t) * 5);
 ASSERT_MEMBER_OFFSET(UsartRegDef, GTPR,        sizeof(RegWidth_t) * 6);
 
-extern volatile UsartRegDef* USARTX[3];
 
 void Usart::EnableClk(const UsartConfig& config) {
     STM32_ASSERT((config.usartNum >= kUsart1) && (config.usartNum <= kUsart3));
@@ -39,7 +40,7 @@ void Usart::EnableClk(const UsartConfig& config) {
 void Usart::Init(const UsartConfig& config) {
     Usart::_Helper_CheckConfig(config);
     /* Enable usart peripheral */
-    USARTX[config.usartNum]->CR1.UE = kOn;
+    USARTx[config.usartNum]->CR1.UE = kOn;
     /* Set mode */
     USARTx[config.usartNum]->CR1.RE_TE = config.mode;
     /* Set stop bits*/
@@ -49,7 +50,7 @@ void Usart::Init(const UsartConfig& config) {
     /* Set parity mode */
     USARTx[config.usartNum]->CR1.PS_PCE = config.parityMode;
     /* Set hardware flow control */
-    USARTX[config.usartNum]->CR3.RTSE_CTSE = config.flowControlState;
+    USARTx[config.usartNum]->CR3.RTSE_CTSE = config.flowControlState;
     Usart::_Helper_SetBaudRate(config);
 }
 
@@ -100,8 +101,8 @@ void Usart::_Helper_SetBaudRate(const UsartConfig& config) {
     divFraction = 16 * fractionPart;
     divFraction += 500;
     divFraction /= 1000;
-    USARTX[config.usartNum]->BRR.DIV_Fraction = divFraction; 
-    USARTX[config.usartNum]->BRR.DIV_Mantissa = divMantissa;
+    USARTx[config.usartNum]->BRR.DIV_Fraction = divFraction; 
+    USARTx[config.usartNum]->BRR.DIV_Mantissa = divMantissa;
 }
 
 void Usart::_Helper_CheckConfig(const UsartConfig& config) {

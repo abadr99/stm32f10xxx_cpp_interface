@@ -11,7 +11,6 @@
 #define DEV_MCAL_INC_USART_H_
 #include "../../mcal/inc/stm32f103xx.h"
 using namespace stm32::registers::usart;
-volatile UsartRegDef* USARTx[3] = {USART1, USART2, USART3};
 #define USART_TIMEOUT (500)
 namespace stm32 {
 namespace dev {
