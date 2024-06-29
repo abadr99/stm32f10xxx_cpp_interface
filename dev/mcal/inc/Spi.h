@@ -15,32 +15,32 @@ namespace mcal  {
 namespace spi   {
 
 enum DataFrame {
-    SPI_8bit,
-    SPI_16bt,
+    kSPI_8bit,
+    kSPI_16bt,
 };
 enum FrameFormat {
-    MSB,
-    LSB,
+    kMSB,
+    kLSB,
 };
 enum ClkMode {
-    MODE0,
-    MODE1,
-    MODE2,
-    MODE3,
+    kMODE0,
+    kMODE1,
+    kMODE2,
+    kMODE3,
 };
 enum SlaveManage {
-    HW,
-    SW,
+    kHW,
+    kSW,
 };
 enum BaudRate {
-    F_DIV_2,
-    F_DIV_4,
-    F_DIV_8,
-    F_DIV_16,
-    F_DIV_32,
-    F_DIV_64,
-    F_DIV_128,
-    F_DIV_256,
+    kF_DIV_2,
+    kF_DIV_4,
+    kF_DIV_8,
+    kF_DIV_16,
+    kF_DIV_32,
+    kF_DIV_64,
+    kF_DIV_128,
+    kF_DIV_256,
 };
 struct SpiConfig {
     DataFrame data;

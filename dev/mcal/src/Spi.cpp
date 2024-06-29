@@ -28,9 +28,9 @@ void Spi::SpiMasterInit(const SpiConfig& config) {
     // LSBFIRST
     Helper_SetFrameFormat(config);
     // HW or SW slave manage
-    if (config.slave == HW) {
+    if (config.slave == kHW) {
         SPI->CR1.SSM = 0;
-    } else if (config.slave == SW) {
+    } else if (config.slave == kSW) {
         SPI->CR1.SSM = 1;
         SPI->CR1.SSI = 1;
     }
@@ -46,9 +46,9 @@ void Spi::SpiSlaveInit(const SpiConfig& config) {
     // LSBFIRST
     Helper_SetFrameFormat(config);
     // HW or SW slave manage
-    if (config.slave == HW) {
+    if (config.slave == kHW) {
         SPI->CR1.SSM = 0;
-    } else if (config.slave == SW) {
+    } else if (config.slave == kSW) {
         SPI->CR1.SSM = 1;
         SPI->CR1.SSI = 0;
     }
@@ -71,50 +71,50 @@ uint8_t Spi::SpiRead() {
     return SPI->DR;
 }
 void Spi::Helper_SetDataFrame(const SpiConfig& config) {
-    if (config.data == SPI_8bit) {
+    if (config.data == kSPI_8bit) {
         SPI->CR1.DFF = 0;
-    } else if (config.data == SPI_16bt) {
+    } else if (config.data == kSPI_16bt) {
         SPI->CR1.DFF = 1;
     }
 }
 void Spi::Helper_SetClockMode(const SpiConfig& config) {
-    if (config.clk == MODE0) {
+    if (config.clk == kMODE0) {
         SPI->CR1.registerVal &= ~(0x03);
-    } else if (config.clk == MODE1) {
+    } else if (config.clk == kMODE1) {
         SPI->CR1.registerVal &= ~(0x03);
         SPI->CR1.registerVal |=  (0x01);
-    } else if (config.clk == MODE2) {
+    } else if (config.clk == kMODE2) {
         SPI->CR1.registerVal &= ~(0x03);
         SPI->CR1.registerVal |=  (0x02);
-    } else if (config.clk == MODE3) {
+    } else if (config.clk == kMODE3) {
         SPI->CR1.registerVal &= ~(0x03);
         SPI->CR1.registerVal |=  (0x03);
     } 
 }
 void Spi::Helper_SetFrameFormat(const SpiConfig& config) {
-    if (config.frame == MSB) {
+    if (config.frame == kMSB) {
         SPI->CR1.LSBFIRST = 0;
-    } else if (config.frame == LSB) {
+    } else if (config.frame == kLSB) {
         SPI->CR1.LSBFIRST = 1;
     }
 }
 void Spi::Helper_MasterBaudRate(const SpiConfig& config) {
-    STM32_ASSERT(config.br >= F_DIV_2 && config.br <= F_DIV_256);
-    if (config.br == F_DIV_2) {
+    STM32_ASSERT(config.br >= kF_DIV_2 && config.br <= kF_DIV_256);
+    if (config.br == kF_DIV_2) {
         SPI->CR1.BR = 0;
-    } else if (config.br == F_DIV_4) {
+    } else if (config.br == kF_DIV_4) {
         SPI->CR1.BR = 1;
-    } else if (config.br == F_DIV_8) {
+    } else if (config.br == kF_DIV_8) {
         SPI->CR1.BR = 2;
-    } else if (config.br == F_DIV_16) {
+    } else if (config.br == kF_DIV_16) {
         SPI->CR1.BR = 3;
-    } else if (config.br == F_DIV_32) {
+    } else if (config.br == kF_DIV_32) {
         SPI->CR1.BR = 4;
-    } else if (config.br == F_DIV_64) {
+    } else if (config.br == kF_DIV_64) {
         SPI->CR1.BR = 5;
-    } else if (config.br == F_DIV_128) {
+    } else if (config.br == kF_DIV_128) {
         SPI->CR1.BR = 6;
-    } else if (config.br == F_DIV_256) {
+    } else if (config.br == kF_DIV_256) {
         SPI->CR1.BR = 7;
     }
 }
