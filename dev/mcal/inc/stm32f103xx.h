@@ -263,7 +263,8 @@ struct SpiRegDef {
     RegWidth_t RXCRCR;
     RegWidth_t TXCRCR;
 };
-#define SPI (reinterpret_cast<volatile SpiRegDef*>(SPI_BASE_ADDRESS))
+#define SPI1 (reinterpret_cast<volatile SpiRegDef*>(SPI1_BASE_ADDRESS))
+#define SPI2 (reinterpret_cast<volatile SpiRegDef*>(SPI2_BASE_ADDRESS))
 }  // namespace spi
 }  // namespace registers
 }  // namespace stm32

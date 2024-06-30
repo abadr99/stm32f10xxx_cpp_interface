@@ -22,7 +22,8 @@
 
 #define SYSTICK_BASE_ADDRESS    (0xE000E010)
 
-#define SPI_BASE_ADDRESS        (0x40013000)
+#define SPI1_BASE_ADDRESS        (0x40013000)
+#define SPI2_BASE_ADDRESS        (0x40003800)
 namespace stm32 {
 namespace registers {
 namespace rcc {

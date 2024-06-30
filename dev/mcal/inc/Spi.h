@@ -9,6 +9,7 @@
  */
 #ifndef DEV_MCAL_INC_SPI_H_
 #define DEV_MCAL_INC_SPI_H_
+using namespace stm32::registers::spi;
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -42,6 +43,7 @@ enum BaudRate {
     kF_DIV_128,
     kF_DIV_256,
 };
+
 struct SpiConfig {
     DataFrame data;
     FrameFormat frame;
@@ -52,17 +54,19 @@ struct SpiConfig {
 
 class Spi {
  public:
-    static void SpiMasterInit(const SpiConfig& config);
-    static void SpiSlaveInit(const SpiConfig& config);
-    static void SpiWrite(uint8_t data);
-    static uint8_t SpiRead();
-    static void SpiEnable();
+    Spi& BuildSpi1();
+    Spi& BuildSpi2();
+    void MasterInit(const SpiConfig& config);
+    void SlaveInit(const SpiConfig& config);
+    void Write(uint8_t data);
+    uint8_t Read();
  private:
-    static void Helper_SetDataFrame(const SpiConfig& config);
-    static void Helper_SetClockMode(const SpiConfig& config);
-    static void Helper_SetFrameFormat(const SpiConfig& config);
-    static void Helper_MasterBaudRate(const SpiConfig& config);
-};
+    void Helper_SetDataFrame(const SpiConfig& config);
+    void Helper_SetClockMode(const SpiConfig& config);
+    void Helper_SetFrameFormat(const SpiConfig& config);
+    void Helper_MasterBaudRate(const SpiConfig& config);
+    volatile SpiRegDef* spi_reg;
+}; 
 }   // namespace spi
 }   // namespace mcal
 }   // namespace dev
