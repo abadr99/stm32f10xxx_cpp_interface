@@ -13,7 +13,7 @@
 #include "mcal/inc/stm32f103xx.h"
 #include "mcal/inc/Spi.h"
 
-uint32_t SpiReg[7] = {0x0};
+uint32_t SpiReg[8] = {0x0};
 using namespace stm32::utils::bit_manipulation;
 using namespace stm32::dev::mcal::spi;
 using namespace stm32::registers::spi;
