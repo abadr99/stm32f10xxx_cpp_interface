@@ -18,13 +18,8 @@ using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::spi;
 using namespace stm32::registers::spi;
 
-Spi& Spi::BuildSpi1() {
-    spi_reg = SPI1;
-    return *this;
-}
-Spi& Spi::BuildSpi2() {
-    spi_reg = SPI2;
-    return *this;
+Spi::Spi(SpiPeripheral peripheral) {
+    spi_reg=(peripheral == kSPI1) ? SPI1 : SPI2;
 }
 void Spi::MasterInit(const SpiConfig& config) {
     // baud rate

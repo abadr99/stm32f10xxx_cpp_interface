@@ -33,6 +33,10 @@ enum SlaveManage {
     kHW,
     kSW,
 };
+enum  SpiPeripheral {
+    kSPI1,
+    kSPI2
+};
 enum BaudRate {
     kF_DIV_2,
     kF_DIV_4,
@@ -54,8 +58,7 @@ struct SpiConfig {
 
 class Spi {
  public:
-    Spi& BuildSpi1();
-    Spi& BuildSpi2();
+    explicit Spi(SpiPeripheral peripheral);
     void MasterInit(const SpiConfig& config);
     void SlaveInit(const SpiConfig& config);
     void Write(uint8_t data);
