@@ -30,15 +30,13 @@ ASSERT_MEMBER_OFFSET(GpioRegDef, BSRR, sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(GpioRegDef, BRR,  sizeof(RegWidth_t) * 5);
 ASSERT_MEMBER_OFFSET(GpioRegDef, LCKR, sizeof(RegWidth_t) * 6);
 
-extern volatile GpioRegDef *GPIOx[3];
+volatile GpioRegDef *GPIOx[3] = {GPIOA, GPIOB, GPIOC};
 
 void Gpio::SetPinValue(Pin pin, State pinState) {
     if (pinState == kLow) {
         GPIOx[pin.GetPort()]->ODR &= ~(1 << pin.GetPinNumber());
-        GPIOx[pin.GetPort()]->BRR |= (1 << pin.GetPinNumber());
     } else if (pinState == kHigh) {
        GPIOx[pin.GetPort()]->ODR |= (1 << pin.GetPinNumber());
-       GPIOx[pin.GetPort()]->BSRR |= (1 << pin.GetPinNumber());
     }
 }
 uint32_t  Gpio::GetPinValue(Pin pin) {

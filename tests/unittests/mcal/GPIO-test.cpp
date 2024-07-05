@@ -16,4 +16,4 @@
 using namespace stm32::utils::bit_manipulation;  // NOLINT [build/namespaces]
 using namespace stm32::registers::gpio;          // NOLINT [build/namespaces]
 
-volatile GpioRegDef *GPIOx[3] = {GPIOA, GPIOB, GPIOC};
+// volatile GpioRegDef *GPIOx[3] = {GPIOA, GPIOB, GPIOC};
