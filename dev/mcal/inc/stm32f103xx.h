@@ -214,10 +214,7 @@ struct AfioRegDef {
         RegWidth_t registerVal;  // Register value
     } MAPR;  // AF remap and debug I/O configuration register
 
-    RegWidth_t EXTICR1;  // External interrupt configuration register 1
-    RegWidth_t EXTICR2;  // External interrupt configuration register 2
-    RegWidth_t EXTICR3;  // External interrupt configuration register 3
-    RegWidth_t EXTICR4;  // External interrupt configuration register 4
+    RegWidth_t EXTICRx[4];  // External interrupt configuration register x
 
     union MAPR2 {
         struct {
@@ -233,6 +230,8 @@ struct AfioRegDef {
         RegWidth_t registerVal;  // Register value
     } MAPR2;  // AF remap and debug I/O configuration register 2
 };
+
+#define AFIO (reinterpret_cast<volatile AfioRegDef*>(AFIO_BASE_ADDRESS))
 
 }  // namespace afio
 namespace systick {
@@ -252,9 +251,27 @@ struct SystickRegDef {
     RegWidth_t LOAD;  // Reload value
     RegWidth_t VAL;   // Current value
 };
+
 #define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(SYSTICK_BASE_ADDRESS))  // NOLINT
 
 }  // namespace systick
+/**
+ * @brief Structure defining EXTI Register Definitions
+ * 
+ */
+namespace exti {
+struct EXTIRegDef {
+    RegWidth_t IMR;    // Interrupt mask register
+    RegWidth_t EMR;    // Event mask register
+    RegWidth_t RTSR;   // Rising trigger selection register
+    RegWidth_t FTSR;   // Falling trigger selection register
+    RegWidth_t SWIER;  // Software interrupt event register
+    RegWidth_t PR;     // Pending register
+};
+
+#define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
+
+}  // namespace exti
 }  // namespace registers
 }  // namespace stm32
 
