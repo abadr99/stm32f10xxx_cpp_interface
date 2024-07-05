@@ -375,9 +375,11 @@ struct UsartRegDef {
     RegWidth_t GTPR;
 };
 
-#define USART1 (reinterpret_cast<volatile UsartRegDef*>(USART1_BASE_ADDRESS))
-#define USART2 (reinterpret_cast<volatile UsartRegDef*>(USART2_BASE_ADDRESS))
-#define USART3 (reinterpret_cast<volatile UsartRegDef*>(USART3_BASE_ADDRESS))
+#define GET_USART_REG(ADDRESS_) reinterpret_cast<volatile UsartRegDef*>(ADDRESS_)
+#define USART1 (USART1_BASE_ADDRESS)
+#define USART2 (USART2_BASE_ADDRESS)
+#define USART3 (USART3_BASE_ADDRESS)
+
 }  // namespace usart
 }  // namespace registers
 }  // namespace stm32

@@ -9,13 +9,15 @@
  */
 #ifndef DEV_MCAL_INC_USART_H_
 #define DEV_MCAL_INC_USART_H_
+
 #include "../../mcal/inc/stm32f103xx.h"
-using namespace stm32::registers::usart;
+
 #define USART_TIMEOUT (500)
+
 namespace stm32 {
+namespace registers { namespace usart { struct UsartRegDef; } }
 namespace dev {
 namespace mcal {
-namespace inc {
 namespace usart {
 
 enum UsartNum : uint8_t {
@@ -64,7 +66,6 @@ enum ErrorType : uint8_t {
 };
 
 struct UsartConfig {
-    UsartNum usartNum;
     UsartMode mode;
     StopBitsNum numOfSB;
     WordLength dataBits;
@@ -72,21 +73,24 @@ struct UsartConfig {
     HwFlowControl flowControlState;
     uint32_t baudRate;  // clock peripheral is 8MHZ considering that system clock is HSI
 };
-
+template<uint32_t USART_ADDRESS>
 class Usart {
+    static_assert(USART_ADDRESS >= USART1 && USART_ADDRESS >= USART3, "Invalid USART");
  public:
-    static void EnableClk(const UsartConfig& config);
-    static void Init(const UsartConfig& config);
-    static void Transmit(const UsartConfig& config, uint16_t dataValue);
-    static uint16_t Receive(const UsartConfig& config);
-    static ErrorType RetErrorDetection(const UsartConfig& config);
+    using DataValType = uint16_t;
+    explicit Usart(const UsartConfig& config);
+    void EnableClk();
+    void Init();
+    void Transmit(DataValType dataValue);
+    DataValType Receive();
+    ErrorType RetErrorDetection();
  private:
-    enum Flag : uint8_t {kOn, kOff};
-    static void _Helper_CheckConfig(const UsartConfig& config);
-    static void _Helper_SetBaudRate(const UsartConfig& config);
+    enum Flag : uint8_t {kEnabled, kDisabled};
+    void _SetBaudRate();
+    const UsartConfig& config_;
 };
+
 }  // namespace usart
-}  // namespace inc
 }  // namespace mcal
 }  // namespace dev
 }  // namespace stm32 // namespace stm32

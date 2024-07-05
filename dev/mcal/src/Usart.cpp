@@ -8,18 +8,27 @@
  * @copyright Copyright (c) 2024
  *
  */
-#include "../../mcal/inc/stm32f103xx.h"
-#include "../../utils/inc/Assert.h"
-#include "../../mcal/inc/Usart.h"
+
+#include "Assert.h"
+#include "BaseAddress.h"
+#include "mcal/inc/stm32f103xx.h"
+#include "Usart.h"
+
 using namespace stm32::registers::rcc;
 using namespace stm32::registers::usart;
-using namespace stm32::dev::mcal::inc::usart;
+using namespace stm32::dev::mcal::usart;
 
-volatile UsartRegDef* USARTx[3];
+#define CHECK_CONFIG()\
+    STM32_ASSERT((config_.mode >= kRx) && (config_.mode <= kRxTx));\
+    STM32_ASSERT((config_.numOfSB >= kSb_1_) && (config_.numOfSB <= kSb_1_5_));\
+    STM32_ASSERT((config_.dataBits == kDataBits_8_) || (config_.dataBits == kDataBits_9_));\
+    STM32_ASSERT((config_.parityMode >= kNo_Parity) && (config_.parityMode <= kOdd_Parity));\
+    STM32_ASSERT((config_.flowControlState >= kNone) && (config_.flowControlState <= kRTS_CTS));
+
 
 ASSERT_STRUCT_SIZE(UsartRegDef, (sizeof(RegWidth_t) * 7));
 
-ASSERT_MEMBER_OFFSET(UsartRegDef, SR,         0);
+ASSERT_MEMBER_OFFSET(UsartRegDef, SR,          0);
 ASSERT_MEMBER_OFFSET(UsartRegDef, DR,          sizeof(RegWidth_t) * 1);
 ASSERT_MEMBER_OFFSET(UsartRegDef, BRR,         sizeof(RegWidth_t) * 2);
 ASSERT_MEMBER_OFFSET(UsartRegDef, CR1,         sizeof(RegWidth_t) * 3);
@@ -27,93 +36,94 @@ ASSERT_MEMBER_OFFSET(UsartRegDef, CR2,         sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(UsartRegDef, CR3,         sizeof(RegWidth_t) * 5);
 ASSERT_MEMBER_OFFSET(UsartRegDef, GTPR,        sizeof(RegWidth_t) * 6);
 
+template<uint32_t USART_ADDRESS>
+Usart<USART_ADDRESS>::Usart(const UsartConfig& config) : config_(config) {}
 
-void Usart::EnableClk(const UsartConfig& config) {
-    STM32_ASSERT((config.usartNum >= kUsart1) && (config.usartNum <= kUsart3));
-    switch (config.usartNum) {
-        case kUsart1 : RCC->APB2ENR.USART1EN = kOn; break;
-        case kUsart2 : RCC->APB1ENR.USART2EN = kOn; break;
-        case kUsart3 : RCC->APB1ENR.USART3EN = kOn; break;
+template<uint32_t USART_ADDRESS>
+void Usart<USART_ADDRESS>::EnableClk() {
+    switch (USART_ADDRESS) {
+        case USART1 : RCC->APB2ENR.USART1EN = Flag::kEnabled; break;
+        case USART2 : RCC->APB1ENR.USART2EN = Flag::kEnabled; break;
+        case USART3 : RCC->APB1ENR.USART3EN = Flag::kEnabled; break;
+        default: break;
     }
 }
 
-void Usart::Init(const UsartConfig& config) {
-    Usart::_Helper_CheckConfig(config);
+template<uint32_t USART_ADDRESS>
+void Usart<USART_ADDRESS>::Init() {
+    auto SetBaudRate = [&]() {
+        const uint32_t clockFrequency = 8000000;  // 8 MHz
+        const uint32_t scale = 16;
+        const uint32_t multiplier = 1000;
+        const uint32_t roundingFactor = 500;
+
+        // Calculate the USARTDIV value
+        uint32_t UsartDiv = ((clockFrequency * multiplier) / (scale * config_.baudRate));
+
+        // Extract the mantissa and fraction parts
+        uint16_t divMantissa  = UsartDiv / multiplier;
+        uint16_t fractionPart = UsartDiv % multiplier;
+
+        // Calculate the fraction
+        uint8_t divFraction = ((fractionPart * scale) + roundingFactor) / multiplier;
+
+        // Assign the calculated values to the BRR register
+        GET_USART_REG(USART_ADDRESS)->BRR.DIV_Mantissa = divMantissa;
+        GET_USART_REG(USART_ADDRESS)->BRR.DIV_Fraction = divFraction;
+    };
+
+    CHECK_CONFIG();
     /* Enable usart peripheral */
-    USARTx[config.usartNum]->CR1.UE = kOn;
+    GET_USART_REG(USART_ADDRESS)->CR1.UE = kEnabled;
     /* Set mode */
-    USARTx[config.usartNum]->CR1.RE_TE = config.mode;
+    GET_USART_REG(USART_ADDRESS)->CR1.RE_TE = config_.mode;
     /* Set stop bits*/
-    USARTx[config.usartNum]->CR2.STOP = config.numOfSB;
+    GET_USART_REG(USART_ADDRESS)->CR2.STOP = config_.numOfSB;
     /* Set data bits */
-    USARTx[config.usartNum]->CR1.M = config.dataBits;  
+    GET_USART_REG(USART_ADDRESS)->CR1.M = config_.dataBits;  
     /* Set parity mode */
-    USARTx[config.usartNum]->CR1.PS_PCE = config.parityMode;
+    GET_USART_REG(USART_ADDRESS)->CR1.PS_PCE = config_.parityMode;
     /* Set hardware flow control */
-    USARTx[config.usartNum]->CR3.RTSE_CTSE = config.flowControlState;
-    Usart::_Helper_SetBaudRate(config);
+    GET_USART_REG(USART_ADDRESS)->CR3.RTSE_CTSE = config_.flowControlState;
+    SetBaudRate();
 }
 
-void Usart::Transmit(const UsartConfig& config, uint16_t dataValue) {
-    STM32_ASSERT((config.usartNum >= kUsart1) && (config.usartNum <= kUsart3));
+template<uint32_t USART_ADDRESS>
+void Usart<USART_ADDRESS>::Transmit(DataValType dataValue) {
     uint32_t count = 0;
-    while (!(USARTx[config.usartNum]->SR.TXE) && (count != USART_TIMEOUT) && (++count)) {}
+    while (!(GET_USART_REG(USART_ADDRESS)->SR.TXE) && (count != USART_TIMEOUT) && (++count)) {}
     STM32_ASSERT(count != USART_TIMEOUT);
     count = 0;
-    USARTx[config.usartNum]->DR = dataValue; 
-    while (!(USARTx[config.usartNum]->SR.TC) && (count != USART_TIMEOUT) && (++count)) {}
+    GET_USART_REG(USART_ADDRESS)->DR = dataValue; 
+    while (!(GET_USART_REG(USART_ADDRESS)->SR.TC) && (count != USART_TIMEOUT) && (++count)) {}
     STM32_ASSERT(count != USART_TIMEOUT);
 }
 
-uint16_t Usart::Receive(const UsartConfig& config) {
-    STM32_ASSERT((config.usartNum >= kUsart1) && (config.usartNum <= kUsart3));
+template<uint32_t USART_ADDRESS>
+typename Usart<USART_ADDRESS>::DataValType Usart<USART_ADDRESS>::Receive() {
     uint32_t count = 0;
-    while (!(USARTx[config.usartNum]->SR.RXNE) && (count != USART_TIMEOUT) && (++count)) {}
+    while (!(GET_USART_REG(USART_ADDRESS)->SR.RXNE) && (count != USART_TIMEOUT) && (++count)) {}
     STM32_ASSERT(count != USART_TIMEOUT);
-    return static_cast<uint16_t>(USARTx[config.usartNum]->DR);
+    return static_cast<DataValType>(GET_USART_REG(USART_ADDRESS)->DR);
 }
 
-ErrorType Usart::RetErrorDetection(const UsartConfig& config) {
-    STM32_ASSERT((config.usartNum >= kUsart1) && (config.usartNum <= kUsart3));
-    ErrorType errorType;
-    if (USARTx[config.usartNum]->SR.PE == kOn) {
-        errorType = kParityError;
-    } else if (USARTx[config.usartNum]->SR.FE == kOn) {
-        errorType = kFrameError;
-    } else if (USARTx[config.usartNum]->SR.NE == kOn) {
-        errorType = kNoiseError;
-    } else if (USARTx[config.usartNum]->SR.ORE == kOn) {
-        errorType = kOverRunError;
-    } else {
-       errorType = kSuccess; 
+template<uint32_t USART_ADDRESS>
+ErrorType Usart<USART_ADDRESS>::RetErrorDetection() {
+    if (GET_USART_REG(USART_ADDRESS)->SR.PE == Flag::kEnabled) {
+        return kParityError;
+    } 
+    if (GET_USART_REG(USART_ADDRESS)->SR.FE == Flag::kEnabled) {
+        return kFrameError;
+    } 
+    if (GET_USART_REG(USART_ADDRESS)->SR.NE == Flag::kEnabled) {
+        return kNoiseError;
+    } 
+    if (GET_USART_REG(USART_ADDRESS)->SR.ORE == Flag::kEnabled) {
+        return kOverRunError;
     }
-    return errorType;
+    return kSuccess;
 }
 
-void Usart::_Helper_SetBaudRate(const UsartConfig& config) {
-    uint32_t USARTDIV;
-    uint16_t divMantissa;
-    uint8_t fractionPart;
-    uint8_t divFraction;
-    USARTDIV = ((8*1000000) / (16 * config.baudRate)) * 1000;
-    divMantissa = USARTDIV / 1000;
-    fractionPart = USARTDIV % 1000;
-    divFraction = 16 * fractionPart;
-    divFraction += 500;
-    divFraction /= 1000;
-    USARTx[config.usartNum]->BRR.DIV_Fraction = divFraction; 
-    USARTx[config.usartNum]->BRR.DIV_Mantissa = divMantissa;
-}
-
-void Usart::_Helper_CheckConfig(const UsartConfig& config) {
-    STM32_ASSERT((config.usartNum >= kUsart1) && (config.usartNum <= kUsart3));
-    STM32_ASSERT((config.mode >= kRx) && (config.mode <= kRxTx));
-    STM32_ASSERT((config.numOfSB >= kSb_1_) && (config.numOfSB <= kSb_1_5_));
-    STM32_ASSERT((config.dataBits == kDataBits_8_) || (config.dataBits == kDataBits_9_));
-    STM32_ASSERT((config.parityMode >= kNo_Parity) && (config.parityMode <= kOdd_Parity));
-    STM32_ASSERT((config.flowControlState >= kNone) && (config.flowControlState <= kRTS_CTS));
-}
-
-
-
-
+template class Usart<USART1>;
+template class Usart<USART2>;
+template class Usart<USART3>;
