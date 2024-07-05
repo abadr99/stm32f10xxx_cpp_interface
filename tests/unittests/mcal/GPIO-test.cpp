@@ -16,4 +16,4 @@
 using namespace stm32::utils::bit_manipulation;
 using namespace stm32::registers::gpio;
 
-volatile GpioRegDef *GPIOx[3] = {GPIOA, GPIOB, GPIOC};
+// volatile GpioRegDef *GPIOx[3] = {GPIOA, GPIOB, GPIOC};
