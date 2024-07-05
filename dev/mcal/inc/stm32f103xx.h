@@ -124,6 +124,53 @@ struct GpioRegDef {
 #define GPIOC  (reinterpret_cast<volatile GpioRegDef*>(GPIOC_BASE_ADDRESS))
 
 }  // namespace gpio
+namespace nvic {
+/**
+ * @brief Structure defining NVIC Register Definitions
+ *
+ * This structure defines the layout of NVIC registers for controlling
+ */
+struct NvicRegDef {
+    RegWidth_t ISER[8];        // Interrupt Set Enable Register
+    RegWidth_t RESERVED0[24];
+    RegWidth_t ICER[8];        // Interrupt Clear Enable Register
+    RegWidth_t RESERVED1[24];
+    RegWidth_t ISPR[8];        // Interrupt Set Pending Register
+    RegWidth_t RESERVED2[24];
+    RegWidth_t ICPR[8];        // Interrupt Clear Pending Register
+    RegWidth_t RESERVED3[24];
+    RegWidth_t IABR[8];        // Interrupt Active Bit Register
+    RegWidth_t RESERVED4[56];
+    uint8_t IPR[240];          // Interrupt Priority Register
+    RegWidth_t RESERVED5[644];
+    RegWidth_t STIR;           // Software Trigger Interrupt Register
+};
+struct  SCBRegDef {
+    RegWidth_t CPUID;   // CPUID Base Register
+    RegWidth_t ICSR;    // Interrupt Control and State Register
+    RegWidth_t VTOR;    // Vector Table Offset Register
+    RegWidth_t AIRCR;   // Application Interrupt and Reset Control Register
+    RegWidth_t SCR;     // System Control Register
+    RegWidth_t CCR;     // Configuration and Control Register
+    RegWidth_t SHPR1;   // System Handler Priority Register 1
+    RegWidth_t SHPR2;   // System Handler Priority Register 2
+    RegWidth_t SHPR3;   // System Handler Priority Register 3
+    RegWidth_t SHCRS;   // System Handler Control and State Register
+    RegWidth_t CFSR;    // Configurable Fault Status Register
+    RegWidth_t MMSR;    // MemManage Fault Status Register
+    RegWidth_t BFSR;    // BusFault Status Register
+    RegWidth_t UFSR;    // UsageFault Status Register
+    RegWidth_t HFSR;    // HardFault Status Register
+    RegWidth_t MMAR;    // MemManage Fault Address Register
+    RegWidth_t BFAR;    // BusFault Address Register
+    RegWidth_t AFSR;    // Auxiliary Fault Status Register
+};
+
+
+#define NVIC   (reinterpret_cast<volatile NvicRegDef*>(NVIC_BASE_ADDRESS))
+#define SCB    (reinterpret_cast<volatile SCBRegDef*>(SCB_BASE_ADDRESS))
+
+}  // namespace nvic
 namespace afio {
 /**
  * @brief Structure defining AFIO (Alternate Function I/O) Register Definitions
@@ -167,10 +214,7 @@ struct AfioRegDef {
         RegWidth_t registerVal;  // Register value
     } MAPR;  // AF remap and debug I/O configuration register
 
-    RegWidth_t EXTICR1;  // External interrupt configuration register 1
-    RegWidth_t EXTICR2;  // External interrupt configuration register 2
-    RegWidth_t EXTICR3;  // External interrupt configuration register 3
-    RegWidth_t EXTICR4;  // External interrupt configuration register 4
+    RegWidth_t EXTICRx[4];  // External interrupt configuration register x
 
     union MAPR2 {
         struct {
@@ -186,6 +230,8 @@ struct AfioRegDef {
         RegWidth_t registerVal;  // Register value
     } MAPR2;  // AF remap and debug I/O configuration register 2
 };
+
+#define AFIO (reinterpret_cast<volatile AfioRegDef*>(AFIO_BASE_ADDRESS))
 
 }  // namespace afio
 namespace systick {
@@ -205,10 +251,10 @@ struct SystickRegDef {
     RegWidth_t LOAD;  // Reload value
     RegWidth_t VAL;   // Current value
 };
+
 #define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(SYSTICK_BASE_ADDRESS))  // NOLINT
 
 }  // namespace systick
-
 namespace spi {
 struct SpiRegDef {
     union CR1 {
@@ -266,6 +312,23 @@ struct SpiRegDef {
 #define SPI1 (reinterpret_cast<volatile SpiRegDef*>(SPI1_BASE_ADDRESS))
 #define SPI2 (reinterpret_cast<volatile SpiRegDef*>(SPI2_BASE_ADDRESS))
 }  // namespace spi
+/**
+ * @brief Structure defining EXTI Register Definitions
+ * 
+ */
+namespace exti {
+struct EXTIRegDef {
+    RegWidth_t IMR;    // Interrupt mask register
+    RegWidth_t EMR;    // Event mask register
+    RegWidth_t RTSR;   // Rising trigger selection register
+    RegWidth_t FTSR;   // Falling trigger selection register
+    RegWidth_t SWIER;  // Software interrupt event register
+    RegWidth_t PR;     // Pending register
+};
+
+#define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
+
+}  // namespace exti
 }  // namespace registers
 }  // namespace stm32
 
