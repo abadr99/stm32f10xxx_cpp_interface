@@ -22,6 +22,9 @@
 
 #define AFIO_BASE_ADDRESS     (0x40010000)
 
+#define NVIC_BASE_ADDRESS   (0xE000E100)
+#define SCB_BASE_ADDRESS    (0xE000ED00)
+
 #define SYSTICK_BASE_ADDRESS  (0xE000E010)
 namespace stm32 {
 namespace registers {

@@ -38,7 +38,7 @@ build-opt: $(OBJS)
 # make upload
 # ------------------------------------------
 upload:
-	$(FLASH) write $(ELF_TARGET) 0x08000000 
+	$(FLASH) write $(HEX_TARGET) 0x08000000 
 
 clean:
 	@rm -rf *.o
