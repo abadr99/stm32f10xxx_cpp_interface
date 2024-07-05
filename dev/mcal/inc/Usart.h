@@ -75,7 +75,10 @@ struct UsartConfig {
 };
 template<uint32_t USART_ADDRESS>
 class Usart {
-    static_assert(USART_ADDRESS >= USART1 && USART_ADDRESS >= USART3, "Invalid USART");
+    static_assert(USART_ADDRESS == USART1 || 
+                  USART_ADDRESS == USART2 || 
+                  USART_ADDRESS == USART3, 
+                  "Invalid USART");
  public:
     using DataValType = uint16_t;
     explicit Usart(const UsartConfig& config);
