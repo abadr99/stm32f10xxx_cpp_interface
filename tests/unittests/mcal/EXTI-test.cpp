@@ -27,8 +27,8 @@ uint32_t EXTIReg[6] = {0x0};
 TEST(EXTItest, Enable) {
     EXTI_Config exti;
     exti.port = kPortA;
-    exti.line = Line::EXTI0;
-    exti.trigger = Trigger::Rising;
+    exti.line = Line::kEXTI0;
+    exti.trigger = Trigger::kRising;
     Exti::Enable(exti);
     EXPECT_EQ(0x0,    AFIO->EXTICRx[0]);
     EXPECT_EQ(0x1,       EXTI->IMR);
@@ -37,8 +37,8 @@ TEST(EXTItest, Enable) {
 TEST(EXTItest, Disable) {
     EXTI_Config exti;
     exti.port = kPortB;
-    exti.line = Line::EXTI10;
-    exti.trigger = Trigger::Falling;
+    exti.line = Line::kEXTI10;
+    exti.trigger = Trigger::kFalling;
     Exti::Disable(exti);
     EXPECT_EQ(0x1,      EXTI->IMR);  //  EXTI0 is enable in previous test
     EXPECT_EQ(0x0,      EXTI->FTSR);
@@ -46,16 +46,16 @@ TEST(EXTItest, Disable) {
 TEST(EXTItest, SetPendingFlag) {
     EXTI_Config exti;
     exti.port = kPortB;
-    exti.line = Line::EXTI6;
-    exti.trigger = Trigger::Falling;
+    exti.line = Line::kEXTI6;
+    exti.trigger = Trigger::kFalling;
     Exti::SetPendingFlag(exti);
     EXPECT_EQ(0x40,       EXTI->PR);
 }
 TEST(EXTItest, ClearPendingFlag) {
     EXTI_Config exti;
     exti.port = kPortB;
-    exti.line = Line::EXTI16;
-    exti.trigger = Trigger::Falling;
+    exti.line = Line::kEXTI16;
+    exti.trigger = Trigger::kFalling;
     Exti::ClearPendingFlag(exti);
     EXPECT_EQ(0x40,       EXTI->PR);
 }

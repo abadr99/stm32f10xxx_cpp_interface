@@ -20,32 +20,32 @@ namespace exti {
 
 
 enum class Line {
-    EXTI0,
-    EXTI1,
-    EXTI2,
-    EXTI3,    
-    EXTI4,
-    EXTI5,
-    EXTI6,
-    EXTI7,
-    EXTI8,
-    EXTI9,
-    EXTI10,
-    EXTI11,
-    EXTI12,
-    EXTI13,
-    EXTI14,
-    EXTI15,
-    EXTI16,
-    EXTI17,
-    EXTI18,
-    EXTI19
+    kEXTI0,
+    kEXTI1,
+    kEXTI2,
+    kEXTI3,    
+    kEXTI4,
+    kEXTI5,
+    kEXTI6,
+    kEXTI7,
+    kEXTI8,
+    kEXTI9,
+    kEXTI10,
+    kEXTI11,
+    kEXTI12,
+    kEXTI13,
+    kEXTI14,
+    kEXTI15,
+    kEXTI16,
+    kEXTI17,
+    kEXTI18,
+    kEXTI19
 };
 
 enum class Trigger {
-    Rising,
-    Falling,
-    Both
+    kRising,
+    kFalling,
+    kBoth
 };
 
 struct EXTI_Config {

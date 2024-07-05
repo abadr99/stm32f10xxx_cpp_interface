@@ -70,19 +70,19 @@ void Exti::Helper_InitAFIOReg(Line line, Port port) {
 }
 
 void Exti::Helper_SetTrigger(Line line, Trigger trigger) {
-    if (trigger == Trigger::Rising || trigger == Trigger::Both) {
+    if (trigger == Trigger::kRising || trigger == Trigger::kBoth) {
         EXTI->RTSR |= 1 << static_cast<uint32_t>(line);
     }
-    if (trigger == Trigger::Falling || trigger == Trigger::Both) {
+    if (trigger == Trigger::kFalling || trigger == Trigger::kBoth) {
         EXTI->FTSR |= 1 << static_cast<uint32_t>(line);
     }
 }
 
 void Exti::Helper_ClrTrigger(Line line, Trigger trigger) {
-    if (trigger == Trigger::Rising || trigger == Trigger::Both) {
+    if (trigger == Trigger::kRising || trigger == Trigger::kBoth) {
         EXTI->RTSR &= ~(1 << static_cast<uint32_t>(line));
     }
-    if (trigger == Trigger::Falling || trigger == Trigger::Both) {
+    if (trigger == Trigger::kFalling || trigger == Trigger::kBoth) {
         EXTI->FTSR &= ~(1 << static_cast<uint32_t>(line));
     }
 }
