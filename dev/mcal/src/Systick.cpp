@@ -29,18 +29,11 @@ ASSERT_MEMBER_OFFSET(SystickRegDef, VAL,  sizeof(RegWidth_t) * 2);
 
 pFunction Systick::PointerToISR = nullptr;
 
-void Systick::Set_PointerToISR(pFunction func) {
-    Systick::PointerToISR = func;
-}
-pFunction Systick::Get_PointerToISR() {
-    return Systick::PointerToISR;
-}
-
 void Systick::Enable(CLKSource clksource) {
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->CTRL.TICKINT = 0;
     SYSTICK->CTRL.CLKSOURCE = clksource;
-    Set_PointerToISR(nullptr);
+    Helper_SetPointerToISR(nullptr);
 }
 
 void  Systick::SetCounterValue(uint32_t value) {
@@ -83,10 +76,10 @@ void Systick::Delay_us(uint32_t time_us) {
 }
 
 void Systick::Delay_By_Exception(uint32_t value, pFunction func) {
-    STM32_ASSERT(func != NULL && value <= SYSTICK_MAX_VALUE);
+    STM32_ASSERT(func != nullptr && value <= SYSTICK_MAX_VALUE);
     SYSTICK->CTRL.TICKINT = 1;
     SYSTICK->LOAD = value;
-    Set_PointerToISR(func);
+    Helper_SetPointerToISR(func);
 }
 
 uint32_t Systick::GetElapsedTime() {
@@ -96,10 +89,17 @@ uint32_t Systick::GetElapsedTime() {
 void Systick::Disable() {
     SYSTICK->CTRL.ENABLE = 0;
     SYSTICK->CTRL.CLKSOURCE = kAHB;
-    Set_PointerToISR(nullptr);
+    Helper_SetPointerToISR(nullptr);
+}
+
+void Systick::Helper_SetPointerToISR(pFunction func) {
+    Systick::PointerToISR = func;
+}
+pFunction Systick::Helper_GetPointerToISR() {
+    return Systick::PointerToISR;
 }
 
 // void SysTick_Handler(void) {
-//     Get_PointerToISR()();
+//     Helper_GetPointerToISR()();
 //     SYSTICK->CTRL.COUNTFLAG = 0;
 // }
