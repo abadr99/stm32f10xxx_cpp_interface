@@ -28,6 +28,8 @@
 #define USART1_BASE_ADDRESS      (&USART1Reg[0])
 #define USART2_BASE_ADDRESS      (&USART2Reg[0])
 #define USART3_BASE_ADDRESS      (&USART3Reg[0])
+#define AFIO_BASE_ADDRESS  (&AFIOReg[0])
+#define EXTI_BASE_ADDRESS  (&EXTIReg[0])
 
 extern uint32_t RccReg[10];
 
@@ -40,6 +42,9 @@ extern uint32_t SYSTICKReg[3];
 extern uint32_t USART1Reg[7];
 extern uint32_t USART2Reg[7];
 extern uint32_t USART3Reg[7];
+
+extern uint32_t AFIOReg[7];
+extern uint32_t EXTIReg[6];
 
 extern uint32_t NvicReg[905];
 
