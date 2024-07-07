@@ -11,11 +11,11 @@
 #define DEV_MCAL_INC_USART_H_
 
 #include "../../mcal/inc/stm32f103xx.h"
+using namespace stm32::registers::usart;
 
 #define USART_TIMEOUT (500)
 
 namespace stm32 {
-namespace registers { namespace usart { struct UsartRegDef; } }
 namespace dev {
 namespace mcal {
 namespace usart {
@@ -73,14 +73,12 @@ struct UsartConfig {
     HwFlowControl flowControlState;
     uint32_t baudRate;  // clock peripheral is 8MHZ considering that system clock is HSI
 };
-template<uint32_t USART_ADDRESS>
+template<UsartNum  USART_NUM>
 class Usart {
-    #ifndef UNIT_TEST
-    static_assert(USART_ADDRESS == USART1 || 
-                  USART_ADDRESS == USART2 || 
-                  USART_ADDRESS == USART3, 
+    static_assert(USART_NUM== kUsart1 || 
+                  USART_NUM == kUsart2 || 
+                  USART_NUM == kUsart3, 
                   "Invalid USART");
-    #endif  // UNIT_TEST
  public:
     using DataValType = uint16_t;
     explicit Usart(const UsartConfig& config);
@@ -93,6 +91,7 @@ class Usart {
     enum Flag : uint8_t {kEnabled, kDisabled};
     void _SetBaudRate();
     const UsartConfig& config_;
+    volatile UsartRegDef* usartReg;
 };
 
 }  // namespace usart

@@ -375,7 +375,7 @@ struct UsartRegDef {
     RegWidth_t GTPR;
 };
 
-#define GET_USART_REG(ADDRESS_) reinterpret_cast<volatile UsartRegDef*>(ADDRESS_)
+
 #define USART1 (USART1_BASE_ADDRESS)
 #define USART2 (USART2_BASE_ADDRESS)
 #define USART3 (USART3_BASE_ADDRESS)
