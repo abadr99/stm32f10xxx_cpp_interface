@@ -10,9 +10,10 @@
 #include <stdlib.h>
 #include "../../mcal/inc/Gpio.h"
 #include "utils/inc/Assert.h"
+#include "../../mcal/inc/Pin.h"
 #include "../inc/SevenSegment.h"
 
-
+using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::ssd;
 
@@ -32,9 +33,8 @@ using namespace stm32::dev::hal::ssd;
 volatile uint8_t ssdNumbers[10][8] = SSD_NUMBERS;
 
 template<ConnectionType connectionType>
-SevenSegment<connectionType>::SevenSegment(const Pin *pDataPins, Pin enablePin)
-    : enablePin_(enablePin) {
-    pDataPins_ = reinterpret_cast<Pin*>(malloc(7 * sizeof(Pin)));
+SevenSegment<connectionType>::SevenSegment(const Pin *pDataPins, const Pin enablePin)
+    : enablePin_(enablePin) {   
     for (uint8_t pin = 0; pin < 7; pin++) {
         pDataPins_[pin] = pDataPins[pin];
     }

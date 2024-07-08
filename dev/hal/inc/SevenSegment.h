@@ -10,7 +10,6 @@
  */
 #ifndef DEV_HAL_INC_SEVENSEGMENT_H_
 #define DEV_HAL_INC_SEVENSEGMENT_H_
-
 #include "../../mcal/inc/Pin.h"
 using namespace stm32::dev::mcal::pin;
 namespace stm32 {
@@ -23,18 +22,21 @@ enum ConnectionType : uint8_t {
     kCommon_Anode,
 };
 
-/* Note: data pins must are on the same port or port of enable pin */ 
+/**
+*   Note: data pins must are on the same port or port of enable pin 
+*         otherwise, you must enable clk of port by yourself to work successfuly
+*/ 
 template<ConnectionType connectionType>
 class SevenSegment {
  public:
-    SevenSegment(const Pin *pDataPins, Pin enablePin);  
+    SevenSegment(const Pin *pDataPins, const Pin enablePin);  
     void Init();
     void Enable();
     void Disable();
     void SendNumber(uint8_t num);
  private:
     Pin enablePin_;
-    Pin *pDataPins_;
+    Pin pDataPins_[7];
 };
 }  // namespace ssd
 }  // namespace hal
