@@ -1,13 +1,15 @@
 /**
  * @file main.cpp
- * @author your name (you@domain.com)
+ * @author Mohamed Refat
  * @brief 
  * @version 0.1
- * @date 2024-07-08
+ * @date 2024-07-09
  * 
  * @copyright Copyright (c) 2024
  * 
  */
+
+
 #include "mcal/inc/stm32f103xx.h"
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Pin.h"
@@ -20,22 +22,20 @@ using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::systick;
+
+void STK_ISR(void);
 int main() {
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
-
-    Pin pc13(kPortC, kPin13, PinMode::kOutput);
     Gpio::EnablePort(kPortC);
+    Pin pc13(kPortC, kPin13, PinMode::kOutput);
     Gpio::SetOutputMode(pc13, OutputMode::kPushPull_10MHZ);
-    uint32_t Local_u16Counter = 0;
-    while (1) {
+    Systick::Enable(kAHB_Div_8);
+    while (1) { 
+        Gpio::SetPinValue(pc13, kHigh);
+        Systick::Delay_ms(10000);
         Gpio::SetPinValue(pc13, kLow);
-        for (Local_u16Counter = 0; Local_u16Counter < 50000; Local_u16Counter++) {
-            __asm("NOP");
-        }
-        Gpio::SetPinValue(pc13, kLow);
-        for (Local_u16Counter = 0; Local_u16Counter < 50000; Local_u16Counter++) {
-             __asm("NOP");
-        }
+        Systick::Delay_ms(10000);
     }
 }
+

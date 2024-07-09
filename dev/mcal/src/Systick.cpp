@@ -43,18 +43,43 @@ void Systick::Enable(CLKSource clksource) {
     Set_PointerToISR(nullptr);
 }
 
-void Systick::Delay_ms(uint32_t value) {
-    STM32_ASSERT((value*1000) <= SYSTICK_MAX_VALUE);
-    SYSTICK->LOAD = value * 1000;
-    while (SYSTICK->CTRL.COUNTFLAG == 0) {}
-    SYSTICK->CTRL.COUNTFLAG = 0;
-}
-
-void Systick::Delay_us(uint32_t value) {
+void  Systick::SetCounterValue(uint32_t value) {
     STM32_ASSERT(value <= SYSTICK_MAX_VALUE);
+    SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->LOAD = value;
     while (SYSTICK->CTRL.COUNTFLAG == 0) {}
     SYSTICK->CTRL.COUNTFLAG = 0;
+    SYSTICK->CTRL.ENABLE = 0;
+}
+
+void Systick::Delay_ms(uint32_t time_ms) {
+    uint32_t loadValue = 0;
+    /* Case STK_CLK_AHB */
+    if (SYSTICK->CTRL.CLKSOURCE == 1) {
+        loadValue = (time_ms * (F_CPU/1000));
+    } else { /* Case STK_CLK_AHB_DIV_8 */
+        loadValue = (time_ms * (F_CPU/8000));
+    }
+
+    if (loadValue <= SYSTICK_MAX_VALUE) {
+        SetCounterValue(loadValue);
+    }
+}
+
+void Systick::Delay_us(uint32_t time_us) {
+    uint32_t loadValue = 0;
+    /* Disable SYSTICK */
+    SYSTICK->CTRL.ENABLE = 0;
+    /* Case STK_CLK_AHB */
+    if (SYSTICK->CTRL.CLKSOURCE == 1) {
+        loadValue = (time_us * (F_CPU/1000000));
+    } else {  /* Case STK_CLK_AHB_DIV_8 */
+        loadValue = (time_us * (F_CPU/8000000));
+    }
+
+    if (loadValue <= SYSTICK_MAX_VALUE) {
+        SetCounterValue(loadValue);
+    }
 }
 
 void Systick::Delay_By_Exception(uint32_t value, pFunction func) {
