@@ -8,43 +8,33 @@
  * 
  */
 #include <stdlib.h>
-#include "../../mcal/inc/Gpio.h"
+#include "mcal/inc/stm32f103xx.h"
 #include "utils/inc/Assert.h"
-#include "../../mcal/inc/Pin.h"
-#include "../inc/SevenSegment.h"
+#include "utils/inc/BitManipulation.h"
+#include "mcal/inc/Pin.h"
+#include "mcal/inc/Gpio.h"
+#include "hal/inc/SevenSegment.h"
 
 using namespace stm32::dev::mcal::pin;
-using namespace stm32::dev::mcal::gpio;
+using namespace stm32::dev::mcal::gpio;          
+using namespace stm32::utils::bit_manipulation; 
 using namespace stm32::dev::hal::ssd;
 
-#define SSD_NUMBERS {\
-    {1, 1, 1, 1, 1, 1, 0, 0}, /* 0 */ \ 
-    {0, 1, 1, 0, 0, 0, 0, 0}, /* 1 */ \ 
-    {1, 1, 0, 1, 1, 0, 1, 0}, /* 2 */ \ 
-    {1, 1, 1, 1, 0, 0, 1, 0}, /* 3 */ \ 
-    {0, 1, 1, 0, 0, 1, 1, 0}, /* 4 */ \ 
-    {1, 0, 1, 1, 0, 1, 1, 0}, /* 5 */ \ 
-    {1, 0, 1, 1, 1, 1, 1, 0}, /* 6 */ \ 
-    {1, 1, 1, 0, 0, 0, 0, 0}, /* 7 */ \ 
-    {1, 1, 1, 1, 1, 1, 1, 0}, /* 8 */ \ 
-    {1, 1, 1, 1, 0, 1, 1, 0}  /* 9 */ \ 
-}
 
-volatile uint8_t ssdNumbers[10][8] = SSD_NUMBERS;
 
-template<ConnectionType connectionType>
-SevenSegment<connectionType>::SevenSegment(const Pin *pDataPins, const Pin enablePin)
-    : enablePin_(enablePin) {   
+/*template<ConnectionType connectionType>
+SevenSegment<connectionType>::SevenSegment(const Pin *pDataPins, const Pin enablePin) {   
+    // enablePin_(enablePin)
     for (uint8_t pin = 0; pin < 7; pin++) {
         pDataPins_[pin] = pDataPins[pin];
     }
 }
-
+*/
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::Init() {  
     /* Enable Clock */
-    Gpio::EnablePort(pDataPins_[0]);
-    Gpio::EnablePort(enablePin_);
+   // Gpio::EnablePort(pDataPins_[0]);
+   // Gpio::EnablePort(enablePin_);
     /* Set pins as output push pull */
     for (uint8_t pin = 0; pin < 7; pin++) {
         Gpio::SetOutputMode(pDataPins_[pin], OutputMode::kPushPull_2MHZ);
@@ -70,12 +60,14 @@ void SevenSegment<connectionType>::Disable() {
 }
 
 template<ConnectionType connectionType>
-void SevenSegment<connectionType>::SendNumber(uint8_t num) {
+void SevenSegment<connectionType>::SendNumber(SSdDisplay num) {
     STM32_ASSERT(num >= 0 && num <= 9);
-    for (uint8_t pin = 0; pin < 7; pin++) {
-        uint8_t mode = ssdNumbers[num][pin] ^ connectionType;
-        Gpio::SetPinValue(pDataPins_[pin], static_cast<State>(mode));  
+    uint8_t pattern = static_cast<uint8_t>(num);
+    for (uint8_t i = 0; i < 7; i++) {
+        bool mode =(pattern & (1 << (6 - i)));
+        Gpio::SetPinValue(pDataPins_[i], static_cast<State>(mode));  
     }
 }
-template class stm32::dev::hal::ssd::SevenSegment<kCommon_Anode>;
-template class stm32::dev::hal::ssd::SevenSegment<kCommon_Cathode>;
+template class SevenSegment<kCommon_Anode>;
+template class SevenSegment<kCommon_Cathode>;
+

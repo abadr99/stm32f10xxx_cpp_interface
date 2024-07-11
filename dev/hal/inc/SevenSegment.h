@@ -21,7 +21,19 @@ enum ConnectionType : uint8_t {
     kCommon_Cathode,
     kCommon_Anode,
 };
-
+enum  SSdDisplay: uint8_t 
+{
+    ZERO  = 0x3F,
+    ONE   = 0x06,
+    TWO   = 0x5B,
+    THREE = 0x4F,
+    FOUR  = 0x66,
+    FIVE  = 0x6D,
+    SIX   = 0x7D,
+    SEVEN = 0x07,
+    EIGHT = 0x7F,
+    NINE  = 0x6F
+};
 /**
 *   Note: data pins must are on the same port or port of enable pin 
 *         otherwise, you must enable clk of port by yourself to work successfuly
@@ -33,7 +45,7 @@ class SevenSegment {
     void Init();
     void Enable();
     void Disable();
-    void SendNumber(uint8_t num);
+    void SendNumber(SSdDisplay num);
  private:
     Pin enablePin_;
     Pin pDataPins_[7];
