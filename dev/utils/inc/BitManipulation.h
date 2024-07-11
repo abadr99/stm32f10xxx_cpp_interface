@@ -53,7 +53,20 @@ inline constexpr uint32_t WriteBits(uint8_t start, uint8_t end , T container, T 
     T mask = ~(ones << start);
     return (container & mask) | (val << start);
 }
-
+template<typename T, uint8_t TStart, uint8_t TEnd = TStart>
+inline constexpr uint32_t  SetBits(T container) {
+    static_assert(TStart <= TEnd, "Calling SetBits with startBit > endBit");
+    T ones = GetOnes<T>(static_cast<T>(TEnd - TStart) + 1);
+    T mask = ones << TStart;
+    return container | mask;
+}
+template<typename T, uint8_t TStart, uint8_t TEnd = TStart>
+inline constexpr uint32_t  ClearBits(T container) {
+    static_assert(TStart <= TEnd, "Calling ClearBits with startBit > endBit");
+    T ones = GetOnes<T>(static_cast<T>(TEnd - TStart) + 1);
+    T mask = ~(ones << TStart);
+    return container & mask;
+}
 }  // namespace bit_manipulation
 }  // namespace utils
 }  // namespace stm32
