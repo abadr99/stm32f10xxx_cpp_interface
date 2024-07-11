@@ -40,20 +40,36 @@ constexpr T ExtractBits(const T value) {
 }
 
 template<typename T, uint8_t TStart, uint8_t TEnd = TStart>
-inline constexpr uint32_t WriteBits(T container, T val) {
+inline constexpr T WriteBits(T container, T val) {
     static_assert(TStart <= TEnd, "Calling WriteBits with startBit first");
+    static_assert(TEnd < sizeof(T) * 8, "TEnd is out of bounds for type T");
     T ones = GetOnes<T>(static_cast<T>(TEnd - TStart) + 1);
     T mask = ~(ones << TStart);
     return (container & mask) | (val << TStart);
 }
 template<typename T>
-inline constexpr uint32_t WriteBits(uint8_t start, uint8_t end , T container, T val) {  // NOLINT [whitespace/line_length]
+inline constexpr T WriteBits(uint8_t start, uint8_t end , T container, T val) {  // NOLINT [whitespace/line_length]
     assert(start <= end && "Calling WriteBits with startBit first");
     T ones = GetOnes<T>(static_cast<T>(end - start) + 1);
     T mask = ~(ones << start);
     return (container & mask) | (val << start);
 }
-
+template<typename T, uint8_t TStart, uint8_t TEnd = TStart>
+inline constexpr T  SetBits(T container) {
+    static_assert(TStart <= TEnd, "Calling SetBits with startBit > endBit");
+    static_assert(TEnd < sizeof(T) * 8, "TEnd is out of bounds for type T");
+    T ones = GetOnes<T>(static_cast<T>(TEnd - TStart) + 1);
+    T mask = ones << TStart;
+    return container | mask;
+}
+template<typename T, uint8_t TStart, uint8_t TEnd = TStart>
+inline constexpr T  ClearBits(T container) {
+    static_assert(TStart <= TEnd, "Calling ClearBits with startBit > endBit");
+    static_assert(TEnd < sizeof(T) * 8, "TEnd is out of bounds for type T");
+    T ones = GetOnes<T>(static_cast<T>(TEnd - TStart) + 1);
+    T mask = ~(ones << TStart);
+    return container & mask;
+}
 }  // namespace bit_manipulation
 }  // namespace utils
 }  // namespace stm32
