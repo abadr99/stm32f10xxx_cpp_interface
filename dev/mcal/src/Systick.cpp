@@ -76,10 +76,10 @@ void Systick::Delay_us(uint32_t time_us) {
 }
 
 void Systick::Delay_By_Exception(uint32_t value, pFunction func) {
-    STM32_ASSERT(func != nullptr && value <= SYSTICK_MAX_VALUE);
-    SYSTICK->CTRL.TICKINT = 1;
+    STM32_ASSERT(func != NULL && value <= SYSTICK_MAX_VALUE);
     SYSTICK->LOAD = value;
     Helper_SetPointerToISR(func);
+    SYSTICK->CTRL.TICKINT = 1;
 }
 
 uint32_t Systick::GetElapsedTime() {
@@ -99,7 +99,11 @@ pFunction Systick::Helper_GetPointerToISR() {
     return Systick::PointerToISR;
 }
 
-// void SysTick_Handler(void) {
-//     Helper_GetPointerToISR()();
-//     SYSTICK->CTRL.COUNTFLAG = 0;
-// }
+extern "C" void SysTick_Handler(void) {
+    pFunction fun = Systick::Helper_GetPointerToISR();
+    if (fun != NULL) {
+        fun();
+        SYSTICK->CTRL.ENABLE = 0;
+        SYSTICK->VAL = 1;
+    }
+}
