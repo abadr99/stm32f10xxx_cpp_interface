@@ -44,6 +44,7 @@ void Keypad::KeypadInit() {
     }
     for (uint8_t numCol =0; numCol <colNum; numCol++) {
         Gpio::SetOutputMode(KeypadCol[numCol], OutputMode::kPushPull_2MHZ);
+        Gpio::SetPinValue(KeypadCol[numCol], State::kHigh);
     }
 }
 
@@ -57,6 +58,7 @@ uint8_t Keypad::GetPressed(uint8_t** keypadButtons) {
             }
             while (Gpio::GetPinValue(KeypadRow[numRow]) == kLow) {
             }
+            Gpio::SetPinValue(KeypadCol[numCol], kHigh);
             return buttonVal;
         }
         Gpio::SetPinValue(KeypadCol[numCol], kHigh);
