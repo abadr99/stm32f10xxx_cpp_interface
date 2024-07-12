@@ -13,7 +13,7 @@ U_SRC+= $(foreach S,$(U_SRCS_DIR),$(wildcard $(S)/*.cpp))
 
 U_TARGET := unittests/unittests.elf
 U_LD := -lgtest -lpthread 
-U_INC := -I../dev
+U_INC := -I../dev -I../dev/mcal/inc -I../dev/hal/inc -I../dev/utils/inc
 
 cpplint:
 	@python3 $(LINT_PATH)  --recursive .

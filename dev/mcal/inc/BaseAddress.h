@@ -26,6 +26,10 @@
 #define SCB_BASE_ADDRESS    (0xE000ED00)
 
 #define SYSTICK_BASE_ADDRESS  (0xE000E010)
+
+#define USART1_BASE_ADDRESS (0x40013800)
+#define USART2_BASE_ADDRESS (0x40004400)
+#define USART3_BASE_ADDRESS (0x40004800)
 namespace stm32 {
 namespace registers {
 namespace rcc {
