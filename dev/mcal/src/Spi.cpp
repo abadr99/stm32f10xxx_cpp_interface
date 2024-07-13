@@ -18,10 +18,12 @@ using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::spi;
 using namespace stm32::registers::spi;
 
-Spi::Spi(SpiPeripheral peripheral) {
-    spi_reg=(peripheral == kSPI1) ? SPI1 : SPI2;
+template<SpiPeripheral  SPI_NUM>
+Spi<SPI_NUM>::Spi() {
+    spi_reg=(SPI_NUM == kSPI1) ? SPI1 : SPI2;
 }
-void Spi::MasterInit(const SpiConfig& config) {
+template<SpiPeripheral  SPI_NUM>
+void Spi<SPI_NUM>::MasterInit(const SpiConfig& config) {
     // baud rate
     Helper_MasterBaudRate(config);
     // CPOL & CPHA
@@ -38,10 +40,11 @@ void Spi::MasterInit(const SpiConfig& config) {
         spi_reg->CR1.SSI = 1;
     }
     // set master
-    spi_reg->CR1.SPE = 1;
     spi_reg->CR1.MSTR = 1;
+    spi_reg->CR1.SPE = 1;
 }
-void Spi::SlaveInit(const SpiConfig& config) {
+template<SpiPeripheral  SPI_NUM>
+void Spi<SPI_NUM>::SlaveInit(const SpiConfig& config) {
     // DDF
     Helper_SetDataFrame(config);
     // CPOL & CPHA
@@ -56,28 +59,31 @@ void Spi::SlaveInit(const SpiConfig& config) {
         spi_reg->CR1.SSI = 0;
     }
     // set salve
-    spi_reg->CR1.SPE = 1;
     spi_reg->CR1.MSTR = 0;
+    spi_reg->CR1.SPE = 1;
 }
-
-void Spi::Write(uint8_t data) {
+template<SpiPeripheral  SPI_NUM>
+void Spi<SPI_NUM>::Write(uint8_t data) {
     spi_reg->DR = data;
-    while (spi_reg->SR.BSY) {
+    while (!(spi_reg->SR.TXE)) {
     }
 }
-uint8_t Spi::Read() {
-    while (spi_reg->SR.BSY) {
+template<SpiPeripheral  SPI_NUM>
+uint8_t Spi<SPI_NUM>::Read() {
+    while (!(spi_reg->SR.RXNE)) {
     }
     return spi_reg->DR;
 }
-void Spi::Helper_SetDataFrame(const SpiConfig& config) {
+template<SpiPeripheral  SPI_NUM>
+void Spi<SPI_NUM>::Helper_SetDataFrame(const SpiConfig& config) {
     if (config.data == kSPI_8bit) {
         spi_reg->CR1.DFF = 0;
     } else if (config.data == kSPI_16bt) {
         spi_reg->CR1.DFF = 1;
     }
 }
-void Spi::Helper_SetClockMode(const SpiConfig& config) {
+template<SpiPeripheral  SPI_NUM>
+void Spi<SPI_NUM>::Helper_SetClockMode(const SpiConfig& config) {
     if (config.clk == kMODE0) {
         spi_reg->CR1.registerVal &= ~(0x03);
     } else if (config.clk == kMODE1) {
@@ -91,14 +97,16 @@ void Spi::Helper_SetClockMode(const SpiConfig& config) {
         spi_reg->CR1.registerVal |=  (0x03);
     } 
 }
-void Spi::Helper_SetFrameFormat(const SpiConfig& config) {
+template<SpiPeripheral  SPI_NUM>
+void Spi<SPI_NUM>::Helper_SetFrameFormat(const SpiConfig& config) {
     if (config.frame == kMSB) {
        spi_reg->CR1.LSBFIRST = 0;
     } else if (config.frame == kLSB) {
         spi_reg->CR1.LSBFIRST = 1;
     }
 }
-void Spi::Helper_MasterBaudRate(const SpiConfig& config) {
+template<SpiPeripheral  SPI_NUM>
+void Spi<SPI_NUM>::Helper_MasterBaudRate(const SpiConfig& config) {
     STM32_ASSERT(config.br >= kF_DIV_2 && config.br <= kF_DIV_256);
     if (config.br == kF_DIV_2) {
         spi_reg->CR1.BR = 0;
@@ -118,3 +126,5 @@ void Spi::Helper_MasterBaudRate(const SpiConfig& config) {
         spi_reg->CR1.BR = 7;
     }
 }
+template class Spi<kSPI1>;
+template class Spi<kSPI2>;

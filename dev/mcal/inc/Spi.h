@@ -55,10 +55,10 @@ struct SpiConfig {
     SlaveManage slave;
     BaudRate br;
 };
-
+template<SpiPeripheral  SPI_NUM>
 class Spi {
  public:
-    explicit Spi(SpiPeripheral peripheral);
+    Spi();
     void MasterInit(const SpiConfig& config);
     void SlaveInit(const SpiConfig& config);
     void Write(uint8_t data);
