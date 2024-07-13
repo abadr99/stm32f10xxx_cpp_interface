@@ -4,4 +4,5 @@ mcal/Nvic.cpp
 mcal/Systick.cpp
 mcal/Gpio.cpp
 mcal/Spi.cpp
+mcal/Usart.cpp
 mcal/EXTI.cpp
