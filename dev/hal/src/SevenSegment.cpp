@@ -22,19 +22,19 @@ using namespace stm32::dev::hal::ssd;
 
 
 
-/*template<ConnectionType connectionType>
-SevenSegment<connectionType>::SevenSegment(const Pin *pDataPins, const Pin enablePin) {   
-    // enablePin_(enablePin)
+template<ConnectionType connectionType>
+SevenSegment<connectionType>::SevenSegment(const Pin *pDataPins, const Pin enablePin)   
+    : enablePin_(enablePin) {
     for (uint8_t pin = 0; pin < 7; pin++) {
         pDataPins_[pin] = pDataPins[pin];
     }
 }
-*/
+
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::Init() {  
     /* Enable Clock */
-   // Gpio::EnablePort(pDataPins_[0]);
-   // Gpio::EnablePort(enablePin_);
+    Gpio::EnablePort(pDataPins_[0].GetPort());
+    Gpio::EnablePort(enablePin_.GetPort());
     /* Set pins as output push pull */
     for (uint8_t pin = 0; pin < 7; pin++) {
         Gpio::SetOutputMode(pDataPins_[pin], OutputMode::kPushPull_2MHZ);
@@ -65,7 +65,7 @@ void SevenSegment<connectionType>::SendNumber(SSdDisplay num) {
     uint8_t pattern = static_cast<uint8_t>(num);
     for (uint8_t i = 0; i < 7; i++) {
         bool mode =(pattern & (1 << (6 - i)));
-        Gpio::SetPinValue(pDataPins_[i], static_cast<State>(mode));  
+        Gpio::SetPinValue(pDataPins_[i], static_cast<State>(mode));
     }
 }
 template class SevenSegment<kCommon_Anode>;

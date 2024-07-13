@@ -21,8 +21,7 @@ enum ConnectionType : uint8_t {
     kCommon_Cathode,
     kCommon_Anode,
 };
-enum  SSdDisplay: uint8_t 
-{
+enum  SSdDisplay: uint8_t  {
     ZERO  = 0x3F,
     ONE   = 0x06,
     TWO   = 0x5B,
