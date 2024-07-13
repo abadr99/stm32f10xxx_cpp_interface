@@ -4,3 +4,4 @@ mcal/Nvic.cpp
 mcal/Systick.cpp
 mcal/Gpio.cpp
 mcal/EXTI.cpp
+hal/Buzzer.cpp
