@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2024
  *
  */
+#include "mcal/inc/stm32f103xx.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
 #include "hal/inc/Buzzer.h"
