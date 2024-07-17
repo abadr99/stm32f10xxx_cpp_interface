@@ -90,7 +90,6 @@ void Systick::Disable() {
     SYSTICK->CTRL.ENABLE = 0;
     SYSTICK->CTRL.CLKSOURCE = kAHB;
     Helper_SetPointerToISR(nullptr);
-}
 
 void Systick::Helper_SetPointerToISR(pFunction func) {
     Systick::PointerToISR = func;
@@ -107,3 +106,4 @@ extern "C" void SysTick_Handler(void) {
         SYSTICK->VAL = 1;
     }
 }
+
