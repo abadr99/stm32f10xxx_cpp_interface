@@ -32,10 +32,8 @@ class Systick {
     static void Disable();
     static pFunction Helper_GetPointerToISR();
  private:
-    static void Helper_SetPointerToISR(pFunction func);
     static pFunction PointerToISR;
     static void Helper_SetPointerToISR(pFunction func);
-    static pFunction Helper_GetPointerToISR();
 };
 
 
