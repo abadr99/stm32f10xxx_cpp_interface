@@ -398,6 +398,26 @@ struct EXTIRegDef {
 #define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
 
 }  // namespace exti
+/**
+ * @brief Structure defining DMA Register Definitions
+ * 
+ */
+namespace dma {
+struct DmaChannel {
+    RegWidth_t CCR;     // DMA channel x configuration register
+    RegWidth_t CNDTR;   // DMA channel x number of data register
+    RegWidth_t CPAR;    // DMA channel x peripheral address register
+    RegWidth_t CMAR;    // DMA channel x memory address register
+};
+struct DMARegDef {
+    RegWidth_t ISR;         // DMA interrupt status register
+    RegWidth_t IFCR;        // DMA interrupt flag clear register
+    DmaChannel CHANNEL[7];  // DMA channels 1-7
+};
+
+#define DMA (reinterpret_cast<volatile EXTIRegDef*>(DMA_BASE_ADDRESS))
+
+}  // namespace dma
 }  // namespace registers
 }  // namespace stm32
 
