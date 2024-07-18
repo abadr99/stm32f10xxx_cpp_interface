@@ -404,8 +404,26 @@ struct EXTIRegDef {
  */
 namespace dma {
 struct DmaChannel {
-    RegWidth_t CCR;     // DMA channel x configuration register
-    RegWidth_t CNDTR;   // DMA channel x number of data register
+    union CCR {
+        struct {
+            uint32_t EN           : 1;  // Channel enable
+            uint32_t TCIE         : 1;  // Transfer complete interrupt enable
+            uint32_t HTIE         : 1;  // Half transfer interrupt enable
+            uint32_t TEIE         : 1;  // Transfer error interrupt enable
+            uint32_t DIR          : 1;  // Data transfer direction
+            uint32_t CIRC         : 1;  // Circular mode
+            uint32_t PINC         : 1;  // Peripheral increment mode
+            uint32_t MINC         : 1;  // Memory increment mode
+            uint32_t PSIZE        : 2;  // Peripheral size
+            uint32_t MSIZE        : 2;  // Memory size
+            uint32_t PL           : 2;  // Channel priority level
+            uint32_t MEM2MEM      : 1;  // Memory-to-memory mode
+            uint32_t RESERVED     : 17;  // Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }CCR;       // DMA channel x configuration register
+
+    RegWidth_t CNDTR;    // DMA channel x number of data register
     RegWidth_t CPAR;    // DMA channel x peripheral address register
     RegWidth_t CMAR;    // DMA channel x memory address register
 };
@@ -415,7 +433,7 @@ struct DMARegDef {
     DmaChannel CHANNEL[7];  // DMA channels 1-7
 };
 
-#define DMA (reinterpret_cast<volatile EXTIRegDef*>(DMA_BASE_ADDRESS))
+#define DMA (reinterpret_cast<volatile DMARegDef*>(DMA_BASE_ADDRESS))
 
 }  // namespace dma
 }  // namespace registers

@@ -1,5 +1,5 @@
 /**
- * @file EXTI.h
+ * @file DMA.h
  * @author Noura & MRefat
  * @brief 
  * @version 0.1
@@ -37,9 +37,9 @@ enum Mode : uint8_t {
     kNoCircular,
     kCircular,
 };
-enum Increment : uint8_t {
-    kEnable,
+enum State : uint8_t {
     kDisable,
+    kEnable,
 };
 enum Size : uint8_t {
     k8bit,
@@ -56,15 +56,19 @@ struct DMAConfig {
     Channel ch;
     Direction dir;
     Mode mode;
-    Increment periInc;
-    Increment memInc;
+    State periInc;
+    State memInc;
     Size perSize;
     Size memSize;
     Priorty chPriorty;
+    State TransErrInterrup;
+    State HalfTransInterrup;
+    State TransComplInterrup;
 };
 class Dma {
  public:
 static void DMA_Init(const DMAConfig& config);
+static void DMA_Transfer(const DMAConfig& config, const uint32_t &srcAdd, const uint32_t &disAdd, uint16_t numOfData);  //NOLINT
 };
 }   // namespace dma
 }   // namespace mcal
