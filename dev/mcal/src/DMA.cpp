@@ -15,49 +15,80 @@
 using namespace stm32::registers::dma;
 using namespace stm32::dev::mcal::dma;
 
-void Dma::DMA_Init(const DMAConfig& config) {
-    STM32_ASSERT(config.ch >= kCH1 && config.ch <= kCH7);
+
+#define DMA_ENABLE(channel)                                 (DMA->CHANNEL[channel].CCR.EN = 1)
+#define DMA_DISABLE(channel)                                (DMA->CHANNEL[channel].CCR.EN = 0)
+#define DMA_SET_MODE(channel, mode)                         (DMA->CHANNEL[channel].CCR.CIRC = mode)
+#define DMA_SET_PERIPHERAL_SIZE(channel, size)              (DMA->CHANNEL[channel].CCR.PSIZE = size)
+#define DMA_SET_MEMORY_SIZE(channel, size)                  (DMA->CHANNEL[channel].CCR.MSIZE = size)
+#define DMA_SET_PERIPHERAL_SRC_INC_STATE(channel, state)    (DMA->CHANNEL[channel].CCR.PINC = state)
+#define DMA_SET_MEMORY_SRC_INC_STATE(channel, state)        (DMA->CHANNEL[channel].CCR.MINC = state)
+#define DMA_SET_CHANNEL_PRIORITY(channel, priority)         (DMA->CHANNEL[channel].CCR.PL = priority)
+#define DMA_SET_TRANSFER_ERROR_INT_STATE(channel, state)    (DMA->CHANNEL[channel].CCR.TEIE = state)
+#define DMA_SET_HALF_TRANSFER_INT_STATE(channel, state)     (DMA->CHANNEL[channel].CCR.HTIE = state)
+#define DMA_SET_TRANSFER_COMPLETE_INT_STATE(channel, state) (DMA->CHANNEL[channel].CCR.TCIE = state)
+
+
+inline void helper_SetDirection(Channel dmaChannel, Direction dmaDirection) {
+    switch (dmaDirection) {
+        case kMEM2MEM : DMA->CHANNEL[dmaChannel].CCR.MEM2MEM = 1; break;
+        case kMEM2PER : DMA->CHANNEL[dmaChannel].CCR.DIR = 1;     break;
+        case kPER2MEM : DMA->CHANNEL[dmaChannel].CCR.DIR = 0;     break;
+        default       : return;
+    }
+}
+
+void Dma::Init(const DMAConfig& config) {
+    STM32_ASSERT(config.channel >= kCH1 && config.channel <= kCH7);
     STM32_ASSERT(config.dir >= kMEM2MEM && config.dir <= kPER2MEM);
     STM32_ASSERT(config.mode >= kNoCircular && config.mode <= kCircular);
-    STM32_ASSERT(config.periInc >= kDisable && config.periInc <= kEnable);
-    STM32_ASSERT(config.memInc >= kDisable && config.memInc <= kEnable);
-    STM32_ASSERT(config.memSize >= k8bit && config.memSize <= k32bit);
-    STM32_ASSERT(config.perSize >= k8bit && config.perSize <= k32bit);
-    STM32_ASSERT(config.chPriorty >= kLow && config.chPriorty <= kVeryHigh);
-    //  disable DMA
-    DMA->CHANNEL[config.ch].CCR.EN = 0;
-    //  direction
-    switch (config.dir) {
-    case kMEM2MEM : DMA->CHANNEL[config.ch].CCR.MEM2MEM = 1; break;
-    case kMEM2PER : DMA->CHANNEL[config.ch].CCR.DIR = 1;     break;
-    case kPER2MEM : DMA->CHANNEL[config.ch].CCR.DIR = 0;     break; }
-    //  Mode
-    DMA->CHANNEL[config.ch].CCR.CIRC = config.mode;
-    //  PINC
-    DMA->CHANNEL[config.ch].CCR.PINC = config.periInc;
-    //  MINC
-    DMA->CHANNEL[config.ch].CCR.MINC = config.memInc;
-    //  Memory Size
-    DMA->CHANNEL[config.ch].CCR.MSIZE = config.memSize;
-    //  Peripheral Size
-    DMA->CHANNEL[config.ch].CCR.PSIZE = config.perSize;
-    //  Channel Priority Level
-    DMA->CHANNEL[config.ch].CCR.PL = config.chPriorty;
-    //  Transfer error interrupt enable
-    DMA->CHANNEL[config.ch].CCR.TEIE = config.TransErrInterrup;
-    //  Half transfer interrupt enable
-    DMA->CHANNEL[config.ch].CCR.HTIE = config.HalfTransInterrup;
-    //  Transfer complete interrupt enable
-    DMA->CHANNEL[config.ch].CCR.TCIE = config.TransComplInterrup;
+    STM32_ASSERT(config.periphIncState >= kDisable && config.periphIncState <= kEnable);
+    STM32_ASSERT(config.memIncState >= kDisable && config.memIncState <= kEnable);
+    STM32_ASSERT(config.memoryDataSize >= k8bit && config.memoryDataSize <= k32bit);
+    STM32_ASSERT(config.peripheralDataSize >= k8bit && config.peripheralDataSize <= k32bit);
+    STM32_ASSERT(config.channelPriority >= kLow && config.channelPriority <= kVeryHigh);
+
+    DMA_DISABLE(config.channel);
+
+    helper_SetDirection(config.channel, config.dir);
+
+    DMA_SET_MODE(config.channel, config.mode);
+    
+    DMA_SET_PERIPHERAL_SRC_INC_STATE(config.channel, config.periphIncState);
+    
+    DMA_SET_MEMORY_SRC_INC_STATE(config.channel, config.memIncState);
+
+    DMA_SET_PERIPHERAL_SIZE(config.channel, config.peripheralDataSize);
+    
+    DMA_SET_PERIPHERAL_SIZE(config.channel, config.memoryDataSize);
+
+    DMA_SET_CHANNEL_PRIORITY(config.channel, config.channelPriority);
+
+    DMA_SET_TRANSFER_COMPLETE_INT_STATE(config.channel, config.transCompInterrupt);
+
+    DMA_SET_TRANSFER_ERROR_INT_STATE(config.channel,    config.transErrInterrupt);
+    
+    DMA_SET_HALF_TRANSFER_INT_STATE(config.channel,     config.halfTransInterrupt);
+
 }
-void Dma::DMA_Transfer(const DMAConfig& config, const uint32_t &srcAdd, const uint32_t &disAdd, uint16_t numOfData) {    //NOLINT
+void Dma::Transfer(const DMAConfig& config, const uint32_t &srcAdd, const uint32_t &disAdd, uint16_t numOfData) {    //NOLINT
     if (config.dir == kMEM2PER) {
-        DMA->CHANNEL[config.ch].CMAR = srcAdd;
-        DMA->CHANNEL[config.ch].CPAR = disAdd;
+        DMA->CHANNEL[config.channel].CMAR = srcAdd;
+        DMA->CHANNEL[config.channel].CPAR = disAdd;
     } else {
-        DMA->CHANNEL[config.ch].CPAR = srcAdd;
-        DMA->CHANNEL[config.ch].CMAR = disAdd;
+        DMA->CHANNEL[config.channel].CPAR = srcAdd;
+        DMA->CHANNEL[config.channel].CMAR = disAdd;
     }
-    DMA->CHANNEL[config.ch].CNDTR = numOfData;
-    DMA->CHANNEL[config.ch].CCR.EN = 0;
+    DMA->CHANNEL[config.channel].CNDTR = numOfData;
+    DMA->CHANNEL[config.channel].CCR.EN = 0;
+}
+
+void Dma::Enable(Channel dmaChannel) {
+    STM32_ASSERT(dmaChannel >= kCH1 && dmaChannel <= kCH7);
+    DMA_ENABLE(dmaChannel);
+}
+
+void Dma::Disable(Channel dmaChannel) {
+    STM32_ASSERT(dmaChannel >= kCH1 && dmaChannel <= kCH7);
+    DMA_DISABLE(dmaChannel);
 }

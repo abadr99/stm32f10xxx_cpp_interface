@@ -46,29 +46,31 @@ enum Size : uint8_t {
     k16bit,
     k32bit,
 };
-enum Priorty : uint8_t {
+enum Priority : uint8_t {
     kLow,
     kMedium,
     kHigh,
     kVeryHigh,
 };
 struct DMAConfig {
-    Channel ch;
+    Channel channel;
     Direction dir;
     Mode mode;
-    State periInc;
-    State memInc;
-    Size perSize;
-    Size memSize;
-    Priorty chPriorty;
-    State TransErrInterrup;
-    State HalfTransInterrup;
-    State TransComplInterrup;
+    State periphIncState;
+    State memIncState;
+    Size peripheralDataSize;
+    Size memoryDataSize;
+    Priority channelPriority;
+    State transErrInterrupt;
+    State halfTransInterrupt;
+    State transCompInterrupt;
 };
 class Dma {
  public:
-static void DMA_Init(const DMAConfig& config);
-static void DMA_Transfer(const DMAConfig& config, const uint32_t &srcAdd, const uint32_t &disAdd, uint16_t numOfData);  //NOLINT
+static void Init(const DMAConfig& config);
+static void Transfer(const DMAConfig& config, const uint32_t &srcAdd, const uint32_t &disAdd, uint16_t numOfData);  //NOLINT
+static void Enable(Channel dmaChannel);
+static void Disable(Channel dmaChannel);
 };
 }   // namespace dma
 }   // namespace mcal
