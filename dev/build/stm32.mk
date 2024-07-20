@@ -4,10 +4,10 @@ MCU:= stm32f103c8t6
 CLK:= 8000000
 CPU:= cortex-m3 
 
-CXX_FLAGS:=   	 	 -mthumb -g -Wall -mcpu=$(CPU) -O0 -Werror -std=c++17 -mcpu=cortex-m3 -mthumb -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra -g3 -DDEBUG -DUSE_FULL_ASSERT -DTRACE -DOS_USE_TRACE_SEMIHOSTING_DEBUG -DSTM32F10X_MD -DHSE_VALUE=8000000
+CXX_FLAGS:=   	 	 -mthumb -g -Wall -mcpu=$(CPU) -O0 -Werror -std=c++17 -mcpu=cortex-m3 -mthumb -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -flto -ffreestanding  -fno-exceptions -fno-move-loop-invariants -Wall -Wextra -g3 -DDEBUG -DUSE_FULL_ASSERT -DTRACE -DOS_USE_TRACE_SEMIHOSTING_DEBUG -DSTM32F10X_MD -DHSE_VALUE=8000000 --specs=rdimon.specs -lgcc -lc -lm -lrdimon 
 OPT_CXX_FLAGS:= 	 -mthumb -g -Wall -mcpu=$(CPU) -O3 -Werror -std=c++17
 CXX_TEST_FLAGS:=	 -mthumb -g -Wall -mcpu=$(CPU) -O2 -Werror -std=c++17
-LDFLAGS = -Wl,--gc-sections,-Map=$@.map,-cref,-u,Reset_Handler
+LDFLAGS = -Wl,--gc-sections,-Map=$@.map,-cref,-u,Reset_Handler -flto -ffreestanding
 OBJ_COPY_OPTS:= -O ihex
 
 TARGET:= stm32
