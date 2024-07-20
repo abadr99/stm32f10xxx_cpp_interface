@@ -6,4 +6,7 @@ mcal/Systick.cpp
 mcal/Gpio.cpp
 mcal/Spi.cpp
 mcal/Usart.cpp
+hal/Keypad.cpp
+hal/LED.cpp
 mcal/EXTI.cpp
+
