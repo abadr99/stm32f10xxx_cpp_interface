@@ -426,7 +426,7 @@ namespace i2c {
         }CR1;
         union CR2
         {
-            struct stm32f103xx
+            struct
             {
                 RegWidth_t FREQ        : 6;  // Peripheral clock frequency
                 RegWidth_t RESERVED    : 2;  // Reserved
