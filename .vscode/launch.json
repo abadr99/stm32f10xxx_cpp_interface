@@ -1,6 +1,22 @@
 {
     "version": "0.2",
     "configurations": [
+        
+        {
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/dev/stm32.elf",
+            "name": "Debug with OpenOCD",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "/usr/share/openocd/scripts/interface/stlink-v2.cfg",
+                "/usr/share/openocd/scripts/target/stm32f1x.cfg"
+            ],
+            "searchDir": [],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+        },
         {
             "name": "Unit-Test",
             "type": "cppdbg",
