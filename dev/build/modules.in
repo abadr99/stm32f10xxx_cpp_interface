@@ -4,6 +4,10 @@ mcal/Pin.cpp
 mcal/Nvic.cpp
 mcal/Systick.cpp
 mcal/Gpio.cpp
+mcal/Spi.cpp
 mcal/Usart.cpp
+hal/Keypad.cpp
+hal/LED.cpp
 mcal/EXTI.cpp
 mcal/DMA.cpp
+
