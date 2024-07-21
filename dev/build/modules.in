@@ -1,4 +1,4 @@
-mcal/stm32f103_startup.cpp
+stm32f103_startup.cpp
 mcal/Rcc.cpp
 mcal/Pin.cpp
 mcal/Nvic.cpp

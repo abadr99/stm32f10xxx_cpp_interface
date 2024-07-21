@@ -22,7 +22,7 @@ ELF_TARGET:=$(TARGET).elf
 FLASH:= st-flash
 UPLOAD_OPT:= write 0x08000000
 
-$(OBJDIR)/%.o : **/src/%.cpp
+$(OBJDIR)/%.o : **/src/%.cpp **./%.cpp
 	mkdir -p $(OBJDIR)
 	$(CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
 	@$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
