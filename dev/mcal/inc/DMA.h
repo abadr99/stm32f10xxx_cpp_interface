@@ -18,13 +18,13 @@ namespace mcal  {
 namespace dma   {
 
 enum Channel : uint8_t {
-    kCH1,
-    kCH2,
-    kCH3,
-    kCH4,
-    kCH5,
-    kCH6,
-    kCH7,
+    kDMA_Channel1,
+    kDMA_Channel2,
+    kDMA_Channel3,
+    kDMA_Channel4,
+    kDMA_Channel5,
+    kDMA_Channel6,
+    kDMA_Channel7,
 };
 enum Direction : uint8_t {
     kMEM2MEM,
@@ -39,8 +39,8 @@ enum Mode : uint8_t {
     kCircular,
 };
 enum State : uint8_t {
-    kDisable,
-    kEnable,
+    kDMA_Disable,
+    kDMA_Enable,
 };
 enum Size : uint8_t {
     k8bit,
@@ -48,28 +48,29 @@ enum Size : uint8_t {
     k32bit,
 };
 enum Priority : uint8_t {
-    kLow,
-    kMedium,
-    kHigh,
-    kVeryHigh,
+    kDMA_Low,
+    kDMA_Medium,
+    kDMA_High,
+    kDMA_VeryHigh,
 };
 struct DMAConfig {
     Channel channel;
     Direction dir;
     Mode mode;
+    uint32_t sourceBaseAddr;
+    uint32_t destinationBaseAddr;
+    Size bufferSize;
     State periphIncState;
     State memIncState;
     Size peripheralDataSize;
     Size memoryDataSize;
     Priority channelPriority;
     State transErrInterrupt;
-    State halfTransInterrupt;
     State transCompInterrupt;
 };
 class Dma {
  public:
 static void Init(const DMAConfig& config);
-static void Transfer(const DMAConfig& config, const uint32_t &srcAdd, const uint32_t &disAdd, uint16_t numOfData);  //NOLINT
 static void Enable(Channel dmaChannel);
 static void Disable(Channel dmaChannel);
 static pFunction Helper_GetPointerToTransferCompleteISR(Channel channel);
