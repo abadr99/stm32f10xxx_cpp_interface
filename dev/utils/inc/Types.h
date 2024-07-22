@@ -20,6 +20,7 @@ namespace types {
 using IO = volatile uint32_t;
 using RegWidth_t = uint32_t;
 using pFunction = void(*)();
+#define F_CPU (8000000U)
 
 }  // namespace types
 }  // namespace utils
