@@ -20,6 +20,18 @@ using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::i2c;
 using namespace stm32::registers::i2c;
 
+ASSERT_STRUCT_SIZE(I2CRegDef, (sizeof(RegWidth_t) * 9));
+
+ASSERT_MEMBER_OFFSET(I2CRegDef, CR1, 0);
+ASSERT_MEMBER_OFFSET(I2CRegDef, CR2,   sizeof(RegWidth_t) * 1);
+ASSERT_MEMBER_OFFSET(I2CRegDef, OAR1,  sizeof(RegWidth_t) * 2);
+ASSERT_MEMBER_OFFSET(I2CRegDef, OAR2,  sizeof(RegWidth_t) * 3);
+ASSERT_MEMBER_OFFSET(I2CRegDef, DR,    sizeof(RegWidth_t) * 4);
+ASSERT_MEMBER_OFFSET(I2CRegDef, SR1,   sizeof(RegWidth_t) * 5);
+ASSERT_MEMBER_OFFSET(I2CRegDef, SR2,   sizeof(RegWidth_t) * 6);
+ASSERT_MEMBER_OFFSET(I2CRegDef, CCR,   sizeof(RegWidth_t) * 7);
+ASSERT_MEMBER_OFFSET(I2CRegDef, TRISE, sizeof(RegWidth_t) * 8);
+
 template<I2CPeripheral  I2Cx>
 I2c<I2Cx>::I2c() {
     i2c_reg = (I2Cx == kI2C1) ? I2C1 : I2C2;
