@@ -9,4 +9,4 @@ mcal/Usart.cpp
 hal/Keypad.cpp
 hal/LED.cpp
 mcal/EXTI.cpp
-
+mcal/Adc.cpp
