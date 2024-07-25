@@ -9,4 +9,5 @@ mcal/Usart.cpp
 hal/Keypad.cpp
 hal/LED.cpp
 mcal/EXTI.cpp
+hal/SevenSegment.cpp
 hal/DAC.cpp
