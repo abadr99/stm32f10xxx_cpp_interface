@@ -39,20 +39,36 @@ enum  Alignment {
         RIGHT = 0,
         LEFT = 1
 };
-enum Prescaler {
-        DIV2 = 0,
-        DIV4,
-        DIV6,
-        DIV8
-};
 enum Mode {
         SINGLE = 0,
-        CONTINUOUS = 1
+        CONTINUOUS = 1,
+        INJECTED
+};
+enum TriggerSource {
+        TIMER1_CC1 = 0b000,
+        TIMER1_CC2 = 0b001,
+        TIMER1_CC3 = 0b010,
+        TIMER2_CC2 = 0b011,   
+        TIMER3_TRGO = 0b100,
+        EXTI_LINE11 = 0b110,  
+        SOFTWARE = 0b111
+};
+enum  SampleTime {
+        CYCLES_1_5,
+        CYCLES_7_5,
+        CYCLES_13_5,
+        CYCLES_28_5,
+        CYCLES_41_5,
+        CYCLES_55_5,
+        CYCLES_71_5,
+        CYCLES_239_5
 };
 struct ADCConfig {
 Alignment alignment = RIGHT;
-Prescaler prescaler = DIV2;
 Channel channel;
+Mode mode = SINGLE;
+TriggerSource trigSource = SOFTWARE;
+SampleTime sampleTime = CYCLES_55_5;
 //  bool useDMA; TODO
 // bool scanMode; TODO
 };
@@ -69,9 +85,14 @@ uint16_t startSingleConversion();
 void startContinuousConversion();
 uint16_t readContinuousConversion();
 void stopContinuousConversion();
+uint16_t  startInjectedConversion();
+void EnableInterrupt();
+void DisableInterrupt();
+void Disable();
  private:
 ADCConfig& config_;
 volatile ADCRegDef* ADC_reg;
+void configureChannelSample();
 };
 }   // namespace adc
 }   // namespace mcal

@@ -513,8 +513,37 @@ struct ADCRegDef {
         };
         RegWidth_t registerVal;
     }CR2;
-    RegWidth_t SMPR1;   // Sample Time Register 1
-    RegWidth_t SMPR2;   // Sample Time Register 2
+    union SMPR1 {
+        struct {
+            RegWidth_t SMP10 : 3;
+            RegWidth_t SMP11 : 3;
+            RegWidth_t SMP12 : 3;
+            RegWidth_t SMP13 : 3;
+            RegWidth_t SMP14 : 3;
+            RegWidth_t SMP15 : 3;
+            RegWidth_t SMP16 : 3;
+            RegWidth_t SMP17 : 3;
+            RegWidth_t       : 8;
+        };
+        RegWidth_t registerVal;
+    }SMPR1;
+
+    union SMPR2 {
+        struct {
+            RegWidth_t SMP0  : 3;
+            RegWidth_t SMP1  : 3;
+            RegWidth_t SMP2  : 3;
+            RegWidth_t SMP3  : 3;
+            RegWidth_t SMP4  : 3;
+            RegWidth_t SMP5  : 3;
+            RegWidth_t SMP6  : 3;
+            RegWidth_t SMP7  : 3;
+            RegWidth_t SMP8  : 3;
+            RegWidth_t SMP9  : 3;
+            RegWidth_t       : 2;
+        };
+        RegWidth_t registerVal;
+    }SMPR2;
     RegWidth_t JOFR1;   // Injected Channel Data Offset Register 1
     RegWidth_t JOFR2;   // Injected Channel Data Offset Register 2
     RegWidth_t JOFR3;   // Injected Channel Data Offset Register 3
@@ -534,8 +563,24 @@ struct ADCRegDef {
     }SQR1;
     RegWidth_t SQR2;    // Regular Sequence Register 2
     RegWidth_t SQR3;    // Regular Sequence Register 3
-    RegWidth_t JSQR;    // Injected Sequence Register
-    RegWidth_t JDR1;    // Injected Data Register 1
+    union JSQR {
+        struct {
+            RegWidth_t JSQ1 : 5;
+            RegWidth_t JSQ2 : 5;
+            RegWidth_t JSQ3 : 5;
+            RegWidth_t JSQ4 : 5;
+            RegWidth_t JL   : 2;
+            RegWidth_t      : 10;
+        };
+        RegWidth_t registerVal;
+    }JSQR;
+    union JDR1 {
+        struct {
+            RegWidth_t JDATA : 16;
+            RegWidth_t       : 16;
+        };
+        RegWidth_t registerVal;
+    }JDR1;
     RegWidth_t JDR2;    // Injected Data Register 2
     RegWidth_t JDR3;    // Injected Data Register 3
     RegWidth_t JDR4;    // Injected Data Register 4
