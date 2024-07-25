@@ -1,6 +1,6 @@
 /**
  * @file Array.h
- * @author abadr99 (abdelrhmanezzbadr@outlook.com)
+ * @author 
  * @brief 
  * @version 0.1
  * @date 2024-07-21
@@ -22,11 +22,37 @@ template<typename T, std::size_t size>
 class Array {
 public:
     Array() = default;
-    Array(const Array& other);
-    std::size_t Size();
-    T& operator[](std::size_t index);
-    bool operator==(const Array& other);
-    Array& operator=(const Array& other);
+    Array(const Array& other) {
+        assert(other.Size() == size);
+        for (size_t idx = 0 ; idx < size ; ++idx) {
+            arr_[idx] = other[idx];
+        }
+    }
+    std::size_t Size() const {
+        return size;
+    }
+    T& operator[](std::size_t index) {
+        return arr_[index];
+    }
+    T operator[](std::size_t index) const {
+        return arr_[index];
+    }
+    bool operator==(const Array& other) {
+        assert(other.Size() == size);
+        for (size_t idx = 0 ; idx < size ; ++idx) {
+            if (arr_[idx] != other[idx]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    Array& operator=(const Array& other) {
+        assert(other.Size() == size);
+        for (size_t idx = 0 ; idx < size ; ++idx) {
+            arr_[idx] = other[idx];
+        }
+        return *this;
+    }
 private:
     T arr_[size];
 };
