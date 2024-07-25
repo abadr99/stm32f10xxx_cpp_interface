@@ -20,10 +20,8 @@ namespace dac {
 
 class Dac {
  public:
-    using DataValType = uint32_t;
     static void DAC_Init(const Array<Pin, 8>& dacPins);
-    static void DAC_Start(DataValType timeOfSample);
-    static void DAC_PlaySong(DataValType arraySize);
+    static void DAC_Play(const Array<Pin, 8>& dacPins, uint32_t* songRaw, uint32_t songLength);
 };
 }   // namespace dac
 }   // namespace hal
