@@ -7,6 +7,7 @@ SOURCES_COUNT:= $(words $(SOURCES))
 SOURCES_CTR:=0
 INC:=  -I. -I./mcal/inc/ -I./hal/inc/ -I./utils/inc/
 LINT_PATH:= ../tools/cppliny.py
+
 include build/stm32.mk
 
 .PHONY: all clean build build-opt 
@@ -21,7 +22,7 @@ cpplint:
 # make build
 # ------------------------------------------
 build: $(OBJS) 
-	$(CXX) $(CXX_FLAGS) $(OBJS) ./main.cpp $(LDFLAGS) -T build/$(MCU).ld -o $(ELF_TARGET)
+	$(CXX) $(CXX_FLAGS) $(OBJS) $(STARTUPOBJ_PATH) ./main.cpp $(LDFLAGS) -T build/$(MCU).ld -o $(ELF_TARGET)
 	$(OBJ_COPY) $(OBJ_COPY_OPTS) $(ELF_TARGET) $(HEX_TARGET)
 	@echo "\n[Makefile][build] : Compiled successfully."
 
@@ -30,7 +31,7 @@ build: $(OBJS)
 # make opt-build
 # ------------------------------------------
 build-opt: $(OBJS) 
-	$(CXX) $(OPT_CXX_FLAGS) $(OBJS) ./main.cpp -o $(ELF_TARGET)
+	$(CXX) $(OPT_CXX_FLAGS) $(OBJS) $(STARTUP_PATH) ./main.cpp -o $(ELF_TARGET)
 	@echo "\n[Makefile][opt-build] : Compiled successfully."	
 
 # ------------------------------------------
