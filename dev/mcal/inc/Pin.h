@@ -36,7 +36,7 @@ enum Port {
 // TODO(@abadr99): Check if we need inheritance
 class Pin {
  public:
-    // TODO(@abadr99): Check if we need default ctor in the future
+    Pin() : data_(0) {}
     Pin(Port port, PinNumber pinNumber, PinMode pinMode);
     void SetPort(Port port);
     void SetPinNumber(PinNumber pinNumber);
