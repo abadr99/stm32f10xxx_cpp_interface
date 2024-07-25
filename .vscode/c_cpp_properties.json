@@ -13,7 +13,7 @@
             "cppStandard": "c++17",
             "intelliSenseMode": "linux-gcc-x64",
             "configurationProvider": "ms-vscode.makefile-tools",
-            "compilerPath": "/usr/bin/g++-9"
+            "compilerPath": "/usr/bin/g++"
         }
     ],
     "version": 4

@@ -63,3 +63,19 @@ TEST(BitManipulation, ExtractBits_startBit_endBit) {
     EXPECT_EQ(0x2F3448D,  (ExtractBits<uint32_t, 2, 27>(bits)));
     EXPECT_EQ(0xABCD1234, (ExtractBits<uint32_t, 0, 31>(bits)));
 }
+TEST(BitManipulation, ClearBits) {
+    const uint8_t bits = 0b11111111;
+    EXPECT_EQ(0b11111011, (ClearBits<uint8_t, 2>(bits)));
+    EXPECT_EQ(0b01111111, (ClearBits<uint8_t, 7>(bits)));
+    EXPECT_EQ(0b11000011, (ClearBits<uint8_t, 2, 5>(bits)));
+    EXPECT_EQ(0b11000000, (ClearBits<uint8_t, 0, 5>(bits)));
+    EXPECT_EQ(0b00000000, (ClearBits<uint8_t, 0, 7>(bits)));
+}
+TEST(BitManipulation, SetBits) {
+    const uint8_t bits = 0b00000000;
+    EXPECT_EQ(0b00000100, (SetBits<uint8_t, 2>(bits)));
+    EXPECT_EQ(0b10000000, (SetBits<uint8_t, 7>(bits)));
+    EXPECT_EQ(0b00111100, (SetBits<uint8_t, 2, 5>(bits)));
+    EXPECT_EQ(0b00111111, (SetBits<uint8_t, 0, 5>(bits)));
+    EXPECT_EQ(0b11111111, (SetBits<uint8_t, 0, 7>(bits)));
+}

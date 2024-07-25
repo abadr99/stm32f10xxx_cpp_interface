@@ -90,7 +90,40 @@ struct RccRegDef{
         };
         RegWidth_t registerVal; /* APB2 peripheral Clock enable register */
     }APB2ENR; /* APB2 peripheral Clock enable register */
-    RegWidth_t APB1ENR;
+    
+    union APB1ENR {
+        struct {
+            RegWidth_t TIM2EN   :1; 
+            RegWidth_t TIM3EN   :1; 
+            RegWidth_t TIM4EN   :1; 
+            RegWidth_t TIM5EN   :1; 
+            RegWidth_t TIM6EN   :1; 
+            RegWidth_t TIM7EN   :1; 
+            RegWidth_t TIM12EN  :1; 
+            RegWidth_t TIM13EN  :1; 
+            RegWidth_t TIM14EN  :1;
+            RegWidth_t WWDGEN   :1;
+            RegWidth_t          :2;
+            RegWidth_t SPI2EN   :1;
+            RegWidth_t SPI3EN   :1;
+            RegWidth_t USART2EN :1;
+            RegWidth_t USART3EN :1;
+            RegWidth_t USART4EN :1;
+            RegWidth_t USART5EN :1; 
+            RegWidth_t I2C1EN   :1; 
+            RegWidth_t I2C2EN   :1; 
+            RegWidth_t USBEN    :1; 
+            RegWidth_t          :1; 
+            RegWidth_t CANEN    :1; 
+            RegWidth_t          :1; 
+            RegWidth_t BKPEN    :1; 
+            RegWidth_t PWREN    :1; 
+            RegWidth_t DACEN    :1; 
+            RegWidth_t          :2; 
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }APB1ENR;
+
     RegWidth_t BDCR;
     RegWidth_t CSR;
 };
@@ -255,6 +288,156 @@ struct SystickRegDef {
 #define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(SYSTICK_BASE_ADDRESS))  // NOLINT
 
 }  // namespace systick
+namespace spi {
+struct SpiRegDef {
+    union CR1 {
+        struct {
+            RegWidth_t CPHA      : 1;   //  Clock Phase
+            RegWidth_t CPOL      : 1;   //  Clock Polarity
+            RegWidth_t MSTR      : 1;   //  Master Selection
+            RegWidth_t BR        : 3;   //  Baud Rate Control
+            RegWidth_t SPE       : 1;   //  SPI Enable
+            RegWidth_t LSBFIRST  : 1;   //  Frame Format
+            RegWidth_t SSI       : 1;   //  Internal Slave Select
+            RegWidth_t SSM       : 1;   //  Software Slave Management
+            RegWidth_t RXONLY    : 1;   //  Receive Only
+            RegWidth_t DFF       : 1;   //  Data Frame Format
+            RegWidth_t CRCNEXT   : 1;   //  Transmit CRC Next
+            RegWidth_t CRCEN     : 1;   //  Hardware CRC Calculation Enable
+            RegWidth_t BIDIOE    : 1;   //  Output Enable in Bidirectional Mode
+            RegWidth_t BIDIMODE  : 1;   //  Bidirectional Data Mode Enable
+            RegWidth_t           : 16;  //  Reserved
+        };
+        RegWidth_t registerVal;  //  CR1
+    }CR1;
+    union CR2 {
+        struct {
+            RegWidth_t RXDMAEN    :1;   //  Rx buffer DMA enable
+            RegWidth_t TXDMAEN    :1;   //  Tx buffer DMA enable
+            RegWidth_t SSOE       :1;   //  SS output enable
+            RegWidth_t            :2;   //  Reserved
+            RegWidth_t ERRIE      :1;   //  Error interrupt enable
+            RegWidth_t RXNEIE     :1;   //  RX buffer not empty interrupt enable
+            RegWidth_t TXEIE      :1;   //  TX buffer empty interrupt enable
+            RegWidth_t            :8;   //  Reserved bits 15:8
+        };
+        RegWidth_t registerVal;  //  CR2
+    }CR2;
+    union SR {
+        struct {
+            RegWidth_t RXNE       :1;   //  Receive buffer not empty
+            RegWidth_t TXE        :1;   //  Transmit buffer empty
+            RegWidth_t CHSIDE     :1;   //  Channel side
+            RegWidth_t UDR        :1;   //  Underrun flag
+            RegWidth_t CRCERR     :1;   //  CRC error flag
+            RegWidth_t MODF       :1;   //  Mode fault
+            RegWidth_t OVR        :1;   //  Overrun flag
+            RegWidth_t BSY        :1;   //  Busy flag
+            RegWidth_t            :8;   //  Reserved bits 15:8
+        };
+        RegWidth_t registerVal;  // SR
+    }SR;
+    RegWidth_t DR;
+    RegWidth_t CRC;
+    RegWidth_t RXCRCR;
+    RegWidth_t TXCRCR;
+};
+#define SPI1 (reinterpret_cast<volatile SpiRegDef*>(SPI1_BASE_ADDRESS))
+#define SPI2 (reinterpret_cast<volatile SpiRegDef*>(SPI2_BASE_ADDRESS))
+}  // namespace spi
+namespace usart {
+
+struct UsartRegDef {
+    union SR {
+        struct {
+            RegWidth_t PE   : 1;
+            RegWidth_t FE   : 1;
+            RegWidth_t NE   : 1;
+            RegWidth_t ORE  : 1;
+            RegWidth_t IDEL : 1;
+            RegWidth_t RXNE : 1;
+            RegWidth_t TC   : 1;
+            RegWidth_t TXE  : 1;
+            RegWidth_t LBD  : 1;
+            RegWidth_t CTS  : 1;
+            RegWidth_t      : 22;
+        };
+        RegWidth_t registerVal;
+    }SR;
+
+    RegWidth_t DR;
+
+    union BRR {
+        struct {
+            RegWidth_t DIV_Fraction : 4;
+            RegWidth_t DIV_Mantissa : 12;
+            RegWidth_t              : 16;
+        };
+        RegWidth_t registerVal;
+    }BRR;
+
+    union CR1 {
+        struct {
+            RegWidth_t SBK    : 1;
+            RegWidth_t RWU    : 1;
+            RegWidth_t RE_TE  : 2;
+            RegWidth_t IDELIE : 1;
+            RegWidth_t RXNEIE : 1;
+            RegWidth_t TCIE   : 1;
+            RegWidth_t TXEIE  : 1;
+            RegWidth_t PEIE   : 1;
+            RegWidth_t PS_PCE : 2;
+            RegWidth_t WAKE   : 1;
+            RegWidth_t M      : 1;
+            RegWidth_t UE     : 1;
+            RegWidth_t        : 18;
+        };
+        RegWidth_t registerVal;
+    }CR1;
+
+    union CR2 {
+        struct {
+            RegWidth_t ADD    : 4;
+            RegWidth_t        : 1;
+            RegWidth_t LBDL   : 1;
+            RegWidth_t LBDLIE : 1;
+            RegWidth_t        : 1;
+            RegWidth_t LBCL   : 1;
+            RegWidth_t CPHA   : 1;
+            RegWidth_t CPOL   : 1;
+            RegWidth_t CLKEN  : 1;
+            RegWidth_t STOP   : 2;
+            RegWidth_t LINEN  : 1;
+            RegWidth_t        : 17;
+        };
+        RegWidth_t registerVal;
+    }CR2;
+
+    union CR3 {
+        struct {
+            RegWidth_t EIE        : 1;
+            RegWidth_t IREN       : 1;
+            RegWidth_t IRLP       : 1;
+            RegWidth_t HDSEL      : 1;
+            RegWidth_t NACK       : 1;
+            RegWidth_t SCEN       : 1;
+            RegWidth_t DMAR       : 1;
+            RegWidth_t DMAT       : 1;
+            RegWidth_t RTSE_CTSE  : 2;
+            RegWidth_t CTSIE      : 1;
+            RegWidth_t            : 21;
+        };
+        RegWidth_t registerVal;
+    }CR3;
+    RegWidth_t GTPR;
+};
+
+
+#define USART1 (USART1_BASE_ADDRESS)
+#define USART2 (USART2_BASE_ADDRESS)
+#define USART3 (USART3_BASE_ADDRESS)
+
+}  // namespace usart
 /**
  * @brief Structure defining EXTI Register Definitions
  * 
