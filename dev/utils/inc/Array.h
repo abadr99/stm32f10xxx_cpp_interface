@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef ARRAY_H_
-#define ARRAY_H_
+#ifndef DEV_UTILS_INC_ARRAY_H_
+#define DEV_UTILS_INC_ARRAY_H_
 
 #include <cstddef>
 
@@ -18,18 +18,18 @@ namespace stm32 {
 namespace utils {
 namespace array {
 
-template<typename T, std::size_t size>
+template<typename T, std::size_t kSize>
 class Array {
-public:
+ public:
     Array() = default;
     Array(const Array& other) {
-        assert(other.Size() == size);
-        for (size_t idx = 0 ; idx < size ; ++idx) {
+        assert(other.Size() == kSize);
+        for (size_t idx = 0 ; idx < kSize ; ++idx) {
             arr_[idx] = other[idx];
         }
     }
     std::size_t Size() const {
-        return size;
+        return kSize;
     }
     T& operator[](std::size_t index) {
         return arr_[index];
@@ -38,8 +38,8 @@ public:
         return arr_[index];
     }
     bool operator==(const Array& other) {
-        assert(other.Size() == size);
-        for (size_t idx = 0 ; idx < size ; ++idx) {
+        assert(other.Size() == kSize);
+        for (size_t idx = 0 ; idx < kSize ; ++idx) {
             if (arr_[idx] != other[idx]) {
                 return false;
             }
@@ -47,18 +47,19 @@ public:
         return true;
     }
     Array& operator=(const Array& other) {
-        assert(other.Size() == size);
-        for (size_t idx = 0 ; idx < size ; ++idx) {
+        assert(other.Size() == kSize);
+        for (size_t idx = 0 ; idx < kSize ; ++idx) {
             arr_[idx] = other[idx];
         }
         return *this;
     }
-private:
-    T arr_[size];
+    
+ private:
+    T arr_[kSize];
 };
 
 }  // namespace array
 }  // namespace utils
 }  // namespace stm32
 
-#endif // ARRAY_H_
+#endif  // DEV_UTILS_INC_ARRAY_H_
