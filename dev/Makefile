@@ -1,8 +1,7 @@
 INPUT_FILE ?= ./build/modules.in
-DIRS := ./mcal ./hal ./utils ./build
+DIRS := ./mcal ./hal ./utils
 SOURCES := $(shell cat "$(INPUT_FILE)")
 SOURCES += $(wildcard ./utils/src/*.cpp) # ALl utils should be added with all modules
-SOURCES += ./stm32f103_startup.cpp
 SRC_NAMES:= $(notdir $(SOURCES))
 SOURCES_COUNT:= $(words $(SOURCES))
 SOURCES_CTR:=0

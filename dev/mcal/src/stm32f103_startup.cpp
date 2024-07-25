@@ -12,11 +12,6 @@
 
 #include <stdint.h>
 
-extern "C"
-{
-
-
-
 #define SRAM_START (0x20000000)
 #define SRAM_SIZE  (20 * 1024)
 #define SRAM_END   ((SRAM_START) + (SRAM_SIZE))
@@ -34,12 +29,12 @@ extern uint32_t _edata;  //
 extern uint32_t _sbss;
 extern uint32_t _ebss;
 
-#define DEFINE_IRQ(name_)  void name_(void) __attribute__((weak, alias("Default_Handler")));
+#define DEFINE_IRQ(name_)  extern "C" void name_(void) __attribute__((weak, alias("Default_Handler")));
 
 
-int  main(void);
-void Default_Handler(void);
-void Reset_Handler(void);
+extern "C" int  main(void);
+extern "C" void Default_Handler(void);
+extern "C" void Reset_Handler(void);
 
 DEFINE_IRQ(NMI_Handler) 
 DEFINE_IRQ(HardFault_Handler) 
@@ -110,86 +105,87 @@ DEFINE_IRQ(DMA2_Channel2_IRQHandler)
 DEFINE_IRQ(DMA2_Channel3_IRQHandler) 
 DEFINE_IRQ(DMA2_Channel4_5_IRQHandler) 
 
-uint32_t vectors[] __attribute__((section (".isr_vectors"))) = {
-    STACK_START,
-    (uint32_t) Reset_Handler,
-    (uint32_t) NMI_Handler,
-    (uint32_t) HardFault_Handler,
-    (uint32_t) MemManage_Handler,
-    (uint32_t) BusFault_Handler,
-    (uint32_t) UsageFault_Handler,
-    (uint32_t) 0,
-    (uint32_t) 0,
-    (uint32_t) 0,
-    (uint32_t) 0,
-    (uint32_t) SVC_Handler,
-    (uint32_t) DebugMon_Handler,
-    (uint32_t) 0,
-    (uint32_t) PendSV_Handler,
-    (uint32_t) SysTick_Handler,
-    (uint32_t) WWDG_IRQHandler,
-    (uint32_t) PVD_IRQHandler,
-    (uint32_t) TAMPER_IRQHandler,
-    (uint32_t) RTC_IRQHandler,
-    (uint32_t) FLASH_IRQHandler,
-    (uint32_t) RCC_IRQHandler,
-    (uint32_t) EXTI0_IRQHandler,
-    (uint32_t) EXTI1_IRQHandler,
-    (uint32_t) EXTI2_IRQHandler,
-    (uint32_t) EXTI3_IRQHandler,
-    (uint32_t) EXTI4_IRQHandler,
-    (uint32_t) DMA1_Channel1_IRQHandler,
-    (uint32_t) DMA1_Channel2_IRQHandler,
-    (uint32_t) DMA1_Channel3_IRQHandler,
-    (uint32_t) DMA1_Channel4_IRQHandler,
-    (uint32_t) DMA1_Channel5_IRQHandler,
-    (uint32_t) DMA1_Channel6_IRQHandler,
-    (uint32_t) DMA1_Channel7_IRQHandler,
-    (uint32_t) ADC1_2_IRQHandler,
-    (uint32_t) USB_HP_CAN_TX_IRQHandler,
-    (uint32_t) USB_LP_CAN_RX0_IRQHandler,
-    (uint32_t) CAN_RX1_IRQHandler,
-    (uint32_t) CAN_SCE_IRQHandler,
-    (uint32_t) EXTI9_5_IRQHandler,
-    (uint32_t) TIM1_BRK_IRQHandler,
-    (uint32_t) TIM1_UP_IRQHandler,
-    (uint32_t) TIM1_TRG_COM_IRQHandler,
-    (uint32_t) TIM1_CC_IRQHandler,
-    (uint32_t) TIM2_IRQHandler,
-    (uint32_t) TIM3_IRQHandler,
-    (uint32_t) TIM4_IRQHandler,
-    (uint32_t) I2C1_EV_IRQHandler,
-    (uint32_t) I2C1_ER_IRQHandler,
-    (uint32_t) I2C2_EV_IRQHandler,
-    (uint32_t) I2C2_ER_IRQHandler,
-    (uint32_t) SPI1_IRQHandler,
-    (uint32_t) SPI2_IRQHandler,
-    (uint32_t) USART1_IRQHandler,
-    (uint32_t) USART2_IRQHandler,
-    (uint32_t) USART3_IRQHandler,
-    (uint32_t) EXTI15_10_IRQHandler,
-    (uint32_t) RTCAlarm_IRQHandler,
-    (uint32_t) 0,
-    (uint32_t) TIM8_BRK_IRQHandler,
-    (uint32_t) TIM8_UP_IRQHandler,
-    (uint32_t) TIM8_TRG_COM_IRQHandler,
-    (uint32_t) TIM8_CC_IRQHandler,
-    (uint32_t) ADC3_IRQHandler,
-    (uint32_t) FSMC_IRQHandler,
-    (uint32_t) SDIO_IRQHandler,
-    (uint32_t) TIM5_IRQHandler,
-    (uint32_t) SPI3_IRQHandler,
-    (uint32_t) UART4_IRQHandler,
-    (uint32_t) UART5_IRQHandler,
-    (uint32_t) TIM6_IRQHandler,
-    (uint32_t) TIM7_IRQHandler,
-    (uint32_t) DMA2_Channel1_IRQHandler,
-    (uint32_t) DMA2_Channel2_IRQHandler,
-    (uint32_t) DMA2_Channel3_IRQHandler,
-    (uint32_t) DMA2_Channel4_5_IRQHandler
+__attribute__((section(".isr_vectors"), used))
+void (* const vector_table[])(void) = {
+    (void (*)(void))((uint32_t)STACK_START),
+    Reset_Handler,
+    NMI_Handler,
+    HardFault_Handler,
+    MemManage_Handler,
+    BusFault_Handler,
+    UsageFault_Handler,
+    0,
+    0,
+    0,
+    0,
+    SVC_Handler,
+    DebugMon_Handler,
+    0,
+    PendSV_Handler,
+    SysTick_Handler,
+    WWDG_IRQHandler,
+    PVD_IRQHandler,
+    TAMPER_IRQHandler,
+    RTC_IRQHandler,
+    FLASH_IRQHandler,
+    RCC_IRQHandler,
+    EXTI0_IRQHandler,
+    EXTI1_IRQHandler,
+    EXTI2_IRQHandler,
+    EXTI3_IRQHandler,
+    EXTI4_IRQHandler,
+    DMA1_Channel1_IRQHandler,
+    DMA1_Channel2_IRQHandler,
+    DMA1_Channel3_IRQHandler,
+    DMA1_Channel4_IRQHandler,
+    DMA1_Channel5_IRQHandler,
+    DMA1_Channel6_IRQHandler,
+    DMA1_Channel7_IRQHandler,
+    ADC1_2_IRQHandler,
+    USB_HP_CAN_TX_IRQHandler,
+    USB_LP_CAN_RX0_IRQHandler,
+    CAN_RX1_IRQHandler,
+    CAN_SCE_IRQHandler,
+    EXTI9_5_IRQHandler,
+    TIM1_BRK_IRQHandler,
+    TIM1_UP_IRQHandler,
+    TIM1_TRG_COM_IRQHandler,
+    TIM1_CC_IRQHandler,
+    TIM2_IRQHandler,
+    TIM3_IRQHandler,
+    TIM4_IRQHandler,
+    I2C1_EV_IRQHandler,
+    I2C1_ER_IRQHandler,
+    I2C2_EV_IRQHandler,
+    I2C2_ER_IRQHandler,
+    SPI1_IRQHandler,
+    SPI2_IRQHandler,
+    USART1_IRQHandler,
+    USART2_IRQHandler,
+    USART3_IRQHandler,
+    EXTI15_10_IRQHandler,
+    RTCAlarm_IRQHandler,
+    0,
+    TIM8_BRK_IRQHandler,
+    TIM8_UP_IRQHandler,
+    TIM8_TRG_COM_IRQHandler,
+    TIM8_CC_IRQHandler,
+    ADC3_IRQHandler,
+    FSMC_IRQHandler,
+    SDIO_IRQHandler,
+    TIM5_IRQHandler,
+    SPI3_IRQHandler,
+    UART4_IRQHandler,
+    UART5_IRQHandler,
+    TIM6_IRQHandler,
+    TIM7_IRQHandler,
+    DMA2_Channel1_IRQHandler,
+    DMA2_Channel2_IRQHandler,
+    DMA2_Channel3_IRQHandler,
+    DMA2_Channel4_5_IRQHandler
 };
 
-void Reset_Handler(void) {
+extern "C" void Reset_Handler(void) {
     // -- 1] COPY .DATA SECTION FROM FLASH TO SRAM
     // 1.a) setting a pointer to the end of the text section (_etext). 
     // i.e. to the initialized data (e.g. initialized global and static variables.) 
@@ -221,8 +217,6 @@ void Reset_Handler(void) {
     while (1) {}
 }
 
-void Default_Handler(void) {
+extern "C" void Default_Handler(void) {
     while (1) {}
 }
-
-} // extern "C"
