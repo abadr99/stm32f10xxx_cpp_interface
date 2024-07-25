@@ -20,52 +20,68 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::utils::bit_manipulation; 
 using namespace stm32::dev::hal::ssd;
 
-
+#define HANDLE_ACTIVE_VOLT(connectionType)    ((connectionType) == kCommon_Anode ? kHigh : kLow)  //NOLINT
+#define HANDLE_INACTIVE_VOLT(connectionType)  ((connectionType) == kCommon_Anode ? kLow  : kHigh)  //NOLINT
 
 template<ConnectionType connectionType>
-SevenSegment<connectionType>::SevenSegment(const Pin *pDataPins, const Pin enablePin)   
-    : enablePin_(enablePin) {
-    for (uint8_t pin = 0; pin < 7; pin++) {
-        pDataPins_[pin] = pDataPins[pin];
-    }
-}
+SevenSegment<connectionType>::SevenSegment(const Array_t dataPins, const Pin enablePin)   
+    : dataPins_(dataPins)
+    , enablePin_(enablePin)
+    , isEnablePinUsed_(true)
+    { /* EMPTY */ }
+
+template<ConnectionType connectionType>
+SevenSegment<connectionType>::SevenSegment(const Array_t dataPins)   
+    : dataPins_(dataPins)
+    , isEnablePinUsed_(false)
+    { /* EMPTY */ }
 
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::Init() {  
-    /* Enable Clock */
-    Gpio::EnablePort(pDataPins_[0].GetPort());
-    Gpio::EnablePort(enablePin_.GetPort());
-    /* Set pins as output push pull */
+    // 1] -- ENABLE CLK PORT
+    Gpio::EnablePort(dataPins_[0].GetPort());
+    
+    // 2] -- SET DATA PINS AS OUTPUT (PUSHPULL)
     for (uint8_t pin = 0; pin < 7; pin++) {
-        Gpio::SetOutputMode(pDataPins_[pin], OutputMode::kPushPull_2MHZ);
-    } 
-    Gpio::SetOutputMode(enablePin_, OutputMode::kPushPull_2MHZ);  
-    /* if connection type is common anod, then is active low 
-       so that pins will set as high mode to make it disable in the beginning */ 
-    if (connectionType == kCommon_Anode) {
-        for (uint8_t pin = 0; pin < 7; pin++) {
-            Gpio::SetPinValue(pDataPins_[pin], State::kHigh);
-        }
+        Gpio::SetOutputMode(dataPins_[pin], OutputMode::kPushPull_2MHZ);
+    }
+
+    // 3] -- HANDLE ENABLE PIN IF USED
+    if (isEnablePinUsed_) {
+        Gpio::EnablePort(enablePin_.GetPort());
+        Gpio::SetOutputMode(enablePin_, OutputMode::kPushPull_2MHZ);  
+    }
+    
+    // 4] -- SET INITIAL STATE OF THE LEDS
+    for (uint8_t pin = 0; pin < 7; pin++) {
+        Gpio::SetPinValue(dataPins_[pin], HANDLE_INACTIVE_VOLT(connectionType));
     }
 }
 
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::Enable() {
-    Gpio::SetPinValue(enablePin_, static_cast<State>(connectionType));
+    if (isEnablePinUsed_) {
+        Gpio::SetPinValue(enablePin_, HANDLE_ACTIVE_VOLT(connectionType));
+    }
 }
 
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::Disable() {
-    Gpio::SetPinValue(enablePin_, static_cast<State>(!connectionType));
+    if (isEnablePinUsed_) {
+        Gpio::SetPinValue(enablePin_, HANDLE_INACTIVE_VOLT(connectionType));
+    }
 }
 
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::SendNumber(SSdDisplay num) {
-    STM32_ASSERT(num >= 0 && num <= 9);
-    uint8_t pattern = static_cast<uint8_t>(num);
+    STM32_ASSERT(num >= kZero && num <= kNine);
+    auto ConvertSSDtoInt = [&](uint8_t idx) -> State {
+        return (num & (1 << (6 - idx))) == false ? HANDLE_INACTIVE_VOLT(connectionType) 
+                                                 : HANDLE_ACTIVE_VOLT(connectionType);
+    };
     for (uint8_t i = 0; i < 7; i++) {
-        bool mode =(pattern & (1 << (6 - i)));
-        Gpio::SetPinValue(pDataPins_[i], static_cast<State>(mode));
+        State pinState = ConvertSSDtoInt(i);
+        Gpio::SetPinValue(dataPins_[i], pinState);
     }
 }
 template class SevenSegment<kCommon_Anode>;

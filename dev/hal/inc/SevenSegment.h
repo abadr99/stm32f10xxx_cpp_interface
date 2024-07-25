@@ -10,44 +10,55 @@
  */
 #ifndef DEV_HAL_INC_SEVENSEGMENT_H_
 #define DEV_HAL_INC_SEVENSEGMENT_H_
+
 #include "../../mcal/inc/Pin.h"
+#include "Array.h"
+
 using namespace stm32::dev::mcal::pin;
+
 namespace stm32 {
 namespace dev {
 namespace hal {
 namespace ssd {
 
 enum ConnectionType : uint8_t {
+    // NOTE: ORDER MATTER
     kCommon_Cathode,
     kCommon_Anode,
 };
-enum  SSdDisplay: uint8_t  {
-    ZERO  = 0x3F,
-    ONE   = 0x06,
-    TWO   = 0x5B,
-    THREE = 0x4F,
-    FOUR  = 0x66,
-    FIVE  = 0x6D,
-    SIX   = 0x7D,
-    SEVEN = 0x07,
-    EIGHT = 0x7F,
-    NINE  = 0x6F
+
+enum SSdDisplay: uint8_t {
+    kZero  = 0x3F,
+    kOne   = 0x06,
+    kTwo   = 0x5B,
+    kThree = 0x4F,
+    kFour  = 0x66,
+    kFive  = 0x6D,
+    kSix   = 0x7D,
+    kSeven = 0x07,
+    kEight = 0x7F,
+    kNine  = 0x6F,
 };
-/**
-*   Note: data pins must are on the same port or port of enable pin 
-*         otherwise, you must enable clk of port by yourself to work successfuly
-*/ 
+
+// NOTE: DATA PINS AND ENABLE PIN SHOULD BE CONNECTED TO THE SAME PORT, 
+//       OTHERWISE ENABLE DIFFERENT PORT'S CLOCK BY YOURSELF.  
 template<ConnectionType connectionType>
 class SevenSegment {
  public:
-    SevenSegment(const Pin *pDataPins, const Pin enablePin);  
+    static_assert(connectionType == kCommon_Anode 
+               || connectionType == kCommon_Cathode);
+    using Array_t = stm32::utils::array::Array<Pin, 7>;
+    SevenSegment(const Array_t dataPins, const Pin enablePin);  
+    explicit SevenSegment(const Array_t dataPins);  
     void Init();
     void Enable();
     void Disable();
     void SendNumber(SSdDisplay num);
+
  private:
-    Pin enablePin_;
-    Pin pDataPins_[7];
+    Array_t dataPins_;
+    Pin     enablePin_;
+    bool    isEnablePinUsed_;
 };
 }  // namespace ssd
 }  // namespace hal
