@@ -29,7 +29,8 @@ extern uint32_t _edata;  //
 extern uint32_t _sbss;
 extern uint32_t _ebss;
 
-#define DEFINE_IRQ(name_)  extern "C" void name_(void) __attribute__((weak, alias("Default_Handler")));
+#define DEFINE_IRQ(name_)\
+    extern "C" void name_(void) __attribute__((weak, alias("Default_Handler")));
 
 
 extern "C" int  main(void);
