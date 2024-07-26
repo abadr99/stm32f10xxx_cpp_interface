@@ -34,6 +34,8 @@
 #define AFIO_BASE_ADDRESS  (&AFIOReg[0])
 #define EXTI_BASE_ADDRESS  (&EXTIReg[0])
 
+#define DMA_BASE_ADDRESS    (&DmaReg[0])
+
 extern uint32_t RccReg[10];
 
 extern uint32_t GPIOAReg[7];
@@ -61,5 +63,7 @@ extern uint32_t NvicReg[905];
 extern uint32_t ScbReg[18];
 
 extern uint32_t SYSTICKReg[3];
+
+extern uint32_t DmaReg[30];
 
 #endif  // TESTS_UNITTESTS_MCAL_BASEADDRESS_TEST_H_
