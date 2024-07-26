@@ -455,6 +455,112 @@ struct EXTIRegDef {
 #define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
 
 }  // namespace exti
+/**
+ * @brief Structure defining DMA Register Definitions
+ * 
+ */
+namespace dma {
+struct DmaChannel {
+    union CCR {
+        struct {
+            RegWidth_t EN           : 1;  // Channel enable
+            RegWidth_t TCIE         : 1;  // Transfer complete interrupt enable
+            RegWidth_t HTIE         : 1;  // Half transfer interrupt enable
+            RegWidth_t TEIE         : 1;  // Transfer error interrupt enable
+            RegWidth_t DIR          : 1;  // Data transfer direction
+            RegWidth_t CIRC         : 1;  // Circular mode
+            RegWidth_t PINC         : 1;  // Peripheral increment mode
+            RegWidth_t MINC         : 1;  // Memory increment mode
+            RegWidth_t PSIZE        : 2;  // Peripheral size
+            RegWidth_t MSIZE        : 2;  // Memory size
+            RegWidth_t PL           : 2;  // Channel priority level
+            RegWidth_t MEM2MEM      : 1;  // Memory-to-memory mode
+            RegWidth_t RESERVED     : 17;  // Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }CCR;       // DMA channel x configuration register
+
+    RegWidth_t CNDTR;    // DMA channel x number of data register
+    RegWidth_t CPAR;    // DMA channel x peripheral address register
+    RegWidth_t CMAR;    // DMA channel x memory address register
+};
+struct DMARegDef {
+    union ISR {
+        struct  {
+            RegWidth_t GIF1   : 1;   //  Global interrupt flag for channel 1
+            RegWidth_t TCIF1  : 1;   //  Transfer complete flag for channel 1
+            RegWidth_t HTIF1  : 1;   //  Half transfer flag for channel 1
+            RegWidth_t TEIF1  : 1;   //  Transfer error flag for channel 1
+            RegWidth_t GIF2   : 1;   //  Global interrupt flag for channel 2
+            RegWidth_t TCIF2  : 1;   //  Transfer complete flag for channel 2
+            RegWidth_t HTIF2  : 1;   //  Half transfer flag for channel 2
+            RegWidth_t TEIF2  : 1;   //  Transfer error flag for channel 2
+            RegWidth_t GIF3   : 1;   //  Global interrupt flag for channel 3
+            RegWidth_t TCIF3  : 1;   //  Transfer complete flag for channel 3
+            RegWidth_t HTIF3  : 1;   //  Half transfer flag for channel 3
+            RegWidth_t TEIF3  : 1;   //  Transfer error flag for channel 3
+            RegWidth_t GIF4   : 1;   //  Global interrupt flag for channel 4
+            RegWidth_t TCIF4  : 1;   //  Transfer complete flag for channel 4
+            RegWidth_t HTIF4  : 1;   //  Half transfer flag for channel 4
+            RegWidth_t TEIF4  : 1;   //  Transfer error flag for channel 4
+            RegWidth_t GIF5   : 1;   //  Global interrupt flag for channel 5
+            RegWidth_t TCIF5  : 1;   //  Transfer complete flag for channel 5
+            RegWidth_t HTIF5  : 1;   //  Half transfer flag for channel 5
+            RegWidth_t TEIF5  : 1;   //  Transfer error flag for channel 5
+            RegWidth_t GIF6   : 1;   //  Global interrupt flag for channel 6
+            RegWidth_t TCIF6  : 1;   //  Transfer complete flag for channel 6
+            RegWidth_t HTIF6  : 1;   //  Half transfer flag for channel 6
+            RegWidth_t TEIF6  : 1;   //  Transfer error flag for channel 6
+            RegWidth_t GIF7   : 1;   //  Global interrupt flag for channel 7
+            RegWidth_t TCIF7  : 1;   //  Transfer complete flag for channel 7
+            RegWidth_t HTIF7  : 1;   //  Half transfer flag for channel 7
+            RegWidth_t TEIF7  : 1;   //  Transfer error flag for channel 7
+            RegWidth_t RESERVED : 4;  //  Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }ISR;   // DMA interrupt status register
+    
+    
+    union IFCR {
+        struct {
+            RegWidth_t CGIF1  : 1;   //  Clear global interrupt flag for channel 1
+            RegWidth_t CTCIF1 : 1;   //  Clear transfer complete flag for channel 1
+            RegWidth_t CHTIF1 : 1;   //  Clear half transfer flag for channel 1
+            RegWidth_t CTEIF1 : 1;   //  Clear transfer error flag for channel 1
+            RegWidth_t CGIF2  : 1;   //  Clear global interrupt flag for channel 2
+            RegWidth_t CTCIF2 : 1;   //  Clear transfer complete flag for channel 2
+            RegWidth_t CHTIF2 : 1;   //  Clear half transfer flag for channel 2
+            RegWidth_t CTEIF2 : 1;   //  Clear transfer error flag for channel 2
+            RegWidth_t CGIF3  : 1;   //  Clear global interrupt flag for channel 3
+            RegWidth_t CTCIF3 : 1;   //  Clear transfer complete flag for channel 3
+            RegWidth_t CHTIF3 : 1;   //  Clear half transfer flag for channel 3
+            RegWidth_t CTEIF3 : 1;   //  Clear transfer error flag for channel 3
+            RegWidth_t CGIF4  : 1;   //  Clear global interrupt flag for channel 4
+            RegWidth_t CTCIF4 : 1;   //  Clear transfer complete flag for channel 4
+            RegWidth_t CHTIF4 : 1;   //  Clear half transfer flag for channel 4
+            RegWidth_t CTEIF4 : 1;   //  Clear transfer error flag for channel 4
+            RegWidth_t CGIF5  : 1;   //  Clear global interrupt flag for channel 5
+            RegWidth_t CTCIF5 : 1;   //  Clear transfer complete flag for channel 5
+            RegWidth_t CHTIF5 : 1;   //  Clear half transfer flag for channel 5
+            RegWidth_t CTEIF5 : 1;   //  Clear transfer error flag for channel 5
+            RegWidth_t CGIF6  : 1;   //  Clear global interrupt flag for channel 6
+            RegWidth_t CTCIF6 : 1;   //  Clear transfer complete flag for channel 6
+            RegWidth_t CHTIF6 : 1;   //  Clear half transfer flag for channel 6
+            RegWidth_t CTEIF6 : 1;   //  Clear transfer error flag for channel 6
+            RegWidth_t CGIF7  : 1;   //  Clear global interrupt flag for channel 7
+            RegWidth_t CTCIF7 : 1;   //  Clear transfer complete flag for channel 7
+            RegWidth_t CHTIF7 : 1;   //  Clear half transfer flag for channel 7
+            RegWidth_t CTEIF7 : 1;   //  Clear transfer error flag for channel 7
+            RegWidth_t RESERVED : 4;  //  Reserved, must be kept at reset value
+        }; 
+        RegWidth_t registerVal;
+    }IFCR;  // DMA interrupt flag clear register
+    DmaChannel CHANNEL[7];  // DMA channels 1-7
+};
+
+#define DMA (reinterpret_cast<volatile DMARegDef*>(DMA_BASE_ADDRESS))
+
+}  // namespace dma
 }  // namespace registers
 }  // namespace stm32
 
