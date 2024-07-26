@@ -35,6 +35,9 @@
 #define USART1_BASE_ADDRESS (0x40013800)
 #define USART2_BASE_ADDRESS (0x40004400)
 #define USART3_BASE_ADDRESS (0x40004800)
+
+#define WWDG_BASE_ADDRESS (0x40003000)
+#define IWDG_BASE_ADDRESS (0x40002C00)
 namespace stm32 {
 namespace registers {
 namespace rcc {

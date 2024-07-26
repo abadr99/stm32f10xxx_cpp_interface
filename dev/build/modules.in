@@ -10,3 +10,4 @@ hal/Keypad.cpp
 hal/LED.cpp
 mcal/EXTI.cpp
 hal/SevenSegment.cpp
+mcal/Wwdg.cpp
