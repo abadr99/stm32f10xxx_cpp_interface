@@ -95,36 +95,36 @@ void Dma::Disable(Channel dmaChannel) {
     DMA_DISABLE(dmaChannel);
 }
 
-void Dma::Helper_SetPointerToTransferCompleteISR(Channel channel, pFunction func) {
+void Dma::SetPointerToTransferCompleteISR(Channel channel, pFunction func) {
     if (channel >= kDMA_Channel1 && channel <= kDMA_Channel7) {
         Dma::PointerToTransferCompleteISR[channel] = func;
     }
 }
 
-void Dma::Helper_SetPointerToTransferErrorISR(Channel channel, pFunction func) {
+void Dma::SetPointerToTransferErrorISR(Channel channel, pFunction func) {
     if (channel >= kDMA_Channel1 && channel <= kDMA_Channel7) {
         Dma::PointerToTransferErrorISR[channel] = func;
     }
 }
 
-pFunction Dma::Helper_GetPointerToTransferCompleteISR(Channel channel) {
+pFunction Dma::GetPointerToTransferCompleteISR(Channel channel) {
     return Dma::PointerToTransferCompleteISR[channel];
 }
 
-pFunction Dma::Helper_GetPointerToTransferErrorISR(Channel channel) {
+pFunction Dma::GetPointerToTransferErrorISR(Channel channel) {
     return Dma::PointerToTransferErrorISR[channel];
 }
 
 extern "C" void DMA_Channel1Handler(void) {
     if (DMA->ISR.TEIF1 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferErrorISR(kDMA_Channel1);
+        pFunction fun = Dma::GetPointerToTransferErrorISR(kDMA_Channel1);
         if (fun != NULL) {
             fun();
             // Clear flag
             DMA->IFCR.CTEIF1 = 1;
         }
     } else if (DMA->ISR.TCIF1 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferCompleteISR(kDMA_Channel1);
+        pFunction fun = Dma::GetPointerToTransferCompleteISR(kDMA_Channel1);
         if (fun != NULL) {
             fun();
             // Clear flag
@@ -134,13 +134,13 @@ extern "C" void DMA_Channel1Handler(void) {
 }
 extern "C" void DMA_Channel2Handler(void) {
     if (DMA->ISR.TEIF2 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferErrorISR(kDMA_Channel2);
+        pFunction fun = Dma::GetPointerToTransferErrorISR(kDMA_Channel2);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTEIF2 = 1;
         }
     } else if (DMA->ISR.TCIF2 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferCompleteISR(kDMA_Channel2);
+        pFunction fun = Dma::GetPointerToTransferCompleteISR(kDMA_Channel2);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTCIF2 = 1;
@@ -149,13 +149,13 @@ extern "C" void DMA_Channel2Handler(void) {
 }
 extern "C" void DMA_Channel3Handler(void) {
     if (DMA->ISR.TEIF3 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferErrorISR(kDMA_Channel3);
+        pFunction fun = Dma::GetPointerToTransferErrorISR(kDMA_Channel3);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTEIF3 = 1;
         }
     } else if (DMA->ISR.TCIF3 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferCompleteISR(kDMA_Channel3);
+        pFunction fun = Dma::GetPointerToTransferCompleteISR(kDMA_Channel3);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTCIF3 = 1;
@@ -164,13 +164,13 @@ extern "C" void DMA_Channel3Handler(void) {
 }
 extern "C" void DMA_Channel4Handler(void) {
     if (DMA->ISR.TEIF4 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferErrorISR(kDMA_Channel4);
+        pFunction fun = Dma::GetPointerToTransferErrorISR(kDMA_Channel4);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTEIF4 = 1;
         }
     } else if (DMA->ISR.TCIF4 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferCompleteISR(kDMA_Channel4);
+        pFunction fun = Dma::GetPointerToTransferCompleteISR(kDMA_Channel4);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTCIF4 = 1;
@@ -179,13 +179,13 @@ extern "C" void DMA_Channel4Handler(void) {
 }
 extern "C" void DMA_Channel5Handler(void) {
     if (DMA->ISR.TEIF5 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferErrorISR(kDMA_Channel5);
+        pFunction fun = Dma::GetPointerToTransferErrorISR(kDMA_Channel5);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTEIF5 = 1;
         }
     } else if (DMA->ISR.TCIF1 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferCompleteISR(kDMA_Channel5);
+        pFunction fun = Dma::GetPointerToTransferCompleteISR(kDMA_Channel5);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTCIF5 = 1;
@@ -194,13 +194,13 @@ extern "C" void DMA_Channel5Handler(void) {
 }
 extern "C" void DMA_Channel6Handler(void) {
     if (DMA->ISR.TEIF6 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferErrorISR(kDMA_Channel6);
+        pFunction fun = Dma::GetPointerToTransferErrorISR(kDMA_Channel6);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTEIF6 = 1;
         }
     } else if (DMA->ISR.TCIF6 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferCompleteISR(kDMA_Channel6);
+        pFunction fun = Dma::GetPointerToTransferCompleteISR(kDMA_Channel6);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTCIF6 = 1;
@@ -209,13 +209,13 @@ extern "C" void DMA_Channel6Handler(void) {
 }
 extern "C" void DMA_Channel7Handler(void) {
     if (DMA->ISR.TEIF7 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferErrorISR(kDMA_Channel7);
+        pFunction fun = Dma::GetPointerToTransferErrorISR(kDMA_Channel7);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTEIF7 = 1;
         }
     } else if (DMA->ISR.TCIF7 == 1) {
-        pFunction fun = Dma::Helper_GetPointerToTransferCompleteISR(kDMA_Channel7);
+        pFunction fun = Dma::GetPointerToTransferCompleteISR(kDMA_Channel7);
         if (fun != NULL) {
             fun();
             DMA->IFCR.CTCIF7 = 1;

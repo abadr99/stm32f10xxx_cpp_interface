@@ -73,13 +73,13 @@ class Dma {
 static void Init(const DMAConfig& config);
 static void Enable(Channel dmaChannel);
 static void Disable(Channel dmaChannel);
-static pFunction Helper_GetPointerToTransferCompleteISR(Channel channel);
-static pFunction Helper_GetPointerToTransferErrorISR(Channel channel);
+static void SetPointerToTransferCompleteISR(Channel channel, pFunction func);
+static void SetPointerToTransferErrorISR(Channel channel, pFunction func);
+static pFunction GetPointerToTransferCompleteISR(Channel channel);
+static pFunction GetPointerToTransferErrorISR(Channel channel);
  private:
 static pFunction PointerToTransferCompleteISR[7];
 static pFunction PointerToTransferErrorISR[7];
-static void Helper_SetPointerToTransferCompleteISR(Channel channel, pFunction func);
-static void Helper_SetPointerToTransferErrorISR(Channel channel, pFunction func);
 };
 }   // namespace dma
 }   // namespace mcal
