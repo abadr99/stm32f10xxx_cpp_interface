@@ -23,7 +23,7 @@ TEST(SystickTest, Delay_ms) {
     Systick::Enable(kAHB_Div_8);
     SYSTICK->CTRL.COUNTFLAG = 1;
     Systick::Delay_ms(1);
-    EXPECT_EQ(0b001, (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));
+    EXPECT_EQ(0b000, (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));
     EXPECT_EQ(1000, SYSTICK->LOAD);
     Systick::Disable();
 }
@@ -32,7 +32,7 @@ TEST(SystickTest, Delay_us) {
     Systick::Enable(kAHB);
     SYSTICK->CTRL.COUNTFLAG = 1;
     Systick::Delay_us(10);
-    EXPECT_EQ(0b101, (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));
-    EXPECT_EQ(10, SYSTICK->LOAD);
+    EXPECT_EQ(0b100, (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));
+    EXPECT_EQ(80, SYSTICK->LOAD);
     Systick::Disable();
 }
