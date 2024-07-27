@@ -485,7 +485,7 @@ struct WWDGRegDef {
     } SR;
 };
 
-#define WWDG (reinterpret_cast<volatile WWDGRegDef*>(WWDG_BASE_ADDRESS));
+#define WWDG (reinterpret_cast<volatile WWDGRegDef*>(WWDG_BASE_ADDRESS))
 }  // namespace wwdg
 /**
  * @brief Structure defining DMA Register Definitions
