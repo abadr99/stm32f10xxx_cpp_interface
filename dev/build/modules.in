@@ -11,4 +11,5 @@ hal/LED.cpp
 mcal/EXTI.cpp
 mcal/I2c.cpp
 mcal/DMA.cpp
+mcal/Iwdg.cpp
 hal/SevenSegment.cpp
