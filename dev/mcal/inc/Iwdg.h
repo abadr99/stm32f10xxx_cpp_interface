@@ -30,10 +30,10 @@ class Iwdg {
     Iwdg();
     void Refresh();
 }; 
-}   // namespace iwdg
-}   // namespace mcal
-}   // namespace dev
-}   // namespace stm32
+}   //  namespace iwdg
+}   //  namespace mcal
+}   //  namespace dev
+}   //  namespace stm32
 
 
 
