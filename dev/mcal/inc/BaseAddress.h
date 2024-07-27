@@ -37,6 +37,8 @@
 #define USART3_BASE_ADDRESS (0x40004800)
 #define ADC1_BASE_ADDRESS   (0x40012400)
 #define ADC2_BASE_ADDRESS   (0x40012800)
+
+#define DMA_BASE_ADDRESS    (0x40020000)
 namespace stm32 {
 namespace registers {
 namespace rcc {
