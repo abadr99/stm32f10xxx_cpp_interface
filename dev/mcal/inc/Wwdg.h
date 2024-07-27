@@ -15,10 +15,10 @@ namespace dev   {
 namespace mcal  {
 namespace wwdg  {
 enum Prescaler { 
-    DIV2,
-    DIV4,
-    DIV6,
-    DIV8
+    kDiv2,
+    kDiv4,
+    kDiv6,
+    kDiv8
 };
 struct Config {
     uint8_t windowValue;
