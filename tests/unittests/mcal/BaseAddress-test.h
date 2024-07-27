@@ -37,6 +37,8 @@
 #define I2C1_BASE_ADDRESS   (&I2c1Reg[0])
 #define I2C2_BASE_ADDRESS   (&I2c2Reg[0])
 
+#define DMA_BASE_ADDRESS    (&DmaReg[0])
+
 extern uint32_t RccReg[10];
 
 extern uint32_t GPIOAReg[7];
@@ -63,5 +65,7 @@ extern uint32_t I2c2Reg[9];
 
 
 
+
+extern uint32_t DmaReg[30];
 
 #endif  // TESTS_UNITTESTS_MCAL_BASEADDRESS_TEST_H_
