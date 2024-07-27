@@ -18,8 +18,7 @@
 using namespace stm32::dev::mcal::iwdg; // NOLINT[build/namespaces]
 using namespace stm32::registers::iwdg; 
 
-template<Prescaler prescaler, uint16_t reloadVal>
-Iwdg<prescaler, reloadVal>::Iwdg() {
+Iwdg::Iwdg(Prescaler prescaler, uint16_t reloadVal) {
     IWDG->KR = 0x5555;
     while (IWDG->SR.PVU == 1) {}
     IWDG->PR = prescaler;
@@ -27,7 +26,6 @@ Iwdg<prescaler, reloadVal>::Iwdg() {
     IWDG->RLD = reloadVal;
     IWDG->KR = 0xCCCC;
 }
-template<Prescaler prescaler, uint16_t reloadVal>
-void Iwdg<prescaler, reloadVal>::Refresh() {
+void Iwdg::Refresh() {
     IWDG->KR = 0xAAAA;
 }

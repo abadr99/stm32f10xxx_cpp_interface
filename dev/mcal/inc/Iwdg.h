@@ -24,10 +24,9 @@ enum Prescaler {
     kDiv128,
     kDiv256
 };
-template<Prescaler prescaler, uint16_t reloadVal = 0xFFF>
 class Iwdg {
  public: 
-    Iwdg();
+    Iwdg(Prescaler prescaler, uint16_t reloadVal);
     void Refresh();
 }; 
 }   //  namespace iwdg
