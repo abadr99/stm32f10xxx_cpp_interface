@@ -455,6 +455,7 @@ struct EXTIRegDef {
 #define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
 
 }  // namespace exti
+
 namespace adc {
 
 struct ADCRegDef {
@@ -597,6 +598,119 @@ struct ADCRegDef {
 #define ADC2 (reinterpret_cast<volatile ADCRegDef*>(ADC2_BASE_ADDRESS))
 
 }  // namespace adc
+
+namespace i2c {
+struct I2CRegDef {
+        union CR1 {
+            struct {
+                RegWidth_t PE          : 1;   // Peripheral enable
+                RegWidth_t SMBUS       : 1;   // SMBus mode
+                RegWidth_t             : 1;   // Reserved
+                RegWidth_t SMBTYPE     : 1;   // SMBus type
+                RegWidth_t ENARP       : 1;   // ARP enable
+                RegWidth_t ENPEC       : 1;   // PEC enable
+                RegWidth_t ENGC        : 1;   // General call enable
+                RegWidth_t NOSTRETCH   : 1;   // Clock stretching disable
+                RegWidth_t START       : 1;   // Start generation
+                RegWidth_t STOP        : 1;   // Stop generation
+                RegWidth_t ACK         : 1;   // Acknowledge enable
+                RegWidth_t POS         : 1;   // Acknowledge/PEC position (for data reception)
+                RegWidth_t PEC         : 1;   // Packet error checking
+                RegWidth_t ALERT       : 1;   // SMBus alert
+                RegWidth_t             : 1;   // Reserved
+                RegWidth_t SWRST       : 1;   // Software reset
+                RegWidth_t             : 16;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }CR1;
+        union CR2 {
+            struct {
+                RegWidth_t FREQ        : 6;   // Peripheral clock frequency
+                RegWidth_t RESERVED    : 2;   // Reserved
+                RegWidth_t ITERREN     : 1;   // Error interrupt enable
+                RegWidth_t ITEVTEN     : 1;   // Event interrupt enable
+                RegWidth_t ITBUFEN     : 1;   // Buffer interrupt enable
+                RegWidth_t DMAEN       : 1;   // DMA requests enable
+                RegWidth_t LAST        : 1;   // DMA last transfer
+                RegWidth_t             : 19;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }CR2;
+        union OAR1 {
+            struct {
+                RegWidth_t ADD0        : 1;   // Interface address
+                RegWidth_t ADD         : 9;   // Interface address
+                RegWidth_t             : 5;   // Reserved
+                RegWidth_t ADDMODE     : 1;   // Addressing mode (7-bit/10-bit)
+                RegWidth_t             : 16;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }OAR1;
+        union OAR2 {
+            struct {
+                RegWidth_t ENDUAL      : 1;  // Dual addressing mode enable
+                RegWidth_t ADD2        : 7;  // Interface address
+                RegWidth_t             : 24;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }OAR2;
+
+        RegWidth_t DR;  // 8-bit data register
+
+        union SR1 {
+            struct {
+                RegWidth_t SB          : 1;   // Start bit (Master mode)
+                RegWidth_t ADDR        : 1;   // Address sent (master mode)/matched (slave mode)
+                RegWidth_t BTF         : 1;   // Byte transfer finished
+                RegWidth_t ADD10       : 1;   // 10-bit header sent (Master mode)
+                RegWidth_t STOPF       : 1;   // Stop detection (Slave mode)
+                RegWidth_t             : 1;   // Reserved
+                RegWidth_t RxNE        : 1;   // Data register not empty (receivers)
+                RegWidth_t TxE         : 1;   // Data register empty (transmitters)
+                RegWidth_t BERR        : 1;   // Bus error
+                RegWidth_t ARLO        : 1;   // Arbitration lost (master mode)
+                RegWidth_t AF          : 1;   // Acknowledge failure
+                RegWidth_t OVR         : 1;   // Overrun/underrun
+                RegWidth_t PECERR      : 1;   // PEC error in reception
+                RegWidth_t             : 1;   // Reserved
+                RegWidth_t TIMEOUT     : 1;   // Timeout or Tlow detection flag
+                RegWidth_t SMBALERT    : 1;   // SMBus alert
+                RegWidth_t             : 16;   // Reserved
+            };
+            RegWidth_t registerVal;
+        }SR1;
+        union SR2 {
+            struct {
+                RegWidth_t MSL         : 1;   // Master/slave
+                RegWidth_t BUSY        : 1;   // Bus busy
+                RegWidth_t TRA         : 1;   // Transmitter/receiver
+                RegWidth_t             : 1;   // Reserved bits
+                RegWidth_t GENCALL     : 1;   // General call address (Slave mode)
+                RegWidth_t SMBDEFAULT  : 1;   // SMBus device default address (Slave mode)
+                RegWidth_t SMBHOST     : 1;   // SMBus host header (Slave mode)
+                RegWidth_t DUALF       : 1;   // Dual flag (Slave mode)
+                RegWidth_t PEC         : 8;   // Packet error checking
+                RegWidth_t             : 16;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }SR2;
+        union CCR {
+            struct {
+                RegWidth_t CcR         : 12;  // Clock control register in Fast/Standard mode
+                RegWidth_t             : 2;   // Reserved 
+                RegWidth_t DUTY        : 1;   // Fm mode duty cycle
+                RegWidth_t F_S         : 1;   // I2C master mode selection
+                RegWidth_t             : 16;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }CCR;
+        
+        RegWidth_t TRISE;
+};
+    #define I2C1 (reinterpret_cast<volatile I2CRegDef*>(I2C1_BASE_ADDRESS))
+    #define I2C2 (reinterpret_cast<volatile I2CRegDef*>(I2C2_BASE_ADDRESS))
+}  // namespace i2c
+
 /**
  * @brief Structure defining DMA Register Definitions
  * 
@@ -703,6 +817,7 @@ struct DMARegDef {
 #define DMA (reinterpret_cast<volatile DMARegDef*>(DMA_BASE_ADDRESS))
 
 }  // namespace dma
+
 }  // namespace registers
 }  // namespace stm32
 

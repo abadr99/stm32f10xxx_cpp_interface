@@ -38,7 +38,11 @@
 #define ADC1_BASE_ADDRESS   (0x40012400)
 #define ADC2_BASE_ADDRESS   (0x40012800)
 
+#define I2C1_BASE_ADDRESS  (0x40005400)
+#define I2C2_BASE_ADDRESS  (0x40005800)
+
 #define DMA_BASE_ADDRESS    (0x40020000)
+
 namespace stm32 {
 namespace registers {
 namespace rcc {
