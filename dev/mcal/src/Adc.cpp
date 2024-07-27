@@ -35,8 +35,8 @@ template<AdcPeripheral  ADC_NUM>
 void ADC<ADC_NUM>::init() {
     ADC_reg->CR2.registerVal = 0;  // Reset ADC
     ADC_reg->CR2.ALIGN = static_cast<RegWidth_t>(config_.alignment);
-    if (config_.trigSource != SOFTWARE) {
-        if (config_.mode == INJECTED) {
+    if (config_.trigSource != kSOFTWARE) {
+        if (config_.mode == kINJECTED) {
             ADC_reg->CR2.JEXTTRIG = 1;
             ADC_reg->CR2.JEXTSEL = static_cast<RegWidth_t>(config_.trigSource);
         } else {
@@ -105,10 +105,10 @@ uint16_t ADC<ADC_NUM>::startInjectedConversion() {
 template<AdcPeripheral  ADC_NUM>
 void ADC<ADC_NUM>::EnableInterrupt() {
     switch (config_.mode) {
-    case SINGLE:
+    case kSINGLE:
         ADC_reg->CR1.EOCIE = 1;
         break;
-    case INJECTED:
+    case kINJECTED:
         ADC_reg->CR1.JEOCIE = 1;
         break;
     default:
@@ -118,10 +118,10 @@ void ADC<ADC_NUM>::EnableInterrupt() {
 template<AdcPeripheral  ADC_NUM>
 void ADC<ADC_NUM>::DisableInterrupt() {
     switch (config_.mode) {
-    case SINGLE:
+    case kSINGLE:
         ADC_reg->CR1.EOCIE = 0;
         break;
-    case INJECTED:
+    case kINJECTED:
         ADC_reg->CR1.JEOCIE = 0;
         break;
     default:

@@ -16,61 +16,60 @@ namespace dev   {
 namespace mcal  {
 namespace adc   {
 enum  Channel {
-        Channel0,
-        Channel1,
-        Channel2,
-        Channel3,
-        Channel4,
-        Channel5,
-        Channel6,
-        Channel7,
-        Channel8,
-        Channel9,
-        Channel10,
-        Channel11,
-        Channel12,
-        Channel13,
-        Channel14,
-        Channel15,
-        Channel16,
-        Channel17
+        kChannel0,
+        kChannel1,
+        kChannel2,
+        kChannel3,
+        kChannel4,
+        kChannel5,
+        kChannel6,
+        kChannel7,
+        kChannel8,
+        kChannel9,
+        kChannel10,
+        kChannel11,
+        kChannel12,
+        kChannel13,
+        kChannel14,
+        kChannel15,
+        kChannel16,
+        kChannel17
 };
 enum  Alignment {
-        RIGHT = 0,
-        LEFT = 1
+        kRIGHT,
+        kLEFT
 };
 enum Mode {
-        SINGLE = 0,
-        CONTINUOUS = 1,
-        INJECTED
+        kSINGLE = 0,
+        kCONTINUOUS = 1,
+        kINJECTED
 };
 enum TriggerSource {
-        TIMER1_CC1 = 0b000,
-        TIMER1_CC2 = 0b001,
-        TIMER1_CC3 = 0b010,
-        TIMER2_CC2 = 0b011,   
-        TIMER3_TRGO = 0b100,
-        EXTI_LINE11 = 0b110,  
-        SOFTWARE = 0b111
+        kTIMER1_CC1 = 0b000,
+        kTIMER1_CC2 = 0b001,
+        kTIMER1_CC3 = 0b010,
+        kTIMER2_CC2 = 0b011,   
+        kTIMER3_TRGO = 0b100,
+        kEXTI_LINE11 = 0b110,  
+        kSOFTWARE = 0b111
 };
 enum  SampleTime {
-        CYCLES_1_5,
-        CYCLES_7_5,
-        CYCLES_13_5,
-        CYCLES_28_5,
-        CYCLES_41_5,
-        CYCLES_55_5,
-        CYCLES_71_5,
-        CYCLES_239_5
+        kCYCLES_1_5,
+        kCYCLES_7_5,
+        kCYCLES_13_5,
+        kCYCLES_28_5,
+        kCYCLES_41_5,
+        kCYCLES_55_5,
+        kCYCLES_71_5,
+        kCYCLES_239_5
 };
 struct ADCConfig {
-Alignment alignment = RIGHT;
-Channel channel;
-Mode mode = SINGLE;
-TriggerSource trigSource = SOFTWARE;
-SampleTime sampleTime = CYCLES_55_5;
-//  bool useDMA; TODO
-// bool scanMode; TODO
+       Alignment alignment;
+       Channel channel;
+       Mode mode;
+       TriggerSource trigSource;
+       SampleTime sampleTime;
+       // TODO(@noran97): scan mode , multimode and discontinous mode
 };
 enum  AdcPeripheral {
     kADC1,
@@ -79,20 +78,20 @@ enum  AdcPeripheral {
 template<AdcPeripheral  ADC_NUM>
 class ADC {
  public:
-explicit ADC(const ADCConfig& config);
-void init();
-uint16_t startSingleConversion();
-void startContinuousConversion();
-uint16_t readContinuousConversion();
-void stopContinuousConversion();
-uint16_t  startInjectedConversion();
-void EnableInterrupt();
-void DisableInterrupt();
-void Disable();
+     explicit ADC(const ADCConfig& config);
+     void init();
+     uint16_t startSingleConversion();
+     void startContinuousConversion();
+     uint16_t readContinuousConversion();
+     void stopContinuousConversion();
+     uint16_t  startInjectedConversion();
+     void EnableInterrupt();
+     void DisableInterrupt();
+     void Disable();
  private:
-ADCConfig& config_;
-volatile ADCRegDef* ADC_reg;
-void configureChannelSample();
+     ADCConfig& config_;
+     volatile ADCRegDef* ADC_reg;
+     void configureChannelSample();
 };
 }   // namespace adc
 }   // namespace mcal
