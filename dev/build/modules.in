@@ -1,8 +1,15 @@
+mcal/stm32f103_startup.cpp
 mcal/Rcc.cpp
 mcal/Pin.cpp
 mcal/Nvic.cpp
 mcal/Systick.cpp
 mcal/Gpio.cpp
+mcal/Spi.cpp
 mcal/Usart.cpp
+hal/Keypad.cpp
+hal/LED.cpp
 mcal/EXTI.cpp
 hal/Buzzer.cpp
+mcal/I2c.cpp
+mcal/DMA.cpp
+hal/SevenSegment.cpp
