@@ -33,7 +33,11 @@ void Buzzer::TurnOff() {
 }
 
 void Buzzer::Toggle() {
-    (buzzerState_ == kOn) ? TurnOff() : TurnOn();
+    if(buzzerState_ == kOn) {
+        TurnOff();
+    } else if (buzzerState_ == kOff) {
+        TurnOn();
+    }
 }
 
 BuzzerState Buzzer::GetBuzzerState() {
