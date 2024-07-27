@@ -24,14 +24,18 @@ Buzzer::Buzzer(const Pin buzzerPin, const ConnectionType connectionType)
 
 void Buzzer::TurnOn() {
     Gpio::SetPinValue(buzzerPin_, static_cast<State>(!connectionType_));
-    buzzerState_ = BuzzerState::kOn;
+    buzzerState_ = kOn;
 }
 
 void Buzzer::TurnOff() {
     Gpio::SetPinValue(buzzerPin_, static_cast<State>(connectionType_));
-    buzzerState_ = BuzzerState::kOff;
+    buzzerState_ = kOff;
 }
 
 void Buzzer::Toggle() {
-    (buzzerState_ == BuzzerState::kOn) ? TurnOff() : TurnOn();
+    (buzzerState_ == kOn) ? TurnOff() : TurnOn();
+}
+
+BuzzerState Buzzer::GetBuzzerState() {
+    return buzzerState_;
 }

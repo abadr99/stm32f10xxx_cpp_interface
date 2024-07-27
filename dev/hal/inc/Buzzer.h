@@ -22,14 +22,18 @@ enum ConnectionType : uint8_t {
     kReverse_Bias,  // active low
 };
 
+enum BuzzerState : uint8_t {
+    kOn, kOff
+};
+
 class Buzzer {
  public:
     Buzzer(const Pin buzzerPin, const ConnectionType connectionType);
     void TurnOn();
     void TurnOff();
     void Toggle();
+    BuzzerState GetBuzzerState();
  private:
-    enum BuzzerState : uint8_t {kOn, kOff};
     BuzzerState buzzerState_;
     Pin buzzerPin_;
     ConnectionType connectionType_;
