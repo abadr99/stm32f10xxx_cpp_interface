@@ -561,6 +561,22 @@ struct DMARegDef {
 #define DMA (reinterpret_cast<volatile DMARegDef*>(DMA_BASE_ADDRESS))
 
 }  // namespace dma
+namespace iwdg {
+struct IWDGRegDef {
+    RegWidth_t KR;
+    RegWidth_t PR;
+    RegWidth_t RLD;
+    union SR {
+        struct {
+            RegWidth_t PVU : 1;
+            RegWidth_t RVU : 1;
+            RegWidth_t     : 30;  //  Reserved
+        };
+        RegWidth_t registerVal;
+    }SR;
+};
+#define IWDG (reinterpret_cast<volatile IWDGRegDef*>(IWDG_BASE_ADDRESS))
+}  // namespace iwdg
 }  // namespace registers
 }  // namespace stm32
 
