@@ -46,7 +46,7 @@ extern uint32_t GPIOBReg[7];
 extern uint32_t GPIOCReg[7];
 
 extern uint32_t SYSTICKReg[3];
-extern uint32_t SpiReg[8];
+extern uint32_t SpiReg[9];
 
 extern uint32_t NvicReg[905];
 extern uint32_t ScbReg[18];
