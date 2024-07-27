@@ -27,3 +27,9 @@ $(OBJDIR)/%.o : **/src/%.cpp
 	$(CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
 	@$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
 	@echo "[Makefile] : [$(SOURCES_CTR)/$(words $(SOURCES))] $<"
+
+$(OBJDIR)/%.o : ./%.cpp
+	mkdir -p $(OBJDIR)
+	$(CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
+	@$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
+	@echo "[Makefile] : [$(SOURCES_CTR)/$(words $(SOURCES))] $<"
