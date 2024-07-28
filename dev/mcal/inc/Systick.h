@@ -10,7 +10,7 @@
 #ifndef DEV_MCAL_INC_SYSTICK_H_
 #define DEV_MCAL_INC_SYSTICK_H_
 
-using namespace stm32::utils::types;
+#include "Types.h"
 namespace stm32 {
 namespace dev {
 namespace mcal {
@@ -23,6 +23,7 @@ enum CLKSource {
 
 class Systick {
  public:
+    using pFunction = stm32::utils::types::pFunction;
     static void Enable(CLKSource clksource);
     static void SetCounterValue(uint32_t value);
     static void Delay_ms(uint32_t time_ms);
@@ -43,3 +44,4 @@ class Systick {
 }  // namespace stm32
 
 #endif  // DEV_MCAL_INC_SYSTICK_H_
+

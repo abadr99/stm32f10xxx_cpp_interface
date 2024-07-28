@@ -9,6 +9,12 @@ mcal/Usart.cpp
 hal/Keypad.cpp
 hal/LED.cpp
 mcal/EXTI.cpp
+mcal/I2c.cpp
 mcal/DMA.cpp
 hal/SevenSegment.cpp
-mcal/Rtc.cpp
+
+mcal/Rtc.cp
+hal/src/STP_74HC595.cpp
+hal/src/DC_Motor.cpp
+hal/src/Relay.cpp
+
