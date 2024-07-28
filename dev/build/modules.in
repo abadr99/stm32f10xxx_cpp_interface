@@ -13,3 +13,4 @@ mcal/I2c.cpp
 mcal/DMA.cpp
 hal/SevenSegment.cpp
 hal/src/STP_74HC595.cpp
+hal/src/DC_Motor.cpp
