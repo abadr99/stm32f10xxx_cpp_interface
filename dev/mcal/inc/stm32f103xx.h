@@ -546,8 +546,7 @@ struct RtcRegDef {
         RegWidth_t registerVal;
     } ALRL;
 };
-
-
+#define RTC (reinterpret_cast<volatile RtcRegDef*>(RTC_BASE_ADDRESS))
 }  // namespace rtc
 
 /**
