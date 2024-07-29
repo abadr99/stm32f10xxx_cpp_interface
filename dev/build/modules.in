@@ -13,3 +13,4 @@ hal/Buzzer.cpp
 mcal/I2c.cpp
 mcal/DMA.cpp
 hal/SevenSegment.cpp
+hal/IR.cpp
