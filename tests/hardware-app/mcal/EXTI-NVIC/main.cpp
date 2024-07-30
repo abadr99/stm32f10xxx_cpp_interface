@@ -30,8 +30,7 @@ using namespace stm32::dev::mcal::systick;
 volatile uint8_t flag = 0;
 void EXTI1_ISR(void);
 
-int main(void)
-{
+int main(void) {
     // Initialize system clock and external clock source
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
