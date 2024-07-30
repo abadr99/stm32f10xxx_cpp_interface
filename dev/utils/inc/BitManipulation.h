@@ -39,6 +39,19 @@ constexpr T ExtractBits(const T value) {
     return (value >> startBit) & (GetOnes<T>(numberOfBits));
 }
 
+template<typename T>
+constexpr T ExtractBits(const T value, uint8_t startBit) {
+    return (value >> startBit) & (GetOnes<T>(1));
+}
+
+template<typename T>
+constexpr T ExtractBits(const T value, uint8_t startBit, uint8_t endBit) {
+    assert(startBit <= endBit);
+    uint8_t numberOfBits = endBit - startBit + 1;
+    return (value >> startBit) & (GetOnes<T>(numberOfBits));
+}
+
+
 template<typename T, uint8_t TStart, uint8_t TEnd = TStart>
 inline constexpr T WriteBits(T container, T val) {
     static_assert(TStart <= TEnd, "Calling WriteBits with startBit first");
