@@ -73,10 +73,6 @@ enum LcdCol : uint8_t {
     kCOL15,
     kCOL16,
 };
-enum State : uint8_t {
-    kDisable,
-    kEnable,
-};
 struct LCD_Config {
     LcdMode mode;
     Array<Pin, 8> dataPins;
@@ -94,8 +90,8 @@ class LCD {
  public:
     void Init(const LCD_Config &config);
     void ClearScreen(const LCD_Config &config);
-    void SendChar(const LCD_Config &config);
-    void SendString(const LCD_Config &config);
+    void SendChar(const LCD_Config &config, uint8_t character);
+    void SendString(const LCD_Config &config, uint8_t str[]);
     void SendNum(const LCD_Config &config);
     void SendFloat(const LCD_Config &config);
     void SetPosition(const LCD_Config &config, LcdRows rowNum, LcdCol colNum);
@@ -109,7 +105,7 @@ class LCD {
     void BlinkOff(const LCD_Config &config);
  private:
     void SendFallingEdgePulse(const LCD_Config &config);
-    void SendCommand(const LCD_Config &config);
+    void SendCommand(const LCD_Config &config, LCDCommand command);
     void SendData(const LCD_Config &config, uint8_t data);
 };
 }   //  namespace lcd
