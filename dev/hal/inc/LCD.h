@@ -11,6 +11,7 @@
 #ifndef DEV_HAL_INC_LCD_H_
 #define DEV_HAL_INC_LCD_H_
 
+#include <string>
 using namespace stm32::dev::mcal::pin; 
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::utils::array;
@@ -91,9 +92,9 @@ class LCD {
     void Init(const LCD_Config &config);
     void ClearScreen(const LCD_Config &config);
     void SendChar(const LCD_Config &config, uint8_t character);
-    void SendString(const LCD_Config &config, uint8_t str[]);
-    void SendNum(const LCD_Config &config);
-    void SendFloat(const LCD_Config &config);
+    void SendString(const LCD_Config &config, const std::string &str);
+    void SendNum(const LCD_Config &config, int num);
+    void SendFloat(const LCD_Config &config, double num);
     void SetPosition(const LCD_Config &config, LcdRows rowNum, LcdCol colNum);
     void EnableCursor(const LCD_Config &config);
     void DisableCursor(const LCD_Config &config);
