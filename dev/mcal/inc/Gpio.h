@@ -10,8 +10,7 @@
  */
 #ifndef DEV_MCAL_INC_GPIO_H_
 #define DEV_MCAL_INC_GPIO_H_
-using namespace stm32::dev::mcal::pin;
-using namespace stm32::registers::gpio;
+
 namespace stm32 {
 namespace dev {
 namespace mcal {
@@ -48,6 +47,8 @@ enum class AlternativeMode {
 };
 class Gpio{
  public:
+    using Pin = stm32::dev::mcal::pin::Pin;
+    using Port = stm32::dev::mcal::pin::Port;
 /**
  * @brief Set the value of a GPIO pin
  * @param pin object from class Pin
