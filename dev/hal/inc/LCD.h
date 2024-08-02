@@ -46,7 +46,7 @@ enum class LCDCommand : uint8_t {
 };
 enum LcdMode : uint8_t {
     k8_bit,
-    k10_bit,
+    k4_bit,
 };
 enum LcdNibbles : uint8_t {
     kLowNibble,
@@ -81,7 +81,7 @@ struct LCD_Config {
     Pin RSpin;
     Pin RWpin;
     Pin ENpin;
-    LcdNibbles fourBitDataPin;
+    LcdNibbles lcd4BitDataPin;
 };
 namespace stm32 {
 namespace dev {
@@ -108,6 +108,10 @@ class LCD {
     void SendFallingEdgePulse(const LCD_Config &config);
     void SendCommand(const LCD_Config &config, LCDCommand command);
     void SendData(const LCD_Config &config, uint8_t data);
+    void SetLowNibbleValue(const LCD_Config &config, uint8_t value);
+    void SetHighNibbleValue(const LCD_Config &config, uint8_t value);
+    void SetLowNibbleDirection(const LCD_Config &config, OutputMode mode);
+    void SetHighNibbleDirection(const LCD_Config &config, OutputMode mode);
 };
 }   //  namespace lcd
 }   //  namespace hal

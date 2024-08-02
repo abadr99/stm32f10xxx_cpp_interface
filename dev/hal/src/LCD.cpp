@@ -28,6 +28,42 @@ void LCD::SendFallingEdgePulse(const LCD_Config &config) {
     Gpio::SetPinValue(config.ENpin, kLow);
     Systick::Delay_ms(1);
 }
+void LCD::SetLowNibbleValue(const LCD_Config &config, uint8_t value) {
+    value&=0x0F;
+    for (uint8_t i =0; i< config.dataPins.Size(); i++) {
+        uint8_t pinState = Gpio::GetPinValue(config.dataPins[i]);
+        pinState &= (0xF0);
+        pinState |= (value);
+        Gpio::SetPinValue(config.dataPins[i], static_cast<State> (pinState));
+    }
+}
+void LCD::SetHighNibbleValue(const LCD_Config &config, uint8_t value) {
+    value&=0xF0;
+    for (uint8_t i =0; i< config.dataPins.Size(); i++) {
+        uint8_t pinState = Gpio::GetPinValue(config.dataPins[i]);
+        pinState &= (0x0F);
+        pinState |= (value);
+        Gpio::SetPinValue(config.dataPins[i], static_cast<State> (pinState));
+    }
+}
+void LCD::SetLowNibbleDirection(const LCD_Config &config, OutputMode mode) {
+    uint8_t direction = static_cast<uint8_t> (mode);
+    direction &= 0x0F;
+    for (uint8_t i =0; i< config.dataPins.Size(); i++) {
+        direction &= (0xF0);
+        direction |= (direction);
+        Gpio::SetOutputMode(config.dataPins[i], static_cast<OutputMode> (direction));
+    }
+}
+void LCD::SetHighNibbleDirection(const LCD_Config &config, OutputMode mode) {
+    uint8_t direction = static_cast<uint8_t> (mode);
+    direction &= 0xF0;
+    for (uint8_t i =0; i< config.dataPins.Size(); i++) {
+        direction &= (0x0F);
+        direction |= (direction);
+        Gpio::SetOutputMode(config.dataPins[i], static_cast<OutputMode> (direction));
+    }
+}
 void LCD::SendData(const LCD_Config &config, uint8_t data) {
     Gpio::SetPinValue(config.RSpin, kHigh);
     Gpio::SetPinValue(config.RWpin, kLow);
@@ -37,8 +73,19 @@ void LCD::SendData(const LCD_Config &config, uint8_t data) {
             Gpio::SetPinValue(config.dataPins[i], pinState);
         }
         LCD::SendFallingEdgePulse(config); 
+    } else if (config.mode == k4_bit) {
+        if (config.lcd4BitDataPin == kLowNibble) {
+            SetLowNibbleValue(config, (data >> 4));
+            SendFallingEdgePulse(config);
+            SetLowNibbleValue(config, data);
+            SendFallingEdgePulse(config);
+        } else if (config.lcd4BitDataPin == kHighNibble) {
+            SetHighNibbleValue(config, data);
+            SendFallingEdgePulse(config);
+            SetHighNibbleValue(config, (data << 4));
+            SendFallingEdgePulse(config);
+        }
     }
-    // TODO(@noura36): make 4bit using nibble function in gpio
 }
 void LCD::SendCommand(const LCD_Config &config, LCDCommand command) {
     Gpio::SetPinValue(config.RSpin, kLow);
@@ -50,8 +97,19 @@ void LCD::SendCommand(const LCD_Config &config, LCDCommand command) {
             Gpio::SetPinValue(config.dataPins[i], pinState);
         }
         LCD::SendFallingEdgePulse(config);  
+    } else if (config.mode == k4_bit) {
+        if (config.lcd4BitDataPin == kLowNibble) {
+            SetLowNibbleValue(config, (commandValue >> 4));
+            SendFallingEdgePulse(config);
+            SetLowNibbleValue(config, commandValue);
+            SendFallingEdgePulse(config);
+        } else if (config.lcd4BitDataPin == kHighNibble) {
+            SetHighNibbleValue(config, commandValue);
+            SendFallingEdgePulse(config);
+            SetHighNibbleValue(config, (commandValue << 4));
+            SendFallingEdgePulse(config);
+        }
     }
-    // TODO(@noura36): make 4bit using nibble function in gpio
 }
 void LCD::Init(const LCD_Config &config) {
     //  SET Direction for LCD control  pins --> OUTPUT 
@@ -77,8 +135,27 @@ void LCD::Init(const LCD_Config &config) {
         //  Entry mode set
         SendCommand(config, LCDCommand::kENTRY_MODE_INC_SHIFT_OFF);
         Systick::Delay_ms(1);
+    } else if (config.mode == k4_bit) {
+        if (config.lcd4BitDataPin == kLowNibble) {
+            SetLowNibbleDirection(config, OutputMode::kPushPull_2MHZ);
+        } else if (config.lcd4BitDataPin == kHighNibble) {
+            SetHighNibbleDirection(config, OutputMode::kPushPull_2MHZ);
+        }
+        SendCommand(config, LCDCommand::kRETURN_HOME);
+        Systick::Delay_ms(50);
+        //  Function Set
+        SendCommand(config, LCDCommand::kFUNCTION_SET_4_BIT);
+        Systick::Delay_ms(1);
+        //  Display ON/OFF Control
+        SendCommand(config, LCDCommand::kDISPLAY_ON_CURSOR_OFF);
+        Systick::Delay_ms(1);
+        //  Clear Screen
+        SendCommand(config, LCDCommand::kCLEAR_SCREEN);
+        Systick::Delay_ms(5);
+        //  Entry mode set
+        SendCommand(config, LCDCommand::kENTRY_MODE_INC_SHIFT_OFF);
+        Systick::Delay_ms(5);
     }
-    // TODO(@noura36): make 4bit using nibble function in gpio
 }
 void LCD::ClearScreen(const LCD_Config &config) {
     SendCommand(config, LCDCommand::kCLEAR_SCREEN);
@@ -95,47 +172,34 @@ void LCD::SendString(const LCD_Config &config, const std::string &str) {
 }
 // TODO(@noura36): sined number
 void LCD::SendNum(const LCD_Config &config, int num) {
-    uint16_t temp = num;
-    uint8_t itrator1 = 0;
-    uint8_t itrator2 = 0;
-    uint8_t negativeFlag = 0;
-    std::string numArr = 0;
-    /*Store Number in numArr as a string
-			but the number will be stored in reverse order in the array
-				so we need to reverse this array again*/
     if (num == 0) {
         SendChar(config, '0');
-    } 
-    if (num < 0) {
-        num = num *(-1);
-        negativeFlag = 1;
-    } while (num != 0) {
-        temp = num % 10;
-        numArr[itrator1++] = (temp + '0');
-        num = num / 10;
-    } for (itrator2 = 0; itrator2 < itrator1/2; itrator2++) {
-        uint8_t ch = numArr[itrator2];
-        numArr[itrator2] = numArr[itrator1 - itrator2 - 1];
-        numArr[itrator1 - itrator2 - 1] = ch;
-    } for (itrator2 = 0; itrator2 < itrator1; itrator2++) {
-        if (negativeFlag == 1) {
-            SendChar(config, '-');
-            negativeFlag = 0;
-        }
-        SendChar(config, numArr[itrator2]);
+        return;
+    }
+    bool isNegative = num < 0;
+    if (isNegative) {
+        num = -num;
+    }
+    std::string numStr = std::to_string(num);
+    if (isNegative) {
+        SendChar(config, '-');
+    }
+    for (char c : numStr) {
+        SendChar(config, c);
     }
 }
 void LCD::SendFloat(const LCD_Config &config, double num) {
-    uint16_t realPart = static_cast<uint16_t> (num);
-    uint16_t fractionPart = static_cast<uint16_t> ((num - realPart)*100);
     if (num < 0) {
-        fractionPart *= -1;
-        realPart *= -1;
         SendChar(config, '-');
+        num = -num;
     }
+    int realPart = static_cast<int>(num);
+    double fractionalPart = num - realPart;
     SendNum(config, realPart);
     SendChar(config, '.');
-    SendNum(config, fractionPart);
+    // Extract and send fractional part
+    fractionalPart *= 100;  // Consider two decimal places
+    SendNum(config, static_cast<int>(fractionalPart));
 }
 void LCD::SetPosition(const LCD_Config &config, LcdRows rowNum, LcdCol colNum) {
     LCDCommand command;
