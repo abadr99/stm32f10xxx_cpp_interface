@@ -104,6 +104,7 @@ class LCD {
     void DisplayOff(const LCD_Config &config);
     void BlinkOn(const LCD_Config &config);
     void BlinkOff(const LCD_Config &config);
+
  private:
     void SendFallingEdgePulse(const LCD_Config &config);
     void SendCommand(const LCD_Config &config, LCDCommand command);
