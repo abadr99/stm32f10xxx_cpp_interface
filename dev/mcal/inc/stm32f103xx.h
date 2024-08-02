@@ -27,7 +27,7 @@ namespace rcc {
 
 /********************** RCC Register Definition  **********************/
 
-struct RccRegDef{
+struct RccRegDef {
     union CR {
         struct {
             RegWidth_t HSION   :1; /* High-speed internal oscillator enable */
@@ -67,9 +67,77 @@ struct RccRegDef{
     }CFGR; /* Clock configuration register */
 
     RegWidth_t CIR;
-    RegWidth_t APB2RSTR;
-    RegWidth_t APB1RSTR;
-    RegWidth_t AHBENR;
+    union APB2RSTR {
+        struct {
+            RegWidth_t AFIORST   :1; /* Alternative function clock enable  */
+            RegWidth_t           :1; /* Reserved  */
+            RegWidth_t IOPARST   :1; /* Port A clock enable  */
+            RegWidth_t IOPBRST   :1; /* Port B clock enable  */
+            RegWidth_t IOPCRST   :1; /* Port C clock enable  */
+            RegWidth_t IOPDRST   :1; /* Port D clock enable  */
+            RegWidth_t IOPERST   :1; /* Port E clock enable  */
+            RegWidth_t           :2; /* Reserved  */
+            RegWidth_t ADC1RST   :1; /* ADC 1 clock enable  */
+            RegWidth_t ADC2RST   :1; /* ADC 2 clock enable  */
+            RegWidth_t TIM1RST   :1; /* TIM1 clock enable  */
+            RegWidth_t SPI1RST   :1; /* SPI1 clock enable  */
+            RegWidth_t           :1; /* Reserved  */
+            RegWidth_t USART1RST :1; /* USART1 clock enable  */
+            RegWidth_t           :17; /* Reserved  */
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }APB2RSTR;
+
+    union APB1RSTR {
+        struct {
+            RegWidth_t TIM2RST   :1; 
+            RegWidth_t TIM3RST   :1; 
+            RegWidth_t TIM4RST   :1; 
+            RegWidth_t TIM5RST   :1; 
+            RegWidth_t TIM6RST   :1; 
+            RegWidth_t TIM7RST   :1; 
+            RegWidth_t TIM12RST  :1; 
+            RegWidth_t TIM13RST  :1; 
+            RegWidth_t TIM14RST  :1;
+            RegWidth_t WWDGRST   :1;
+            RegWidth_t           :2;
+            RegWidth_t SPI2RST   :1;
+            RegWidth_t SPI3RST   :1;
+            RegWidth_t USART2RST :1;
+            RegWidth_t USART3RST :1;
+            RegWidth_t USART4RST :1;
+            RegWidth_t USART5RST :1; 
+            RegWidth_t I2C1RST   :1; 
+            RegWidth_t I2C2RST   :1; 
+            RegWidth_t USBRST    :1; 
+            RegWidth_t           :1; 
+            RegWidth_t CANRST    :1; 
+            RegWidth_t           :1; 
+            RegWidth_t BKPRST    :1; 
+            RegWidth_t PWRRST    :1; 
+            RegWidth_t DACRST    :1; 
+            RegWidth_t           :2; 
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }APB1RSTR;
+    union AHBENR {
+        struct {
+            RegWidth_t DMA1EN     :1; 
+            RegWidth_t DMA2EN     :1; 
+            RegWidth_t SRAMEN     :1; 
+            RegWidth_t            :1; 
+            RegWidth_t FLITFEN    :1; 
+            RegWidth_t            :1; 
+            RegWidth_t CRCEN      :1; 
+            RegWidth_t            :5; 
+            RegWidth_t OTGFSEN    :1;
+            RegWidth_t            :1;
+            RegWidth_t ETHMACEN   :1;
+            RegWidth_t ETHMACTXEN :1;
+            RegWidth_t ETHMACRXEN :1;
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }AHBENR;
     union APB2ENR {
         struct {
             RegWidth_t AFIOEN   :1; /* Alternative function clock enable  */
@@ -126,6 +194,26 @@ struct RccRegDef{
 
     RegWidth_t BDCR;
     RegWidth_t CSR;
+    union AHBRSTR {
+        struct {
+            RegWidth_t DMA1RST     :1; 
+            RegWidth_t DMA2RST     :1; 
+            RegWidth_t SRAMRST     :1; 
+            RegWidth_t             :1; 
+            RegWidth_t FLITFRST    :1; 
+            RegWidth_t             :1; 
+            RegWidth_t CRCRST      :1; 
+            RegWidth_t             :5; 
+            RegWidth_t OTGFSRST    :1;
+            RegWidth_t             :1;
+            RegWidth_t ETHMACRST   :1;
+            RegWidth_t ETHMACTXRST :1;
+            RegWidth_t ETHMACRXRST :1;
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }AHBRSTR;
+
+    RegWidth_t CFGR2;
 };
 
 /**

@@ -65,8 +65,6 @@ void Exti::Helper_InitAFIOReg(Line line, Port port) {
     uint8_t CRx = static_cast<uint8_t>(line) >> 2;
 
     AFIO->EXTICRx[CRx] = WriteBits<uint32_t>(startBit, startBit + 3, AFIO->EXTICRx[CRx], port);
-
-    RCC->APB2ENR.AFIOEN = 1;
 }
 
 void Exti::Helper_SetTrigger(Line line, Trigger trigger) {

@@ -45,16 +45,6 @@ Usart<USART_NUM>::Usart(const UsartConfig& config) : config_(config) {
 }
 
 template<UsartNum  USART_NUM>
-void Usart<USART_NUM>::EnableClk() {
-    switch (USART_NUM) {
-        case kUsart1 : RCC->APB2ENR.USART1EN = Flag::kEnabled; break;
-        case kUsart2 : RCC->APB1ENR.USART2EN = Flag::kEnabled; break;
-        case kUsart3 : RCC->APB1ENR.USART3EN = Flag::kEnabled; break;
-        default: break;
-    }
-}
-
-template<UsartNum  USART_NUM>
 void Usart<USART_NUM>::Init() {
     auto SetBaudRate = [&]() {
         const uint32_t clockFrequency = 8000000;  // 8 MHz

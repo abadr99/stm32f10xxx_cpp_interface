@@ -11,6 +11,12 @@
 #ifndef DEV_MCAL_INC_RCC_H_
 #define DEV_MCAL_INC_RCC_H_
 
+#include "Rcc.def"
+
+
+#define RCC_ENABLE(peripheral)\
+    RCC->APB2ENR.peripheral##EN = 1;   
+
 #define RCC_TIMEOUT    (400)
 namespace stm32 {
 namespace dev {
@@ -76,16 +82,24 @@ enum HSE_Type {
     kHseRC,
 };
 
+enum class Peripheral {
+    #define P(name_, ignore_)       k##name_,
+    RCC_PERIPHERALS
+    #undef P
+    kUnknown,
+};
+
 class Rcc {
  public:
     static void SetExternalClock(const HSE_Type HseType);
-    static void InitSysClock(const ClkConfig& config = kHse,
-                             const PLL_MulFactor& mulFactor = kClock_1x);
+    static void InitSysClock(const ClkConfig& config = kHse, const PLL_MulFactor& mulFactor = kClock_1x);   // NOLINT
     static void SetAHBPrescaler(const AHP_ClockDivider& divFactor);
     static void SetAPB1Prescaler(const APB_ClockDivider& divFactor);
     static void SetAPB2Prescaler(const APB_ClockDivider& divFactor);
     static void SetMCOPinClk(const McoModes& mode);
     static void AdjustInternalClock(uint8_t CalibrationValue);
+    static void Enable(Peripheral p);
+    static void Disable(Peripheral p);
  private:
     enum Flags { kHSIRDY, kHSERDY, kPLLRDY, };
     enum PllSource {

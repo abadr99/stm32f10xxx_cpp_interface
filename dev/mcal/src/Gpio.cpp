@@ -43,13 +43,6 @@ uint32_t  Gpio::GetPinValue(Pin pin) {
   return GPIOx[pin.GetPort()]->IDR & (1 << pin.GetPinNumber()) >> pin.GetPinNumber(); //NOLINT
 }
 
-void Gpio::EnablePort(Port port) {
-        switch (port) {
-            case kPortA:       RCC->APB2ENR.IOPAEN = 1; break;
-            case kPortB:       RCC->APB2ENR.IOPBEN = 1; break;
-            case kPortC:       RCC->APB2ENR.IOPCEN = 1; break;
-        }
-}
 void Gpio::SetInputMode(Pin pin, InputMode inputMode) {
     STM32_ASSERT(pin.GetPinMode() == PinMode::kInput);
     Helper_SetInputMode(pin, inputMode);
