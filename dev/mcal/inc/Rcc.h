@@ -13,10 +13,6 @@
 
 #include "Rcc.def"
 
-
-#define RCC_ENABLE(peripheral)\
-    RCC->APB2ENR.peripheral##EN = 1;   
-
 #define RCC_TIMEOUT    (400)
 namespace stm32 {
 namespace dev {
