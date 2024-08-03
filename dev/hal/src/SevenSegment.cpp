@@ -40,7 +40,7 @@ SevenSegment<connectionType>::SevenSegment(const Array_t dataPins)
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::Init() {
     using namespace stm32::dev::mcal::rcc;
-    auto MapToPeripheral = [&](Port port) -> Peripheral {
+    auto MapToPeripheral = [](Port port) -> Peripheral {
         switch (port) {
             case kPortA:    return Peripheral::kIOPA;
             case kPortB:    return Peripheral::kIOPB;
