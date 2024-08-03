@@ -50,70 +50,52 @@ enum class LCDCommand : uint8_t {
     kDDRAM_START                = 0x80
 };
 enum LcdMode : uint8_t {
-    k8_bit,
-    k4_bit,
+    k8_bit = 8,
+    k4_bit = 4,
 };
 enum LcdNibbles : uint8_t {
     kLowNibble,
     kHighNibble,
 };
-enum LcdRows : uint8_t {
-    kRow1 = 1,
-    kRow2,
-};
-enum LcdCol : uint8_t {
-    kCOL1 = 1,
-    kCOL2,
-    kCOL3,
-    kCOL4,
-    kCOL5,
-    kCOL6,
-    kCOL7,
-    kCOL8,
-    kCOL9,
-    kCOL10,
-    kCOL11,
-    kCOL12,
-    kCOL13,
-    kCOL14,
-    kCOL15,
-    kCOL16,
-};
+template<LcdMode M>
 struct LCD_Config {
-    LcdMode mode;
-    Array<Pin, 8> dataPins;
+    Array<Pin, M> dataPins;
     Port controlPort;
     Pin RSpin;
     Pin RWpin;
     Pin ENpin;
     LcdNibbles lcd4BitDataPin;
 };
+template<LcdMode M>
 class LCD {
  public:
-    void Init(const LCD_Config &config);
-    void ClearScreen(const LCD_Config &config);
-    void SendChar(const LCD_Config &config, uint8_t character);
-    void SendString(const LCD_Config &config, const std::string &str);
-    void SendNum(const LCD_Config &config, int num);
-    void SendFloat(const LCD_Config &config, double num);
-    void SetPosition(const LCD_Config &config, LcdRows rowNum, LcdCol colNum);
-    void EnableCursor(const LCD_Config &config);
-    void DisableCursor(const LCD_Config &config);
-    void ShiftLeft(const LCD_Config &config);
-    void ShiftRight(const LCD_Config &config);
-    void DisplayOn(const LCD_Config &config);
-    void DisplayOff(const LCD_Config &config);
-    void BlinkOn(const LCD_Config &config);
-    void BlinkOff(const LCD_Config &config);
+    using Rows_t = uint8_t;
+    using cols_t = uint8_t;
+    explicit LCD(const LCD_Config<M> &config_);
+    void Init();
+    void ClearScreen();
+    void Print(char character);
+    void Print(const std::string &str);
+    void Print(uint32_t num);
+    void Print(double num);
+    void SetPosition(Rows_t rowNum, cols_t colNum);
+    void EnableCursor();
+    void DisableCursor();
+    void ShiftLeft();
+    void ShiftRight();
+    void DisplayOn();
+    void DisplayOff();
+    void BlinkOn();
+    void BlinkOff();
 
  private:
-    void SendFallingEdgePulse(const LCD_Config &config);
-    void SendCommand(const LCD_Config &config, LCDCommand command);
-    void SendData(const LCD_Config &config, uint8_t data);
-    void SetLowNibbleValue(const LCD_Config &config, uint8_t value);
-    void SetHighNibbleValue(const LCD_Config &config, uint8_t value);
-    void SetLowNibbleDirection(const LCD_Config &config, OutputMode mode);
-    void SetHighNibbleDirection(const LCD_Config &config, OutputMode mode);
+    void SendFallingEdgePulse();
+    void SendCommand(LCDCommand command);
+    void SendData(uint8_t data);
+    void WriteOutputPins(uint8_t value);
+    void SetLowNibbleDirection(OutputMode mode);
+    void SetHighNibbleDirection(OutputMode mode);
+    const LCD_Config<M> &config_;
 };
 }   //  namespace lcd
 }   //  namespace hal

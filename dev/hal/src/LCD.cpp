@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2024
  * 
  */
+
+#include "Assert.h"
 #include "BitManipulation.h"
 #include "string"
 #include "Pin.h"
@@ -21,159 +23,143 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::dev::hal::lcd;
 using namespace stm32::utils::array;
+using namespace stm32::utils::bit_manipulation;
 
-void LCD::SendFallingEdgePulse(const LCD_Config &config) {
-    Gpio::SetPinValue(config.ENpin, kHigh);
+template<LcdMode M>
+LCD<M>::LCD(const LCD_Config<M> &config) : config_(config) {
+    // AS WE ASSUMING THE LCD IS CONNECTED TO THE SAME PORT
+    // WE HAVE TO ENABLE RCC FOR THIS PORT
+    // TODO(@abadr99): after merging rcc-enhancements pr
+}
+
+template<LcdMode M>
+void LCD<M>::SendFallingEdgePulse() {
+    Gpio::SetPinValue(config_.ENpin, kHigh);
     Systick::Delay_ms(1);
-    Gpio::SetPinValue(config.ENpin, kLow);
+    Gpio::SetPinValue(config_.ENpin, kLow);
     Systick::Delay_ms(1);
 }
-void LCD::SetLowNibbleValue(const LCD_Config &config, uint8_t value) {
-    value&=0x0F;
-    for (uint8_t i =0; i< config.dataPins.Size(); i++) {
-        uint8_t pinState = Gpio::GetPinValue(config.dataPins[i]);
-        pinState &= (0xF0);
-        pinState |= (value);
-        Gpio::SetPinValue(config.dataPins[i], static_cast<State> (pinState));
+
+template<LcdMode M>
+void LCD<M>::SetLowNibbleValue(uint8_t value) {
+    for (uint8_t i = 0; i< config_.dataPins.Size(); i++) {
+        Gpio::SetPinValue(config_.dataPins[i], ExtractBits<uint8_t,i>(value));
     }
 }
-void LCD::SetHighNibbleValue(const LCD_Config &config, uint8_t value) {
-    value&=0xF0;
-    for (uint8_t i =0; i< config.dataPins.Size(); i++) {
-        uint8_t pinState = Gpio::GetPinValue(config.dataPins[i]);
-        pinState &= (0x0F);
-        pinState |= (value);
-        Gpio::SetPinValue(config.dataPins[i], static_cast<State> (pinState));
-    }
+
+template<LcdMode M>
+void LCD<M>::WriteOutputPins(uint8_t value) {
+    for (uint8_t i = 0; i < config_.dataPins.Size(); ++i) {
+        Gpio::SetPinValue(config_.dataPins[i], ExtractBits<uint8_t>(data, i));
+    } 
 }
-void LCD::SetLowNibbleDirection(const LCD_Config &config, OutputMode mode) {
-    uint8_t direction = static_cast<uint8_t> (mode);
-    direction &= 0x0F;
-    for (uint8_t i =0; i< config.dataPins.Size(); i++) {
-        direction &= (0xF0);
-        direction |= (direction);
-        Gpio::SetOutputMode(config.dataPins[i], static_cast<OutputMode> (direction));
-    }
+
+template<LcdMode M>
+void LCD<M>::SendData(uint8_t data) {
+    Gpio::SetPinValue(config_.RSpin, kHigh);
+    Gpio::SetPinValue(config_.RWpin, kLow);
+    
+    // -- 8-BIT MODE
+    if constexpr (M == k8_bit) {
+        WriteOutputPins(data);
+        SendFallingEdgePulse();
+        return;
+    } 
+
+    // -- 4-BIT MODE 
+    WriteOutputPins(data);
+    SendFallingEdgePulse();
+    WriteOutputPins(data >> 4);
+    SendFallingEdgePulse();
 }
-void LCD::SetHighNibbleDirection(const LCD_Config &config, OutputMode mode) {
-    uint8_t direction = static_cast<uint8_t> (mode);
-    direction &= 0xF0;
-    for (uint8_t i =0; i< config.dataPins.Size(); i++) {
-        direction &= (0x0F);
-        direction |= (direction);
-        Gpio::SetOutputMode(config.dataPins[i], static_cast<OutputMode> (direction));
-    }
-}
-void LCD::SendData(const LCD_Config &config, uint8_t data) {
-    Gpio::SetPinValue(config.RSpin, kHigh);
-    Gpio::SetPinValue(config.RWpin, kLow);
-    if (config.mode == k8_bit) {
-        for (uint8_t i =0; i< config.dataPins.Size(); i++) {
-            State pinState = (data &(1 << i)) ? kHigh : kLow;
-            Gpio::SetPinValue(config.dataPins[i], pinState);
-        }
-        LCD::SendFallingEdgePulse(config); 
-    } else if (config.mode == k4_bit) {
-        if (config.lcd4BitDataPin == kLowNibble) {
-            SetLowNibbleValue(config, (data >> 4));
-            SendFallingEdgePulse(config);
-            SetLowNibbleValue(config, data);
-            SendFallingEdgePulse(config);
-        } else if (config.lcd4BitDataPin == kHighNibble) {
-            SetHighNibbleValue(config, data);
-            SendFallingEdgePulse(config);
-            SetHighNibbleValue(config, (data << 4));
-            SendFallingEdgePulse(config);
-        }
-    }
-}
-void LCD::SendCommand(const LCD_Config &config, LCDCommand command) {
-    Gpio::SetPinValue(config.RSpin, kLow);
-    Gpio::SetPinValue(config.RWpin, kLow);
+
+template<LcdMode M>
+void LCD<M>::SendCommand(LCDCommand command) {
+    Gpio::SetPinValue(config_.RSpin, kLow);
+    Gpio::SetPinValue(config_.RWpin, kLow);
+    
     uint8_t commandValue = static_cast<uint8_t>(command);
-    if (config.mode == k8_bit) {
-        for (uint8_t i =0; i< config.dataPins.Size(); i++) {
-            State pinState = (commandValue &(1 << i)) ? kHigh : kLow;
-            Gpio::SetPinValue(config.dataPins[i], pinState);
-        }
-        LCD::SendFallingEdgePulse(config);  
-    } else if (config.mode == k4_bit) {
-        if (config.lcd4BitDataPin == kLowNibble) {
-            SetLowNibbleValue(config, (commandValue >> 4));
-            SendFallingEdgePulse(config);
-            SetLowNibbleValue(config, commandValue);
-            SendFallingEdgePulse(config);
-        } else if (config.lcd4BitDataPin == kHighNibble) {
-            SetHighNibbleValue(config, commandValue);
-            SendFallingEdgePulse(config);
-            SetHighNibbleValue(config, (commandValue << 4));
-            SendFallingEdgePulse(config);
-        }
-    }
+    
+    if constexpr (M == k8_bit) {
+        WriteOutputPins(command);
+        SendFallingEdgePulse();
+        return; 
+    } 
+    
+    WriteOutputPins(command);
+    SendFallingEdgePulse();
+    SetLowNibbleValue(config_, commandValue >> 4);
+    SendFallingEdgePulse(config);
 }
-void LCD::Init(const LCD_Config &config) {
-    //  SET Direction for LCD control  pins --> OUTPUT 
-    Gpio::SetOutputMode(config.RSpin, OutputMode::kPushPull_2MHZ);
-    Gpio::SetOutputMode(config.RWpin, OutputMode::kPushPull_2MHZ);
-    Gpio::SetOutputMode(config.ENpin, OutputMode::kPushPull_2MHZ);
 
-    if (config.mode == k8_bit) {
-        for (uint8_t i =0; i< config.dataPins.Size(); i++) {
+template<LcdMode M>
+void LCD<M>::Init() {
+    //  DIRECTION OF CONTROL PINS SHOULD BE OUTPUT
+    
+    // -- FIRST CHECK DIRECTION OF GIVEN PINS
+    STM32_ASSERT();
+    
+    Gpio::SetOutputMode(config_.RSpin, OutputMode::kPushPull_2MHZ);
+    Gpio::SetOutputMode(config_.RWpin, OutputMode::kPushPull_2MHZ);
+    Gpio::SetOutputMode(config_.ENpin, OutputMode::kPushPull_2MHZ);
+
+    if (config_.mode == k8_bit) {
+        for (uint8_t i =0; i< config_.dataPins.Size(); i++) {
             //  SET Direction for LCD data  pins --> OUTPUT
-            Gpio::SetOutputMode(config.dataPins[i], OutputMode::kPushPull_2MHZ);
+            Gpio::SetOutputMode(config_.dataPins[i], OutputMode::kPushPull_2MHZ);
         }
         Systick::Delay_ms(50);
         //  Function Set
-        SendCommand(config, LCDCommand::kFUNCTION_SET_8_BIT);
+        SendCommand(config_, LCDCommand::kFUNCTION_SET_8_BIT);
         Systick::Delay_ms(1);
         //  Display ON/OFF Control
-        SendCommand(config, LCDCommand::kDISPLAY_ON_CURSOR_OFF);
+        SendCommand(config_, LCDCommand::kDISPLAY_ON_CURSOR_OFF);
         Systick::Delay_ms(1);
         //  Clear Screen
-        SendCommand(config, LCDCommand::kCLEAR_SCREEN);
+        SendCommand(config_, LCDCommand::kCLEAR_SCREEN);
         Systick::Delay_ms(5);
         //  Entry mode set
-        SendCommand(config, LCDCommand::kENTRY_MODE_INC_SHIFT_OFF);
+        SendCommand(config_, LCDCommand::kENTRY_MODE_INC_SHIFT_OFF);
         Systick::Delay_ms(1);
-    } else if (config.mode == k4_bit) {
-        if (config.lcd4BitDataPin == kLowNibble) {
-            SetLowNibbleDirection(config, OutputMode::kPushPull_2MHZ);
-        } else if (config.lcd4BitDataPin == kHighNibble) {
-            SetHighNibbleDirection(config, OutputMode::kPushPull_2MHZ);
+    } else if (config_.mode == k4_bit) {
+        if (config_.lcd4BitDataPin == kLowNibble) {
+            SetLowNibbleDirection(config_, OutputMode::kPushPull_2MHZ);
+        } else if (config_.lcd4BitDataPin == kHighNibble) {
+            SetHighNibbleDirection(config_, OutputMode::kPushPull_2MHZ);
         }
-        SendCommand(config, LCDCommand::kRETURN_HOME);
+        SendCommand(config_, LCDCommand::kRETURN_HOME);
         Systick::Delay_ms(50);
         //  Function Set
-        SendCommand(config, LCDCommand::kFUNCTION_SET_4_BIT);
+        SendCommand(config_, LCDCommand::kFUNCTION_SET_4_BIT);
         Systick::Delay_ms(1);
         //  Display ON/OFF Control
-        SendCommand(config, LCDCommand::kDISPLAY_ON_CURSOR_OFF);
+        SendCommand(config_, LCDCommand::kDISPLAY_ON_CURSOR_OFF);
         Systick::Delay_ms(1);
         //  Clear Screen
-        SendCommand(config, LCDCommand::kCLEAR_SCREEN);
+        SendCommand(config_, LCDCommand::kCLEAR_SCREEN);
         Systick::Delay_ms(5);
         //  Entry mode set
-        SendCommand(config, LCDCommand::kENTRY_MODE_INC_SHIFT_OFF);
+        SendCommand(config_, LCDCommand::kENTRY_MODE_INC_SHIFT_OFF);
         Systick::Delay_ms(5);
     }
 }
-void LCD::ClearScreen(const LCD_Config &config) {
-    SendCommand(config, LCDCommand::kCLEAR_SCREEN);
+void LCD::ClearScreen() {
+    SendCommand(config_, LCDCommand::kCLEAR_SCREEN);
     Systick::Delay_ms(1);
 }
-void LCD::SendChar(const LCD_Config &config, uint8_t character) {
-    SendData(config, character);
+void LCD::SendChar(, uint8_t character) {
+    SendData(config_, character);
 }
-void LCD::SendString(const LCD_Config &config, const std::string &str) {
+void LCD::SendString(, const std::string &str) {
     //  c hold each ccharacter in the string
     for (char c : str) {
-        SendData(config, c);
+        SendData(config_, c);
     }
 }
 // TODO(@noura36): sined number
-void LCD::SendNum(const LCD_Config &config, int num) {
+void LCD::SendNum(, int num) {
     if (num == 0) {
-        SendChar(config, '0');
+        SendChar(config_, '0');
         return;
     }
     bool isNegative = num < 0;
@@ -182,26 +168,26 @@ void LCD::SendNum(const LCD_Config &config, int num) {
     }
     std::string numStr = std::to_string(num);
     if (isNegative) {
-        SendChar(config, '-');
+        SendChar(config_, '-');
     }
     for (char c : numStr) {
-        SendChar(config, c);
+        SendChar(config_, c);
     }
 }
-void LCD::SendFloat(const LCD_Config &config, double num) {
+void LCD::SendFloat(, double num) {
     if (num < 0) {
-        SendChar(config, '-');
+        SendChar(config_, '-');
         num = -num;
     }
     int realPart = static_cast<int>(num);
     double fractionalPart = num - realPart;
-    SendNum(config, realPart);
-    SendChar(config, '.');
+    SendNum(config_, realPart);
+    SendChar(config_, '.');
     // Extract and send fractional part
     fractionalPart *= 100;  // Consider two decimal places
-    SendNum(config, static_cast<int>(fractionalPart));
+    SendNum(config_, static_cast<int>(fractionalPart));
 }
-void LCD::SetPosition(const LCD_Config &config, LcdRows rowNum, LcdCol colNum) {
+void LCD::SetPosition(, LcdRows rowNum, LcdCol colNum) {
     LCDCommand command;
     /* if the user enter invalid location AC will point to
 			the first place in DDRAM (0, 0 )  */
@@ -213,30 +199,30 @@ void LCD::SetPosition(const LCD_Config &config, LcdRows rowNum, LcdCol colNum) {
     } else if (rowNum == kRow2) {
         command = static_cast<LCDCommand>(lcdCommand + 64 + static_cast<uint8_t>(colNum) -1);
     }
-    SendCommand(config, command);
+    SendCommand(config_, command);
     Systick::Delay_ms(1);
 }
-void LCD::EnableCursor(const LCD_Config &config) {
-    SendCommand(config, LCDCommand::kDISPLAY_ON_CURSOR_ON);
+void LCD::EnableCursor() {
+    SendCommand(config_, LCDCommand::kDISPLAY_ON_CURSOR_ON);
 }
-void LCD::DisableCursor(const LCD_Config &config) {
-    SendCommand(config, LCDCommand::kDISPLAY_ON_CURSOR_OFF);
+void LCD::DisableCursor() {
+    SendCommand(config_, LCDCommand::kDISPLAY_ON_CURSOR_OFF);
 }
-void LCD::ShiftLeft(const LCD_Config &config) {
-    SendCommand(config, LCDCommand::kSHIFT_LEFT);
+void LCD::ShiftLeft() {
+    SendCommand(config_, LCDCommand::kSHIFT_LEFT);
 }
-void LCD::ShiftRight(const LCD_Config &config) {
-    SendCommand(config, LCDCommand::kSHIFT_RIGHT);
+void LCD::ShiftRight() {
+    SendCommand(config_, LCDCommand::kSHIFT_RIGHT);
 }
-void LCD::DisplayOn(const LCD_Config &config) {
-    SendCommand(config, LCDCommand::kDISPLAY_ON_CURSOR_OFF);
+void LCD::DisplayOn() {
+    SendCommand(config_, LCDCommand::kDISPLAY_ON_CURSOR_OFF);
 }
-void LCD::DisplayOff(const LCD_Config &config) {
-    SendCommand(config, LCDCommand::kDISPLAY_OFF_CURSOR_OFF);
+void LCD::DisplayOff() {
+    SendCommand(config_, LCDCommand::kDISPLAY_OFF_CURSOR_OFF);
 }
-void LCD::BlinkOn(const LCD_Config &config) {
-    SendCommand(config, LCDCommand::kBLINK_ON);
+void LCD::BlinkOn() {
+    SendCommand(config_, LCDCommand::kBLINK_ON);
 }
-void LCD::BlinkOff(const LCD_Config &config) {
-    SendCommand(config, LCDCommand::kBLINK_OFF);
+void LCD::BlinkOff() {
+    SendCommand(config_, LCDCommand::kBLINK_OFF);
 }
