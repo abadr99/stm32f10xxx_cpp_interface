@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2024
  *
  */
-#include "../inc/stm32f103xx.h"
-#include "../../utils/inc/Assert.h"
-#include "../inc/Usart.h"
+#include "stm32f103xx.h"
+#include "Assert.h"
+#include "Usart.h"
 
 using namespace stm32::registers::rcc;
 using namespace stm32::registers::usart;
@@ -99,7 +99,6 @@ void Usart::Transmit(DataValType dataValue) {
     STM32_ASSERT(count != USART_TIMEOUT && (count != USART_TIMEOUT) && (++count));
     usartReg->SR.registerVal = 0;
 }
-
 
 typename Usart::DataValType Usart::Receive() {
     uint32_t count = 0;
