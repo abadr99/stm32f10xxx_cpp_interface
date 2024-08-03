@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2024
  *
  */
-#include "mcal/inc/stm32f103xx.h"
-#include "Assert.h"
-#include "Usart.h"
+#include "../inc/stm32f103xx.h"
+#include "../../utils/inc/Assert.h"
+#include "../inc/Usart.h"
 
 using namespace stm32::registers::rcc;
 using namespace stm32::registers::usart;
@@ -34,9 +34,8 @@ ASSERT_MEMBER_OFFSET(UsartRegDef, CR2,         sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(UsartRegDef, CR3,         sizeof(RegWidth_t) * 5);
 ASSERT_MEMBER_OFFSET(UsartRegDef, GTPR,        sizeof(RegWidth_t) * 6);
 
-template<UsartNum  USART_NUM>
-Usart<USART_NUM>::Usart(const UsartConfig& config) : config_(config) {
-    switch (USART_NUM) {
+Usart::Usart(const UsartConfig& config) : config_(config) {
+    switch (config_.number) {
         case kUsart1 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART1)); break;
         case kUsart2 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART2)); break;
         case kUsart3 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART3)); break;
@@ -44,9 +43,8 @@ Usart<USART_NUM>::Usart(const UsartConfig& config) : config_(config) {
     }
 }
 
-template<UsartNum  USART_NUM>
-void Usart<USART_NUM>::EnableClk() {
-    switch (USART_NUM) {
+void Usart::EnableClk() {
+    switch (config_.number) {
         case kUsart1 : RCC->APB2ENR.USART1EN = Flag::kEnabled; break;
         case kUsart2 : RCC->APB1ENR.USART2EN = Flag::kEnabled; break;
         case kUsart3 : RCC->APB1ENR.USART3EN = Flag::kEnabled; break;
@@ -54,29 +52,7 @@ void Usart<USART_NUM>::EnableClk() {
     }
 }
 
-template<UsartNum  USART_NUM>
-void Usart<USART_NUM>::Init() {
-    auto SetBaudRate = [&]() {
-        const uint32_t clockFrequency = 8000000;  // 8 MHz
-        const uint32_t scale = 16;
-        const uint32_t multiplier = 1000;
-        const uint32_t roundingFactor = 500;
-
-        // Calculate the USARTDIV value
-        uint32_t UsartDiv = ((clockFrequency * multiplier) / (scale * config_.baudRate));
-
-        // Extract the mantissa and fraction parts
-        uint16_t divMantissa  = UsartDiv / multiplier;
-        uint16_t fractionPart = UsartDiv % multiplier;
-
-        // Calculate the fraction
-        uint8_t divFraction = ((fractionPart * scale) + roundingFactor) / multiplier;
-
-        // Assign the calculated values to the BRR register
-        usartReg->BRR.DIV_Mantissa = divMantissa;
-        usartReg->BRR.DIV_Fraction = divFraction;
-    };
-
+void Usart::Init() {
     CHECK_CONFIG();
     /* Enable usart peripheral */
     usartReg->CR1.UE = kEnabled;
@@ -90,30 +66,49 @@ void Usart<USART_NUM>::Init() {
     usartReg->CR1.PS_PCE = config_.parityMode;
     /* Set hardware flow control */
     usartReg->CR3.RTSE_CTSE = config_.flowControlState;
-    SetBaudRate();
+    
+    _SetBaudRate();
 }
 
-template<UsartNum  USART_NUM>
-void Usart<USART_NUM>::Transmit(DataValType dataValue) {
+void Usart::_SetBaudRate() {
+    const uint32_t clockFrequency = 8000000;  // 8 MHz
+    const uint32_t scale = 16;
+
+    // Calculate the USARTDIV value
+    float UsartDiv = ((clockFrequency) / (scale * config_.baudRate));
+
+    // Extract the mantissa and fraction parts
+    uint16_t divMantissa  = (uint16_t)UsartDiv;
+    float fractionPart = (UsartDiv - divMantissa);
+
+    // Calculate the fraction
+    uint8_t divFraction = (uint16_t)(fractionPart * scale);
+    
+    // Assign the calculated values to the BRR register
+    usartReg->BRR.DIV_Mantissa = divMantissa;
+    usartReg->BRR.DIV_Fraction = divFraction;
+}
+
+void Usart::Transmit(DataValType dataValue) {
     uint32_t count = 0;
-    while (!(usartReg->SR.TXE) && (count != USART_TIMEOUT) && (++count)) {}
-    STM32_ASSERT(count != USART_TIMEOUT);
+    while (!(usartReg->SR.TXE) ) {}
+    STM32_ASSERT(count != USART_TIMEOUT && (count != USART_TIMEOUT) && (++count));
     count = 0;
-    usartReg->DR = dataValue; 
-    while (!(usartReg->SR.TC) && (count != USART_TIMEOUT) && (++count)) {}
-    STM32_ASSERT(count != USART_TIMEOUT);
+    usartReg->DR = dataValue;
+    while (!(usartReg->SR.TC)) {}
+    STM32_ASSERT(count != USART_TIMEOUT && (count != USART_TIMEOUT) && (++count));
+    usartReg->SR.registerVal = 0;
 }
 
-template<UsartNum  USART_NUM>
-typename Usart<USART_NUM>::DataValType Usart<USART_NUM>::Receive() {
+
+typename Usart::DataValType Usart::Receive() {
     uint32_t count = 0;
-    while (!(usartReg->SR.RXNE) && (count != USART_TIMEOUT) && (++count)) {}
+    while (!(usartReg->SR.RXNE) && (count != USART_TIMEOUT) && (++count) ) {}
     STM32_ASSERT(count != USART_TIMEOUT);
     return static_cast<DataValType>(usartReg->DR);
 }
 
-template<UsartNum  USART_NUM>
-ErrorType Usart<USART_NUM>::RetErrorDetection() {
+ErrorType Usart::RetErrorDetection() {
     if (usartReg->SR.PE == Flag::kEnabled) {
         return kParityError;
     } 
@@ -128,7 +123,3 @@ ErrorType Usart<USART_NUM>::RetErrorDetection() {
     }
     return kSuccess;
 }
-
-template class Usart<kUsart1>;
-template class Usart<kUsart2>;
-template class Usart<kUsart3>;
