@@ -44,15 +44,6 @@ Usart::Usart(const UsartConfig& config) : config_(config) {
     }
 }
 
-void Usart::EnableClk() {
-    switch (config_.number) {
-        case kUsart1 : RCC->APB2ENR.USART1EN = Flag::kEnabled; break;
-        case kUsart2 : RCC->APB1ENR.USART2EN = Flag::kEnabled; break;
-        case kUsart3 : RCC->APB1ENR.USART3EN = Flag::kEnabled; break;
-        default: break;
-    }
-}
-
 void Usart::Init() {
     CHECK_CONFIG();
     /* Enable usart peripheral */
