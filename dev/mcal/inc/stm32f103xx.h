@@ -164,39 +164,33 @@ namespace nvic {
  * This structure defines the layout of NVIC registers for controlling
  */
 struct NvicRegDef {
-    RegWidth_t ISER[8];        // Interrupt Set Enable Register
-    RegWidth_t RESERVED0[24];
-    RegWidth_t ICER[8];        // Interrupt Clear Enable Register
-    RegWidth_t RESERVED1[24];
-    RegWidth_t ISPR[8];        // Interrupt Set Pending Register
-    RegWidth_t RESERVED2[24];
-    RegWidth_t ICPR[8];        // Interrupt Clear Pending Register
-    RegWidth_t RESERVED3[24];
-    RegWidth_t IABR[8];        // Interrupt Active Bit Register
-    RegWidth_t RESERVED4[56];
-    uint8_t IPR[240];          // Interrupt Priority Register
-    RegWidth_t RESERVED5[644];
-    RegWidth_t STIR;           // Software Trigger Interrupt Register
+    uint32_t ISER[3];    // Interrupt Set Enable Registers
+    uint32_t RES0[29];   // Reserved
+    uint32_t ICER[3];    // Interrupt Clear Enable Registers
+    uint32_t RES1[29];   // Reserved
+    uint32_t ISPR[3];    // Interrupt Set Pending Registers
+    uint32_t RES2[29];   // Reserved
+    uint32_t ICPR[3];    // Interrupt Clear Pending Registers
+    uint32_t RES3[29];   // Reserved
+    uint32_t IABR[3];    // Interrupt Active Bit Registers
+    uint32_t RES4[61];   // Reserved
+    uint8_t  IPR[240];   // Interrupt Priority Registers
+    uint32_t RES5[644];  // Reserved
+    uint32_t STIR;       // Software Trigger Interrupt Register
 };
 struct  SCBRegDef {
-    RegWidth_t CPUID;   // CPUID Base Register
-    RegWidth_t ICSR;    // Interrupt Control and State Register
-    RegWidth_t VTOR;    // Vector Table Offset Register
-    RegWidth_t AIRCR;   // Application Interrupt and Reset Control Register
-    RegWidth_t SCR;     // System Control Register
-    RegWidth_t CCR;     // Configuration and Control Register
-    RegWidth_t SHPR1;   // System Handler Priority Register 1
-    RegWidth_t SHPR2;   // System Handler Priority Register 2
-    RegWidth_t SHPR3;   // System Handler Priority Register 3
-    RegWidth_t SHCRS;   // System Handler Control and State Register
-    RegWidth_t CFSR;    // Configurable Fault Status Register
-    RegWidth_t MMSR;    // MemManage Fault Status Register
-    RegWidth_t BFSR;    // BusFault Status Register
-    RegWidth_t UFSR;    // UsageFault Status Register
-    RegWidth_t HFSR;    // HardFault Status Register
-    RegWidth_t MMAR;    // MemManage Fault Address Register
-    RegWidth_t BFAR;    // BusFault Address Register
-    RegWidth_t AFSR;    // Auxiliary Fault Status Register
+    uint32_t CPUID;      // CPUID Base Register
+    uint32_t ICSR;       // Interrupt Control and State Register
+    uint32_t VTOR;       // Vector Table Offset Register
+    uint32_t AIRCR;      // Application Interrupt and Reset Control Register
+    uint32_t SCR;        // System Control Register
+    uint32_t CCR;        // Configuration and Control Register
+    uint8_t  SHP[12];    // System Handlers Priority Registers
+    uint32_t SHCSR;      // System Handler Control and State Register
+    uint32_t CFSR;       // Configurable Fault Status Register
+    uint32_t HFSR;       // HardFault Status Register
+    uint32_t MMFAR;      // MemManage Fault Address Register
+    uint32_t BFAR;       // BusFault Address Register
 };
 
 
@@ -432,10 +426,9 @@ struct UsartRegDef {
     RegWidth_t GTPR;
 };
 
-
-#define USART1 (USART1_BASE_ADDRESS)
-#define USART2 (USART2_BASE_ADDRESS)
-#define USART3 (USART3_BASE_ADDRESS)
+#define USART1 (reinterpret_cast<volatile UsartRegDef*>(USART1_BASE_ADDRESS))
+#define USART2 (reinterpret_cast<volatile UsartRegDef*>(USART2_BASE_ADDRESS))
+#define USART3 (reinterpret_cast<volatile UsartRegDef*>(USART3_BASE_ADDRESS))
 
 }  // namespace usart
 /**

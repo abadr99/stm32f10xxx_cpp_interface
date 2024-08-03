@@ -20,33 +20,33 @@ using namespace stm32::dev::mcal::nvic;
 using namespace stm32::registers::nvic;
 
 TEST(NvicTest, EnableInterrupt) {
-    Nvic::EnableInterrupt(kEXTI0);
+    Nvic::EnableInterrupt(kEXTI0_IRQn);
     EXPECT_EQ(1,   (ExtractBits<uint32_t, 6>(NVIC->ISER[0])));
-    Nvic::EnableInterrupt(kUSART3);
+    Nvic::EnableInterrupt(kUSART3_IRQn);
     EXPECT_EQ(1,   (ExtractBits<uint32_t, 7>(NVIC->ISER[1])));
 }
 TEST(NvicTest, DisableInterrupt) {
-    Nvic::DisableInterrupt(kEXTI0);
+    Nvic::DisableInterrupt(kEXTI0_IRQn);
     EXPECT_EQ(0,   (ExtractBits<uint32_t, 6>(NVIC->ICER[0])));
-    Nvic::DisableInterrupt(kUSART3);
+    Nvic::DisableInterrupt(kUSART3_IRQn);
     EXPECT_EQ(0,   (ExtractBits<uint32_t, 7>(NVIC->ICER[1])));
 }
 TEST(NvicTest, SetPendingFlag) {
-    Nvic::SetPendingFlag(kEXTI0);
+    Nvic::SetPendingFlag(kEXTI0_IRQn);
     EXPECT_EQ(1,   (ExtractBits<uint32_t, 6>(NVIC->ISPR[0])));
-    Nvic::SetPendingFlag(kUSART3);
+    Nvic::SetPendingFlag(kUSART3_IRQn);
     EXPECT_EQ(1,   (ExtractBits<uint32_t, 7>(NVIC->ISPR[1])));
 }
 TEST(NvicTest, ClearPendingFlag) {
-    Nvic::ClearPendingFlag(kEXTI0);
+    Nvic::ClearPendingFlag(kEXTI0_IRQn);
     EXPECT_EQ(0,   (ExtractBits<uint32_t, 6>(NVIC->ICPR[0])));
-    Nvic::ClearPendingFlag(kUSART3);
+    Nvic::ClearPendingFlag(kUSART3_IRQn);
     EXPECT_EQ(0,   (ExtractBits<uint32_t, 7>(NVIC->ICPR[1])));
 }
 TEST(NvicTest, SetPriority) {
-    Nvic::SetPriority(kEXTI0, 5);
-    EXPECT_EQ(5,   (ExtractBits<uint32_t, 4, 7>(NVIC->IPR[kEXTI0])));
-    EXPECT_EQ(80,   (ExtractBits<uint32_t, 0, 7>(NVIC->IPR[kEXTI0])));
+    Nvic::SetPriority(kEXTI0_IRQn, 5);
+    EXPECT_EQ(5,   (ExtractBits<uint32_t, 4, 7>(NVIC->IPR[kEXTI0_IRQn])));
+    EXPECT_EQ(80,   (ExtractBits<uint32_t, 0, 7>(NVIC->IPR[kEXTI0_IRQn])));
 }
 TEST(NvicTest, SetPriorityGroup) {
     Nvic::SetPriorityGroup(kSCB_0GROUP_4SUBGROUP);

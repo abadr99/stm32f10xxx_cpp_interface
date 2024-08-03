@@ -66,6 +66,7 @@ enum ErrorType : uint8_t {
 };
 
 struct UsartConfig {
+    UsartNum number;
     UsartMode mode;
     StopBitsNum numOfSB;
     WordLength dataBits;
@@ -73,12 +74,8 @@ struct UsartConfig {
     HwFlowControl flowControlState;
     uint32_t baudRate;  // clock peripheral is 8MHZ considering that system clock is HSI
 };
-template<UsartNum  USART_NUM>
+
 class Usart {
-    static_assert(USART_NUM== kUsart1 || 
-                  USART_NUM == kUsart2 || 
-                  USART_NUM == kUsart3, 
-                  "Invalid USART");
  public:
     using DataValType = uint16_t;
     explicit Usart(const UsartConfig& config);
