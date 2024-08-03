@@ -21,7 +21,7 @@ namespace dev {
 namespace hal {
 namespace lcd {
 
-enum class LCDCommand : uint8_t {
+enum LCDCommand : uint8_t {
     kCLEAR_SCREEN               = 0x01,
     kRETURN_HOME                = 0x02,
 
@@ -49,14 +49,17 @@ enum class LCDCommand : uint8_t {
     kCGRAM_START                = 0x40,
     kDDRAM_START                = 0x80
 };
+
 enum LcdMode : uint8_t {
-    k8_bit = 8,
-    k4_bit = 4,
+    kEightBit = 8,
+    kFourBit  = 4,
 };
+
 enum LcdNibbles : uint8_t {
     kLowNibble,
     kHighNibble,
 };
+
 template<LcdMode M>
 struct LCD_Config {
     Array<Pin, M> dataPins;
@@ -66,6 +69,7 @@ struct LCD_Config {
     Pin ENpin;
     LcdNibbles lcd4BitDataPin;
 };
+
 template<LcdMode M>
 class LCD {
  public:
@@ -76,7 +80,7 @@ class LCD {
     void ClearScreen();
     void Print(char character);
     void Print(const std::string &str);
-    void Print(uint32_t num);
+    void Print(int32_t num);
     void Print(double num);
     void SetPosition(Rows_t rowNum, cols_t colNum);
     void EnableCursor();
@@ -95,7 +99,7 @@ class LCD {
     void WriteOutputPins(uint8_t value);
     void SetLowNibbleDirection(OutputMode mode);
     void SetHighNibbleDirection(OutputMode mode);
-    const LCD_Config<M> &config_;
+    LCD_Config<M> config_;
 };
 }   //  namespace lcd
 }   //  namespace hal
