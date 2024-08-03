@@ -8,7 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#include "stm32f103xx.h"
+
+#include "mcal/inc/stm32f103xx.h"
 #include "Assert.h"
 #include "Usart.h"
 
