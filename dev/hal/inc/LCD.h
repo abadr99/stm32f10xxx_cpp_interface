@@ -16,6 +16,11 @@ using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::utils::array;
 
+namespace stm32 {
+namespace dev {
+namespace hal {
+namespace lcd {
+
 enum class LCDCommand : uint8_t {
     kCLEAR_SCREEN               = 0x01,
     kRETURN_HOME                = 0x02,
@@ -83,10 +88,6 @@ struct LCD_Config {
     Pin ENpin;
     LcdNibbles lcd4BitDataPin;
 };
-namespace stm32 {
-namespace dev {
-namespace hal {
-namespace lcd {
 class LCD {
  public:
     void Init(const LCD_Config &config);
