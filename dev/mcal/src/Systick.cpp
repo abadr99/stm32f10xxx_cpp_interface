@@ -27,7 +27,7 @@ ASSERT_MEMBER_OFFSET(SystickRegDef, VAL,  sizeof(RegWidth_t) * 2);
 
 #define SYSTICK_MAX_VALUE   GetOnes<uint32_t>(24)  //  24 bit
 
-pFunction Systick::PointerToISR = nullptr;
+typename Systick::pFunction Systick::PointerToISR = nullptr;
 
 void Systick::Enable(CLKSource clksource) {
     SYSTICK->CTRL.ENABLE = 1;
@@ -95,12 +95,12 @@ void Systick::Disable() {
 void Systick::Helper_SetPointerToISR(pFunction func) {
     Systick::PointerToISR = func;
 }
-pFunction Systick::Helper_GetPointerToISR() {
+typename Systick::pFunction Systick::Helper_GetPointerToISR() {
     return Systick::PointerToISR;
 }
 
 extern "C" void SysTick_Handler(void) {
-    pFunction fun = Systick::Helper_GetPointerToISR();
+    typename Systick::pFunction fun = Systick::Helper_GetPointerToISR();
     if (fun != NULL) {
         fun();
         SYSTICK->CTRL.ENABLE = 0;

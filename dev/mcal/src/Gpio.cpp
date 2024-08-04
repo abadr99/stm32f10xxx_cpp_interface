@@ -43,15 +43,8 @@ uint32_t  Gpio::GetPinValue(Pin pin) {
   return GPIOx[pin.GetPort()]->IDR & (1 << pin.GetPinNumber()) >> pin.GetPinNumber(); //NOLINT
 }
 
-void Gpio::EnablePort(Port port) {
-        switch (port) {
-            case kPortA:       RCC->APB2ENR.IOPAEN = 1; break;
-            case kPortB:       RCC->APB2ENR.IOPBEN = 1; break;
-            case kPortC:       RCC->APB2ENR.IOPCEN = 1; break;
-        }
-}
 void Gpio::SetInputMode(Pin pin, InputMode inputMode) {
-    STM32_ASSERT(pin.GetPinMode() == PinMode::kInput);
+    STM32_ASSERT(pin.IsInput());
     Helper_SetInputMode(pin, inputMode);
     /* check  whether the pin mode is set as pull-up or pull-down */
     if (inputMode == InputMode::kPullup) {
@@ -62,12 +55,12 @@ void Gpio::SetInputMode(Pin pin, InputMode inputMode) {
 }
 
 void Gpio::SetOutputMode(Pin pin, OutputMode outputMode) {
-    STM32_ASSERT(pin.GetPinMode() == PinMode::kOutput);
+    STM32_ASSERT(pin.IsOutput());
     Helper_SetOutputMode(pin, outputMode);
 }
 
 void Gpio::SetAlternativeMode(Pin pin, AlternativeMode alternativeMode) {
-    STM32_ASSERT(pin.GetPinMode() == PinMode::kAlternative);
+    STM32_ASSERT(pin.IsAlternative());
     Helper_AlternateMode(pin, alternativeMode);
 }
 void Gpio::Helper_SetInputMode(Pin pin, InputMode inputMode) {

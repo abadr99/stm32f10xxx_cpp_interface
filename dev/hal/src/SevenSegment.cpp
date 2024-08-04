@@ -12,6 +12,7 @@
 #include "utils/inc/Assert.h"
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Pin.h"
+#include "mcal/inc/Rcc.h"
 #include "mcal/inc/Gpio.h"
 #include "hal/inc/SevenSegment.h"
 
@@ -37,10 +38,20 @@ SevenSegment<connectionType>::SevenSegment(const Array_t dataPins)
     { /* EMPTY */ }
 
 template<ConnectionType connectionType>
-void SevenSegment<connectionType>::Init() {  
+void SevenSegment<connectionType>::Init() {
+    using namespace stm32::dev::mcal::rcc;
+    auto MapToPeripheral = [](Port port) -> Peripheral {
+        switch (port) {
+            case kPortA:    return Peripheral::kIOPA;
+            case kPortB:    return Peripheral::kIOPB;
+            case kPortC:    return Peripheral::kIOPC;
+        }
+        STM32_ASSERT(1);
+        return Peripheral::kUnknown;
+    };
     // 1] -- ENABLE CLK PORT
-    Gpio::EnablePort(dataPins_[0].GetPort());
-    
+    Rcc::Enable(MapToPeripheral(dataPins_[0].GetPort()));
+
     // 2] -- SET DATA PINS AS OUTPUT (PUSHPULL)
     for (uint8_t pin = 0; pin < 7; pin++) {
         Gpio::SetOutputMode(dataPins_[pin], OutputMode::kPushPull_2MHZ);
@@ -48,7 +59,7 @@ void SevenSegment<connectionType>::Init() {
 
     // 3] -- HANDLE ENABLE PIN IF USED
     if (isEnablePinUsed_) {
-        Gpio::EnablePort(enablePin_.GetPort());
+        Rcc::Enable(MapToPeripheral(enablePin_.GetPort()));
         Gpio::SetOutputMode(enablePin_, OutputMode::kPushPull_2MHZ);  
     }
     
