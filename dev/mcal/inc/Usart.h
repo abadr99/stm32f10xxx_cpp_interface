@@ -11,6 +11,7 @@
 #define DEV_MCAL_INC_USART_H_
 
 #include "../../mcal/inc/stm32f103xx.h"
+using namespace stm32::utils::types;
 using namespace stm32::registers::usart;
 
 #define USART_TIMEOUT (500)
@@ -83,12 +84,15 @@ class Usart {
     void Init();
     void Transmit(DataValType dataValue);
     DataValType Receive();
+    void ReceiveAsynchronous(pFunction fun);
     ErrorType RetErrorDetection();
+    static pFunction PointerToISR[3];
+    static volatile UsartRegDef* usartReg;
+    static pFunction GetPointerToISR();
  private:
     enum Flag : uint8_t {kEnabled, kDisabled};
     void _SetBaudRate();
     const UsartConfig& config_;
-    volatile UsartRegDef* usartReg;
 };
 
 }  // namespace usart
