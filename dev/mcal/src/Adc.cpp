@@ -23,10 +23,8 @@ template<AdcPeripheral  ADC_NUM>
 ADC<ADC_NUM>::ADC(const ADCConfig& config) : config_(config) {
     switch (ADC_NUM) {
         case kADC1 : ADC_reg = (reinterpret_cast<volatile ADCRegDef*>(ADC1));
-                     RCC->APB2ENR.ADC1EN = 1;
                      break;
         case kADC2 : ADC_reg = (reinterpret_cast<volatile ADCRegDef*>(ADC2));
-                     RCC->APB2ENR.ADC2EN = 1;
                      break;
         default    : break;
     }
