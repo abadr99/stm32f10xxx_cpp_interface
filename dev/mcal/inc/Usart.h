@@ -5,7 +5,7 @@
  * @date 2024-06-24
  *
  * @copyright Copyright (c) 2024
- *
+ *  
  */
 #ifndef DEV_MCAL_INC_USART_H_
 #define DEV_MCAL_INC_USART_H_
