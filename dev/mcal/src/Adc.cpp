@@ -47,8 +47,11 @@ void ADC<ADC_NUM>::init() {
 template<AdcPeripheral  ADC_NUM>
 uint16_t ADC<ADC_NUM>:: startSingleConversion() {
     // Ensure ADC is not busy
-    while (ADC_reg->SR.STRT) {
+    uint8_t ctr = 0;
+    while ((ADC_reg->SR.STRT) && (ctr != ADC_TIMEOUT) && (++ctr)) {
     }
+    STM32_ASSERT(ctr != ADC_TIMEOUT);
+    ctr = 0;
     // Set up for single conversion
     ADC_reg->CR2.CONT = 0;  // Disable continuous mode
     ADC_reg->SQR1.L = 0;    // Set sequence length to 1
@@ -57,16 +60,19 @@ uint16_t ADC<ADC_NUM>:: startSingleConversion() {
     // Start conversion
     ADC_reg->CR2.SWSTART = 1;
     // Wait for conversion to complete
-    while (!ADC_reg->SR.EOC) {
+    while (!ADC_reg->SR.EOC && (ctr != ADC_TIMEOUT) && (++ctr)) {
     }
+    STM32_ASSERT(ctr != ADC_TIMEOUT);
     // Read and return the result
     return ADC_reg->DR.DATA;
     }
 template<AdcPeripheral  ADC_NUM>
 void ADC<ADC_NUM>::startContinuousConversion() {
     // Ensure ADC is not busy
-    while (ADC_reg->SR.STRT) {
+    uint8_t ctr = 0;
+    while (ADC_reg->SR.STRT  && (ctr != ADC_TIMEOUT) && (++ctr)) {
     }
+    STM32_ASSERT(ctr != ADC_TIMEOUT);
     // Set up for continuous conversion
     ADC_reg->CR2.CONT = 1;  // Enable continuous mode
     ADC_reg->SQR1.L = 0;    // Set sequence length to 1
@@ -77,9 +83,11 @@ void ADC<ADC_NUM>::startContinuousConversion() {
 }
 template<AdcPeripheral  ADC_NUM>
 uint16_t ADC<ADC_NUM>::readContinuousConversion() {
+    uint8_t ctr = 0;
     // Wait for conversion to complete
-    while (!ADC_reg->SR.EOC) {
+    while (!ADC_reg->SR.EOC && (ctr != ADC_TIMEOUT) && (++ctr)) {
     }
+    STM32_ASSERT(ctr != ADC_TIMEOUT);
     // Read and return the result
     return ADC_reg->DR.DATA;
 }
@@ -96,8 +104,10 @@ uint16_t ADC<ADC_NUM>::startInjectedConversion() {
     configureChannelSample();
     // Start injected conversion
     ADC_reg->CR2.JSWSTART = 1;
-    while (!ADC_reg->SR.JEOC) {
+    uint8_t ctr = 0;
+    while (!ADC_reg->SR.JEOC && (ctr != ADC_TIMEOUT) && (++ctr)) {
     }
+    STM32_ASSERT(ctr != ADC_TIMEOUT);
     return ADC_reg->JDR1.registerVal;
 }
 template<AdcPeripheral  ADC_NUM>
