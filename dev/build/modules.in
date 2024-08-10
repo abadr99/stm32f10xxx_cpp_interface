@@ -17,3 +17,4 @@ hal/src/DC_Motor.cpp
 hal/src/Relay.cpp
 hal/Keypad.cpp
 hal/LED.cpp
+hal/LM35.cpp
