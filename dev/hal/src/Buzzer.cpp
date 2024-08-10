@@ -9,6 +9,7 @@
  *
  */
 #include "mcal/inc/stm32f103xx.h"
+#include "Types.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
 #include "hal/inc/Buzzer.h"
@@ -16,30 +17,39 @@
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::buzzer;
+using namespace stm32::utils::types;
 
-Buzzer::Buzzer(const Pin buzzerPin, const ConnectionType connectionType)
-    : buzzerPin_(buzzerPin), connectionType_(connectionType) {
-        Gpio::SetOutputMode(buzzerPin_, OutputMode::kPushPull_2MHZ);
+template<ConnectionType CT>
+Buzzer<CT>::Buzzer(const Pin buzzerPin)
+: buzzerPin_(buzzerPin) {
+    Gpio::Set(buzzerPin_);
 }
 
-void Buzzer::TurnOn() {
-    Gpio::SetPinValue(buzzerPin_, static_cast<State>(!connectionType_));
+template<ConnectionType CT>
+void Buzzer<CT>::TurnOn() {
+    Gpio::SetPinValue(buzzerPin_, HANDLE_ACTIVE_VOLTAGE(CT));
     buzzerState_ = kOn;
 }
 
-void Buzzer::TurnOff() {
-    Gpio::SetPinValue(buzzerPin_, static_cast<State>(connectionType_));
+template<ConnectionType CT>
+void Buzzer<CT>::TurnOff() {
+    Gpio::SetPinValue(buzzerPin_, HANDLE_INACTIVE_VOLTAGE(CT));
     buzzerState_ = kOff;
 }
 
-void Buzzer::Toggle() {
+template<ConnectionType CT>
+void Buzzer<CT>::Toggle() {
     if (buzzerState_ == kOn) {
         TurnOff();
-    } else if (buzzerState_ == kOff) {
-        TurnOn();
+        return;
     }
+    TurnOn();
 }
 
-BuzzerState Buzzer::GetBuzzerState() {
+template<ConnectionType CT>
+BuzzerState Buzzer<CT>::GetBuzzerState() {
     return buzzerState_;
 }
+
+
+INSTANTIATE_CONNECTION_CLASS(Buzzer)
