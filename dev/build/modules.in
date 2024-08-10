@@ -7,14 +7,14 @@ mcal/Gpio.cpp
 mcal/Spi.cpp
 mcal/Usart.cpp
 mcal/EXTI.cpp
-hal/Buzzer.cpp
 mcal/I2c.cpp
 mcal/DMA.cpp
+hal/Buzzer.cpp
 hal/SevenSegment.cpp
 mcal/Wwdg.cpp
 hal/src/STP_74HC595.cpp
 hal/src/DC_Motor.cpp
 hal/src/Relay.cpp
 hal/Keypad.cpp
-hal/LED.cpp
+hal/Led.cpp
 
