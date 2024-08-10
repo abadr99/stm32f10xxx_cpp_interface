@@ -19,7 +19,7 @@ using namespace stm32::dev::mcal::spi;
 using namespace stm32::registers::spi;
 
 
-Spi::Spi(const SpiConfig& config) :config_(config){
+Spi::Spi(const SpiConfig& config) :config_(config) {
     switch (config_.number) {
         case kSPI1 : spi_reg = (reinterpret_cast<volatile SpiRegDef*>(SPI1)); break;
         case kSPI2 : spi_reg = (reinterpret_cast<volatile SpiRegDef*>(SPI2)); break;
