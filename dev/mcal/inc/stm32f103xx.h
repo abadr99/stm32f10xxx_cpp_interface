@@ -27,7 +27,7 @@ namespace rcc {
 
 /********************** RCC Register Definition  **********************/
 
-struct RccRegDef{
+struct RccRegDef {
     union CR {
         struct {
             RegWidth_t HSION   :1; /* High-speed internal oscillator enable */
@@ -67,9 +67,77 @@ struct RccRegDef{
     }CFGR; /* Clock configuration register */
 
     RegWidth_t CIR;
-    RegWidth_t APB2RSTR;
-    RegWidth_t APB1RSTR;
-    RegWidth_t AHBENR;
+    union APB2RSTR {
+        struct {
+            RegWidth_t AFIORST   :1; /* Alternative function clock enable  */
+            RegWidth_t           :1; /* Reserved  */
+            RegWidth_t IOPARST   :1; /* Port A clock enable  */
+            RegWidth_t IOPBRST   :1; /* Port B clock enable  */
+            RegWidth_t IOPCRST   :1; /* Port C clock enable  */
+            RegWidth_t IOPDRST   :1; /* Port D clock enable  */
+            RegWidth_t IOPERST   :1; /* Port E clock enable  */
+            RegWidth_t           :2; /* Reserved  */
+            RegWidth_t ADC1RST   :1; /* ADC 1 clock enable  */
+            RegWidth_t ADC2RST   :1; /* ADC 2 clock enable  */
+            RegWidth_t TIM1RST   :1; /* TIM1 clock enable  */
+            RegWidth_t SPI1RST   :1; /* SPI1 clock enable  */
+            RegWidth_t           :1; /* Reserved  */
+            RegWidth_t USART1RST :1; /* USART1 clock enable  */
+            RegWidth_t           :17; /* Reserved  */
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }APB2RSTR;
+
+    union APB1RSTR {
+        struct {
+            RegWidth_t TIM2RST   :1; 
+            RegWidth_t TIM3RST   :1; 
+            RegWidth_t TIM4RST   :1; 
+            RegWidth_t TIM5RST   :1; 
+            RegWidth_t TIM6RST   :1; 
+            RegWidth_t TIM7RST   :1; 
+            RegWidth_t TIM12RST  :1; 
+            RegWidth_t TIM13RST  :1; 
+            RegWidth_t TIM14RST  :1;
+            RegWidth_t WWDGRST   :1;
+            RegWidth_t           :2;
+            RegWidth_t SPI2RST   :1;
+            RegWidth_t SPI3RST   :1;
+            RegWidth_t USART2RST :1;
+            RegWidth_t USART3RST :1;
+            RegWidth_t USART4RST :1;
+            RegWidth_t USART5RST :1; 
+            RegWidth_t I2C1RST   :1; 
+            RegWidth_t I2C2RST   :1; 
+            RegWidth_t USBRST    :1; 
+            RegWidth_t           :1; 
+            RegWidth_t CANRST    :1; 
+            RegWidth_t           :1; 
+            RegWidth_t BKPRST    :1; 
+            RegWidth_t PWRRST    :1; 
+            RegWidth_t DACRST    :1; 
+            RegWidth_t           :2; 
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }APB1RSTR;
+    union AHBENR {
+        struct {
+            RegWidth_t DMA1EN     :1; 
+            RegWidth_t DMA2EN     :1; 
+            RegWidth_t SRAMEN     :1; 
+            RegWidth_t            :1; 
+            RegWidth_t FLITFEN    :1; 
+            RegWidth_t            :1; 
+            RegWidth_t CRCEN      :1; 
+            RegWidth_t            :5; 
+            RegWidth_t OTGFSEN    :1;
+            RegWidth_t            :1;
+            RegWidth_t ETHMACEN   :1;
+            RegWidth_t ETHMACTXEN :1;
+            RegWidth_t ETHMACRXEN :1;
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }AHBENR;
     union APB2ENR {
         struct {
             RegWidth_t AFIOEN   :1; /* Alternative function clock enable  */
@@ -126,6 +194,26 @@ struct RccRegDef{
 
     RegWidth_t BDCR;
     RegWidth_t CSR;
+    union AHBRSTR {
+        struct {
+            RegWidth_t DMA1RST     :1; 
+            RegWidth_t DMA2RST     :1; 
+            RegWidth_t SRAMRST     :1; 
+            RegWidth_t             :1; 
+            RegWidth_t FLITFRST    :1; 
+            RegWidth_t             :1; 
+            RegWidth_t CRCRST      :1; 
+            RegWidth_t             :5; 
+            RegWidth_t OTGFSRST    :1;
+            RegWidth_t             :1;
+            RegWidth_t ETHMACRST   :1;
+            RegWidth_t ETHMACTXRST :1;
+            RegWidth_t ETHMACRXRST :1;
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }AHBRSTR;
+
+    RegWidth_t CFGR2;
 };
 
 /**
@@ -164,39 +252,33 @@ namespace nvic {
  * This structure defines the layout of NVIC registers for controlling
  */
 struct NvicRegDef {
-    RegWidth_t ISER[8];        // Interrupt Set Enable Register
-    RegWidth_t RESERVED0[24];
-    RegWidth_t ICER[8];        // Interrupt Clear Enable Register
-    RegWidth_t RESERVED1[24];
-    RegWidth_t ISPR[8];        // Interrupt Set Pending Register
-    RegWidth_t RESERVED2[24];
-    RegWidth_t ICPR[8];        // Interrupt Clear Pending Register
-    RegWidth_t RESERVED3[24];
-    RegWidth_t IABR[8];        // Interrupt Active Bit Register
-    RegWidth_t RESERVED4[56];
-    uint8_t IPR[240];          // Interrupt Priority Register
-    RegWidth_t RESERVED5[644];
-    RegWidth_t STIR;           // Software Trigger Interrupt Register
+    uint32_t ISER[3];    // Interrupt Set Enable Registers
+    uint32_t RES0[29];   // Reserved
+    uint32_t ICER[3];    // Interrupt Clear Enable Registers
+    uint32_t RES1[29];   // Reserved
+    uint32_t ISPR[3];    // Interrupt Set Pending Registers
+    uint32_t RES2[29];   // Reserved
+    uint32_t ICPR[3];    // Interrupt Clear Pending Registers
+    uint32_t RES3[29];   // Reserved
+    uint32_t IABR[3];    // Interrupt Active Bit Registers
+    uint32_t RES4[61];   // Reserved
+    uint8_t  IPR[240];   // Interrupt Priority Registers
+    uint32_t RES5[644];  // Reserved
+    uint32_t STIR;       // Software Trigger Interrupt Register
 };
 struct  SCBRegDef {
-    RegWidth_t CPUID;   // CPUID Base Register
-    RegWidth_t ICSR;    // Interrupt Control and State Register
-    RegWidth_t VTOR;    // Vector Table Offset Register
-    RegWidth_t AIRCR;   // Application Interrupt and Reset Control Register
-    RegWidth_t SCR;     // System Control Register
-    RegWidth_t CCR;     // Configuration and Control Register
-    RegWidth_t SHPR1;   // System Handler Priority Register 1
-    RegWidth_t SHPR2;   // System Handler Priority Register 2
-    RegWidth_t SHPR3;   // System Handler Priority Register 3
-    RegWidth_t SHCRS;   // System Handler Control and State Register
-    RegWidth_t CFSR;    // Configurable Fault Status Register
-    RegWidth_t MMSR;    // MemManage Fault Status Register
-    RegWidth_t BFSR;    // BusFault Status Register
-    RegWidth_t UFSR;    // UsageFault Status Register
-    RegWidth_t HFSR;    // HardFault Status Register
-    RegWidth_t MMAR;    // MemManage Fault Address Register
-    RegWidth_t BFAR;    // BusFault Address Register
-    RegWidth_t AFSR;    // Auxiliary Fault Status Register
+    uint32_t CPUID;      // CPUID Base Register
+    uint32_t ICSR;       // Interrupt Control and State Register
+    uint32_t VTOR;       // Vector Table Offset Register
+    uint32_t AIRCR;      // Application Interrupt and Reset Control Register
+    uint32_t SCR;        // System Control Register
+    uint32_t CCR;        // Configuration and Control Register
+    uint8_t  SHP[12];    // System Handlers Priority Registers
+    uint32_t SHCSR;      // System Handler Control and State Register
+    uint32_t CFSR;       // Configurable Fault Status Register
+    uint32_t HFSR;       // HardFault Status Register
+    uint32_t MMFAR;      // MemManage Fault Address Register
+    uint32_t BFAR;       // BusFault Address Register
 };
 
 
@@ -432,10 +514,9 @@ struct UsartRegDef {
     RegWidth_t GTPR;
 };
 
-
-#define USART1 (USART1_BASE_ADDRESS)
-#define USART2 (USART2_BASE_ADDRESS)
-#define USART3 (USART3_BASE_ADDRESS)
+#define USART1 (reinterpret_cast<volatile UsartRegDef*>(USART1_BASE_ADDRESS))
+#define USART2 (reinterpret_cast<volatile UsartRegDef*>(USART2_BASE_ADDRESS))
+#define USART3 (reinterpret_cast<volatile UsartRegDef*>(USART3_BASE_ADDRESS))
 
 }  // namespace usart
 /**
@@ -455,6 +536,38 @@ struct EXTIRegDef {
 #define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
 
 }  // namespace exti
+namespace wwdg {
+struct WWDGRegDef {
+    union CR {
+        struct {
+            RegWidth_t T     : 7;   // 7-bit counter (MSB to LSB)
+            RegWidth_t WDGA  : 1;   // Activation bit
+            RegWidth_t       : 24;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } CR;
+
+    union CFR {
+        struct {
+            RegWidth_t W     : 7;   // 7-bit window value
+            RegWidth_t WDGTB : 2;   // Timer Base
+            RegWidth_t EWI   : 1;   // Early Wakeup Interrupt
+            RegWidth_t       : 22;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } CFR;
+
+    union SR {
+        struct {
+            RegWidth_t EWIF  : 1;   // Early Wakeup Interrupt Flag
+            RegWidth_t       : 31;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } SR;
+};
+
+#define WWDG (reinterpret_cast<volatile WWDGRegDef*>(WWDG_BASE_ADDRESS))
+}  // namespace wwdg
 
 namespace rtc {
 

@@ -15,11 +15,30 @@ namespace stm32 {
 namespace dev   {
 namespace mcal  {
 namespace pin   {
+    
+// NOTE: ORDER MATTERS
+enum class PinMode : uint8_t {
+    kAnalog,
 
-enum class PinMode {
-    kInput,
-    kOutput,
-    kAlternative,
+    kInputFloat,
+    kInputPullUp,
+    kInputPullDown,
+    
+    kOutputOpenDrain_2MHz,
+    kOutputOpenDrain_10MHz,
+    kOutputOpenDrain_50MHz,
+
+    kOutputPushPull_2MHz,
+    kOutputPushPull_10MHz,
+    kOutputPushPull_50MHz,
+    
+    kAlternativeOpenDrain_2MHz,
+    kAlternativeOpenDrain_10MHz,
+    kAlternativeOpenDrain_50MHz,
+
+    kAlternativePushPull_2MHz,
+    kAlternativePushPull_10MHz,
+    kAlternativePushPull_50MHz,
 };
 
 enum PinNumber {
@@ -44,14 +63,17 @@ class Pin {
     Port GetPort();
     PinNumber GetPinNumber();
     PinMode GetPinMode();
-
+    bool IsInput();
+    bool IsOutput();
+    bool IsAlternative();
+    bool IsAnalog();
  private:
-    using DataType = stm32::utils::bitset::BitSet<uint8_t>;
+    using DataType = stm32::utils::bitset::BitSet<uint16_t>;
     /**
      * @brief Holds important class data as following:
      *      Bits 0 .. 1: Holds port
      *      Bits 2 .. 5: Holds pin number
-     *      Bits 6 .. 7: Holds Pin Mode
+     *      Bits 6 .. 9: Holds Pin Mode
      */
     DataType data_;
 };

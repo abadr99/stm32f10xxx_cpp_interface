@@ -41,6 +41,7 @@
 
 #define RTC_BASE_ADDRESS    (&RtcReg[0])
 
+#define WWDG_BASE_ADDRESS   (&WwdgReg[0])
 extern uint32_t RccReg[10];
 
 extern uint32_t GPIOAReg[7];
@@ -62,6 +63,12 @@ extern uint32_t USART3Reg[7];
 
 extern uint32_t I2c1Reg[9];
 extern uint32_t I2c2Reg[9];
+
+extern uint32_t WwdgReg[3];
+
+
+
+
 
 extern uint32_t DmaReg[30];
 extern uint32_t RtcReg[10];
