@@ -20,7 +20,7 @@ using namespace stm32::dev::hal::dac;
 
 void Dac::DAC_Init(const Array<Pin, 8>& dacPins, CLKSource clock) {
     for (uint8_t i = 0; i < dacPins.Size(); i++) {
-        Gpio::SetOutputMode(dacPins[i], OutputMode::kPushPull_2MHZ);
+        Gpio::SetPinMode(dacPins[i], PinMode::kOutputPushPull_2MHz);
     }
     Systick::Enable(clock);
 }
@@ -31,7 +31,7 @@ void Dac::DAC_Play(const Array<Pin, 8>& dacPins, uint32_t* songRaw, uint32_t son
     }
     for (uint8_t i = 0; i < dacPins.Size(); i++) {
         uint32_t data = songRaw[count];
-        Gpio::SetPinValue(dacPins[i], static_cast<State> ((data >> i)&1));
+        Gpio::SetPinValue(dacPins[i], static_cast<Gpio::State> ((data >> i)&1));
     }
     count++;
 }
