@@ -32,6 +32,12 @@ class BitSet {
     constexpr T GetValue() {
         return stm32::utils::bit_manipulation::ExtractBits<T, FROM, TO>(bits_);
     }
+
+    template <T FROM, T TO = FROM>
+    T GetValue() const {
+        return stm32::utils::bit_manipulation::ExtractBits<T, FROM, TO>(bits_);
+    }
+    
     Bit_t operator[](uint8_t idx) {
         return ((bits_ & (1 << idx)) >> idx);
     }
