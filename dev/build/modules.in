@@ -11,11 +11,13 @@ hal/Buzzer.cpp
 mcal/Adc.cpp
 mcal/I2c.cpp
 mcal/DMA.cpp
+hal/Buzzer.cpp
 hal/SevenSegment.cpp
 mcal/Wwdg.cpp
 hal/src/STP_74HC595.cpp
 hal/src/DC_Motor.cpp
 hal/src/Relay.cpp
 hal/Keypad.cpp
-hal/LED.cpp
 hal/LM35.cpp
+hal/Led.cpp
+

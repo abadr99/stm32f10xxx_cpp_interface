@@ -42,13 +42,13 @@ void Wwdg::Init() {
 void Wwdg::enableInterrupt() {
         // Enable Early Wakeup Interrupt
         WWDG->CFR.EWI = 1;
-        Nvic::EnableInterrupt(kWWDG);
+        Nvic::EnableInterrupt(kWWDG_IRQn);
 }
 
 void Wwdg::disableInterrupt() {
         // Disable Early Wakeup Interrupt
         WWDG->CFR.EWI = 0;
-       Nvic::DisableInterrupt(kWWDG);
+       Nvic::DisableInterrupt(kWWDG_IRQn);
 }
 
 bool Wwdg::isEarlyWakeupFlagSet()  {
