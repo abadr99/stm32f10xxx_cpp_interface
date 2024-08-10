@@ -536,6 +536,131 @@ struct EXTIRegDef {
 #define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
 
 }  // namespace exti
+namespace wwdg {
+struct WWDGRegDef {
+    union CR {
+        struct {
+            RegWidth_t T     : 7;   // 7-bit counter (MSB to LSB)
+            RegWidth_t WDGA  : 1;   // Activation bit
+            RegWidth_t       : 24;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } CR;
+
+    union CFR {
+        struct {
+            RegWidth_t W     : 7;   // 7-bit window value
+            RegWidth_t WDGTB : 2;   // Timer Base
+            RegWidth_t EWI   : 1;   // Early Wakeup Interrupt
+            RegWidth_t       : 22;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } CFR;
+
+    union SR {
+        struct {
+            RegWidth_t EWIF  : 1;   // Early Wakeup Interrupt Flag
+            RegWidth_t       : 31;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } SR;
+};
+
+#define WWDG (reinterpret_cast<volatile WWDGRegDef*>(WWDG_BASE_ADDRESS))
+}  // namespace wwdg
+
+namespace rtc {
+
+struct RtcRegDef {
+    union CRL {
+        struct {
+            RegWidth_t SECF     : 1;    // Second flag
+            RegWidth_t ALRF     : 1;    // Alarm flag
+            RegWidth_t OWF      : 1;    // Overflow flag
+            RegWidth_t RSF      : 1;    // Registers synchronized flag
+            RegWidth_t CNF      : 1;    // Configuration flag
+            RegWidth_t RTOFF    : 1;    // RTC operation OFF flag
+            RegWidth_t reserved : 26;   // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } CRL;
+    
+    union CRH {
+        struct {
+            RegWidth_t SECIE    : 1;   // Second interrupt enable
+            RegWidth_t ALRIE    : 1;   // Alarm interrupt enable
+            RegWidth_t OWIE     : 1;   // Overflow interrupt enable
+            RegWidth_t reserved : 29;  // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } CRH;
+    
+    union PRLH {
+        struct {
+            RegWidth_t PRL      : 4;    // RTC Prescaler Load Register High
+            RegWidth_t reserved : 28;   // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } PRLH;
+    
+    union PRLL {
+        struct {
+            RegWidth_t PRL      : 16;   // RTC Prescaler Load Register Low
+            RegWidth_t reserved : 16;   // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } PRLL;
+    
+    union DIVH {
+        struct {
+            RegWidth_t DIV      :  4;   // RTC Clock Divider High
+            RegWidth_t reserved : 28;   // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } DIVH;
+    
+    union DIVL {
+        struct {
+            RegWidth_t DIV      : 16;   // RTC Clock Divider Low
+            RegWidth_t reserved : 16;   // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } DIVL;
+    
+    union CNTH {
+        struct {
+            RegWidth_t CNT      : 16;    // RTC Counter Register High
+            RegWidth_t reserved : 16;    // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } CNTH;
+    
+    union CNTL {
+        struct {
+            RegWidth_t CNT      : 16;    // RTC Counter Register Low
+            RegWidth_t reserved : 16;    // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } CNTL;
+    
+    union ALRH {
+        struct {
+            RegWidth_t ALR      : 16;    // RTC Alarm Register High
+            RegWidth_t reserved : 16;    // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } ALRH;
+    
+    union ALRL {
+        struct {
+            RegWidth_t ALR      : 16;    // RTC Alarm Register Low
+            RegWidth_t reserved : 16;    // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } ALRL;
+};
+#define RTC (reinterpret_cast<volatile RtcRegDef*>(RTC_BASE_ADDRESS))
+}  // namespace rtc
 
 namespace adc {
 
