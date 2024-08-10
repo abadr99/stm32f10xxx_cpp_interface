@@ -33,7 +33,7 @@ enum SlaveManage {
     kHW,
     kSW,
 };
-enum  SpiPeripheral {
+enum  Spinum {
     kSPI1,
     kSPI2
 };
@@ -49,25 +49,27 @@ enum BaudRate {
 };
 
 struct SpiConfig {
+    Spinum number;
     DataFrame data;
     FrameFormat frame;
     ClkMode clk;
     SlaveManage slave;
     BaudRate br;
 };
-template<SpiPeripheral  SPI_NUM>
+
 class Spi {
  public:
-    Spi();
-    void MasterInit(const SpiConfig& config);
-    void SlaveInit(const SpiConfig& config);
+    explicit Spi(const SpiConfig& config);
+    void MasterInit();
+    void SlaveInit();
     void Write(uint8_t data);
     uint8_t Read();
  private:
-    void Helper_SetDataFrame(const SpiConfig& config);
-    void Helper_SetClockMode(const SpiConfig& config);
-    void Helper_SetFrameFormat(const SpiConfig& config);
-    void Helper_MasterBaudRate(const SpiConfig& config);
+    void Helper_SetDataFrame();
+    void Helper_SetClockMode();
+    void Helper_SetFrameFormat();
+    void Helper_MasterBaudRate();
+    const SpiConfig& config_;
     volatile SpiRegDef* spi_reg;
 }; 
 }   // namespace spi
