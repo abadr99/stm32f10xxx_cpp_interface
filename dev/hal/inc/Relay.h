@@ -21,7 +21,7 @@ namespace relay {
 class Relay {
  public:
     explicit Relay(Pin relayPin);
-    void Control(State state);
+    void Control(Gpio::State state);
  private:
     Pin relayPin;
 };

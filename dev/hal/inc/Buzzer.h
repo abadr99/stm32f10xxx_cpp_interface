@@ -10,25 +10,23 @@
  */
 #ifndef DEV_HAL_INC_BUZZER_H_
 #define DEV_HAL_INC_BUZZER_H_
+
 #include "mcal/inc/Pin.h"
+
 using namespace stm32::dev::mcal::pin;
 namespace stm32 {
 namespace dev {
 namespace hal {
 namespace buzzer {
 
-enum ConnectionType : uint8_t {
-    kForward_Bias,  // active high
-    kReverse_Bias,  // active low
-};
-
 enum BuzzerState : uint8_t {
     kOn, kOff
 };
 
+template<stm32::utils::types::ConnectionType CT>
 class Buzzer {
  public:
-    Buzzer(const Pin buzzerPin, const ConnectionType connectionType);
+    explicit Buzzer(const Pin buzzerPin);
     void TurnOn();
     void TurnOff();
     void Toggle();
@@ -36,7 +34,6 @@ class Buzzer {
  private:
     BuzzerState buzzerState_;
     Pin buzzerPin_;
-    ConnectionType connectionType_;
 };
 }  // namespace buzzer
 }  // namespace hal
