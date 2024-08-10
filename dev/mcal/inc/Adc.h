@@ -64,7 +64,12 @@ enum  SampleTime {
         kCYCLES_71_5,
         kCYCLES_239_5
 };
+enum  Adcnum {
+    kADC1,
+    kADC2
+};
 struct ADCConfig {
+       Adcnum number;
        Alignment alignment;
        Channel channel;
        Mode mode;
@@ -72,11 +77,7 @@ struct ADCConfig {
        SampleTime sampleTime;
        // TODO(@noran97): scan mode , multimode and discontinous mode
 };
-enum  AdcPeripheral {
-    kADC1,
-    kADC2
-};
-template<AdcPeripheral  ADC_NUM>
+
 class ADC {
  public:
      explicit ADC(const ADCConfig& config);
@@ -90,7 +91,7 @@ class ADC {
      void DisableInterrupt();
      void Disable();
  private:
-     ADCConfig& config_;
+     const ADCConfig& config_;
      volatile ADCRegDef* ADC_reg;
      void configureChannelSample();
 };

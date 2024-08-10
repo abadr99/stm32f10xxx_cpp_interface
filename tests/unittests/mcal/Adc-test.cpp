@@ -13,7 +13,8 @@
 #include "mcal/inc/stm32f103xx.h"
 #include "mcal/inc/Adc.h"
 
-uint32_t ADCReg[20] = {0x0};
+uint32_t ADC1Reg[20] = {0x0};
+uint32_t ADC2Reg[20] = {0x0};
 using namespace stm32::utils::bit_manipulation;
 using namespace stm32::dev::mcal::adc;
 using namespace stm32::registers::adc;

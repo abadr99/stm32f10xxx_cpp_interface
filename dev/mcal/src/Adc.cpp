@@ -19,9 +19,9 @@ using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::adc;
 using namespace stm32::registers::adc;
 
-template<AdcPeripheral  ADC_NUM>
-ADC<ADC_NUM>::ADC(const ADCConfig& config) : config_(config) {
-    switch (ADC_NUM) {
+
+ADC::ADC(const ADCConfig& config) : config_(config) {
+    switch (config_.number) {
         case kADC1 : ADC_reg = (reinterpret_cast<volatile ADCRegDef*>(ADC1));
                      break;
         case kADC2 : ADC_reg = (reinterpret_cast<volatile ADCRegDef*>(ADC2));
@@ -29,8 +29,8 @@ ADC<ADC_NUM>::ADC(const ADCConfig& config) : config_(config) {
         default    : break;
     }
 }
-template<AdcPeripheral  ADC_NUM>
-void ADC<ADC_NUM>::init() {
+
+void ADC::init() {
     ADC_reg->CR2.registerVal = 0;  // Reset ADC
     ADC_reg->CR2.ALIGN = static_cast<RegWidth_t>(config_.alignment);
     if (config_.trigSource != kSOFTWARE) {
@@ -44,10 +44,10 @@ void ADC<ADC_NUM>::init() {
     }
     ADC_reg->CR2.ADON = 1;
 }
-template<AdcPeripheral  ADC_NUM>
-uint16_t ADC<ADC_NUM>:: startSingleConversion() {
+
+uint16_t ADC:: startSingleConversion() {
     // Ensure ADC is not busy
-    uint8_t ctr = 0;
+    uint32_t ctr = 0;
     while ((ADC_reg->SR.STRT) && (ctr != ADC_TIMEOUT) && (++ctr)) {
     }
     STM32_ASSERT(ctr != ADC_TIMEOUT);
@@ -66,10 +66,10 @@ uint16_t ADC<ADC_NUM>:: startSingleConversion() {
     // Read and return the result
     return ADC_reg->DR.DATA;
     }
-template<AdcPeripheral  ADC_NUM>
-void ADC<ADC_NUM>::startContinuousConversion() {
+
+void ADC::startContinuousConversion() {
     // Ensure ADC is not busy
-    uint8_t ctr = 0;
+    uint32_t ctr = 0;
     while (ADC_reg->SR.STRT  && (ctr != ADC_TIMEOUT) && (++ctr)) {
     }
     STM32_ASSERT(ctr != ADC_TIMEOUT);
@@ -81,9 +81,9 @@ void ADC<ADC_NUM>::startContinuousConversion() {
     // Start conversion
     ADC_reg->CR2.SWSTART = 1;
 }
-template<AdcPeripheral  ADC_NUM>
-uint16_t ADC<ADC_NUM>::readContinuousConversion() {
-    uint8_t ctr = 0;
+
+uint16_t ADC::readContinuousConversion() {
+    uint32_t ctr = 0;
     // Wait for conversion to complete
     while (!ADC_reg->SR.EOC && (ctr != ADC_TIMEOUT) && (++ctr)) {
     }
@@ -91,27 +91,27 @@ uint16_t ADC<ADC_NUM>::readContinuousConversion() {
     // Read and return the result
     return ADC_reg->DR.DATA;
 }
-template<AdcPeripheral  ADC_NUM>
-void ADC<ADC_NUM>::stopContinuousConversion() {
+
+void ADC::stopContinuousConversion() {
     ADC_reg->CR2.CONT = 0;  // Disable continuous mode
     ADC_reg->CR2.SWSTART = 0;  // Stop conversion
 }
-template<AdcPeripheral  ADC_NUM>
-uint16_t ADC<ADC_NUM>::startInjectedConversion() {
+
+uint16_t ADC::startInjectedConversion() {
     ADC_reg->JSQR.JL = 0;
     // Configure injected channel
     ADC_reg->JSQR.JSQ4 = static_cast<RegWidth_t>(config_.channel);
     configureChannelSample();
     // Start injected conversion
     ADC_reg->CR2.JSWSTART = 1;
-    uint8_t ctr = 0;
-    while (!ADC_reg->SR.JEOC && (ctr != ADC_TIMEOUT) && (++ctr)) {
+    uint32_t ctr = 0;
+    while ((!ADC_reg->SR.JEOC)&& (ctr != ADC_TIMEOUT) && (++ctr)) {
     }
     STM32_ASSERT(ctr != ADC_TIMEOUT);
     return ADC_reg->JDR1.registerVal;
 }
-template<AdcPeripheral  ADC_NUM>
-void ADC<ADC_NUM>::EnableInterrupt() {
+
+void ADC::EnableInterrupt() {
     switch (config_.mode) {
     case kSINGLE:
         ADC_reg->CR1.EOCIE = 1;
@@ -123,8 +123,8 @@ void ADC<ADC_NUM>::EnableInterrupt() {
         break;
     }
 }
-template<AdcPeripheral  ADC_NUM>
-void ADC<ADC_NUM>::DisableInterrupt() {
+
+void ADC::DisableInterrupt() {
     switch (config_.mode) {
     case kSINGLE:
         ADC_reg->CR1.EOCIE = 0;
@@ -136,12 +136,12 @@ void ADC<ADC_NUM>::DisableInterrupt() {
         break;
     }
 }
-template<AdcPeripheral  ADC_NUM>
-void ADC<ADC_NUM>::Disable() {
+
+void ADC::Disable() {
      ADC_reg->CR2.ADON = 0;
 }
-template<AdcPeripheral  ADC_NUM>
-void ADC<ADC_NUM>::configureChannelSample() { 
+
+void ADC::configureChannelSample() { 
      // Configure sample time for the selected channel 
     RegWidth_t sampleTimeBits = static_cast<RegWidth_t>(config_.sampleTime);
     RegWidth_t channel = static_cast<uint32_t>(config_.channel);
