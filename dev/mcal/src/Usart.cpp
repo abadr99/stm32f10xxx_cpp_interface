@@ -37,7 +37,7 @@ ASSERT_MEMBER_OFFSET(UsartRegDef, CR2,         sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(UsartRegDef, CR3,         sizeof(RegWidth_t) * 5);
 ASSERT_MEMBER_OFFSET(UsartRegDef, GTPR,        sizeof(RegWidth_t) * 6);
 
-pFunction Usart::PointerToISR[3] = {nullptr};
+pFunction Usart::PointerToISR = nullptr;
 
 Usart::Usart(const UsartConfig& config) : config_(config) {
     switch (config_.number) {
@@ -119,33 +119,30 @@ ErrorType Usart::RetErrorDetection() {
     return kSuccess;
 }
 void Usart::ReceiveAsynchronous(pFunction fun) {
-    PointerToISR[config_.number] = fun;
+    PointerToISR = fun;
     usartReg->CR1.RXNEIE = 1;
 }
 pFunction Usart::GetPointerToISR() {
-    return PointerToISR[config_.number];
+    return PointerToISR;
 }
 extern "C" void Usart1_Handler(void) {
-    if (Usart::usartReg->SR.RXNE) {
-        pFunction func = Usart::GetPointerToISR();
-        if (func != NULL) {
-        Usart::usartReg->SR.RXNE = 0;
-        }
+    pFunction func = Usart::GetPointerToISR();
+    if (func != NULL) {
+        func();
+        USART1->SR.RXNE = 0;
     }
 }
 extern "C" void Usart2_Handler(void) {
-    if (Usart::usartReg->SR.RXNE) {
-        pFunction func = Usart::GetPointerToISR();
-        if (func != NULL) {
-        Usart::usartReg->SR.RXNE = 0;
-        }
+    pFunction func = Usart::GetPointerToISR();
+    if (func != NULL) {
+        func();
+        USART2->SR.RXNE = 0;
     }
 }
 extern "C" void Usart3_Handler(void) {
-    if (Usart::usartReg->SR.RXNE) {
-        pFunction func = Usart::GetPointerToISR();
-        if (func != NULL) {
-        Usart::usartReg->SR.RXNE = 0;
-        }
+    pFunction func = Usart::GetPointerToISR();
+    if (func != NULL) {
+        func();
+        USART3->SR.RXNE = 0;
     }
 }

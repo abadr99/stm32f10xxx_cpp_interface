@@ -86,13 +86,13 @@ class Usart {
     DataValType Receive();
     void ReceiveAsynchronous(pFunction fun);
     ErrorType RetErrorDetection();
-    static pFunction PointerToISR[3];
-    static volatile UsartRegDef* usartReg;
     static pFunction GetPointerToISR();
  private:
     enum Flag : uint8_t {kEnabled, kDisabled};
     void _SetBaudRate();
     const UsartConfig& config_;
+    volatile UsartRegDef* usartReg;
+    static pFunction PointerToISR;
 };
 
 }  // namespace usart
