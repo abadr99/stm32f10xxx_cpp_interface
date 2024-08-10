@@ -27,7 +27,7 @@ namespace rcc {
 
 /********************** RCC Register Definition  **********************/
 
-struct RccRegDef{
+struct RccRegDef {
     union CR {
         struct {
             RegWidth_t HSION   :1; /* High-speed internal oscillator enable */
@@ -67,9 +67,77 @@ struct RccRegDef{
     }CFGR; /* Clock configuration register */
 
     RegWidth_t CIR;
-    RegWidth_t APB2RSTR;
-    RegWidth_t APB1RSTR;
-    RegWidth_t AHBENR;
+    union APB2RSTR {
+        struct {
+            RegWidth_t AFIORST   :1; /* Alternative function clock enable  */
+            RegWidth_t           :1; /* Reserved  */
+            RegWidth_t IOPARST   :1; /* Port A clock enable  */
+            RegWidth_t IOPBRST   :1; /* Port B clock enable  */
+            RegWidth_t IOPCRST   :1; /* Port C clock enable  */
+            RegWidth_t IOPDRST   :1; /* Port D clock enable  */
+            RegWidth_t IOPERST   :1; /* Port E clock enable  */
+            RegWidth_t           :2; /* Reserved  */
+            RegWidth_t ADC1RST   :1; /* ADC 1 clock enable  */
+            RegWidth_t ADC2RST   :1; /* ADC 2 clock enable  */
+            RegWidth_t TIM1RST   :1; /* TIM1 clock enable  */
+            RegWidth_t SPI1RST   :1; /* SPI1 clock enable  */
+            RegWidth_t           :1; /* Reserved  */
+            RegWidth_t USART1RST :1; /* USART1 clock enable  */
+            RegWidth_t           :17; /* Reserved  */
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }APB2RSTR;
+
+    union APB1RSTR {
+        struct {
+            RegWidth_t TIM2RST   :1; 
+            RegWidth_t TIM3RST   :1; 
+            RegWidth_t TIM4RST   :1; 
+            RegWidth_t TIM5RST   :1; 
+            RegWidth_t TIM6RST   :1; 
+            RegWidth_t TIM7RST   :1; 
+            RegWidth_t TIM12RST  :1; 
+            RegWidth_t TIM13RST  :1; 
+            RegWidth_t TIM14RST  :1;
+            RegWidth_t WWDGRST   :1;
+            RegWidth_t           :2;
+            RegWidth_t SPI2RST   :1;
+            RegWidth_t SPI3RST   :1;
+            RegWidth_t USART2RST :1;
+            RegWidth_t USART3RST :1;
+            RegWidth_t USART4RST :1;
+            RegWidth_t USART5RST :1; 
+            RegWidth_t I2C1RST   :1; 
+            RegWidth_t I2C2RST   :1; 
+            RegWidth_t USBRST    :1; 
+            RegWidth_t           :1; 
+            RegWidth_t CANRST    :1; 
+            RegWidth_t           :1; 
+            RegWidth_t BKPRST    :1; 
+            RegWidth_t PWRRST    :1; 
+            RegWidth_t DACRST    :1; 
+            RegWidth_t           :2; 
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }APB1RSTR;
+    union AHBENR {
+        struct {
+            RegWidth_t DMA1EN     :1; 
+            RegWidth_t DMA2EN     :1; 
+            RegWidth_t SRAMEN     :1; 
+            RegWidth_t            :1; 
+            RegWidth_t FLITFEN    :1; 
+            RegWidth_t            :1; 
+            RegWidth_t CRCEN      :1; 
+            RegWidth_t            :5; 
+            RegWidth_t OTGFSEN    :1;
+            RegWidth_t            :1;
+            RegWidth_t ETHMACEN   :1;
+            RegWidth_t ETHMACTXEN :1;
+            RegWidth_t ETHMACRXEN :1;
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }AHBENR;
     union APB2ENR {
         struct {
             RegWidth_t AFIOEN   :1; /* Alternative function clock enable  */
@@ -126,6 +194,26 @@ struct RccRegDef{
 
     RegWidth_t BDCR;
     RegWidth_t CSR;
+    union AHBRSTR {
+        struct {
+            RegWidth_t DMA1RST     :1; 
+            RegWidth_t DMA2RST     :1; 
+            RegWidth_t SRAMRST     :1; 
+            RegWidth_t             :1; 
+            RegWidth_t FLITFRST    :1; 
+            RegWidth_t             :1; 
+            RegWidth_t CRCRST      :1; 
+            RegWidth_t             :5; 
+            RegWidth_t OTGFSRST    :1;
+            RegWidth_t             :1;
+            RegWidth_t ETHMACRST   :1;
+            RegWidth_t ETHMACTXRST :1;
+            RegWidth_t ETHMACRXRST :1;
+        };
+        RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
+    }AHBRSTR;
+
+    RegWidth_t CFGR2;
 };
 
 /**
@@ -164,39 +252,33 @@ namespace nvic {
  * This structure defines the layout of NVIC registers for controlling
  */
 struct NvicRegDef {
-    RegWidth_t ISER[8];        // Interrupt Set Enable Register
-    RegWidth_t RESERVED0[24];
-    RegWidth_t ICER[8];        // Interrupt Clear Enable Register
-    RegWidth_t RESERVED1[24];
-    RegWidth_t ISPR[8];        // Interrupt Set Pending Register
-    RegWidth_t RESERVED2[24];
-    RegWidth_t ICPR[8];        // Interrupt Clear Pending Register
-    RegWidth_t RESERVED3[24];
-    RegWidth_t IABR[8];        // Interrupt Active Bit Register
-    RegWidth_t RESERVED4[56];
-    uint8_t IPR[240];          // Interrupt Priority Register
-    RegWidth_t RESERVED5[644];
-    RegWidth_t STIR;           // Software Trigger Interrupt Register
+    uint32_t ISER[3];    // Interrupt Set Enable Registers
+    uint32_t RES0[29];   // Reserved
+    uint32_t ICER[3];    // Interrupt Clear Enable Registers
+    uint32_t RES1[29];   // Reserved
+    uint32_t ISPR[3];    // Interrupt Set Pending Registers
+    uint32_t RES2[29];   // Reserved
+    uint32_t ICPR[3];    // Interrupt Clear Pending Registers
+    uint32_t RES3[29];   // Reserved
+    uint32_t IABR[3];    // Interrupt Active Bit Registers
+    uint32_t RES4[61];   // Reserved
+    uint8_t  IPR[240];   // Interrupt Priority Registers
+    uint32_t RES5[644];  // Reserved
+    uint32_t STIR;       // Software Trigger Interrupt Register
 };
 struct  SCBRegDef {
-    RegWidth_t CPUID;   // CPUID Base Register
-    RegWidth_t ICSR;    // Interrupt Control and State Register
-    RegWidth_t VTOR;    // Vector Table Offset Register
-    RegWidth_t AIRCR;   // Application Interrupt and Reset Control Register
-    RegWidth_t SCR;     // System Control Register
-    RegWidth_t CCR;     // Configuration and Control Register
-    RegWidth_t SHPR1;   // System Handler Priority Register 1
-    RegWidth_t SHPR2;   // System Handler Priority Register 2
-    RegWidth_t SHPR3;   // System Handler Priority Register 3
-    RegWidth_t SHCRS;   // System Handler Control and State Register
-    RegWidth_t CFSR;    // Configurable Fault Status Register
-    RegWidth_t MMSR;    // MemManage Fault Status Register
-    RegWidth_t BFSR;    // BusFault Status Register
-    RegWidth_t UFSR;    // UsageFault Status Register
-    RegWidth_t HFSR;    // HardFault Status Register
-    RegWidth_t MMAR;    // MemManage Fault Address Register
-    RegWidth_t BFAR;    // BusFault Address Register
-    RegWidth_t AFSR;    // Auxiliary Fault Status Register
+    uint32_t CPUID;      // CPUID Base Register
+    uint32_t ICSR;       // Interrupt Control and State Register
+    uint32_t VTOR;       // Vector Table Offset Register
+    uint32_t AIRCR;      // Application Interrupt and Reset Control Register
+    uint32_t SCR;        // System Control Register
+    uint32_t CCR;        // Configuration and Control Register
+    uint8_t  SHP[12];    // System Handlers Priority Registers
+    uint32_t SHCSR;      // System Handler Control and State Register
+    uint32_t CFSR;       // Configurable Fault Status Register
+    uint32_t HFSR;       // HardFault Status Register
+    uint32_t MMFAR;      // MemManage Fault Address Register
+    uint32_t BFAR;       // BusFault Address Register
 };
 
 
@@ -432,10 +514,9 @@ struct UsartRegDef {
     RegWidth_t GTPR;
 };
 
-
-#define USART1 (USART1_BASE_ADDRESS)
-#define USART2 (USART2_BASE_ADDRESS)
-#define USART3 (USART3_BASE_ADDRESS)
+#define USART1 (reinterpret_cast<volatile UsartRegDef*>(USART1_BASE_ADDRESS))
+#define USART2 (reinterpret_cast<volatile UsartRegDef*>(USART2_BASE_ADDRESS))
+#define USART3 (reinterpret_cast<volatile UsartRegDef*>(USART3_BASE_ADDRESS))
 
 }  // namespace usart
 /**
@@ -455,6 +536,258 @@ struct EXTIRegDef {
 #define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
 
 }  // namespace exti
+namespace wwdg {
+struct WWDGRegDef {
+    union CR {
+        struct {
+            RegWidth_t T     : 7;   // 7-bit counter (MSB to LSB)
+            RegWidth_t WDGA  : 1;   // Activation bit
+            RegWidth_t       : 24;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } CR;
+
+    union CFR {
+        struct {
+            RegWidth_t W     : 7;   // 7-bit window value
+            RegWidth_t WDGTB : 2;   // Timer Base
+            RegWidth_t EWI   : 1;   // Early Wakeup Interrupt
+            RegWidth_t       : 22;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } CFR;
+
+    union SR {
+        struct {
+            RegWidth_t EWIF  : 1;   // Early Wakeup Interrupt Flag
+            RegWidth_t       : 31;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } SR;
+};
+
+#define WWDG (reinterpret_cast<volatile WWDGRegDef*>(WWDG_BASE_ADDRESS))
+}  // namespace wwdg
+
+namespace i2c {
+struct I2CRegDef {
+        union CR1 {
+            struct {
+                RegWidth_t PE          : 1;   // Peripheral enable
+                RegWidth_t SMBUS       : 1;   // SMBus mode
+                RegWidth_t             : 1;   // Reserved
+                RegWidth_t SMBTYPE     : 1;   // SMBus type
+                RegWidth_t ENARP       : 1;   // ARP enable
+                RegWidth_t ENPEC       : 1;   // PEC enable
+                RegWidth_t ENGC        : 1;   // General call enable
+                RegWidth_t NOSTRETCH   : 1;   // Clock stretching disable
+                RegWidth_t START       : 1;   // Start generation
+                RegWidth_t STOP        : 1;   // Stop generation
+                RegWidth_t ACK         : 1;   // Acknowledge enable
+                RegWidth_t POS         : 1;   // Acknowledge/PEC position (for data reception)
+                RegWidth_t PEC         : 1;   // Packet error checking
+                RegWidth_t ALERT       : 1;   // SMBus alert
+                RegWidth_t             : 1;   // Reserved
+                RegWidth_t SWRST       : 1;   // Software reset
+                RegWidth_t             : 16;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }CR1;
+        union CR2 {
+            struct {
+                RegWidth_t FREQ        : 6;   // Peripheral clock frequency
+                RegWidth_t RESERVED    : 2;   // Reserved
+                RegWidth_t ITERREN     : 1;   // Error interrupt enable
+                RegWidth_t ITEVTEN     : 1;   // Event interrupt enable
+                RegWidth_t ITBUFEN     : 1;   // Buffer interrupt enable
+                RegWidth_t DMAEN       : 1;   // DMA requests enable
+                RegWidth_t LAST        : 1;   // DMA last transfer
+                RegWidth_t             : 19;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }CR2;
+        union OAR1 {
+            struct {
+                RegWidth_t ADD0        : 1;   // Interface address
+                RegWidth_t ADD         : 9;   // Interface address
+                RegWidth_t             : 5;   // Reserved
+                RegWidth_t ADDMODE     : 1;   // Addressing mode (7-bit/10-bit)
+                RegWidth_t             : 16;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }OAR1;
+        union OAR2 {
+            struct {
+                RegWidth_t ENDUAL      : 1;  // Dual addressing mode enable
+                RegWidth_t ADD2        : 7;  // Interface address
+                RegWidth_t             : 24;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }OAR2;
+
+        RegWidth_t DR;  // 8-bit data register
+
+        union SR1 {
+            struct {
+                RegWidth_t SB          : 1;   // Start bit (Master mode)
+                RegWidth_t ADDR        : 1;   // Address sent (master mode)/matched (slave mode)
+                RegWidth_t BTF         : 1;   // Byte transfer finished
+                RegWidth_t ADD10       : 1;   // 10-bit header sent (Master mode)
+                RegWidth_t STOPF       : 1;   // Stop detection (Slave mode)
+                RegWidth_t             : 1;   // Reserved
+                RegWidth_t RxNE        : 1;   // Data register not empty (receivers)
+                RegWidth_t TxE         : 1;   // Data register empty (transmitters)
+                RegWidth_t BERR        : 1;   // Bus error
+                RegWidth_t ARLO        : 1;   // Arbitration lost (master mode)
+                RegWidth_t AF          : 1;   // Acknowledge failure
+                RegWidth_t OVR         : 1;   // Overrun/underrun
+                RegWidth_t PECERR      : 1;   // PEC error in reception
+                RegWidth_t             : 1;   // Reserved
+                RegWidth_t TIMEOUT     : 1;   // Timeout or Tlow detection flag
+                RegWidth_t SMBALERT    : 1;   // SMBus alert
+                RegWidth_t             : 16;   // Reserved
+            };
+            RegWidth_t registerVal;
+        }SR1;
+        union SR2 {
+            struct {
+                RegWidth_t MSL         : 1;   // Master/slave
+                RegWidth_t BUSY        : 1;   // Bus busy
+                RegWidth_t TRA         : 1;   // Transmitter/receiver
+                RegWidth_t             : 1;   // Reserved bits
+                RegWidth_t GENCALL     : 1;   // General call address (Slave mode)
+                RegWidth_t SMBDEFAULT  : 1;   // SMBus device default address (Slave mode)
+                RegWidth_t SMBHOST     : 1;   // SMBus host header (Slave mode)
+                RegWidth_t DUALF       : 1;   // Dual flag (Slave mode)
+                RegWidth_t PEC         : 8;   // Packet error checking
+                RegWidth_t             : 16;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }SR2;
+        union CCR {
+            struct {
+                RegWidth_t CcR         : 12;  // Clock control register in Fast/Standard mode
+                RegWidth_t             : 2;   // Reserved 
+                RegWidth_t DUTY        : 1;   // Fm mode duty cycle
+                RegWidth_t F_S         : 1;   // I2C master mode selection
+                RegWidth_t             : 16;  // Reserved
+            };
+            RegWidth_t registerVal;
+        }CCR;
+        
+        RegWidth_t TRISE;
+};
+    #define I2C1 (reinterpret_cast<volatile I2CRegDef*>(I2C1_BASE_ADDRESS))
+    #define I2C2 (reinterpret_cast<volatile I2CRegDef*>(I2C2_BASE_ADDRESS))
+}  // namespace i2c
+
+/**
+ * @brief Structure defining DMA Register Definitions
+ * 
+ */
+namespace dma {
+struct DmaChannel {
+    union CCR {
+        struct {
+            RegWidth_t EN           : 1;  // Channel enable
+            RegWidth_t TCIE         : 1;  // Transfer complete interrupt enable
+            RegWidth_t HTIE         : 1;  // Half transfer interrupt enable
+            RegWidth_t TEIE         : 1;  // Transfer error interrupt enable
+            RegWidth_t DIR          : 1;  // Data transfer direction
+            RegWidth_t CIRC         : 1;  // Circular mode
+            RegWidth_t PINC         : 1;  // Peripheral increment mode
+            RegWidth_t MINC         : 1;  // Memory increment mode
+            RegWidth_t PSIZE        : 2;  // Peripheral size
+            RegWidth_t MSIZE        : 2;  // Memory size
+            RegWidth_t PL           : 2;  // Channel priority level
+            RegWidth_t MEM2MEM      : 1;  // Memory-to-memory mode
+            RegWidth_t RESERVED     : 17;  // Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }CCR;       // DMA channel x configuration register
+
+    RegWidth_t CNDTR;    // DMA channel x number of data register
+    RegWidth_t CPAR;    // DMA channel x peripheral address register
+    RegWidth_t CMAR;    // DMA channel x memory address register
+};
+struct DMARegDef {
+    union ISR {
+        struct  {
+            RegWidth_t GIF1   : 1;   //  Global interrupt flag for channel 1
+            RegWidth_t TCIF1  : 1;   //  Transfer complete flag for channel 1
+            RegWidth_t HTIF1  : 1;   //  Half transfer flag for channel 1
+            RegWidth_t TEIF1  : 1;   //  Transfer error flag for channel 1
+            RegWidth_t GIF2   : 1;   //  Global interrupt flag for channel 2
+            RegWidth_t TCIF2  : 1;   //  Transfer complete flag for channel 2
+            RegWidth_t HTIF2  : 1;   //  Half transfer flag for channel 2
+            RegWidth_t TEIF2  : 1;   //  Transfer error flag for channel 2
+            RegWidth_t GIF3   : 1;   //  Global interrupt flag for channel 3
+            RegWidth_t TCIF3  : 1;   //  Transfer complete flag for channel 3
+            RegWidth_t HTIF3  : 1;   //  Half transfer flag for channel 3
+            RegWidth_t TEIF3  : 1;   //  Transfer error flag for channel 3
+            RegWidth_t GIF4   : 1;   //  Global interrupt flag for channel 4
+            RegWidth_t TCIF4  : 1;   //  Transfer complete flag for channel 4
+            RegWidth_t HTIF4  : 1;   //  Half transfer flag for channel 4
+            RegWidth_t TEIF4  : 1;   //  Transfer error flag for channel 4
+            RegWidth_t GIF5   : 1;   //  Global interrupt flag for channel 5
+            RegWidth_t TCIF5  : 1;   //  Transfer complete flag for channel 5
+            RegWidth_t HTIF5  : 1;   //  Half transfer flag for channel 5
+            RegWidth_t TEIF5  : 1;   //  Transfer error flag for channel 5
+            RegWidth_t GIF6   : 1;   //  Global interrupt flag for channel 6
+            RegWidth_t TCIF6  : 1;   //  Transfer complete flag for channel 6
+            RegWidth_t HTIF6  : 1;   //  Half transfer flag for channel 6
+            RegWidth_t TEIF6  : 1;   //  Transfer error flag for channel 6
+            RegWidth_t GIF7   : 1;   //  Global interrupt flag for channel 7
+            RegWidth_t TCIF7  : 1;   //  Transfer complete flag for channel 7
+            RegWidth_t HTIF7  : 1;   //  Half transfer flag for channel 7
+            RegWidth_t TEIF7  : 1;   //  Transfer error flag for channel 7
+            RegWidth_t RESERVED : 4;  //  Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }ISR;   // DMA interrupt status register
+    
+    
+    union IFCR {
+        struct {
+            RegWidth_t CGIF1  : 1;   //  Clear global interrupt flag for channel 1
+            RegWidth_t CTCIF1 : 1;   //  Clear transfer complete flag for channel 1
+            RegWidth_t CHTIF1 : 1;   //  Clear half transfer flag for channel 1
+            RegWidth_t CTEIF1 : 1;   //  Clear transfer error flag for channel 1
+            RegWidth_t CGIF2  : 1;   //  Clear global interrupt flag for channel 2
+            RegWidth_t CTCIF2 : 1;   //  Clear transfer complete flag for channel 2
+            RegWidth_t CHTIF2 : 1;   //  Clear half transfer flag for channel 2
+            RegWidth_t CTEIF2 : 1;   //  Clear transfer error flag for channel 2
+            RegWidth_t CGIF3  : 1;   //  Clear global interrupt flag for channel 3
+            RegWidth_t CTCIF3 : 1;   //  Clear transfer complete flag for channel 3
+            RegWidth_t CHTIF3 : 1;   //  Clear half transfer flag for channel 3
+            RegWidth_t CTEIF3 : 1;   //  Clear transfer error flag for channel 3
+            RegWidth_t CGIF4  : 1;   //  Clear global interrupt flag for channel 4
+            RegWidth_t CTCIF4 : 1;   //  Clear transfer complete flag for channel 4
+            RegWidth_t CHTIF4 : 1;   //  Clear half transfer flag for channel 4
+            RegWidth_t CTEIF4 : 1;   //  Clear transfer error flag for channel 4
+            RegWidth_t CGIF5  : 1;   //  Clear global interrupt flag for channel 5
+            RegWidth_t CTCIF5 : 1;   //  Clear transfer complete flag for channel 5
+            RegWidth_t CHTIF5 : 1;   //  Clear half transfer flag for channel 5
+            RegWidth_t CTEIF5 : 1;   //  Clear transfer error flag for channel 5
+            RegWidth_t CGIF6  : 1;   //  Clear global interrupt flag for channel 6
+            RegWidth_t CTCIF6 : 1;   //  Clear transfer complete flag for channel 6
+            RegWidth_t CHTIF6 : 1;   //  Clear half transfer flag for channel 6
+            RegWidth_t CTEIF6 : 1;   //  Clear transfer error flag for channel 6
+            RegWidth_t CGIF7  : 1;   //  Clear global interrupt flag for channel 7
+            RegWidth_t CTCIF7 : 1;   //  Clear transfer complete flag for channel 7
+            RegWidth_t CHTIF7 : 1;   //  Clear half transfer flag for channel 7
+            RegWidth_t CTEIF7 : 1;   //  Clear transfer error flag for channel 7
+            RegWidth_t RESERVED : 4;  //  Reserved, must be kept at reset value
+        }; 
+        RegWidth_t registerVal;
+    }IFCR;  // DMA interrupt flag clear register
+    DmaChannel CHANNEL[7];  // DMA channels 1-7
+};
+
+#define DMA (reinterpret_cast<volatile DMARegDef*>(DMA_BASE_ADDRESS))
+
+}  // namespace dma
+
 }  // namespace registers
 }  // namespace stm32
 
