@@ -10,6 +10,7 @@
 #ifndef DEV_MCAL_INC_SPI_H_
 #define DEV_MCAL_INC_SPI_H_
 using namespace stm32::registers::spi;
+#define SPI_TIMEOUT    (400)
 namespace stm32 {
 namespace dev   {
 namespace mcal  {

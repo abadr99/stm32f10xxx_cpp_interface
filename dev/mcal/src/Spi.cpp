@@ -61,13 +61,17 @@ void Spi::SlaveInit() {
 
 void Spi::Write(uint8_t data) {
     spi_reg->DR = data;
-    while (!(spi_reg->SR.TXE)) {
+    uint32_t ctr = 0;
+    while ((!spi_reg->SR.TXE) && (ctr != SPI_TIMEOUT) && (++ctr)) {
     }
+    STM32_ASSERT(ctr != SPI_TIMEOUT);
 }
 
 uint8_t Spi::Read() {
-    while (!(spi_reg->SR.RXNE)) {
+    uint32_t ctr = 0;
+    while (!(spi_reg->SR.RXNE) && (ctr != SPI_TIMEOUT) && (++ctr)) {
     }
+    STM32_ASSERT(ctr != SPI_TIMEOUT);
     return spi_reg->DR;
 }
 
