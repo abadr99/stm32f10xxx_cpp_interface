@@ -11,6 +11,7 @@ mcal/I2c.cpp
 mcal/DMA.cpp
 hal/Buzzer.cpp
 hal/SevenSegment.cpp
+mcal/Rtc.cpp
 mcal/Wwdg.cpp
 hal/src/STP_74HC595.cpp
 hal/src/DC_Motor.cpp
