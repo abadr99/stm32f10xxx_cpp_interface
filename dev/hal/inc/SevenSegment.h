@@ -11,7 +11,7 @@
 #ifndef DEV_HAL_INC_SEVENSEGMENT_H_
 #define DEV_HAL_INC_SEVENSEGMENT_H_
 
-#include "../../mcal/inc/Pin.h"
+#include "Pin.h"
 #include "Array.h"
 
 using namespace stm32::dev::mcal::pin;
@@ -20,12 +20,6 @@ namespace stm32 {
 namespace dev {
 namespace hal {
 namespace ssd {
-
-enum ConnectionType : uint8_t {
-    // NOTE: ORDER MATTER
-    kCommon_Cathode,
-    kCommon_Anode,
-};
 
 enum SSdDisplay: uint8_t {
     kZero  = 0x3F,
@@ -42,11 +36,9 @@ enum SSdDisplay: uint8_t {
 
 // NOTE: DATA PINS AND ENABLE PIN SHOULD BE CONNECTED TO THE SAME PORT, 
 //       OTHERWISE ENABLE DIFFERENT PORT'S CLOCK BY YOURSELF.  
-template<ConnectionType connectionType>
+template<stm32::utils::types::ConnectionType connectionType>
 class SevenSegment {
  public:
-    static_assert(connectionType == kCommon_Anode 
-               || connectionType == kCommon_Cathode);
     using Array_t = stm32::utils::array::Array<Pin, 7>;
     SevenSegment(const Array_t dataPins, const Pin enablePin);  
     explicit SevenSegment(const Array_t dataPins);  

@@ -15,25 +15,52 @@ namespace stm32 {
 namespace dev   {
 namespace mcal  {
 namespace pin   {
-
-enum class PinMode {
-    kInput,
-    kOutput,
-    kAlternative,
+    
+// NOTE: ORDER MATTERS
+enum class PinMode : uint8_t {
+    kAnalog,
+    kOutputPushPull_10MHz,
+    kOutputPushPull_2MHz,
+    kOutputPushPull_50MHz,
+    kInputFloat,
+    kOutputOpenDrain_10MHz,
+    kOutputOpenDrain_2MHz,
+    kOutputOpenDrain_50MHz,
+    kInputPullUp,
+    kAlternativePushPull_10MHz,
+    kAlternativePushPull_2MHz,
+    kAlternativePushPull_50MHz,
+    kAlternativeOpenDrain_10MHz = 13,
+    kAlternativeOpenDrain_2MHz,
+    kAlternativeOpenDrain_50MHz,
+    kInputPullDown = 20,
 };
 
-enum PinNumber {
-    kPin0, kPin1, kPin2, kPin3, kPin4, kPin5, kPin6, kPin7, kPin8, kPin9,
-    kPin10, kPin11, kPin12, kPin13, kPin14, kPin15,
+enum PinNumber : uint8_t {
+    kPin0,
+    kPin1,
+    kPin2,
+    kPin3,
+    kPin4,
+    kPin5,
+    kPin6,
+    kPin7,
+    kPin8,
+    kPin9,
+    kPin10,
+    kPin11,
+    kPin12,
+    kPin13,
+    kPin14,
+    kPin15,
 };
 
-enum Port {
+enum Port : uint8_t {
     kPortA,
     kPortB,
     kPortC
 };
 
-// TODO(@abadr99): Check if we need inheritance
 class Pin {
  public:
     Pin() : data_(0) {}
@@ -42,16 +69,27 @@ class Pin {
     void SetPinNumber(PinNumber pinNumber);
     void SetPinMode(PinMode pinMode);
     Port GetPort();
+    Port GetPort() const;
     PinNumber GetPinNumber();
+    PinNumber GetPinNumber() const;
     PinMode GetPinMode();
+    PinMode GetPinMode() const;
+    bool IsInput();
+    bool IsInput() const;
+    bool IsOutput();
+    bool IsOutput() const;
+    bool IsAlternative();
+    bool IsAlternative() const;
+    bool IsAnalog();
+    bool IsAnalog() const;
 
  private:
-    using DataType = stm32::utils::bitset::BitSet<uint8_t>;
+    using DataType = stm32::utils::bitset::BitSet<uint16_t>;
     /**
      * @brief Holds important class data as following:
      *      Bits 0 .. 1: Holds port
      *      Bits 2 .. 5: Holds pin number
-     *      Bits 6 .. 7: Holds Pin Mode
+     *      Bits 6 .. 9: Holds Pin Mode
      */
     DataType data_;
 };

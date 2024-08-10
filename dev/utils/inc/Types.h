@@ -20,6 +20,22 @@ namespace types {
 using IO = volatile uint32_t;
 using RegWidth_t = uint32_t;
 using pFunction = void(*)();
+
+enum class ConnectionType {
+    kForward_Bias,
+    kReverse_Bias,
+};
+
+#define HANDLE_ACTIVE_VOLTAGE(CT)       CT == ConnectionType::kForward_Bias ? Gpio::State::kHigh\
+                                                                            : Gpio::State::kLow
+
+#define HANDLE_INACTIVE_VOLTAGE(CT)     CT == ConnectionType::kForward_Bias ? Gpio::State::kLow\
+                                                                            : Gpio::State::kHigh
+
+#define INSTANTIATE_CONNECTION_CLASS(clazz)\
+    template class clazz<ConnectionType::kForward_Bias>;\
+    template class clazz<ConnectionType::kReverse_Bias>;
+
 #define F_CPU (8000000U)
 
 }  // namespace types
