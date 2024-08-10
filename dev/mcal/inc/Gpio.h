@@ -10,8 +10,7 @@
  */
 #ifndef DEV_MCAL_INC_GPIO_H_
 #define DEV_MCAL_INC_GPIO_H_
-using namespace stm32::dev::mcal::pin;
-using namespace stm32::registers::gpio;
+
 namespace stm32 {
 namespace dev {
 namespace mcal {
@@ -48,22 +47,14 @@ enum class AlternativeMode {
 };
 class Gpio{
  public:
-/**
- * @brief Set the value of a GPIO pin
- * @param pin object from class Pin
- * @param pinState  [klow, khigh]
- */
-static void SetPinValue(Pin pin, State pinState);
- /**
- * @brief Get the value of a GPIO pin
- * @param pin object from class Pin
- */
-static uint32_t  GetPinValue(Pin pin);
-static void EnablePort(Port port);
-static void SetInputMode(Pin pin, InputMode inputMode);
-static void SetOutputMode(Pin pin, OutputMode outputMode);
-static void SetAlternativeMode(Pin pin, AlternativeMode alternativeMode);
+    using Pin = stm32::dev::mcal::pin::Pin;
+    using Port = stm32::dev::mcal::pin::Port;
 
+    static void SetPinValue(Pin pin, State pinState);
+    static uint32_t  GetPinValue(Pin pin);
+    static void SetInputMode(Pin pin, InputMode inputMode);
+    static void SetOutputMode(Pin pin, OutputMode outputMode);
+    static void SetAlternativeMode(Pin pin, AlternativeMode alternativeMode);
  private:
     static void Helper_SetInputMode(Pin pin, InputMode inputMode);
     static void Helper_SetOutputMode(Pin pin, OutputMode outputMode);
