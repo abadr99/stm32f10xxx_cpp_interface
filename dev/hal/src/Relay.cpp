@@ -10,6 +10,7 @@
  */
 #include "BitManipulation.h"
 
+#include "Assert.h"
 #include "Pin.h"
 #include "Gpio.h"
 #include "Relay.h"
@@ -19,11 +20,10 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::relay;
 
 Relay::Relay(Pin relayPin) : relayPin(relayPin) {
-    Gpio::SetOutputMode(relayPin, OutputMode::kPushPull_2MHZ);
+    STM32_ASSERT(relayPin.IsOutput());
+    Gpio::Set(relayPin);
 }
-void Relay::Control(State state) {
-    switch (state) {
-    case kHigh:Gpio::SetPinValue(relayPin, kHigh); break;
-    case kLow:Gpio::SetPinValue(relayPin, kLow); break;
-    }
+
+void Relay::Control(Gpio::State state) {
+    Gpio::SetPinValue(relayPin, state);
 }
