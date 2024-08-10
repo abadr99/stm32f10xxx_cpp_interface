@@ -39,8 +39,12 @@
 
 #define DMA_BASE_ADDRESS    (&DmaReg[0])
 
+
 #define ADC1_BASE_ADDRESS   (&ADC1Reg)
 #define ADC2_BASE_ADDRESS   (&ADC2Reg)
+
+#define WWDG_BASE_ADDRESS   (&WwdgReg[0])
+
 extern uint32_t RccReg[10];
 
 extern uint32_t GPIOAReg[7];
@@ -63,8 +67,12 @@ extern uint32_t USART3Reg[7];
 extern uint32_t I2c1Reg[9];
 extern uint32_t I2c2Reg[9];
 
+
 extern uint32_t ADC1Reg[20];
 extern uint32_t ADC2Reg[20];
+
+extern uint32_t WwdgReg[3];
+
 
 
 

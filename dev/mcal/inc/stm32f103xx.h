@@ -536,6 +536,38 @@ struct EXTIRegDef {
 #define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
 
 }  // namespace exti
+namespace wwdg {
+struct WWDGRegDef {
+    union CR {
+        struct {
+            RegWidth_t T     : 7;   // 7-bit counter (MSB to LSB)
+            RegWidth_t WDGA  : 1;   // Activation bit
+            RegWidth_t       : 24;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } CR;
+
+    union CFR {
+        struct {
+            RegWidth_t W     : 7;   // 7-bit window value
+            RegWidth_t WDGTB : 2;   // Timer Base
+            RegWidth_t EWI   : 1;   // Early Wakeup Interrupt
+            RegWidth_t       : 22;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } CFR;
+
+    union SR {
+        struct {
+            RegWidth_t EWIF  : 1;   // Early Wakeup Interrupt Flag
+            RegWidth_t       : 31;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } SR;
+};
+
+#define WWDG (reinterpret_cast<volatile WWDGRegDef*>(WWDG_BASE_ADDRESS))
+}  // namespace wwdg
 
 namespace adc {
 

@@ -43,6 +43,8 @@
 
 #define DMA_BASE_ADDRESS    (0x40020000)
 
+#define WWDG_BASE_ADDRESS (0x40003000)
+#define IWDG_BASE_ADDRESS (0x40002C00)
 namespace stm32 {
 namespace registers {
 namespace rcc {
