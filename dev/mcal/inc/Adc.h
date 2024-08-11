@@ -81,19 +81,19 @@ struct ADCConfig {
 class ADC {
  public:
      explicit ADC(const ADCConfig& config);
-     void init();
-     uint16_t startSingleConversion();
-     void startContinuousConversion();
-     uint16_t readContinuousConversion();
-     void stopContinuousConversion();
-     uint16_t  startInjectedConversion();
+     void Init();
+     uint16_t StartSingleConversion();
+     void StartContinuousConversion();
+     uint16_t ReadContinuousConversion();
+     void StopContinuousConversion();
+     uint16_t  StartInjectedConversion();
      void EnableInterrupt();
      void DisableInterrupt();
      void Disable();
  private:
      const ADCConfig& config_;
      volatile ADCRegDef* ADC_reg;
-     void configureChannelSample();
+     void ConfigureChannelSample();
 };
 }   // namespace adc
 }   // namespace mcal

@@ -8,11 +8,11 @@
  * 
  */
 #include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/Types.h"
-#include "utils/inc/Assert.h"
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/Rcc.h"
-#include "mcal/inc/Adc.h"
+#include "Types.h"
+#include "Assert.h"
+#include "BitManipulation.h"
+#include "Rcc.h"
+#include "Adc.h"
 
 using namespace stm32::utils::bit_manipulation;
 using namespace stm32::registers::rcc; 
@@ -30,7 +30,7 @@ ADC::ADC(const ADCConfig& config) : config_(config) {
     }
 }
 
-void ADC::init() {
+void ADC::Init() {
     ADC_reg->CR2.registerVal = 0;  // Reset ADC
     ADC_reg->CR2.ALIGN = static_cast<RegWidth_t>(config_.alignment);
     if (config_.trigSource != kSOFTWARE) {
@@ -45,7 +45,7 @@ void ADC::init() {
     ADC_reg->CR2.ADON = 1;
 }
 
-uint16_t ADC:: startSingleConversion() {
+uint16_t ADC:: StartSingleConversion() {
     // Ensure ADC is not busy
     uint32_t ctr = 0;
     while ((ADC_reg->SR.STRT) && (ctr != ADC_TIMEOUT) && (++ctr)) {
@@ -56,7 +56,7 @@ uint16_t ADC:: startSingleConversion() {
     ADC_reg->CR2.CONT = 0;  // Disable continuous mode
     ADC_reg->SQR1.L = 0;    // Set sequence length to 1
     ADC_reg->SQR3 = static_cast<uint8_t>(config_.channel);  // Set channel
-    configureChannelSample();
+    ConfigureChannelSample();
     // Start conversion
     ADC_reg->CR2.SWSTART = 1;
     // Wait for conversion to complete
@@ -67,7 +67,7 @@ uint16_t ADC:: startSingleConversion() {
     return ADC_reg->DR.DATA;
     }
 
-void ADC::startContinuousConversion() {
+void ADC::StartContinuousConversion() {
     // Ensure ADC is not busy
     uint32_t ctr = 0;
     while (ADC_reg->SR.STRT  && (ctr != ADC_TIMEOUT) && (++ctr)) {
@@ -77,12 +77,12 @@ void ADC::startContinuousConversion() {
     ADC_reg->CR2.CONT = 1;  // Enable continuous mode
     ADC_reg->SQR1.L = 0;    // Set sequence length to 1
     ADC_reg->SQR3 = static_cast<uint8_t>(config_.channel);  // Set channel
-    configureChannelSample();
+    ConfigureChannelSample();
     // Start conversion
     ADC_reg->CR2.SWSTART = 1;
 }
 
-uint16_t ADC::readContinuousConversion() {
+uint16_t ADC::ReadContinuousConversion() {
     uint32_t ctr = 0;
     // Wait for conversion to complete
     while (!ADC_reg->SR.EOC && (ctr != ADC_TIMEOUT) && (++ctr)) {
@@ -92,16 +92,16 @@ uint16_t ADC::readContinuousConversion() {
     return ADC_reg->DR.DATA;
 }
 
-void ADC::stopContinuousConversion() {
+void ADC::StopContinuousConversion() {
     ADC_reg->CR2.CONT = 0;  // Disable continuous mode
     ADC_reg->CR2.SWSTART = 0;  // Stop conversion
 }
 
-uint16_t ADC::startInjectedConversion() {
+uint16_t ADC::StartInjectedConversion() {
     ADC_reg->JSQR.JL = 0;
     // Configure injected channel
     ADC_reg->JSQR.JSQ4 = static_cast<RegWidth_t>(config_.channel);
-    configureChannelSample();
+    ConfigureChannelSample();
     // Start injected conversion
     ADC_reg->CR2.JSWSTART = 1;
     uint32_t ctr = 0;
@@ -141,7 +141,7 @@ void ADC::Disable() {
      ADC_reg->CR2.ADON = 0;
 }
 
-void ADC::configureChannelSample() { 
+void ADC::ConfigureChannelSample() { 
      // Configure sample time for the selected channel 
     RegWidth_t sampleTimeBits = static_cast<RegWidth_t>(config_.sampleTime);
     RegWidth_t channel = static_cast<uint32_t>(config_.channel);
