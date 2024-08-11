@@ -22,6 +22,6 @@ void LM35::Init() {
 }
 uint16_t LM35::GetTempVal() {
     uint16_t result = adc_.StartSingleConversion();
-    uint16_t analogVal = static_cast<uint16_t>(static_cast<uint32_t>(result * 5000 / 4096));
-    return (analogVal / 10);
+    uint16_t TempVal = (result * 5000 / 4096);
+    return (TempVal / 10);
 }
