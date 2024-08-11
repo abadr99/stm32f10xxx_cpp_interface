@@ -21,3 +21,4 @@ hal/src/Relay.cpp
 hal/Keypad.cpp
 hal/Led.cpp
 hal/LM35.cpp
+hal/LDR.cpp
