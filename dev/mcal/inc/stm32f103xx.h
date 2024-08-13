@@ -271,7 +271,17 @@ struct  SCBRegDef {
     uint32_t ICSR;       // Interrupt Control and State Register
     uint32_t VTOR;       // Vector Table Offset Register
     uint32_t AIRCR;      // Application Interrupt and Reset Control Register
-    uint32_t SCR;        // System Control Register
+    union SCR {
+        struct {
+            RegWidth_t              :1;     // Reserved
+            RegWidth_t SLEEPONEXIT  :1;
+            RegWidth_t SLEEPDEEP    :1;
+            RegWidth_t              :1;     // Reserved
+            RegWidth_t SEVONPEND    :1;
+            RegWidth_t              :27;     // Reserved
+        };
+        RegWidth_t registerVal;  //  Register value
+    }SCR;   // System Control Register
     uint32_t CCR;        // Configuration and Control Register
     uint8_t  SHP[12];    // System Handlers Priority Registers
     uint32_t SHCSR;      // System Handler Control and State Register
@@ -880,7 +890,35 @@ struct DMARegDef {
 #define DMA (reinterpret_cast<volatile DMARegDef*>(DMA_BASE_ADDRESS))
 
 }  // namespace dma
-
+namespace pwr {
+struct PwrRegDef {
+    union CR {
+        struct {
+            RegWidth_t LPDS      : 1;   //  Low-power deep sleep
+            RegWidth_t PDDS      : 1;   //  Power down deepsleep
+            RegWidth_t CWUF      : 1;   //  Clear wakeup flag
+            RegWidth_t CSBF      : 1;   //  Clear standby flag
+            RegWidth_t PVDE      : 1;   //  Power voltage detector enable
+            RegWidth_t PLS       : 3;   //  PVD level selection
+            RegWidth_t DBP       : 1;   //  Disable backup domain write protection
+            RegWidth_t RESERVED  : 23;  //  Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }CR;    //  Power control register
+    union CSR {
+        struct {
+            RegWidth_t WUF       : 1;   // Wakeup flag
+            RegWidth_t SBF       : 1;   // Standby flag
+            RegWidth_t PVDO      : 1;   // PVD output
+            RegWidth_t RESERVED  : 5;   // Reserved, must be kept at reset value
+            RegWidth_t EWUP      : 1;   // Enable wakeup pin
+            RegWidth_t RESERVED2 : 23;  // Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }CSR;   //  Power control/status register
+};
+#define PWR (reinterpret_cast<volatile DMARegDef*>(PWR_BASE_ADDRESS))
+}   // namespace pwr
 }  // namespace registers
 }  // namespace stm32
 
