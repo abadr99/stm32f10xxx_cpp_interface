@@ -267,10 +267,10 @@ struct NvicRegDef {
     uint32_t STIR;       // Software Trigger Interrupt Register
 };
 struct  SCBRegDef {
-    uint32_t CPUID;      // CPUID Base Register
-    uint32_t ICSR;       // Interrupt Control and State Register
-    uint32_t VTOR;       // Vector Table Offset Register
-    uint32_t AIRCR;      // Application Interrupt and Reset Control Register
+    RegWidth_t CPUID;      // CPUID Base Register
+    RegWidth_t ICSR;       // Interrupt Control and State Register
+    RegWidth_t VTOR;       // Vector Table Offset Register
+    RegWidth_t AIRCR;      // Application Interrupt and Reset Control Register
     union SCR {
         struct {
             RegWidth_t              :1;     // Reserved
@@ -282,13 +282,13 @@ struct  SCBRegDef {
         };
         RegWidth_t registerVal;  //  Register value
     }SCR;   // System Control Register
-    uint32_t CCR;        // Configuration and Control Register
-    uint8_t  SHP[12];    // System Handlers Priority Registers
-    uint32_t SHCSR;      // System Handler Control and State Register
-    uint32_t CFSR;       // Configurable Fault Status Register
-    uint32_t HFSR;       // HardFault Status Register
-    uint32_t MMFAR;      // MemManage Fault Address Register
-    uint32_t BFAR;       // BusFault Address Register
+    RegWidth_t CCR;        // Configuration and Control Register
+    RegWidth_t SHP[12];    // System Handlers Priority Registers
+    RegWidth_t SHCSR;      // System Handler Control and State Register
+    RegWidth_t CFSR;       // Configurable Fault Status Register
+    RegWidth_t HFSR;       // HardFault Status Register
+    RegWidth_t MMFAR;      // MemManage Fault Address Register
+    RegWidth_t BFAR;       // BusFault Address Register
 };
 
 
@@ -917,7 +917,7 @@ struct PwrRegDef {
         RegWidth_t registerVal;
     }CSR;   //  Power control/status register
 };
-#define PWR (reinterpret_cast<volatile DMARegDef*>(PWR_BASE_ADDRESS))
+#define PWR (reinterpret_cast<volatile PwrRegDef*>(PWR_BASE_ADDRESS))
 }   // namespace pwr
 }  // namespace registers
 }  // namespace stm32

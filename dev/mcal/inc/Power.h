@@ -19,14 +19,14 @@ enum PwrRegulater {
     kLowPower,
 };
 enum PwrEntry {
-    WFI,
-    WFE,
+    kWFI,
+    kWFE,
 };
-class Power {
+class Pwr {
  public:
-    void EnterSleepMode();
+    void EnterSleepMode(PwrEntry sleepEntry);
     void EnterStopMode(PwrRegulater regulater, PwrEntry stopEntry);
-    void EnterStandbyMode();
+    void EnterStandbyMode(PwrEntry standbyEntry);
 };
 }   // namespace pwr
 }   // namespace mcal
