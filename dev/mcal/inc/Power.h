@@ -22,11 +22,25 @@ enum PwrEntry {
     kWFI,
     kWFE,
 };
+enum State {
+    kDisable,
+    kEnable,
+};
+enum PwrFlag {
+    kWU,
+    kSB,
+};
 class Pwr {
  public:
     void EnterSleepMode(PwrEntry sleepEntry);
     void EnterStopMode(PwrRegulater regulater, PwrEntry stopEntry);
     void EnterStandbyMode(PwrEntry standbyEntry);
+/**
+ * @note this is used for wakeup from Standby mode and forced in input pull down
+            configuration (rising edge on pin wakes-up the system from Standby mode)
+ */
+    void WakeupPinState(State state);
+    void ClearFlag(PwrFlag flag);
 };
 }   // namespace pwr
 }   // namespace mcal

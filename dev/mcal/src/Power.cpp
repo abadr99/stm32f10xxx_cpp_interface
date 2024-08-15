@@ -50,3 +50,17 @@ void Pwr::EnterStandbyMode(PwrEntry standbyEntry) {
         __WFE();
     }
 }
+void Pwr::WakeupPinState(State state) {
+    if (state == kDisable) {
+        PWR->CSR.EWUP = 0;
+    } else if (state == kEnable) {
+        PWR->CSR.EWUP = 1;
+    }
+}
+void Pwr::ClearFlag(PwrFlag flag) {
+    if (flag == kWU) {
+        PWR->CR.CWUF = 1;
+    } else if (flag == kSB) {
+        PWR->CR.CSBF = 1;
+    }
+}
