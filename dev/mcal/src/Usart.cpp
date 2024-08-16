@@ -87,19 +87,17 @@ void Usart::_SetBaudRate() {
 
 void Usart::Transmit(DataValType dataValue) {
     uint32_t count = 0;
-    while (!(usartReg->SR.TXE) ) {}
-    STM32_ASSERT(count != USART_TIMEOUT && (count != USART_TIMEOUT) && (++count));
+    while (!(usartReg->SR.TXE && (count != USART_TIMEOUT) && (++count)) ) {}
+    STM32_ASSERT(count != USART_TIMEOUT);
     count = 0;
     usartReg->DR = dataValue;
-    while (!(usartReg->SR.TC)) {}
-    STM32_ASSERT(count != USART_TIMEOUT && (count != USART_TIMEOUT) && (++count));
+    while (!(usartReg->SR.TC) && (count != USART_TIMEOUT) && (++count)) {}
+    STM32_ASSERT(count != USART_TIMEOUT);
     usartReg->SR.registerVal = 0;
 }
 
 typename Usart::DataValType Usart::Receive() {
-    uint32_t count = 0;
-    while (!(usartReg->SR.RXNE) && (count != USART_TIMEOUT) && (++count) ) {}
-    STM32_ASSERT(count != USART_TIMEOUT);
+    while (!(usartReg->SR.RXNE) ) {}
     return static_cast<DataValType>(usartReg->DR);
 }
 

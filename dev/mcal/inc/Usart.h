@@ -14,7 +14,7 @@
 using namespace stm32::utils::types;
 using namespace stm32::registers::usart;
 
-#define USART_TIMEOUT (500)
+#define USART_TIMEOUT (2000)
 
 namespace stm32 {
 namespace dev {
@@ -88,7 +88,7 @@ class Usart {
     ErrorType RetErrorDetection();
     static pFunction GetPointerToISR();
  private:
-    enum Flag : uint8_t {kEnabled, kDisabled};
+    enum Flag : uint8_t {kDisabled, kEnabled};
     void _SetBaudRate();
     const UsartConfig& config_;
     volatile UsartRegDef* usartReg;
