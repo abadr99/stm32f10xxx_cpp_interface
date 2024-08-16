@@ -36,21 +36,23 @@ void SD::Init() {
     toggleClock(80);
     Gpio::SetPinValue(Sdpin, Gpio::kLow);
     SendCommand(CMD0, 0);  // CMD0: reset SD card
-    uint8_t r1 = ReadResponse();
+    uint8_t value = ReadResponse();
     // Initialize SD card
     uint8_t retry = 0;
-    while (r1 != 0 && (retry != SD_TIMEOUT) && (++retry)) {
+    while (value != 0 && (retry != SD_TIMEOUT) && (++retry)) {
         Gpio::SetPinValue(Sdpin, Gpio::kLow);
         SendCommand(CMD55, 0);  // CMD55: indicate next command is application-specific
         ReadResponse();
         SendCommand(ACMD41, 0x40000000);  // ACMD41: initialize SD card
-        r1 = ReadResponse();
+        value = ReadResponse();
         Gpio::SetPinValue(Sdpin, Gpio::kHigh);
     }
+    STM32_ASSERT(retry != SD_TIMEOUT);
 }
 
 void SD::Transmit(uint8_t data) {
       SdSpi.Write(data);
+      toggleClock(1);
 }
 
 void SD::SendCommand(SDCommand cmd, uint32_t arg) {
@@ -63,30 +65,44 @@ void SD::SendCommand(SDCommand cmd, uint32_t arg) {
 }
 uint8_t SD::ReadResponse() {
     uint8_t response = SdSpi.Read();
+    toggleClock(1);
     return response;
 }
+
 bool SD::WriteBlock(uint32_t blockAddr, const uint8_t* data) {
     Gpio::SetPinValue(Sdpin, Gpio::kLow);
     SendCommand(CMD24, blockAddr);  // CMD24: write single block
-    Transmit(0xFE);  // Data token
-    // Write 512 byte block
-    for (int i = 0; i < 512; i++) {
-        Transmit(data[i]);
+    
+    if (ReadResponse() != 0x00) {
         Gpio::SetPinValue(Sdpin, Gpio::kHigh);
         return false;
     }
+    
+    Transmit(0xFE);  // Data token
+    
+    // Write 512 byte block
+    for (int i = 0; i < 512; i++) {
+        Transmit(data[i]);
+    }
+    
     // Send dummy CRC
     Transmit(0xFF);
     Transmit(0xFF);
+    
     // Check if data accepted
-    if ((ReadResponse() & 0x1F) != 0x05) {
-       Gpio::SetPinValue(Sdpin, Gpio::kHigh);
+    uint8_t response = ReadResponse();
+    if ((response & 0x1F) != 0x05) {
+        Gpio::SetPinValue(Sdpin, Gpio::kHigh);
         return false;
     }
+    
+    uint8_t retry = 0;
     // Wait for write to finish
-    while (ReadResponse() == 0x00) {
+    while (ReadResponse() == 0x00 && (retry != SD_TIMEOUT) && (++retry)) {
     }
-    toggleClock(1);
+    STM32_ASSERT(retry != SD_TIMEOUT);
+    
+    Gpio::SetPinValue(Sdpin, Gpio::kHigh);
     return true;
 }
 bool SD::ReadBlock(uint32_t blockAddr, uint8_t* data) {
@@ -96,14 +112,16 @@ bool SD::ReadBlock(uint32_t blockAddr, uint8_t* data) {
         Gpio::SetPinValue(Sdpin, Gpio::kHigh);
         return false;
     }
+    uint8_t retry = 0;
     // Wait for data token
-    while (ReadResponse()!= 0xFE) {
+    while (ReadResponse()!= 0xFE && (retry != SD_TIMEOUT) && (++retry)) {
     }
+    STM32_ASSERT(retry != SD_TIMEOUT);
     // Read 512 byte block
     for (int i = 0; i < 512; i++) {
         data[i] = ReadResponse();
     }
-    // Read CRC (discard)
+    // Read CRC
     ReadResponse();
      Gpio::SetPinValue(Sdpin, Gpio::kHigh);
     return true;
