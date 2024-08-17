@@ -16,62 +16,26 @@ namespace dev {
 namespace mcal {
 namespace gpio {
 
-enum State{
-    kLow,
-    kHigh,
-};
-
-enum class InputMode {
-    kAnalog     = 0,
-    kFloating   = 4,
-    kPullup     = 8,
-    kPulldown   = 20,
-};
-
-enum class OutputMode {
-    kPushPull_10MHZ  = 1,
-    kPushPull_2MHZ   = 2,
-    kPushPull_50MHZ  = 3,
-    kOpenDrain_10MHZ = 5,
-    kOpenDrain_2MHZ  = 6,
-    kOpenDrain_50MHZ = 7,
-};
-
-enum class AlternativeMode {
-    kPushPull_10MHZ   = 9,
-    kPushPull_2MHZ    = 10,
-    kPushPull_50MHZ   = 11,
-    kOpenDrain_10MHZ  = 13,
-    kOpenDrain_2MHZ   = 14,
-    kOpenDrain_50MHZ  = 15,
-};
-class Gpio{
+class Gpio {
  public:
-    using Pin = stm32::dev::mcal::pin::Pin;
-    using Port = stm32::dev::mcal::pin::Port;
-/**
- * @brief Set the value of a GPIO pin
- * @param pin object from class Pin
- * @param pinState  [klow, khigh]
- */
-static void SetPinValue(Pin pin, State pinState);
- /**
- * @brief Get the value of a GPIO pin
- * @param pin object from class Pin
- */
-static uint32_t  GetPinValue(Pin pin);
-static void EnablePort(Port port);
-static void SetInputMode(Pin pin, InputMode inputMode);
-static void SetOutputMode(Pin pin, OutputMode outputMode);
-static void SetAlternativeMode(Pin pin, AlternativeMode alternativeMode);
-
- private:
-    static void Helper_SetInputMode(Pin pin, InputMode inputMode);
-    static void Helper_SetOutputMode(Pin pin, OutputMode outputMode);
-    static void Helper_AlternateMode(Pin pin, AlternativeMode alternateMode);
+  using Pin = stm32::dev::mcal::pin::Pin;
+  using Port = stm32::dev::mcal::pin::Port;
+  using PinMode = stm32::dev::mcal::pin::PinMode;
+  using PinVal_t = uint8_t;
+  enum State { kLow, kHigh };
+  
+  // As Gpio class is used to deal with general purpose IO and all pin's 
+  // configurations are abstracted in Pin class so we can use Set() method 
+  // to set all gpio configurations
+  static void Set(const Pin& pin);
+  static void SetPinMode(const Pin& pin, PinMode mode);
+  static void SetPinValue(const Pin& pin, State pinState);
+  static PinVal_t GetPinValue(Pin pin);
 };
+
 }  // namespace gpio
 }  // namespace mcal
 }  // namespace dev
 }  // namespace stm32
+
 #endif  // DEV_MCAL_INC_GPIO_H_

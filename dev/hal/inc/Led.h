@@ -18,16 +18,20 @@ namespace stm32 {
 namespace dev {
 namespace hal {
 namespace led {
+
+template<stm32::utils::types::ConnectionType CT>
 class Led {
  public:
-    explicit Led(Pin LedPin);
-    void TurnOn();
-    void TurnOff();
-    void Toggle();
+  explicit Led(Pin LedPin);
+  void TurnOn();
+  void TurnOff();
+  void Toggle();
  private:
-    Pin LedPin;
-    State LedState;
+  enum State_t { kTurnedOn, kTurnedOff };
+  Pin LedPin;
+  State_t LedState;
 };
+
 }  // namespace led
 }  // namespace hal
 }  // namespace dev
