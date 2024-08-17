@@ -19,6 +19,7 @@ namespace dev {
 namespace hal {
 namespace buzzer {
 
+
 enum BuzzerState : uint8_t {
     kOn, kOff
 };
@@ -26,7 +27,7 @@ enum BuzzerState : uint8_t {
 template<stm32::utils::types::ConnectionType CT>
 class Buzzer {
  public:
-    explicit Buzzer(const Pin buzzerPin);
+    explicit Buzzer(const Pin& buzzerPin);
     void TurnOn();
     void TurnOff();
     void Toggle();
