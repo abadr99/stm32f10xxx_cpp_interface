@@ -8,32 +8,49 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#ifndef DEV_HAL_INC_DC_MOTOR_H_
-#define DEV_HAL_INC_DC_MOTOR_H_
 
+#ifndef DEV_HAL_INC_ESP_H_
+#define DEV_HAL_INC_ESP_H_
+#include <string>
+using namespace stm32::dev::mcal::usart;
 namespace stm32 {
 namespace dev {
 namespace hal {
 namespace esp {
 
-enum class Mode {
+enum class EspMode {
     kSTA = 1,    //  Station Mode
     kAP,         //  Access point Mode
     kSTA_Ap      //  Station Mode + Access point Mode
 };
+
+enum class EchoState {
+    kOff,
+    kOn
+};
+
+
+
 class Esp {
  public:
-    void Init(Mode mode);
-    void WiFiConnect(const char *pUsername, const char *pPass);
-    void ServerConnect(const char *protocol,const char *ip, uint16_t port);
-    void SendCustomCommand(const char *command);
-    void SendHttpRequest(const char *pRequest);
-    void RecvHttpResponse(const char *pResponse);
+    explicit Esp(const UsartNum &usartNum);
+    void Init();
+    void Send(const std::string str);
+    void Send(const char c);
+    void SetMode(const EspMode &mode);
+    void SetEchoState(const EchoState &state);
+    void WiFiConnect(const std::string username, const std::string pswd);
+    void ServerConnect(const std::string protocol, const std::string ip, uint16_t port);
+    void SendHttpRequest(const std::string request);
+    // TODO(@MRefat): Add the implementation of it, implement receive function
+    // void RecvHttpResponse(const std::string response);
  private:
+    UsartConfig usartConfig_;
+    Usart usart_;
 };
 
 }   //  namespace esp
 }   //  namespace hal
 }   //  namespace dev
 }   //  namespace stm32
-#endif  //  DEV_HAL_INC_DC_MOTOR_H_
+#endif  //  DEV_HAL_INC_ESP_H_
