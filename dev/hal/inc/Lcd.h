@@ -12,9 +12,6 @@
 #define DEV_HAL_INC_LCD_H_
 
 #include <string>
-using namespace stm32::dev::mcal::pin; 
-using namespace stm32::dev::mcal::gpio;
-using namespace stm32::utils::array;
 
 namespace stm32 {
 namespace dev {
@@ -55,28 +52,24 @@ enum LcdMode : uint8_t {
     kFourBit  = 4,
 };
 
-enum LcdNibbles : uint8_t {
-    kLowNibble,
-    kHighNibble,
-};
 
 template<LcdMode M>
 struct LCD_Config {
-    Array<Pin, M> dataPins;
+    using Pin  = stm32::dev::mcal::pin::Pin;
+    using Port = stm32::dev::mcal::pin::Port;
+    stm32::utils::array::Array<Pin, M> dataPins;
     Port controlPort;
     Pin RSpin;
     Pin RWpin;
     Pin ENpin;
-    LcdNibbles lcd4BitDataPin;
 };
 
 template<LcdMode M>
-class LCD {
+class Lcd {
  public:
     using Rows_t = uint8_t;
     using cols_t = uint8_t;
-    explicit LCD(const LCD_Config<M> &config_);
-    void Init();
+    explicit Lcd(const LCD_Config<M> &config_);
     void ClearScreen();
     void Print(char character);
     void Print(const std::string &str);
@@ -93,12 +86,11 @@ class LCD {
     void BlinkOff();
 
  private:
+    void Init();
     void SendFallingEdgePulse();
-    void SendCommand(LCDCommand command);
+    void SendCommand(uint32_t command);
     void SendData(uint8_t data);
     void WriteOutputPins(uint8_t value);
-    void SetLowNibbleDirection(OutputMode mode);
-    void SetHighNibbleDirection(OutputMode mode);
     LCD_Config<M> config_;
 };
 }   //  namespace lcd

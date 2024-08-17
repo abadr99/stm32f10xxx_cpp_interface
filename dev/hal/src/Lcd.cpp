@@ -1,5 +1,5 @@
 /**
- * @file LCD.cpp
+ * @file Lcd.cpp
  * @author noura36
  * @brief 
  * @version 0.1
@@ -9,14 +9,18 @@
  * 
  */
 #include <cmath>
+#include <string>
+
 #include "Assert.h"
 #include "BitManipulation.h"
-#include "string"
+#include "Util.h"
+
 #include "Pin.h"
+#include "Rcc.h"
 #include "Gpio.h"
 #include "Systick.h"
 #include "Array.h"
-#include "LCD.h"
+#include "Lcd.h"
 
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
@@ -24,33 +28,38 @@ using namespace stm32::dev::mcal::systick;
 using namespace stm32::dev::hal::lcd;
 using namespace stm32::utils::array;
 using namespace stm32::utils::bit_manipulation;
+using namespace stm32::dev::mcal::rcc;
+using namespace stm32::utils;
 
 template<LcdMode M>
-LCD<M>::LCD(const LCD_Config<M> &config) : config_(config) {
-    // AS WE ASSUMING THE LCD IS CONNECTED TO THE SAME PORT
-    // WE HAVE TO ENABLE RCC FOR THIS PORT
-    // TODO(@abadr99): after merging rcc-enhancements pr
-}
-
-template<LcdMode M>
-void LCD<M>::SendFallingEdgePulse() {
-    Gpio::SetPinValue(config_.ENpin, kHigh);
-    Systick::Delay_ms(1);
-    Gpio::SetPinValue(config_.ENpin, kLow);
-    Systick::Delay_ms(1);
-}
-
-template<LcdMode M>
-void LCD<M>::WriteOutputPins(uint8_t value) {
+Lcd<M>::Lcd(const LCD_Config<M> &config) : config_(config) {
     for (uint8_t i = 0; i < config_.dataPins.Size(); ++i) {
-        Gpio::SetPinValue(config_.dataPins[i], ExtractBits<uint8_t>(value, i));
+        Rcc::Enable(MapPortToPeripheral(config_.dataPins[i].GetPort()));
+    } 
+    Rcc::Enable(MapPortToPeripheral(config_.controlPort));
+    // TODO(@noura36): Should we call this function here ?
+    Init();
+}
+
+template<LcdMode M>
+void Lcd<M>::SendFallingEdgePulse() {
+    Gpio::SetPinValue(config_.ENpin, Gpio::State::kHigh);
+    Systick::Delay_ms(1);
+    Gpio::SetPinValue(config_.ENpin, Gpio::State::kLow);
+    Systick::Delay_ms(1);
+}
+
+template<LcdMode M>
+void Lcd<M>::WriteOutputPins(uint8_t value) {
+    for (uint8_t i = 0; i < config_.dataPins.Size(); ++i) {
+        Gpio::SetPinValue(config_.dataPins[i], static_cast<Gpio::State>(ExtractBits<uint8_t>(value, i)));  // NOLINT
     } 
 }
 
 template<LcdMode M>
-void LCD<M>::SendData(uint8_t data) {
-    Gpio::SetPinValue(config_.RSpin, kHigh);
-    Gpio::SetPinValue(config_.RWpin, kLow);
+void Lcd<M>::SendData(uint8_t data) {
+    Gpio::SetPinValue(config_.RSpin, Gpio::State::kHigh);
+    Gpio::SetPinValue(config_.RWpin, Gpio::State::kLow);
     
     // -- 8-BIT MODE
     if constexpr (M == kEightBit) {
@@ -67,9 +76,9 @@ void LCD<M>::SendData(uint8_t data) {
 }
 
 template<LcdMode M>
-void LCD<M>::SendCommand(LCDCommand command) {
-    Gpio::SetPinValue(config_.RSpin, kLow);
-    Gpio::SetPinValue(config_.RWpin, kLow);
+void Lcd<M>::SendCommand(uint32_t command) {
+    Gpio::SetPinValue(config_.RSpin, Gpio::State::kLow);
+    Gpio::SetPinValue(config_.RWpin, Gpio::State::kLow);
 
     if constexpr (M == kEightBit) {
         WriteOutputPins(command);
@@ -84,60 +93,60 @@ void LCD<M>::SendCommand(LCDCommand command) {
 }
 
 template<LcdMode M>
-void LCD<M>::Init() {
+void Lcd<M>::Init() {
     //  DIRECTION OF CONTROL PINS SHOULD BE OUTPUT
     // -- FIRST CHECK DIRECTION OF GIVEN PINS
     STM32_ASSERT(config_.RSpin.IsOutput());
     STM32_ASSERT(config_.RWpin.IsOutput());
     STM32_ASSERT(config_.ENpin.IsOutput());
     
-    Gpio::SetOutputMode(config_.RSpin, config_.RSpin.GetPinMode());
-    Gpio::SetOutputMode(config_.RWpin, config_.RWpin.GetPinMode());
-    Gpio::SetOutputMode(config_.ENpin, config_.ENpin.GetPinMode());
+    Gpio::Set(config_.RSpin);
+    Gpio::Set(config_.RWpin);
+    Gpio::Set(config_.ENpin);
 
     for (uint8_t i = 0; i< config_.dataPins.Size(); i++) {
-        Gpio::SetOutputMode(config_.dataPins[i], config_.dataPins[i].GetPinMode());
+        Gpio::Set(config_.dataPins[i]);
     }
     Systick::Delay_ms(50);
-   
+    
     //  Function Set
     LCDCommand cmd = M == LcdMode::kEightBit ? kFUNCTION_SET_8_BIT : kFUNCTION_SET_4_BIT;
     SendCommand(cmd);
     Systick::Delay_ms(1);
-   
+    
     //  Display ON/OFF Control
     SendCommand(LCDCommand::kDISPLAY_ON_CURSOR_OFF);
     Systick::Delay_ms(1);
-   
+    
     //  Clear Screen
     SendCommand(LCDCommand::kCLEAR_SCREEN);
     Systick::Delay_ms(5);
-   
+    
     //  Entry mode set
     SendCommand(LCDCommand::kENTRY_MODE_INC_SHIFT_OFF);
     Systick::Delay_ms(1);
 }
 
 template<LcdMode M>
-void LCD<M>::ClearScreen() {
+void Lcd<M>::ClearScreen() {
     SendCommand(LCDCommand::kCLEAR_SCREEN);
     Systick::Delay_ms(1);
 }
 
 template<LcdMode M>
-void LCD<M>::Print(char character) {
+void Lcd<M>::Print(char character) {
     SendData(character);
 }
 
 template<LcdMode M>
-void LCD<M>::Print(const std::string &str) {
+void Lcd<M>::Print(const std::string &str) {
     for (char c : str) {
         SendData(c);
     }
 }
 // TODO(@noura36): signed number
 template<LcdMode M>
-void LCD<M>::Print(int32_t num) {
+void Lcd<M>::Print(int32_t num) {
     if (num == 0) {
         SendData('0');
         return;
@@ -158,7 +167,7 @@ void LCD<M>::Print(int32_t num) {
 
 // TODO(@abadr99): Support Nans, inf and +/- zeros
 template<LcdMode M>
-void LCD<M>::Print(double num) {
+void Lcd<M>::Print(double num) {
     auto PrintStr = [&](const std::string& str) {
         for (auto ch : str) {
             SendData(ch);
@@ -194,54 +203,54 @@ void LCD<M>::Print(double num) {
 }
 
 template<LcdMode M> 
-void LCD<M>::SetPosition(Rows_t rowNum, cols_t colNum) {
+void Lcd<M>::SetPosition(Rows_t rowNum, cols_t colNum) {
     if (colNum == 0) {
         SendCommand(kDDRAM_START + rowNum);
     } else {
-        SendCommand(kDDRAM_START + rowNum + 0X40);
+        SendCommand(kDDRAM_START + rowNum + 0x40);
     }
     Systick::Delay_ms(1);
 }
 
 template<LcdMode M> 
-void LCD<M>::EnableCursor() {
+void Lcd<M>::EnableCursor() {
     SendCommand(LCDCommand::kDISPLAY_ON_CURSOR_ON);
 }
 
 template<LcdMode M> 
-void LCD<M>::DisableCursor() {
+void Lcd<M>::DisableCursor() {
     SendCommand(LCDCommand::kDISPLAY_ON_CURSOR_OFF);
 }
 
 template<LcdMode M> 
-void LCD<M>::ShiftLeft() {
+void Lcd<M>::ShiftLeft() {
     SendCommand(LCDCommand::kSHIFT_LEFT);
 }
 
 template<LcdMode M> 
-void LCD<M>::ShiftRight() {
+void Lcd<M>::ShiftRight() {
     SendCommand(LCDCommand::kSHIFT_RIGHT);
 }
 
 template<LcdMode M> 
-void LCD<M>::DisplayOn() {
+void Lcd<M>::DisplayOn() {
     SendCommand(LCDCommand::kDISPLAY_ON_CURSOR_OFF);
 }
 
 template<LcdMode M> 
-void LCD<M>::DisplayOff() {
+void Lcd<M>::DisplayOff() {
     SendCommand(LCDCommand::kDISPLAY_OFF_CURSOR_OFF);
 }
 
 template<LcdMode M> 
-void LCD<M>::BlinkOn() {
+void Lcd<M>::BlinkOn() {
     SendCommand(LCDCommand::kBLINK_ON);
 }
 
 template<LcdMode M> 
-void LCD<M>::BlinkOff() {
+void Lcd<M>::BlinkOff() {
     SendCommand(LCDCommand::kBLINK_OFF);
 }
 
-template class LCD<kEightBit>;
-template class LCD<kFourBit>;
+template class Lcd<kEightBit>;
+template class Lcd<kFourBit>;
