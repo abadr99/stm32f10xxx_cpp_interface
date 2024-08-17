@@ -18,8 +18,18 @@
 namespace stm32 {
 namespace utils {
     
-    stm32::dev::mcal::rcc::Peripheral 
-    MapPortToPeripheral(stm32::dev::mcal::pin::Port port);
+    inline stm32::dev::mcal::rcc::Peripheral 
+    MapPortToPeripheral(stm32::dev::mcal::pin::Port port) {
+        using Peripheral = stm32::dev::mcal::rcc::Peripheral; 
+        using Port       = stm32::dev::mcal::pin::Port; 
+        switch (port) {
+            case Port::kPortA:    return Peripheral::kIOPA;
+            case Port::kPortB:    return Peripheral::kIOPB;
+            case Port::kPortC:    return Peripheral::kIOPC;
+        }
+        STM32_ASSERT(1);
+        return Peripheral::kUnknown;
+    }
 
 }   // namespace utils
 }   // namespace stm32

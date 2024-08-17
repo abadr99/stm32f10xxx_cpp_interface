@@ -34,7 +34,8 @@ using namespace stm32::utils;
 template<LcdMode M>
 Lcd<M>::Lcd(const LCD_Config<M> &config) : config_(config) {
     for (uint8_t i = 0; i < config_.dataPins.Size(); ++i) {
-        Rcc::Enable(MapPortToPeripheral(config_.dataPins[i].GetPort()));
+        Peripheral p = MapPortToPeripheral(config_.dataPins[i].GetPort());
+        Rcc::Enable(p);
     } 
     Rcc::Enable(MapPortToPeripheral(config_.controlPort));
     // TODO(@noura36): Should we call this function here ?
