@@ -12,7 +12,7 @@
 #define DEV_MCAL_INC_EXTI_H_
 
 using namespace stm32::dev::mcal::pin;
-
+using namespace stm32::utils::types;
 namespace stm32 {
 namespace dev {
 namespace mcal {
@@ -64,7 +64,10 @@ class Exti {
     static void SetPendingFlag(const EXTI_Config& config);
     static void ClearPendingFlag(const EXTI_Config& config);
     uint8_t GetPendingFlag(const EXTI_Config& config);
+    static void SetpCallBackFunction(Line line , void (*pCallBackFun)(void));
+    static pFunction GetpCallBackFunction(Line line);
  private:
+    static pFunction pGlobalCallBackFunctions[7];
     static void Helper_InitAFIOReg(Line line, Port port);
     static void Helper_SetTrigger(Line line, Trigger trigger);
     static void Helper_ClrTrigger(Line line, Trigger trigger);
