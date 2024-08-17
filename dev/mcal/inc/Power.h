@@ -49,9 +49,7 @@ class Pwr {
     static void WakeupPinState(State state);
     static void ClearFlag(PwrFlag flag);
  private:
-    #ifndef UNIT_TEST
-        static void EnterLowPowerMode(PwrEntry entry);
-    #endif
+    static void EnterLowPowerMode(PwrEntry entry);
 };
 }   // namespace pwr
 }   // namespace mcal

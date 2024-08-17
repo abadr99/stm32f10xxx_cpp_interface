@@ -24,10 +24,7 @@ void Pwr::EnterSleepMode(PwrEntry sleepEntry, SleepType type) {
     SCB->SCR.SLEEPONEXIT = static_cast<uint8_t>(type);
     //  Ensure standard sleep mode
     SCB->SCR.SLEEPDEEP = 0;
-    
-    #ifndef UNIT_TEST
-        EnterLowPowerMode(sleepEntry);
-    #endif
+    EnterLowPowerMode(sleepEntry);
 }
 void Pwr::EnterStopMode(PwrEntry stopEntry, PwrRegulator regulator) {
     //  Select the voltage regulator mode
@@ -40,10 +37,7 @@ void Pwr::EnterStopMode(PwrEntry stopEntry, PwrRegulator regulator) {
     PWR->CR.PDDS = 0;
     //  Enable deep sleep mode
     SCB->SCR.SLEEPDEEP = 1;
-    
-    #ifndef UNIT_TEST
-        EnterLowPowerMode(stopEntry);
-    #endif
+    EnterLowPowerMode(stopEntry);
 }
 void Pwr::EnterStandbyMode(PwrEntry standbyEntry) {
     // Select standby mode
@@ -51,10 +45,7 @@ void Pwr::EnterStandbyMode(PwrEntry standbyEntry) {
     // Enable deep sleep mode
     SCB->SCR.SLEEPDEEP = 1;
     PWR->CSR.WUF = 0;
-    
-    #ifndef UNIT_TEST
-        EnterLowPowerMode(standbyEntry);
-    #endif
+    EnterLowPowerMode(standbyEntry);
 }
 void Pwr::WakeupPinState(State state) {
     if (state == State::kDisable) {
@@ -77,5 +68,11 @@ void Pwr::EnterLowPowerMode(PwrEntry entry) {
     } else if (entry == PwrEntry::kWFE) {
         __WFE();  // Wait for event
     }
+}
+#else 
+void Pwr::EnterLowPowerMode(PwrEntry entry) {
+    /* DO NO THING */
+    auto FakeLambda = [entry](){ return entry; };
+    FakeLambda();
 }
 #endif
