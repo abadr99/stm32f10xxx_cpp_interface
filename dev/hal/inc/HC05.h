@@ -22,46 +22,46 @@ namespace bluetooth {
 
 class HC05 {
  public:
-   enum DeviceRole  {kSlave, kMaster};
-   enum InquiryMode {kStandard, kRssi};
+    enum DeviceRole  {kSlave, kMaster};
+    enum InquiryMode {kStandard, kRssi};
 
-   using Usart = stm32::dev::mcal::usart::Usart; 
-   explicit HC05(const Usart& usart);
-   void Send(char c);
-   void Send(typename Usart::DataValType n);
-   void Send(const std::string& str);
-   typename Usart::DataValType Receive();
+    using Usart = stm32::dev::mcal::usart::Usart; 
+    explicit HC05(const Usart& usart);
+    void Send(char c);
+    void Send(typename Usart::DataValType n);
+    void Send(const std::string& str);
+    typename Usart::DataValType Receive();
     
-   // ====================== Handle AT Commands ===============================
-   // See: https://components101.com/sites/default/files/component_datasheet/HC-05%20Datasheet.pdf
-   /*
-   | Command                        | Description                         | Response           |
-   |--------------------------------|-------------------------------------|------------------- |
-   | AT                             | Check connection                    | OK                 |
-   | AT+RESET                       | Restart the module                  | OK                 |
-   | AT+VERSION?                    | Check firmware version              | +VERSION:<version> |
-   | AT+NAME=<name>                 | Set device name                     | OK                 |
-   | AT+PSWD=<pin>                  | Set pairing PIN code                | OK                 |
-   | AT+ROLE=<role>                 | Set device role (0=slave, 1=master) | OK                 |
-   | AT+UART=<baud>,<stop>,<parity> | Set UART baud rate                  | OK                 |
-   | AT+INQM=<parm1>,<parm2>,<parm3>| Set inquiry mode                    | OK                 |
-   | AT+BIND=<address>              | Bind to specific address            | OK                 |
-   | AT+INQ                         | Inquiry to available devices        | List of devices    |
-   */
-   void Test();
-   void Reset();
-   void GetFirmWareVersion();
-   void SetDeviceName(const std::string& name);
-   void SetParingPin(const std::string& pin);
-   void SetDeviceRole(DeviceRole role);
-   // TODO(@abadr99): Check if this function should be private
-   void SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity);
-   void SetInquiryMode(InquiryMode im, uint32_t maxNumberOfBluetoothDevices, uint32_t timeout);
-   void SetBindToAddress(const std::string& address);
-   void InquiryBluetoothDevices();
-   // TODO(@abadr99): Support more AT commands
+    // ====================== Handle AT Commands ===============================
+    // See: https://components101.com/sites/default/files/component_datasheet/HC-05%20Datasheet.pdf
+    /*
+    | Command                        | Description                         | Response           |
+    |--------------------------------|-------------------------------------|------------------- |
+    | AT                             | Check connection                    | OK                 |
+    | AT+RESET                       | Restart the module                  | OK                 |
+    | AT+VERSION?                    | Check firmware version              | +VERSION:<version> |
+    | AT+NAME=<name>                 | Set device name                     | OK                 |
+    | AT+PSWD=<pin>                  | Set pairing PIN code                | OK                 |
+    | AT+ROLE=<role>                 | Set device role (0=slave, 1=master) | OK                 |
+    | AT+UART=<baud>,<stop>,<parity> | Set UART baud rate                  | OK                 |
+    | AT+INQM=<parm1>,<parm2>,<parm3>| Set inquiry mode                    | OK                 |
+    | AT+BIND=<address>              | Bind to specific address            | OK                 |
+    | AT+INQ                         | Inquiry to available devices        | List of devices    |
+    */
+    void Test();
+    void Reset();
+    void GetFirmWareVersion();
+    void SetDeviceName(const std::string& name);
+    void SetParingPin(const std::string& pin);
+    void SetDeviceRole(DeviceRole role);
+    // TODO(@abadr99): Check if this function should be private
+    void SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity);
+    void SetInquiryMode(InquiryMode im, uint32_t maxNumberOfBluetoothDevices, uint32_t timeout);
+    void SetBindToAddress(const std::string& address);
+    void InquiryBluetoothDevices();
+    // TODO(@abadr99): Support more AT commands
  private:
-   Usart usart_;
+    Usart usart_;
 };
 
 }  // namespace bluetooth
