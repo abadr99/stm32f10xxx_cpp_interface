@@ -70,35 +70,35 @@ void HC05::Reset() {
 }
 
 void HC05::GetFirmWareVersion() {
-    this->Send(commandStrings[kGET_POSTFIX]);
     this->Send(commandStrings[kAT_VERSION]);
+    this->Send(commandStrings[kGET_POSTFIX]);
     this->Send(commandStrings[kAT_END]);
 }
 
 void HC05::SetDeviceName(const std::string& name) {
-    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(commandStrings[kAT_NAME]);
+    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(name);
     this->Send(commandStrings[kAT_END]);
 }
 
 void HC05::SetParingPin(const std::string& pin) {
-    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(commandStrings[kAT_PSWD]);
+    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(pin);
     this->Send(commandStrings[kAT_END]);
 }
 
 void HC05::SetDeviceRole(DeviceRole role) {
-    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(commandStrings[kAT_ROLE]);
+    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(std::to_string(static_cast<uint32_t>(role)));
     this->Send(commandStrings[kAT_END]);
 }
 
 void HC05::SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity) {               
-    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(commandStrings[kAT_UART]);
+    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(std::to_string(baudRate));
     this->Send(commandStrings[kCOMMA]);
     this->Send(std::to_string(stopBits));
@@ -110,8 +110,8 @@ void HC05::SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity) {
 void HC05::SetInquiryMode(InquiryMode im, 
                             uint32_t maxNumberOfBluetoothDevices, 
                             uint32_t timeout) {
-    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(commandStrings[kAT_INQM]);
+    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(std::to_string(static_cast<uint32_t>(im)));
     this->Send(commandStrings[kCOMMA]);
     this->Send(std::to_string(maxNumberOfBluetoothDevices));
@@ -121,14 +121,14 @@ void HC05::SetInquiryMode(InquiryMode im,
 }
 
 void HC05::SetBindToAddress(const std::string& address) {
-    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(commandStrings[kAT_BIND]);
+    this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(address);
     this->Send(commandStrings[kAT_END]);
 }
 
 void HC05::InquiryBluetoothDevices() {
-    this->Send(commandStrings[kGET_POSTFIX]);
     this->Send(commandStrings[kAT_INQ]);
+    this->Send(commandStrings[kGET_POSTFIX]);
     this->Send(commandStrings[kAT_END]);
 }
