@@ -13,11 +13,12 @@ mcal/DMA.cpp
 hal/Buzzer.cpp
 hal/SevenSegment.cpp
 hal/IR.cpp
+hal/HC05.cpp
 mcal/Rtc.cpp
 mcal/Wwdg.cpp
-hal/src/STP_74HC595.cpp
-hal/src/DC_Motor.cpp
-hal/src/Relay.cpp
+hal/STP_74HC595.cpp
+hal/DC_Motor.cpp
+hal/Relay.cpp
 hal/Keypad.cpp
 hal/Led.cpp
-
+hal/Lcd.cpp
