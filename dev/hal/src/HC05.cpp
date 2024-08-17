@@ -10,7 +10,7 @@
  */
 
 #include <cstring>
-
+#include <string>
 #include "Assert.h"
 
 #include "Usart.h"
@@ -46,7 +46,7 @@ void HC05::Send(typename Usart::DataValType n) {
 
 void HC05::Send(const char* str) {
     std::size_t size = std::strlen(str);
-    for(uint32_t i = 0 ; i < size ; ++i) {
+    for (uint32_t i = 0 ; i < size ; ++i) {
         usart_.Transmit(str[i]);
     }
 }
