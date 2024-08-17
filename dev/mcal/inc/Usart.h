@@ -13,7 +13,7 @@
 #include "../../mcal/inc/stm32f103xx.h"
 using namespace stm32::registers::usart;
 
-#define USART_TIMEOUT (500)
+#define USART_TIMEOUT (2000)
 
 namespace stm32 {
 namespace dev {
@@ -85,7 +85,7 @@ class Usart {
     DataValType Receive();
     ErrorType RetErrorDetection();
  private:
-    enum Flag : uint8_t {kEnabled, kDisabled};
+    enum Flag : uint8_t {kDisabled, kEnabled};
     void _SetBaudRate();
     const UsartConfig& config_;
     volatile UsartRegDef* usartReg;

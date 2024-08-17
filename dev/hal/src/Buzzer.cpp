@@ -17,10 +17,11 @@
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::buzzer;
+
 using namespace stm32::utils::types;
 
 template<ConnectionType CT>
-Buzzer<CT>::Buzzer(const Pin buzzerPin)
+Buzzer<CT>::Buzzer(const Pin& buzzerPin)
 : buzzerPin_(buzzerPin) {
     Gpio::Set(buzzerPin_);
 }
@@ -50,6 +51,5 @@ template<ConnectionType CT>
 BuzzerState Buzzer<CT>::GetBuzzerState() {
     return buzzerState_;
 }
-
 
 INSTANTIATE_CONNECTION_CLASS(Buzzer)
