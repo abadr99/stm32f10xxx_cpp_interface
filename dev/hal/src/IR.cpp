@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include "mcal/inc/stm32f103xx.h"
+#include "Assert.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
 #include "hal/inc/IR.h"
@@ -18,8 +19,9 @@ using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::ir;
 
-IR::IR(const Pin IrPin)  : IrPin_(IrPin) {
-    Gpio::SetInputMode(IrPin, InputMode::kPulldown);
+IR::IR(const Pin& IrPin) : IrPin_(IrPin) {
+    STM32_ASSERT(IrPin.IsInput());
+    Gpio::Set(IrPin);
 }
 
 IR::IrState IR::GetIrStatus() {

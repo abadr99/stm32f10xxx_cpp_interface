@@ -17,8 +17,8 @@ namespace hal {
 namespace ir {
 class IR {
  public:
-    using IrState = uint32_t;
-    explicit IR(const Pin IrPin);
+    using IrState = uint8_t;
+    explicit IR(const Pin& IrPin);
     IrState GetIrStatus();
  private:
     Pin IrPin_;
