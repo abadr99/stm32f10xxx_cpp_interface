@@ -44,15 +44,6 @@ Usart::Usart(const UsartConfig& config) : config_(config) {
     }
 }
 
-void Usart::EnableClk() {
-    switch (config_.number) {
-        case kUsart1 : RCC->APB2ENR.USART1EN = Flag::kEnabled; break;
-        case kUsart2 : RCC->APB1ENR.USART2EN = Flag::kEnabled; break;
-        case kUsart3 : RCC->APB1ENR.USART3EN = Flag::kEnabled; break;
-        default: break;
-    }
-}
-
 void Usart::Init() {
     CHECK_CONFIG();
     /* Enable usart peripheral */
@@ -92,19 +83,17 @@ void Usart::_SetBaudRate() {
 
 void Usart::Transmit(DataValType dataValue) {
     uint32_t count = 0;
-    while (!(usartReg->SR.TXE) ) {}
-    STM32_ASSERT(count != USART_TIMEOUT && (count != USART_TIMEOUT) && (++count));
+    while (!(usartReg->SR.TXE && (count != USART_TIMEOUT) && (++count)) ) {}
+    STM32_ASSERT(count != USART_TIMEOUT);
     count = 0;
     usartReg->DR = dataValue;
-    while (!(usartReg->SR.TC)) {}
-    STM32_ASSERT(count != USART_TIMEOUT && (count != USART_TIMEOUT) && (++count));
+    while (!(usartReg->SR.TC) && (count != USART_TIMEOUT) && (++count)) {}
+    STM32_ASSERT(count != USART_TIMEOUT);
     usartReg->SR.registerVal = 0;
 }
 
 typename Usart::DataValType Usart::Receive() {
-    uint32_t count = 0;
-    while (!(usartReg->SR.RXNE) && (count != USART_TIMEOUT) && (++count) ) {}
-    STM32_ASSERT(count != USART_TIMEOUT);
+    while (!(usartReg->SR.RXNE) ) {}
     return static_cast<DataValType>(usartReg->DR);
 }
 
