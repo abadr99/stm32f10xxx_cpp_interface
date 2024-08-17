@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <cstdlib>
 #include "mcal/inc/stm32f103xx.h"
+#include "Assert.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
 #include "hal/inc/Keypad.h"
@@ -39,32 +40,35 @@ void Keypad::setColArr(Pin* cols) {
 }
 
 void Keypad::KeypadInit() {
-    for (uint8_t numRow =0 ; numRow <rowsNum; numRow++) {
-        Gpio::SetInputMode(KeypadRow[numRow], InputMode::kPullup);
+    for (uint8_t numRow = 0 ; numRow <rowsNum; numRow++) {
+        Gpio::SetPinMode(KeypadRow[numRow], PinMode::kInputPullUp);
     }
-    for (uint8_t numCol =0; numCol <colNum; numCol++) {
-        Gpio::SetOutputMode(KeypadCol[numCol], OutputMode::kPushPull_2MHZ);
-        Gpio::SetPinValue(KeypadCol[numCol], State::kHigh);
+    for (uint8_t numCol = 0; numCol <colNum; numCol++) {
+        STM32_ASSERT(KeypadCol[numCol].IsOutput());
+        Gpio::Set(KeypadCol[numCol]);
+        Gpio::SetPinValue(KeypadCol[numCol], Gpio::State::kHigh);
     }
 }
 
 uint8_t Keypad::GetPressed(uint8_t** keypadButtons) {
+    using State = Gpio::State;
     uint8_t buttonVal = 0xff;
     for (uint8_t numCol =0; numCol <colNum; numCol++) {
-        Gpio::SetPinValue(KeypadCol[numCol], kLow);
+        Gpio::SetPinValue(KeypadCol[numCol], State::kLow);
         for (uint8_t numRow =0 ; numRow <rowsNum; numRow++) {
-            if (Gpio::GetPinValue(KeypadRow[numRow]) == kLow) {
+            if (Gpio::GetPinValue(KeypadRow[numRow]) == State::kLow) {
                 buttonVal = keypadButtons[numRow][numCol];
             }
-            while (Gpio::GetPinValue(KeypadRow[numRow]) == kLow) {
+            while (Gpio::GetPinValue(KeypadRow[numRow]) == State::kLow) {
             }
-            Gpio::SetPinValue(KeypadCol[numCol], kHigh);
+            Gpio::SetPinValue(KeypadCol[numCol], State::kHigh);
             return buttonVal;
         }
-        Gpio::SetPinValue(KeypadCol[numCol], kHigh);
+        Gpio::SetPinValue(KeypadCol[numCol], State::kHigh);
     }
     return buttonVal;
 }
+
 Keypad::~Keypad() {
     free(KeypadRow);
     free(KeypadCol);
