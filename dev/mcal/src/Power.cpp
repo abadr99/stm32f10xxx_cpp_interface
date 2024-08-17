@@ -72,5 +72,7 @@ void Pwr::EnterLowPowerMode(PwrEntry entry) {
 #else 
 void Pwr::EnterLowPowerMode(PwrEntry entry) {
     /* DO NO THING */
+    auto FakeLambda = [entry](){ return entry; };
+    FakeLambda();
 }
 #endif
