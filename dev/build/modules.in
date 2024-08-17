@@ -10,6 +10,7 @@ mcal/EXTI.cpp
 hal/Buzzer.cpp
 mcal/I2c.cpp
 mcal/DMA.cpp
+mcal/Iwdg.cpp
 hal/Buzzer.cpp
 hal/SevenSegment.cpp
 hal/IR.cpp
