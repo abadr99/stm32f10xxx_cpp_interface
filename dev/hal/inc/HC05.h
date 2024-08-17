@@ -29,7 +29,6 @@ class HC05 {
     explicit HC05(const Usart& usart);
     void Send(const char* str);
     void Send(typename Usart::DataValType n);
-    void Send(const std::string& str);
     typename Usart::DataValType Receive();
     
     // ====================== Handle AT Commands ===============================
