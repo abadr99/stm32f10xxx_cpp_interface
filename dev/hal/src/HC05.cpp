@@ -44,6 +44,10 @@ void HC05::Send(typename Usart::DataValType n) {
     usart_.Transmit(n);
 }
 
+void Send(const std::string& str) {
+    Send(str.c_str());
+}
+
 void HC05::Send(const char* str) {
     std::size_t size = std::strlen(str);
     for (uint32_t i = 0 ; i < size ; ++i) {
