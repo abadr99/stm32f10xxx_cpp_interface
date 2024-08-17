@@ -36,85 +36,81 @@
 #define AT_SET(str)     std::string(str) + std::string(AT_SET_POSTFIX)
 #define AT_GET(str)     std::string(str) + std::string(AT_GET_POSTFIX)
 
-#define COMMA       std::string(",")
+#define COMMA           std::string(",")
 
 using namespace stm32::dev::mcal::usart;
 using namespace stm32::dev::hal::bluetooth;
 
-template <UsartNum N>
-HC05<N>::HC05(const usart_t& usart): usart_(usart) { /* EMPTY */}
-
-template <UsartNum N>
-void HC05<N>::Send(char c) {
+void HC05::Send(char c) {
     usart_.Transmit(c);
 }
 
-template <UsartNum N>
-void HC05<N>::Send(typename usart_t::DataValType n) {
+void HC05::Send(typename Usart::DataValType n) {
     usart_.Transmit(n);
 }
 
-template <UsartNum N>
-void HC05<N>::Send(const std::string& str) {
+void HC05::Send(const std::string& str) {
     for (auto ch : str) {
         this->Send(ch);
     }
 }
 
-template <UsartNum N>
-typename HC05<N>::usart_t::DataValType HC05<N>::Receive() {
+typename HC05::Usart::DataValType HC05::Receive() {
     return usart_.Receive();
 }
 
-template <UsartNum N>
-void HC05<N>::Test() {
+void HC05::Test() {
     static const std::string test = std::string(AT) + std::string(AT_END);
-    this->send(test);
+    this->Send(test);
 }
 
-template <UsartNum N>
-void HC05<N>::Reset() {
+void HC05::Reset() {
     static const std::string reset = std::string(AT_RESET) + std::string(AT_END);
-    this->send(reset);
+    this->Send(reset);
 }
 
-template <UsartNum N>
-void HC05<N>::GetFirmWareVersion() {
+void HC05::GetFirmWareVersion() {
     static const std::string version = std::string(AT_GET(AT_VERSION)) + std::string(AT_END);
-    this->send(version);
+    this->Send(version);
 }
 
-template <UsartNum N>
-void HC05<N>::SetDeviceName(const std::string& name) {
+
+void HC05::SetDeviceName(const std::string& name) {
     static const std::string device = std::string(AT_SET(AT_NAME)) 
                                 + name 
                                 + std::string(AT_END);
-    this->send(device);
+    this->Send(device);
 }
 
-template <UsartNum N>
-void HC05<N>::SetParingPin(const std::string& pin) {
+
+void HC05::SetParingPin(const std::string& pin) {
     static const std::string paring_pin = std::string(AT_SET(AT_PSWD)) 
                                     + pin 
                                     + std::string(AT_END);
-    this->send(paring_pin);
+    this->Send(paring_pin);
 }
 
-template <UsartNum N>
-void HC05<N>::SetDeviceRole(DeviceRole role) {
+
+void HC05::SetDeviceRole(DeviceRole role) {
     static const std::string role_cmd = std::string(AT_SET(AT_ROLE)) 
                                 + std::to_string(static_cast<uint32_t>(role))
                                 + std::string(AT_END);
-    this->send(role_cmd);
+    this->Send(role_cmd);
 }
 
-template <UsartNum N>
-void HC05<N>::SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity) {
-    STM32_ASSERT(true);
+
+void HC05::SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity) {               
+    static const std::string config = std::string(AT_SET(AT_UART))
+                                    + std::to_string(baudRate)
+                                    + COMMA
+                                    + std::to_string(stopBits)
+                                    + COMMA
+                                    + std::to_string(parity)
+                                    + std::string(AT_END);
+    this->Send(config);
 }
 
-template <UsartNum N>
-void HC05<N>::SetInquiryMode(InquiryMode im, 
+void HC05::SetInquiryMode(InquiryMode im, 
                             uint32_t maxNumberOfBluetoothDevices, 
                             uint32_t timeout) {
     static const std::string mode = std::string(AT_SET(AT_INQM)) 
@@ -124,20 +120,18 @@ void HC05<N>::SetInquiryMode(InquiryMode im,
                                 + COMMA 
                                 + std::to_string(timeout) 
                                 + std::string(AT_END);
-    this->send(mode);
+    this->Send(mode);
 }
 
-template <UsartNum N>
-void HC05<N>::SetBindToAddress(const std::string& address) {
+void HC05::SetBindToAddress(const std::string& address) {
     static const std::string address_cmd = std::string(AT_SET(AT_BIND)) 
                                     + address
                                     + std::string(AT_END);
-    this->send(address_cmd);
+    this->Send(address_cmd);
 }
 
-template <UsartNum N>
-void HC05<N>::InquiryBluetoothDevices() {
+void HC05::InquiryBluetoothDevices() {
     static const std::string inq = std::string(AT_GET(AT_INQ)) 
                                 + std::string(AT_END);
-    this->send(inq);
+    this->Send(inq);
 }
