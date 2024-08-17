@@ -14,33 +14,44 @@ namespace stm32 {
 namespace dev   {
 namespace mcal  {
 namespace pwr {
-enum PwrRegulater {
+
+enum class SleepType {
+    kSleepNow,
+    kSleepOnExit
+};
+enum class PwrRegulator {
     kOn,
-    kLowPower,
+    kLowPower
 };
-enum PwrEntry {
-    kWFI,
-    kWFE,
+
+enum class PwrEntry {
+    kWFI,  //  wait for interrupt
+    kWFE   //  wait for event
 };
-enum State {
+enum class State {
     kDisable,
-    kEnable,
+    kEnable
 };
-enum PwrFlag {
-    kWU,
-    kSB,
+enum class PwrFlag {
+    kWU,  //  wakeup flag
+    kSB   //  standby flag
 };
+
 class Pwr {
  public:
-    void EnterSleepMode(PwrEntry sleepEntry);
-    void EnterStopMode(PwrRegulater regulater, PwrEntry stopEntry);
-    void EnterStandbyMode(PwrEntry standbyEntry);
+    static void EnterSleepMode(PwrEntry sleepEntry, SleepType type);
+    static void EnterStopMode(PwrEntry stopEntry, PwrRegulator regulator);
+    static void EnterStandbyMode(PwrEntry standbyEntry);
 /**
  * @note this is used for wakeup from Standby mode and forced in input pull down
             configuration (rising edge on pin wakes-up the system from Standby mode)
  */
-    void WakeupPinState(State state);
-    void ClearFlag(PwrFlag flag);
+    static void WakeupPinState(State state);
+    static void ClearFlag(PwrFlag flag);
+ private:
+    #ifndef UNIT_TEST
+        static void EnterLowPowerMode(PwrEntry entry);
+    #endif
 };
 }   // namespace pwr
 }   // namespace mcal

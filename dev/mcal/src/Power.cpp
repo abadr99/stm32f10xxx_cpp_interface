@@ -19,48 +19,63 @@ using namespace stm32::dev::mcal::pwr;
 #define __WFI() __asm volatile ("wfi")
 #define __WFE() __asm volatile ("wfe")
 
-void Pwr::EnterSleepMode(PwrEntry sleepEntry) {
+void Pwr::EnterSleepMode(PwrEntry sleepEntry, SleepType type) {
+    //  Set sleep on exit behavior
+    SCB->SCR.SLEEPONEXIT = static_cast<uint8_t>(type);
+    //  Ensure standard sleep mode
     SCB->SCR.SLEEPDEEP = 0;
-    if (sleepEntry == kWFI) {
-        __WFI();
-    } else if (sleepEntry == kWFE) {
-        __WFE();
-    }
+    
+    #ifndef UNIT_TEST
+        EnterLowPowerMode(sleepEntry);
+    #endif
 }
-void Pwr::EnterStopMode(PwrRegulater regulater, PwrEntry stopEntry) {
-    PWR->CR.PDDS = 0;
-    if (regulater == kLowPower) {
+void Pwr::EnterStopMode(PwrEntry stopEntry, PwrRegulator regulator) {
+    //  Select the voltage regulator mode
+    if (regulator == PwrRegulator::kLowPower) {
         PWR->CR.LPDS = 1;
-    } else if (regulater == kOn) {
+    } else if (regulator == PwrRegulator::kOn) {
         PWR->CR.LPDS = 0;
     }
+    //  Ensure entering stop mode, not standby
+    PWR->CR.PDDS = 0;
+    //  Enable deep sleep mode
     SCB->SCR.SLEEPDEEP = 1;
-    if (stopEntry == kWFI) {
-        __WFI();
-    } else if (stopEntry == kWFE) {
-        __WFE();
-    }
+    
+    #ifndef UNIT_TEST
+        EnterLowPowerMode(stopEntry);
+    #endif
 }
 void Pwr::EnterStandbyMode(PwrEntry standbyEntry) {
+    // Select standby mode
     PWR->CR.PDDS = 1;
+    // Enable deep sleep mode
     SCB->SCR.SLEEPDEEP = 1;
-    if (standbyEntry == kWFI) {
-        __WFI();
-    } else if (standbyEntry == kWFE) {
-        __WFE();
-    }
+    PWR->CSR.WUF = 0;
+    
+    #ifndef UNIT_TEST
+        EnterLowPowerMode(standbyEntry);
+    #endif
 }
 void Pwr::WakeupPinState(State state) {
-    if (state == kDisable) {
+    if (state == State::kDisable) {
         PWR->CSR.EWUP = 0;
-    } else if (state == kEnable) {
+    } else if (state == State::kEnable) {
         PWR->CSR.EWUP = 1;
     }
 }
 void Pwr::ClearFlag(PwrFlag flag) {
-    if (flag == kWU) {
+    if (flag == PwrFlag::kWU) {
         PWR->CR.CWUF = 1;
-    } else if (flag == kSB) {
+    } else if (flag == PwrFlag::kSB) {
         PWR->CR.CSBF = 1;
     }
 }
+#ifndef UNIT_TEST
+void Pwr::EnterLowPowerMode(PwrEntry entry) {
+    if (entry == PwrEntry::kWFI) {
+        __WFI();  // Wait for interrupt
+    } else if (entry == PwrEntry::kWFE) {
+        __WFE();  // Wait for event
+    }
+}
+#endif
