@@ -21,7 +21,7 @@ using namespace stm32::dev::hal::buzzer;
 using namespace stm32::utils::types;
 
 template<ConnectionType CT>
-Buzzer<CT>::Buzzer(const Pin buzzerPin)
+Buzzer<CT>::Buzzer(const Pin& buzzerPin)
 : buzzerPin_(buzzerPin) {
     Gpio::Set(buzzerPin_);
 }
