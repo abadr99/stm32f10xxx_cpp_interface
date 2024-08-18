@@ -50,6 +50,8 @@
 
 #define WWDG_BASE_ADDRESS (0x40003000)
 #define IWDG_BASE_ADDRESS (0x40002C00)
+
+#define PWR_BASE_ADDRESS    (0x40007000)
 namespace stm32 {
 namespace registers {
 namespace rcc {

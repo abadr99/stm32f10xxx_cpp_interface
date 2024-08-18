@@ -39,11 +39,15 @@
 
 #define DMA_BASE_ADDRESS    (&DmaReg[0])
 
+#define IWDG_BASE_ADDRESS   (&IwdgReg[0])
 #define RTC_BASE_ADDRESS    (&RtcReg[0])
-
 #define WWDG_BASE_ADDRESS   (&WwdgReg[0])
 #define ADC1_BASE_ADDRESS   (&ADC1Reg[0])
 #define ADC2_BASE_ADDRESS   (&ADC2Reg[0])
+
+
+#define PWR_BASE_ADDRESS    (&PwrReg[0])
+
 extern uint32_t RccReg[10];
 
 extern uint32_t GPIOAReg[7];
@@ -74,5 +78,8 @@ extern uint32_t ADC2Reg[20];
 
 extern uint32_t DmaReg[30];
 extern uint32_t RtcReg[10];
+
+extern uint32_t PwrReg[2];
+extern uint32_t IwdgReg[4];
 
 #endif  // TESTS_UNITTESTS_MCAL_BASEADDRESS_TEST_H_
