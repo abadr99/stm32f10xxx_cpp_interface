@@ -267,18 +267,28 @@ struct NvicRegDef {
     uint32_t STIR;       // Software Trigger Interrupt Register
 };
 struct  SCBRegDef {
-    uint32_t CPUID;      // CPUID Base Register
-    uint32_t ICSR;       // Interrupt Control and State Register
-    uint32_t VTOR;       // Vector Table Offset Register
-    uint32_t AIRCR;      // Application Interrupt and Reset Control Register
-    uint32_t SCR;        // System Control Register
-    uint32_t CCR;        // Configuration and Control Register
-    uint8_t  SHP[12];    // System Handlers Priority Registers
-    uint32_t SHCSR;      // System Handler Control and State Register
-    uint32_t CFSR;       // Configurable Fault Status Register
-    uint32_t HFSR;       // HardFault Status Register
-    uint32_t MMFAR;      // MemManage Fault Address Register
-    uint32_t BFAR;       // BusFault Address Register
+    RegWidth_t CPUID;      // CPUID Base Register
+    RegWidth_t ICSR;       // Interrupt Control and State Register
+    RegWidth_t VTOR;       // Vector Table Offset Register
+    RegWidth_t AIRCR;      // Application Interrupt and Reset Control Register
+    union SCR {
+        struct {
+            RegWidth_t              :1;     // Reserved
+            RegWidth_t SLEEPONEXIT  :1;
+            RegWidth_t SLEEPDEEP    :1;
+            RegWidth_t              :1;     // Reserved
+            RegWidth_t SEVONPEND    :1;
+            RegWidth_t              :27;     // Reserved
+        };
+        RegWidth_t registerVal;  //  Register value
+    }SCR;   // System Control Register
+    RegWidth_t CCR;        // Configuration and Control Register
+    RegWidth_t SHP[12];    // System Handlers Priority Registers
+    RegWidth_t SHCSR;      // System Handler Control and State Register
+    RegWidth_t CFSR;       // Configurable Fault Status Register
+    RegWidth_t HFSR;       // HardFault Status Register
+    RegWidth_t MMFAR;      // MemManage Fault Address Register
+    RegWidth_t BFAR;       // BusFault Address Register
 };
 
 
@@ -536,6 +546,131 @@ struct EXTIRegDef {
 #define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
 
 }  // namespace exti
+namespace wwdg {
+struct WWDGRegDef {
+    union CR {
+        struct {
+            RegWidth_t T     : 7;   // 7-bit counter (MSB to LSB)
+            RegWidth_t WDGA  : 1;   // Activation bit
+            RegWidth_t       : 24;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } CR;
+
+    union CFR {
+        struct {
+            RegWidth_t W     : 7;   // 7-bit window value
+            RegWidth_t WDGTB : 2;   // Timer Base
+            RegWidth_t EWI   : 1;   // Early Wakeup Interrupt
+            RegWidth_t       : 22;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } CFR;
+
+    union SR {
+        struct {
+            RegWidth_t EWIF  : 1;   // Early Wakeup Interrupt Flag
+            RegWidth_t       : 31;  // Reserved
+        };
+        RegWidth_t registerVal;
+    } SR;
+};
+
+#define WWDG (reinterpret_cast<volatile WWDGRegDef*>(WWDG_BASE_ADDRESS))
+}  // namespace wwdg
+
+namespace rtc {
+
+struct RtcRegDef {
+    union CRL {
+        struct {
+            RegWidth_t SECF     : 1;    // Second flag
+            RegWidth_t ALRF     : 1;    // Alarm flag
+            RegWidth_t OWF      : 1;    // Overflow flag
+            RegWidth_t RSF      : 1;    // Registers synchronized flag
+            RegWidth_t CNF      : 1;    // Configuration flag
+            RegWidth_t RTOFF    : 1;    // RTC operation OFF flag
+            RegWidth_t reserved : 26;   // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } CRL;
+    
+    union CRH {
+        struct {
+            RegWidth_t SECIE    : 1;   // Second interrupt enable
+            RegWidth_t ALRIE    : 1;   // Alarm interrupt enable
+            RegWidth_t OWIE     : 1;   // Overflow interrupt enable
+            RegWidth_t reserved : 29;  // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } CRH;
+    
+    union PRLH {
+        struct {
+            RegWidth_t PRL      : 4;    // RTC Prescaler Load Register High
+            RegWidth_t reserved : 28;   // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } PRLH;
+    
+    union PRLL {
+        struct {
+            RegWidth_t PRL      : 16;   // RTC Prescaler Load Register Low
+            RegWidth_t reserved : 16;   // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } PRLL;
+    
+    union DIVH {
+        struct {
+            RegWidth_t DIV      :  4;   // RTC Clock Divider High
+            RegWidth_t reserved : 28;   // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } DIVH;
+    
+    union DIVL {
+        struct {
+            RegWidth_t DIV      : 16;   // RTC Clock Divider Low
+            RegWidth_t reserved : 16;   // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } DIVL;
+    
+    union CNTH {
+        struct {
+            RegWidth_t CNT      : 16;    // RTC Counter Register High
+            RegWidth_t reserved : 16;    // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } CNTH;
+    
+    union CNTL {
+        struct {
+            RegWidth_t CNT      : 16;    // RTC Counter Register Low
+            RegWidth_t reserved : 16;    // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } CNTL;
+    
+    union ALRH {
+        struct {
+            RegWidth_t ALR      : 16;    // RTC Alarm Register High
+            RegWidth_t reserved : 16;    // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } ALRH;
+    
+    union ALRL {
+        struct {
+            RegWidth_t ALR      : 16;    // RTC Alarm Register Low
+            RegWidth_t reserved : 16;    // Reserved bits
+        };
+        RegWidth_t registerVal;
+    } ALRL;
+};
+#define RTC (reinterpret_cast<volatile RtcRegDef*>(RTC_BASE_ADDRESS))
+}  // namespace rtc
 
 namespace i2c {
 struct I2CRegDef {
@@ -953,6 +1088,53 @@ struct timerRegDef
 };
 #define TIM1 (reinterpret_cast<volatile timerRegDef*>(TIM1_BASE_ADDRESS))
 }  // namespace timer
+
+namespace pwr {
+struct PwrRegDef {
+    union CR {
+        struct {
+            RegWidth_t LPDS      : 1;   //  Low-power deep sleep
+            RegWidth_t PDDS      : 1;   //  Power down deepsleep
+            RegWidth_t CWUF      : 1;   //  Clear wakeup flag
+            RegWidth_t CSBF      : 1;   //  Clear standby flag
+            RegWidth_t PVDE      : 1;   //  Power voltage detector enable
+            RegWidth_t PLS       : 3;   //  PVD level selection
+            RegWidth_t DBP       : 1;   //  Disable backup domain write protection
+            RegWidth_t RESERVED  : 23;  //  Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }CR;    //  Power control register
+    union CSR {
+        struct {
+            RegWidth_t WUF       : 1;   // Wakeup flag
+            RegWidth_t SBF       : 1;   // Standby flag
+            RegWidth_t PVDO      : 1;   // PVD output
+            RegWidth_t RESERVED  : 5;   // Reserved, must be kept at reset value
+            RegWidth_t EWUP      : 1;   // Enable wakeup pin
+            RegWidth_t RESERVED2 : 23;  // Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }CSR;   //  Power control/status register
+};
+#define PWR (reinterpret_cast<volatile PwrRegDef*>(PWR_BASE_ADDRESS))
+}   // namespace pwr
+
+namespace iwdg {
+struct IWDGRegDef {
+    RegWidth_t KR;
+    RegWidth_t PR;
+    RegWidth_t RLD;
+    union SR {
+        struct {
+            RegWidth_t PVU : 1;
+            RegWidth_t RVU : 1;
+            RegWidth_t     : 30;  //  Reserved
+        };
+        RegWidth_t registerVal;
+    }SR;
+};
+#define IWDG (reinterpret_cast<volatile IWDGRegDef*>(IWDG_BASE_ADDRESS))
+}  // namespace iwdg
 }  // namespace registers
 }  // namespace stm32
 
