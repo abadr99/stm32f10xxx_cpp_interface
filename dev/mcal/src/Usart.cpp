@@ -19,6 +19,11 @@ using namespace stm32::registers::rcc;
 using namespace stm32::registers::usart;
 using namespace stm32::dev::mcal::usart;
 
+pFunction  Usart::pTransmitCompleteFun_[3] = {nullptr};
+pFunction  Usart::pReceiveReadyFun_[3] = {nullptr};
+
+volatile Usart::DataValType* Usart::pReceivedData_[3] = {nullptr, nullptr, nullptr};
+
 #define CHECK_CONFIG()\
     STM32_ASSERT((config_.mode >= kRx) && (config_.mode <= kRxTx));\
     STM32_ASSERT((config_.numOfSB >= kSb_1_) && (config_.numOfSB <= kSb_1_5_));\
@@ -37,9 +42,9 @@ ASSERT_MEMBER_OFFSET(UsartRegDef, CR2,         sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(UsartRegDef, CR3,         sizeof(RegWidth_t) * 5);
 ASSERT_MEMBER_OFFSET(UsartRegDef, GTPR,        sizeof(RegWidth_t) * 6);
 
-pFunction Usart::PointerToISR = nullptr;
 
-Usart::Usart(const UsartConfig& config) : config_(config) {
+Usart::Usart(const UsartConfig& config)
+: config_(config) {
     switch (config_.number) {
         case kUsart1 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART1)); break;
         case kUsart2 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART2)); break;
@@ -96,9 +101,23 @@ void Usart::Transmit(DataValType dataValue) {
     usartReg->SR.registerVal = 0;
 }
 
+void  Usart::Transmit(DataValType dataValue, pFunction pISR) {
+    // Helper_SetTransmittedData(this->config_.number, dataValue);
+    SetTransmitCompleteISR(this->config_.number, pISR);
+    this->usartReg->DR = dataValue;
+    //  Enable Transmit complete interrupt 
+    this->usartReg->CR1.TCIE = 1;
+}
 typename Usart::DataValType Usart::Receive() {
     while (!(usartReg->SR.RXNE) ) {}
     return static_cast<DataValType>(usartReg->DR);
+}
+
+void Usart::Receive(DataValType* pData, pFunction pISR) {
+    SetReceiveReadyISR(this->config_.number, pISR);
+    pReceivedData_[static_cast<uint8_t>(this->config_.number)] = pData;
+    //  Enable Receive interrupt 
+    usartReg->CR1.RXNEIE = 1;
 }
 
 ErrorType Usart::RetErrorDetection() {
@@ -116,31 +135,85 @@ ErrorType Usart::RetErrorDetection() {
     }
     return kSuccess;
 }
-void Usart::ReceiveAsynchronous(pFunction fun) {
-    PointerToISR = fun;
-    usartReg->CR1.RXNEIE = 1;
+
+void Usart::SetTransmitCompleteISR(UsartNum number, pFunction pISR) {
+    pTransmitCompleteFun_[static_cast<uint8_t>(number)] = pISR;
 }
-pFunction Usart::GetPointerToISR() {
-    return PointerToISR;
+
+void Usart::SetReceiveReadyISR(UsartNum number, pFunction pISR) {
+    pReceiveReadyFun_[static_cast<uint8_t>(number)] = pISR;
 }
-extern "C" void Usart1_Handler(void) {
-    pFunction func = Usart::GetPointerToISR();
-    if (func != NULL) {
-        func();
+
+pFunction Usart::Helper_GetTransmitCompleteISR(UsartNum number) {
+    return pTransmitCompleteFun_[static_cast<uint8_t>(number)];
+}
+
+pFunction Usart::Helper_GetReceiveReadyISR(UsartNum number) {
+    return pReceiveReadyFun_[static_cast<uint8_t>(number)];
+}
+
+void Usart::Helper_SetReceivedData(UsartNum number, DataValType data)  {
+    *(Usart::pReceivedData_[static_cast<uint8_t>(number)]) = data;
+}
+
+extern "C" void USART1_IRQHandler(void) {
+    pFunction func = nullptr;
+    // Check if the transmission is complete
+    if (USART1->SR.TC == 1) {
+        func = Usart::Helper_GetTransmitCompleteISR(kUsart1);
+        if (func != NULL) {
+            func();
+        }
+        // Clear the transmission complete flag
+        USART1->SR.TC = 0;
+    }
+    // Check if data is received
+    if (USART1->SR.RXNE == 1) {
+        func = Usart::Helper_GetReceiveReadyISR(kUsart1);
+        // Store the received data
+        Usart::Helper_SetReceivedData(kUsart1, static_cast<Usart::DataValType>(USART1->DR));
+        if (func != NULL) {
+            func();
+        }
+        // Clear the receive flag
         USART1->SR.RXNE = 0;
     }
 }
-extern "C" void Usart2_Handler(void) {
-    pFunction func = Usart::GetPointerToISR();
-    if (func != NULL) {
-        func();
+
+extern "C" void USART2_IRQHandler(void) {
+    pFunction func = nullptr;
+    if (USART2->SR.TC == 1) {
+        func = Usart::Helper_GetTransmitCompleteISR(kUsart2);
+        if (func != NULL) {
+            func();
+        }
+        USART2->SR.TC = 0;
+    }
+    if (USART2->SR.RXNE == 1) {
+        Usart::Helper_SetReceivedData(kUsart2, static_cast<Usart::DataValType>(USART2->DR));
+        func = Usart::Helper_GetReceiveReadyISR(kUsart2);
+        if (func != NULL) {
+            func();
+        }
         USART2->SR.RXNE = 0;
     }
 }
-extern "C" void Usart3_Handler(void) {
-    pFunction func = Usart::GetPointerToISR();
-    if (func != NULL) {
-        func();
+
+extern "C" void USART3_IRQHandler(void) {
+    pFunction func = nullptr;
+    if (USART3->SR.TC == 1) {
+        func = Usart::Helper_GetTransmitCompleteISR(kUsart3);
+        if (func != NULL) {
+            func();
+        }
+        USART3->SR.TC = 0;
+    }
+    if (USART3->SR.RXNE == 1) {
+        Usart::Helper_SetReceivedData(kUsart3, static_cast<Usart::DataValType>(USART3->DR));
+        func = Usart::Helper_GetReceiveReadyISR(kUsart3);
+        if (func != NULL) {
+            func();
+        }
         USART3->SR.RXNE = 0;
     }
 }
