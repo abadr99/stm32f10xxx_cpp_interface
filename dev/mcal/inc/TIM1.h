@@ -18,6 +18,16 @@ enum TimerDirection {
   kUP,
   kDown
 };
+struct TimerConfign {
+	uint16_t ReloadValue;
+	uint8_t TimerID;
+	TimerDirection Direction;
+};
+class Timer1 {
+ public:  
+    static Init(TimerConfign & timer);
+ private:
+};
 
 
 

@@ -15,5 +15,10 @@
 using namespace stm32::dev::mcal::timer1;
 using namespace stm32::registers::timer;
 
+void Timer1::Init(TimerConfign & timer) {
+    /*Disable Timer at first*/
+    TIM1->CR1.CEN = 0;
+}
+
 
 
