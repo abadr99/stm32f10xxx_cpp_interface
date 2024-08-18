@@ -27,7 +27,8 @@ class HC05 {
 
     using Usart = stm32::dev::mcal::usart::Usart; 
     explicit HC05(const Usart& usart);
-    void Send(char c);
+  
+    void Send(const char* str);
     void Send(typename Usart::DataValType n);
     void Send(const std::string& str);
     typename Usart::DataValType Receive();
@@ -62,6 +63,22 @@ class HC05 {
     // TODO(@abadr99): Support more AT commands
  private:
     Usart usart_;
+    enum Commands {
+      kAT,
+      kAT_RESET,
+      kAT_VERSION,
+      kAT_NAME,
+      kAT_PSWD,
+      kAT_ROLE,
+      kAT_UART,
+      kAT_INQM,
+      kAT_BIND,
+      kAT_INQ,
+      kSET_POSTFIX,
+      kGET_POSTFIX,
+      kAT_END,
+      kCOMMA,
+    };
 };
 
 }  // namespace bluetooth

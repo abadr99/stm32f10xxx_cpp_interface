@@ -22,5 +22,6 @@ hal/DC_Motor.cpp
 hal/Relay.cpp
 hal/Keypad.cpp
 hal/Led.cpp
+mcal/Power.cpp
 hal/Esp.cpp
 hal/Lcd.cpp
