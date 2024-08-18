@@ -56,13 +56,14 @@ void ADC::Init() {
     ADC_reg->CR2.registerVal = 0;  // Reset ADC
     ADC_reg->CR2.ALIGN = static_cast<RegWidth_t>(config_.alignment);
     if (config_.trigSource != kSoftware) {
-        if (config_.mode == kInjected) {
-            ADC_reg->CR2.JEXTTRIG = 1;
-            ADC_reg->CR2.JEXTSEL = static_cast<RegWidth_t>(config_.trigSource);
-        } else {
-            ADC_reg->CR2.EXTTRIG = 1;
-            ADC_reg->CR2.EXTSEL = static_cast<RegWidth_t>(config_.trigSource);
-        }
+        ADC_reg->CR2.ADON = 1;
+        return;
+    } else if (config_.mode == kInjected) {
+        ADC_reg->CR2.JEXTTRIG = 1;
+        ADC_reg->CR2.JEXTSEL = static_cast<RegWidth_t>(config_.trigSource);
+    } else {
+        ADC_reg->CR2.EXTTRIG = 1;
+        ADC_reg->CR2.EXTSEL = static_cast<RegWidth_t>(config_.trigSource);
     }
     ADC_reg->CR2.ADON = 1;
 }
