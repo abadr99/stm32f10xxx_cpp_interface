@@ -19,6 +19,28 @@ using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::adc;
 using namespace stm32::registers::adc;
 
+ASSERT_STRUCT_SIZE(ADCRegDef, (sizeof(RegWidth_t) * 20));
+
+ASSERT_MEMBER_OFFSET(ADCRegDef, SR,          0);
+ASSERT_MEMBER_OFFSET(ADCRegDef, CR1,          sizeof(RegWidth_t) * 1);
+ASSERT_MEMBER_OFFSET(ADCRegDef, CR2,         sizeof(RegWidth_t) * 2);
+ASSERT_MEMBER_OFFSET(ADCRegDef, SMPR1,         sizeof(RegWidth_t) * 3);
+ASSERT_MEMBER_OFFSET(ADCRegDef, SMPR2,         sizeof(RegWidth_t) * 4);
+ASSERT_MEMBER_OFFSET(ADCRegDef, JOFR1,         sizeof(RegWidth_t) * 5);
+ASSERT_MEMBER_OFFSET(ADCRegDef, JOFR2,        sizeof(RegWidth_t) * 6);
+ASSERT_MEMBER_OFFSET(ADCRegDef, JOFR3,        sizeof(RegWidth_t) * 7);
+ASSERT_MEMBER_OFFSET(ADCRegDef, JOFR4,        sizeof(RegWidth_t) * 8);
+ASSERT_MEMBER_OFFSET(ADCRegDef, HTR,        sizeof(RegWidth_t) * 9);
+ASSERT_MEMBER_OFFSET(ADCRegDef, LTR,        sizeof(RegWidth_t) * 10);
+ASSERT_MEMBER_OFFSET(ADCRegDef, SQR1,        sizeof(RegWidth_t) * 11);
+ASSERT_MEMBER_OFFSET(ADCRegDef, SQR2,        sizeof(RegWidth_t) * 12);
+ASSERT_MEMBER_OFFSET(ADCRegDef, SQR3,        sizeof(RegWidth_t) * 13);
+ASSERT_MEMBER_OFFSET(ADCRegDef, JSQR,        sizeof(RegWidth_t) * 14);
+ASSERT_MEMBER_OFFSET(ADCRegDef, JDR1,        sizeof(RegWidth_t) * 15);
+ASSERT_MEMBER_OFFSET(ADCRegDef, JDR2,        sizeof(RegWidth_t) * 16);
+ASSERT_MEMBER_OFFSET(ADCRegDef, JDR3,        sizeof(RegWidth_t) * 17);
+ASSERT_MEMBER_OFFSET(ADCRegDef, JDR4,        sizeof(RegWidth_t) * 18);
+ASSERT_MEMBER_OFFSET(ADCRegDef, DR,        sizeof(RegWidth_t) * 19);
 
 ADC::ADC(const ADCConfig& config) : config_(config) {
     switch (config_.number) {
