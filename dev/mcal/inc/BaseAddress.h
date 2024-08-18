@@ -41,6 +41,8 @@
 
 #define DMA_BASE_ADDRESS    (0x40020000)
 
+#define TIM1_BASE_ADDRESS   (0x4001 2C00)
+
 namespace stm32 {
 namespace registers {
 namespace rcc {
