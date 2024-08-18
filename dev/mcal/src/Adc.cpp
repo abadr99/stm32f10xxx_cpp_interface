@@ -33,8 +33,8 @@ ADC::ADC(const ADCConfig& config) : config_(config) {
 void ADC::Init() {
     ADC_reg->CR2.registerVal = 0;  // Reset ADC
     ADC_reg->CR2.ALIGN = static_cast<RegWidth_t>(config_.alignment);
-    if (config_.trigSource != kSOFTWARE) {
-        if (config_.mode == kINJECTED) {
+    if (config_.trigSource != kSoftware) {
+        if (config_.mode == kInjected) {
             ADC_reg->CR2.JEXTTRIG = 1;
             ADC_reg->CR2.JEXTSEL = static_cast<RegWidth_t>(config_.trigSource);
         } else {
@@ -113,10 +113,10 @@ uint16_t ADC::StartInjectedConversion() {
 
 void ADC::EnableInterrupt() {
     switch (config_.mode) {
-    case kSINGLE:
+    case kSingle:
         ADC_reg->CR1.EOCIE = 1;
         break;
-    case kINJECTED:
+    case kInjected:
         ADC_reg->CR1.JEOCIE = 1;
         break;
     default:
@@ -126,10 +126,10 @@ void ADC::EnableInterrupt() {
 
 void ADC::DisableInterrupt() {
     switch (config_.mode) {
-    case kSINGLE:
+    case kSingle:
         ADC_reg->CR1.EOCIE = 0;
         break;
-    case kINJECTED:
+    case kInjected:
         ADC_reg->CR1.JEOCIE = 0;
         break;
     default:
@@ -146,12 +146,17 @@ void ADC::ConfigureChannelSample() {
     RegWidth_t sampleTimeBits = static_cast<RegWidth_t>(config_.sampleTime);
     RegWidth_t channel = static_cast<uint32_t>(config_.channel);
     if (channel <= 9) { 
-        ADC_reg->SMPR2.registerVal &= ~(0x7 << (3 * channel)); 
-        ADC_reg->SMPR2.registerVal |= (sampleTimeBits << (3 * channel)); 
+        // Clear the bits
+      ADC_reg->SMPR2.registerVal = ClearBits<uint32_t> (ADC_reg->SMPR2.registerVal,
+                                                        3 * channel, 3 * channel + 2);
+      ADC_reg->SMPR2.registerVal = WriteBits<uint32_t> (3 * channel, 3 * channel + 2,
+                                                        ADC_reg->SMPR2.registerVal, sampleTimeBits);
     } else { 
-        uint32_t adjustedChannel = channel - 10; 
-        ADC_reg->SMPR1.registerVal &= ~(0x7 << (3 * adjustedChannel)); 
-        ADC_reg->SMPR1.registerVal |= (sampleTimeBits << (3 * adjustedChannel)); 
+      uint32_t adjustedChannel = channel - 10; 
+      ADC_reg->SMPR1.registerVal = ClearBits<uint32_t> (ADC_reg->SMPR1.registerVal,
+                                                        3 * adjustedChannel, 3 * adjustedChannel + 2);   //  NOLINT
+      ADC_reg->SMPR1.registerVal = WriteBits<uint32_t> (3 * adjustedChannel, 3 * adjustedChannel + 2,   //  NOLINT
+                                                        ADC_reg->SMPR1.registerVal, sampleTimeBits);
     } 
 } 
 

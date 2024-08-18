@@ -37,32 +37,32 @@ enum  Channel {
         kChannel17
 };
 enum  Alignment {
-        kRIGHT,
-        kLEFT
+        kRight,
+        kLeft
 };
 enum Mode {
-        kSINGLE = 0,
-        kCONTINUOUS = 1,
-        kINJECTED
+        kSingle = 0,
+        kContinous = 1,
+        kInjected
 };
 enum TriggerSource {
-        kTIMER1_CC1 = 0b000,
-        kTIMER1_CC2 = 0b001,
-        kTIMER1_CC3 = 0b010,
-        kTIMER2_CC2 = 0b011,   
-        kTIMER3_TRGO = 0b100,
+        kTimer1_CC1 = 0b000,
+        kTimer1_CC2 = 0b001,
+        kTimer1_CC3 = 0b010,
+        kTimer2_CC2 = 0b011,   
+        kTimer3_TRGO = 0b100,
         kEXTI_LINE11 = 0b110,  
-        kSOFTWARE = 0b111
+        kSoftware = 0b111
 };
 enum  SampleTime {
-        kCYCLES_1_5,
-        kCYCLES_7_5,
-        kCYCLES_13_5,
-        kCYCLES_28_5,
-        kCYCLES_41_5,
-        kCYCLES_55_5,
-        kCYCLES_71_5,
-        kCYCLES_239_5
+        kCycles_1_5,
+        kCycles_7_5,
+        kCycles_13_5,
+        kCycles_28_5,
+        kCycles_41_5,
+        kCycles_55_5,
+        kCycles_71_5,
+        kCycles_239_5
 };
 enum  Adcnum {
     kADC1,
