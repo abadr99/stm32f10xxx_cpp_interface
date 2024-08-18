@@ -60,51 +60,6 @@ typename HC05::Usart::DataValType HC05::Receive() {
 }
 
 void HC05::Test() {
-
-void HC05::Reset() {
-    static const std::string reset = std::string(AT_RESET) + std::string(AT_END);
-    this->Send(reset);
-}
-
-void HC05::GetFirmWareVersion() {
-    static const std::string version = std::string(AT_GET(AT_VERSION)) + std::string(AT_END);
-    this->Send(version);
-}
-
-
-void HC05::SetDeviceName(const std::string& name) {
-    static const std::string device = std::string(AT_SET(AT_NAME)) 
-                                + name 
-                                + std::string(AT_END);
-    this->Send(device);
-}
-
-
-void HC05::SetParingPin(const std::string& pin) {
-    static const std::string paring_pin = std::string(AT_SET(AT_PSWD)) 
-                                    + pin 
-                                    + std::string(AT_END);
-    this->Send(paring_pin);
-}
-
-
-void HC05::SetDeviceRole(DeviceRole role) {
-    static const std::string role_cmd = std::string(AT_SET(AT_ROLE)) 
-                                + std::to_string(static_cast<uint32_t>(role))
-                                + std::string(AT_END);
-    this->Send(role_cmd);
-}
-
-
-void HC05::SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity) {               
-    static const std::string config = std::string(AT_SET(AT_UART))
-                                    + std::to_string(baudRate)
-                                    + COMMA
-                                    + std::to_string(stopBits)
-                                    + COMMA
-                                    + std::to_string(parity)
-                                    + std::string(AT_END);
-    this->Send(config);
     this->Send(commandStrings[kAT]);
     this->Send(commandStrings[kAT_END]);
 }
@@ -155,7 +110,6 @@ void HC05::SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity) {
 void HC05::SetInquiryMode(InquiryMode im, 
                             uint32_t maxNumberOfBluetoothDevices, 
                             uint32_t timeout) {
-
     this->Send(commandStrings[kAT_INQM]);
     this->Send(commandStrings[kSET_POSTFIX]);
     this->Send(std::to_string(static_cast<uint32_t>(im)));
