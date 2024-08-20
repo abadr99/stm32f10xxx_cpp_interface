@@ -67,7 +67,7 @@ void Usart::_SetBaudRate() {
     const uint32_t scale = 16;
 
     // Calculate the USARTDIV value
-    float UsartDiv = ((clockFrequency) / (scale * config_.baudRate));
+    float UsartDiv = (static_cast<float>(clockFrequency) / (scale * config_.baudRate));
 
     // Extract the mantissa and fraction parts
     uint16_t divMantissa  = (uint16_t)UsartDiv;
