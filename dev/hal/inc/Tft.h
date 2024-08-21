@@ -18,10 +18,13 @@ namespace dev {
 namespace hal {
 namespace tft {
 enum TftCommand {
-    kSLPOUT = 0x11,     //  Sleep out & booster on
-    kCASET  = 0x2A,     //  Column address set
-    kRASET  = 0x2B,     //  Row address set
-    kRAWMR  = 0x2C      //  Memory write
+    kSLPOUT   = 0x11,     //  Sleep out & booster on
+    kCASET    = 0x2A,     //  Column address set
+    kRASET    = 0x2B,     //  Row address set
+    kRAWMR    = 0x2C,     //  Memory write
+    kCOLMOD   = 0x3A,     //  Interface pixel format
+    kCOLMOD_P = 0x05,     //  RGB 5-6-5
+    kDISPON   = 0x29      //  Display on
 };
 enum Colors {
     kBlack   = 0x0000,
@@ -34,7 +37,6 @@ enum Colors {
     kWhite   = 0xFFFF
 };
 class Tft {
-using Pin = stm32::dev::mcal::pin::Pin;
  public:
     Tft(Pin A0, Pin rst, Spi SdSpi);
     void DisplayImage();
@@ -42,10 +44,10 @@ using Pin = stm32::dev::mcal::pin::Pin;
     void DrawRectangle();
  private:
     const Pin A0;
-    Pin rst;
-    Spi SdSpi;
+    const Pin rst;
+    Spi TFtSpi;
     void SendCommand(uint8_t command);
-    static void SendData(uint8_t data);
+    void SendData(uint8_t data);
 };
 }   //  namespace tft
 }   //  namespace hal
