@@ -23,5 +23,6 @@ hal/Relay.cpp
 hal/Keypad.cpp
 hal/Led.cpp
 hal/SdCard.cpp
+mcal/Power.cpp
 hal/Esp.cpp
 hal/Lcd.cpp
