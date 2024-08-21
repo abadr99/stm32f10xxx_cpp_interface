@@ -17,18 +17,18 @@ namespace mcal  {
 namespace spi   {
 
 enum DataFrame {
-    kSPI_8bit,
-    kSPI_16bt,
+    kSpi_8bit,
+    kSpi_16bt,
 };
 enum FrameFormat {
     kMSB,
     kLSB,
 };
 enum ClkMode {
-    kMODE0,
-    kMODE1,
-    kMODE2,
-    kMODE3,
+    kMode0,
+    kMode1,
+    kMode2,
+    kMode3,
 };
 enum SlaveManage {
     kHW,
@@ -65,6 +65,7 @@ class Spi {
     void SlaveInit();
     void Write(uint8_t data);
     uint8_t Read();
+    Spinum GetSpiNum();
  private:
     void Helper_SetDataFrame();
     void Helper_SetClockMode();

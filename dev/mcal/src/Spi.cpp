@@ -74,17 +74,19 @@ uint8_t Spi::Read() {
     STM32_ASSERT(ctr != SPI_TIMEOUT);
     return spi_reg->DR;
 }
-
+Spinum Spi::GetSpiNum() {
+    return config_.number;
+}
 inline void Spi::Helper_SetDataFrame() {
-    spi_reg->CR1.DFF = (config_.data == kSPI_16bt);
+    spi_reg->CR1.DFF = (config_.data == kSpi_16bt);
 }
 
 void Spi::Helper_SetClockMode() {
     switch (config_.clk) {
-        case kMODE0: spi_reg->CR1.registerVal &= ~0x03; break;
-        case kMODE1: spi_reg->CR1.registerVal = (spi_reg->CR1.registerVal & ~0x03) | 0x01; break;
-        case kMODE2: spi_reg->CR1.registerVal = (spi_reg->CR1.registerVal & ~0x03) | 0x02; break;
-        case kMODE3: spi_reg->CR1.registerVal |= 0x03; break;
+        case kMode0: spi_reg->CR1.registerVal &= ~0x03; break;
+        case kMode1: spi_reg->CR1.registerVal = (spi_reg->CR1.registerVal & ~0x03) | 0x01; break;
+        case kMode2: spi_reg->CR1.registerVal = (spi_reg->CR1.registerVal & ~0x03) | 0x02; break;
+        case kMode3: spi_reg->CR1.registerVal |= 0x03; break;
     }
 }
 
