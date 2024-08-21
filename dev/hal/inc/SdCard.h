@@ -20,28 +20,28 @@ namespace dev {
 namespace hal {
 namespace sdcard {
 enum  SDCommand {
-    CMD0 = 0,     // GO_IDLE_STATE - Reset card to idle state
-    CMD1 = 1,     // SEND_OP_COND - Initialize card
-    CMD8 = 8,     // SEND_IF_COND - Check voltage range
-    CMD9 = 9,     // SEND_CSD - Read CSD register
-    CMD10 = 10,   // SEND_CID - Read CID register
-    CMD12 = 12,   // STOP_TRANSMISSION - Stop transmission during multiple block read
-    CMD16 = 16,   // SET_BLOCKLEN - Set block length (in bytes)
-    CMD17 = 17,   // READ_SINGLE_BLOCK - Read a single block of data
-    CMD18 = 18,   // READ_MULTIPLE_BLOCK - Read multiple blocks of data
-    CMD24 = 24,   // WRITE_BLOCK - Write a single block of data
-    CMD25 = 25,   // WRITE_MULTIPLE_BLOCK - Write multiple blocks of data
-    CMD32 = 32,   // ERASE_WR_BLK_START - Set first block to erase
-    CMD33 = 33,   // ERASE_WR_BLK_END - Set last block to erase
-    CMD38 = 38,   // ERASE - Erase selected blocks
-    CMD55 = 55,   // APP_CMD - Next command is an application-specific command
-    CMD58 = 58,   // READ_OCR - Read OCR register
-    ACMD41 = 41,  // SD_SEND_OP_COND - Send operating condition
+    kCMD0 = 0,     // GO_IDLE_STATE - Reset card to idle state
+    kCMD1 = 1,     // SEND_OP_COND - Initialize card
+    kCMD8 = 8,     // SEND_IF_COND - Check voltage range
+    kCMD9 = 9,     // SEND_CSD - Read CSD register
+    kCMD10 = 10,   // SEND_CID - Read CID register
+    kCMD12 = 12,   // STOP_TRANSMISSION - Stop transmission during multiple block read
+    kCMD16 = 16,   // SET_BLOCKLEN - Set block length (in bytes)
+    kCMD17 = 17,   // READ_SINGLE_BLOCK - Read a single block of data
+    kCMD18 = 18,   // READ_MULTIPLE_BLOCK - Read multiple blocks of data
+    kCMD24 = 24,   // WRITE_BLOCK - Write a single block of data
+    kCMD25 = 25,   // WRITE_MULTIPLE_BLOCK - Write multiple blocks of data
+    kCMD32 = 32,   // ERASE_WR_BLK_START - Set first block to erase
+    kCMD33 = 33,   // ERASE_WR_BLK_END - Set last block to erase
+    kCMD38 = 38,   // ERASE - Erase selected blocks
+    kCMD55 = 55,   // APP_CMD - Next command is an application-specific command
+    kCMD58 = 58,   // READ_OCR - Read OCR register
+    kACMD41 = 41,  // SD_SEND_OP_COND - Send operating condition
 };
 
 class SD {
  public:
-  SD(Pin Sdpin, Spi SdSpi);
+  SD(const Pin& Sdpin, Spi SdSpi);
   void Init();
   bool WriteBlock(uint32_t blockAddr, const uint8_t* data);
   bool ReadBlock(uint32_t blockAddr, uint8_t* data);
@@ -49,7 +49,7 @@ class SD {
   void Transmit(uint8_t data);
   void SendCommand(SDCommand cmd, uint32_t arg);
   uint8_t ReadResponse();
-  void toggleClock(int cycles);
+  void ToggleClock(int cycles);
   Pin Sdpin;
   Spi SdSpi;
 };
