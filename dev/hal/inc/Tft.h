@@ -10,7 +10,9 @@
  */
 #ifndef DEV_HAL_INC_TFT_H_
 #define DEV_HAL_INC_TFT_H_
-
+using namespace stm32::dev::mcal::pin; 
+using namespace stm32::dev::mcal::gpio;
+using namespace stm32::dev::mcal::spi;
 namespace stm32 {
 namespace dev {
 namespace hal {
@@ -34,14 +36,15 @@ enum Colors {
 class Tft {
 using Pin = stm32::dev::mcal::pin::Pin;
  public:
-    Tft(Pin A0, Pin rst);
+    Tft(Pin A0, Pin rst, Spi SdSpi);
     void DisplayImage();
     void FillColor();
     void DrawRectangle();
  private:
-    Pin A0;
+    const Pin A0;
     Pin rst;
-    static void SendCommand(uint8_t command);
+    Spi SdSpi;
+    void SendCommand(uint8_t command);
     static void SendData(uint8_t data);
 };
 }   //  namespace tft
