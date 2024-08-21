@@ -26,3 +26,4 @@ hal/SdCard.cpp
 mcal/Power.cpp
 hal/Esp.cpp
 hal/Lcd.cpp
+hal/Tft.cpp
