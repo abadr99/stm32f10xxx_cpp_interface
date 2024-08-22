@@ -11,11 +11,11 @@
 
 #include <cstring>
 #include <string>
+
 #include "Assert.h"
 
 #include "Usart.h"
 #include "HC05.h"
-
 
 static constexpr const char* commandStrings[] = {
     "AT\r\n",            // CMD_AT
