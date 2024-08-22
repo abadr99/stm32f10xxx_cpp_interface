@@ -9,6 +9,9 @@
 #ifndef DEV_MCAL_INC_TIM1_H_
 #define DEV_MCAL_INC_TIM1_H_
 
+#include "utils/inc/Types.h"
+
+using namespace stm32::utils::types;
 namespace stm32 {
 namespace dev {
 namespace mcal {
@@ -22,15 +25,15 @@ struct TimerConfign {
 	uint16_t ReloadValue;
 	uint8_t TimerID;
 	TimerDirection Direction;
+    pFunction pfunction;
 };
 class Timer1 {
  public:  
-    static Init(TimerConfign & timer);
+    Timer1(TimerConfign & timer);
+    static pFunction Helper_GetFunToISR();
  private:
+    static pFunction pGlobalCallBackFunction;
 };
-
-
-
 }  // namespace timer1
 }  // namespace mcal
 }  // namespace dev
