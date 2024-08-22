@@ -27,6 +27,7 @@ class HC05 {
 
     using Usart = stm32::dev::mcal::usart::Usart; 
     explicit HC05(const Usart& usart);
+  
     void Send(const char* str);
     void Send(typename Usart::DataValType n);
     void Send(const std::string& str);
