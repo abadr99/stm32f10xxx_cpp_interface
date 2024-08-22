@@ -891,12 +891,9 @@ struct DMARegDef {
 
 }  // namespace dma
 namespace timer {
-struct timerRegDef
-{
-    union CR1
-    {
-        struct 
-        {
+struct timerRegDef {
+    union CR1 {
+        struct {
             RegWidth_t CEN  : 1;    // Counter Enable
             RegWidth_t UDIS : 1;   // Update Disable
             RegWidth_t URS  : 1;    // Update Request Source
@@ -905,14 +902,12 @@ struct timerRegDef
             RegWidth_t CMS  : 2;    // Center-aligned Mode Selection
             RegWidth_t ARPE : 1;   // Auto-Reload Preload Enable
             RegWidth_t CKD  : 2;    // Clock Division
-            RegWidth_t Reserved : 22; // Reserved bits
+            RegWidth_t Reserved : 22;  // Reserved bits
         };
         RegWidth_t registerVal;
     }CR1;
-    union CR2
-    {
-    struct
-    {
+    union CR2 {
+    struct {
         RegWidth_t CCPC : 1;  // Capture/Compare Preloaded Control
         RegWidth_t      : 1;  // Reserved
         RegWidth_t CCUS : 1;  // Capture/Compare Control Update Selection
@@ -926,14 +921,12 @@ struct timerRegDef
         RegWidth_t OIS3 : 1;  // Output Idle State 3 (OC3 output)
         RegWidth_t OIS3N: 1;  // Output Idle State 3 (OC3N output)
         RegWidth_t OIS4 : 1;  // Output Idle State 4 (OC4 output)
-        RegWidth_t Reserved : 17; // Reserved bits
+        RegWidth_t Reserved : 17;  // Reserved bits
     };
     RegWidth_t registerVal;
     } CR2;
-    union SMCR
-    {
-    struct
-    {
+    union SMCR {
+    struct {
         RegWidth_t SMS  : 3;   // Slave Mode Selection
         RegWidth_t      : 1;  // Reserved
         RegWidth_t OCCS : 1;   // OCREF Clear Selection
@@ -942,14 +935,12 @@ struct timerRegDef
         RegWidth_t ETF  : 4;   // External Trigger Filter
         RegWidth_t ETPS : 2;   // External Trigger Prescaler
         RegWidth_t ECE  : 1;   // External Clock Enable
-        RegWidth_t Reserved : 16; // Reserved bits
+        RegWidth_t Reserved : 16;  // Reserved bits
     };
     RegWidth_t registerVal;
     } SMCR;
-    union DIER
-    {
-    struct
-    {
+    union DIER {
+    struct {
         RegWidth_t UIE  : 1;   // Update Interrupt Enable
         RegWidth_t CC1IE: 1;   // Capture/Compare 1 Interrupt Enable
         RegWidth_t CC2IE: 1;   // Capture/Compare 2 Interrupt Enable
@@ -957,35 +948,31 @@ struct timerRegDef
         RegWidth_t CC4IE: 1;   // Capture/Compare 4 Interrupt Enable
         RegWidth_t TIE  : 1;   // Trigger Interrupt Enable
         RegWidth_t BIE  : 1;   // Break Interrupt Enable
-        RegWidth_t Reserved : 25; // Reserved bits
+        RegWidth_t Reserved : 25;  // Reserved bits
     };
     RegWidth_t registerVal;
     } DIER;
-    union SR
-    {
-    struct
-    {
+    union SR {
+    struct {
         RegWidth_t UIF  : 1;   // Update Interrupt Flag
         RegWidth_t CC1IF: 1;   // Capture/Compare 1 Interrupt Flag
         RegWidth_t CC2IF: 1;   // Capture/Compare 2 Interrupt Flag
         RegWidth_t CC3IF: 1;   // Capture/Compare 3 Interrupt Flag
         RegWidth_t CC4IF: 1;   // Capture/Compare 4 Interrupt Flag
-        RegWidth_t COMIF: 1; // Reserved bit
+        RegWidth_t COMIF: 1;   // Reserved bit
         RegWidth_t TIF  : 1;   // Trigger Interrupt Flag
         RegWidth_t BIF  : 1;   // Break Interrupt Flag
-        RegWidth_t      : 1; // Reserved bits
+        RegWidth_t      : 1;   // Reserved bits
         RegWidth_t CC1OF: 1;   // Capture/Compare 1 Overcapture Flag
         RegWidth_t CC2OF: 1;   // Capture/Compare 2 Overcapture Flag
         RegWidth_t CC3OF: 1;   // Capture/Compare 3 Overcapture Flag
         RegWidth_t CC4OF: 1;   // Capture/Compare 4 Overcapture Flag
-        RegWidth_t Reserved3 : 19; // Reserved bits
+        RegWidth_t Reserved3 : 19;  // Reserved bits
     };
     RegWidth_t registerVal;
     } SR;
-    union EGR
-    {
-    struct
-    {
+    union EGR {
+    struct {
         RegWidth_t UG   : 1;   // Update Generation
         RegWidth_t CC1G : 1;   // Capture/Compare 1 Generation
         RegWidth_t CC2G : 1;   // Capture/Compare 2 Generation
@@ -993,42 +980,36 @@ struct timerRegDef
         RegWidth_t CC4G : 1;   // Capture/Compare 4 Generation
         RegWidth_t TG   : 1;   // Trigger Generation
         RegWidth_t BG   : 1;   // Break Generation
-        RegWidth_t Reserved : 25; // Reserved bits
+        RegWidth_t Reserved : 25;  // Reserved bits
     };
     RegWidth_t registerVal;
     } EGR;
-    union CCMR1
-    {
-    struct
-    {
-        RegWidth_t CC1S  : 2; // Capture/Compare 1 Selection
-        RegWidth_t IC1PSC: 2; // Input Capture 1 Prescaler
-        RegWidth_t IC1F  : 4; // Input Capture 1 Filter
-        RegWidth_t CC2S  : 2; // Capture/Compare 2 Selection
-        RegWidth_t IC2PSC: 2; // Input Capture 2 Prescaler
-        RegWidth_t IC2F  : 4; // Input Capture 2 Filter
-        RegWidth_t Reserved : 16; // Reserved bits
+    union CCMR1 {
+    struct {
+        RegWidth_t CC1S  : 2;  // Capture/Compare 1 Selection
+        RegWidth_t IC1PSC: 2;  // Input Capture 1 Prescaler
+        RegWidth_t IC1F  : 4;  // Input Capture 1 Filter
+        RegWidth_t CC2S  : 2;  // Capture/Compare 2 Selection
+        RegWidth_t IC2PSC: 2;  // Input Capture 2 Prescaler
+        RegWidth_t IC2F  : 4;  // Input Capture 2 Filter
+        RegWidth_t Reserved : 16;  // Reserved bits
     };
     RegWidth_t registerVal;
     } CCMR1;
-    union CCMR2
-    {
-    struct
-    {
-        RegWidth_t CC3S  : 2; // Capture/Compare 3 Selection
-        RegWidth_t IC3PSC: 2; // Input Capture 3 Prescaler
-        RegWidth_t IC3F  : 4; // Input Capture 3 Filter
-        RegWidth_t CC4S  : 2; // Capture/Compare 4 Selection
-        RegWidth_t IC4PSC: 2; // Input Capture 4 Prescaler
-        RegWidth_t IC4F  : 4; // Input Capture 4 Filter
-        RegWidth_t Reserved : 16; // Reserved bits
+    union CCMR2 {
+    struct {
+        RegWidth_t CC3S  : 2;  // Capture/Compare 3 Selection
+        RegWidth_t IC3PSC: 2;  // Input Capture 3 Prescaler
+        RegWidth_t IC3F  : 4;  // Input Capture 3 Filter
+        RegWidth_t CC4S  : 2;  // Capture/Compare 4 Selection
+        RegWidth_t IC4PSC: 2;  // Input Capture 4 Prescaler
+        RegWidth_t IC4F  : 4;  // Input Capture 4 Filter
+        RegWidth_t Reserved : 16;  // Reserved bits
     };
     RegWidth_t registerVal;
     } CCMR2;
-    union CCER
-    {
-    struct
-    {
+    union CCER {
+    struct {
         RegWidth_t CC1E : 1;  // Capture/Compare 1 Output Enable
         RegWidth_t CC1P : 1;  // Capture/Compare 1 Output Polarity
         RegWidth_t CC1NE: 1;  // Capture/Compare 1N Output Enable
@@ -1045,7 +1026,7 @@ struct timerRegDef
         RegWidth_t CC4P : 1;  // Capture/Compare 4 Output Polarity
         RegWidth_t      : 1;  // Reserved  
         RegWidth_t CC4NP : 1;  // Capture/Compare 4 Output Polarity
-        RegWidth_t Reserved : 16; // Reserved bits
+        RegWidth_t Reserved : 16;  // Reserved bits
     };
     RegWidth_t registerVal;
     } CCER;
@@ -1057,10 +1038,8 @@ struct timerRegDef
     RegWidth_t CCR2;
     RegWidth_t CCR3;
     RegWidth_t CCR4;
-    union BDTR
-    {
-    struct
-    {
+    union BDTR {
+    struct {
         RegWidth_t DTG   : 8;  // Dead-Time Generator Set-up
         RegWidth_t LOCK  : 2;  // Lock Configuration
         RegWidth_t OSSI  : 1;  // Off-State Selection for Idle mode
@@ -1069,24 +1048,26 @@ struct timerRegDef
         RegWidth_t BKP   : 1;  // Break Polarity
         RegWidth_t AOE   : 1;  // Automatic Output Enable
         RegWidth_t MOE   : 1;  // Main Output Enable
-        RegWidth_t Reserved : 16; // Reserved bits
+        RegWidth_t Reserved : 16;  // Reserved bits
     };
     RegWidth_t registerVal;
     } BDTR;
-    union DCR
-    {
-    struct
-    {
+    union DCR {
+    struct {
         RegWidth_t DBA   : 5;  // DMA Base Address
         RegWidth_t       : 3;  // Reserved
         RegWidth_t DBL   : 5;  // DMA Buffer Size
-        RegWidth_t Reserved : 19; // Reserved bits
+        RegWidth_t Reserved : 19;  // Reserved bits
     };
     RegWidth_t registerVal;
     } DCR;
     RegWidth_t DMAR;
 };
-#define TIM1 (reinterpret_cast<volatile timerRegDef*>(TIM1_BASE_ADDRESS))
+#define TIMER1 (reinterpret_cast<volatile timerRegDef*>(TIMER1_BASE_ADDRESS))
+#define TIMER2 (reinterpret_cast<volatile timerRegDef*>(TIMER2_BASE_ADDRESS))
+#define TIMER3 (reinterpret_cast<volatile timerRegDef*>(TIMER3_BASE_ADDRESS))
+#define TIMER4 (reinterpret_cast<volatile timerRegDef*>(TIMER4_BASE_ADDRESS))
+#define TIMER5 (reinterpret_cast<volatile timerRegDef*>(TIMER5_BASE_ADDRESS))
 }  // namespace timer
 
 namespace pwr {
