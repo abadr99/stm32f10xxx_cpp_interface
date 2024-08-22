@@ -16,7 +16,7 @@ namespace stm32 {
 namespace dev   {
 namespace mcal  {
 namespace adc   {
-enum  Channel {
+enum  AdcChannel {
         kChannel0,
         kChannel1,
         kChannel2,
@@ -40,7 +40,7 @@ enum  Alignment {
         kRight,
         kLeft
 };
-enum Mode {
+enum AdcMode {
         kSingle = 0,
         kContinous = 1,
         kInjected
@@ -64,15 +64,15 @@ enum  SampleTime {
         kCycles_71_5,
         kCycles_239_5
 };
-enum  Adcnum {
+enum  AdcNum {
     kADC1,
     kADC2
 };
-struct ADCConfig {
-       Adcnum number;
+struct AdcConfig {
+       AdcNum number;
        Alignment alignment;
-       Channel channel;
-       Mode mode;
+       AdcChannel channel;
+       AdcMode mode;
        TriggerSource trigSource;
        SampleTime sampleTime;
        // TODO(@noran97): scan mode , multimode and discontinous mode
@@ -80,7 +80,7 @@ struct ADCConfig {
 
 class ADC {
  public:
-     explicit ADC(const ADCConfig& config);
+     explicit ADC(const AdcConfig& config);
      void Init();
      uint16_t StartSingleConversion();
      void StartContinuousConversion();
@@ -91,7 +91,7 @@ class ADC {
      void DisableInterrupt();
      void Disable();
  private:
-     const ADCConfig& config_;
+     const AdcConfig& config_;
      volatile ADCRegDef* ADC_reg;
      void ConfigureChannelSample();
 };

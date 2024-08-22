@@ -42,7 +42,7 @@ ASSERT_MEMBER_OFFSET(ADCRegDef, JDR3,        sizeof(RegWidth_t) * 17);
 ASSERT_MEMBER_OFFSET(ADCRegDef, JDR4,        sizeof(RegWidth_t) * 18);
 ASSERT_MEMBER_OFFSET(ADCRegDef, DR,        sizeof(RegWidth_t) * 19);
 
-ADC::ADC(const ADCConfig& config) : config_(config) {
+ADC::ADC(const AdcConfig& config) : config_(config) {
     switch (config_.number) {
         case kADC1 : ADC_reg = (reinterpret_cast<volatile ADCRegDef*>(ADC1));
                      break;
