@@ -17,7 +17,7 @@ hal/IR.cpp
 hal/HC05.cpp
 mcal/Rtc.cpp
 mcal/Wwdg.cpp
-mcal/TIM1.cpp
+mcal/Timer.cpp
 hal/STP_74HC595.cpp
 hal/DC_Motor.cpp
 hal/Relay.cpp
