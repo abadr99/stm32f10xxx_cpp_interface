@@ -23,7 +23,6 @@ enum TimerDirection {
 };
 struct TimerConfign {
 	uint16_t ReloadValue;
-	uint8_t TimerID;
 	TimerDirection Direction;
     pFunction pfunction;
 };
