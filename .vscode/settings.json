@@ -1,4 +1,10 @@
 {
     "cortex-debug.gdbPath": "/opt/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb",
-    "cortex-debug.openocdPath": "/usr/bin/openocd"
+    "cortex-debug.openocdPath": "/usr/bin/openocd",
+    "files.associations": {
+        "type_traits": "cpp",
+        "string_view": "cpp",
+        "string": "cpp"
+    },
+    "cortex-debug.variableUseNaturalFormat": false
 }

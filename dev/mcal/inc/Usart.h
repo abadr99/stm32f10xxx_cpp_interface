@@ -5,15 +5,16 @@
  * @date 2024-06-24
  *
  * @copyright Copyright (c) 2024
- *
+ *  
  */
 #ifndef DEV_MCAL_INC_USART_H_
 #define DEV_MCAL_INC_USART_H_
 
 #include "../../mcal/inc/stm32f103xx.h"
+using namespace stm32::utils::types;
 using namespace stm32::registers::usart;
 
-#define USART_TIMEOUT (500)
+#define USART_TIMEOUT (2000)
 
 namespace stm32 {
 namespace dev {
@@ -66,6 +67,7 @@ enum ErrorType : uint8_t {
 };
 
 struct UsartConfig {
+    UsartNum number;
     UsartMode mode;
     StopBitsNum numOfSB;
     WordLength dataBits;
@@ -73,25 +75,30 @@ struct UsartConfig {
     HwFlowControl flowControlState;
     uint32_t baudRate;  // clock peripheral is 8MHZ considering that system clock is HSI
 };
-template<UsartNum  USART_NUM>
+
 class Usart {
-    static_assert(USART_NUM== kUsart1 || 
-                  USART_NUM == kUsart2 || 
-                  USART_NUM == kUsart3, 
-                  "Invalid USART");
  public:
     using DataValType = uint16_t;
     explicit Usart(const UsartConfig& config);
-    void EnableClk();
     void Init();
     void Transmit(DataValType dataValue);
+    void Transmit(DataValType dataValue, pFunction pISR);
     DataValType Receive();
+    void Receive(DataValType *pData, pFunction pISR);
     ErrorType RetErrorDetection();
+    static pFunction Helper_GetTransmitCompleteISR(UsartNum number);
+    static pFunction Helper_GetReceiveReadyISR(UsartNum number);
+    static void Helper_SetReceivedData(UsartNum number, DataValType data);
  private:
-    enum Flag : uint8_t {kEnabled, kDisabled};
-    void _SetBaudRate();
+    enum Flag : uint8_t {kDisabled, kEnabled};
     const UsartConfig& config_;
     volatile UsartRegDef* usartReg;
+    static volatile DataValType *pReceivedData_[3];
+    static pFunction pTransmitCompleteFun_[3];
+    static pFunction pReceiveReadyFun_[3];
+    void _SetBaudRate();
+    static void SetTransmitCompleteISR(UsartNum number, pFunction pISR);
+    static void SetReceiveReadyISR(UsartNum number, pFunction pISR);
 };
 
 }  // namespace usart

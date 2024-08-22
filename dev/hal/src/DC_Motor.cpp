@@ -9,7 +9,7 @@
  * 
  */
 #include "BitManipulation.h"
-
+#include "Assert.h"
 #include "Pin.h"
 #include "Gpio.h"
 #include "DC_Motor.h"
@@ -19,18 +19,23 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::dc_motor;
 
 DC_Motor::DC_Motor(Pin pin1, Pin pin2) : pin1(pin1) , pin2(pin2) {
-    Gpio::SetOutputMode(pin1, OutputMode::kPushPull_2MHZ);
-    Gpio::SetOutputMode(pin2, OutputMode::kPushPull_2MHZ);
+    STM32_ASSERT(pin1.IsOutput());
+    STM32_ASSERT(pin2.IsOutput());
+    Gpio::Set(pin1);
+    Gpio::Set(pin2);
 }
+
 void DC_Motor::ClockWise() {
-    Gpio::SetPinValue(pin1, kHigh);
-    Gpio::SetPinValue(pin2, kLow);
+    Gpio::SetPinValue(pin1, Gpio::State::kHigh);
+    Gpio::SetPinValue(pin2, Gpio::State::kLow);
 }
+
 void DC_Motor::AntiClockWise() {
-    Gpio::SetPinValue(pin1, kLow);
-    Gpio::SetPinValue(pin2, kHigh);
+    Gpio::SetPinValue(pin1, Gpio::State::kLow);
+    Gpio::SetPinValue(pin2, Gpio::State::kHigh);
 }
+
 void DC_Motor::Stop() {
-    Gpio::SetPinValue(pin1, kLow);
-    Gpio::SetPinValue(pin2, kLow);
+    Gpio::SetPinValue(pin1, Gpio::State::kLow);
+    Gpio::SetPinValue(pin2, Gpio::State::kLow);
 }

@@ -8,13 +8,21 @@
  * @copyright Copyright (c) 2024
  *
  */
+
 #include "mcal/inc/stm32f103xx.h"
+#include "BitManipulation.h"
+#include "Types.h"
 #include "Assert.h"
 #include "Usart.h"
 
 using namespace stm32::registers::rcc;
 using namespace stm32::registers::usart;
 using namespace stm32::dev::mcal::usart;
+
+pFunction  Usart::pTransmitCompleteFun_[3] = {nullptr};
+pFunction  Usart::pReceiveReadyFun_[3] = {nullptr};
+
+volatile Usart::DataValType* Usart::pReceivedData_[3] = {nullptr, nullptr, nullptr};
 
 #define CHECK_CONFIG()\
     STM32_ASSERT((config_.mode >= kRx) && (config_.mode <= kRxTx));\
@@ -34,9 +42,10 @@ ASSERT_MEMBER_OFFSET(UsartRegDef, CR2,         sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(UsartRegDef, CR3,         sizeof(RegWidth_t) * 5);
 ASSERT_MEMBER_OFFSET(UsartRegDef, GTPR,        sizeof(RegWidth_t) * 6);
 
-template<UsartNum  USART_NUM>
-Usart<USART_NUM>::Usart(const UsartConfig& config) : config_(config) {
-    switch (USART_NUM) {
+
+Usart::Usart(const UsartConfig& config)
+: config_(config) {
+    switch (config_.number) {
         case kUsart1 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART1)); break;
         case kUsart2 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART2)); break;
         case kUsart3 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART3)); break;
@@ -44,39 +53,7 @@ Usart<USART_NUM>::Usart(const UsartConfig& config) : config_(config) {
     }
 }
 
-template<UsartNum  USART_NUM>
-void Usart<USART_NUM>::EnableClk() {
-    switch (USART_NUM) {
-        case kUsart1 : RCC->APB2ENR.USART1EN = Flag::kEnabled; break;
-        case kUsart2 : RCC->APB1ENR.USART2EN = Flag::kEnabled; break;
-        case kUsart3 : RCC->APB1ENR.USART3EN = Flag::kEnabled; break;
-        default: break;
-    }
-}
-
-template<UsartNum  USART_NUM>
-void Usart<USART_NUM>::Init() {
-    auto SetBaudRate = [&]() {
-        const uint32_t clockFrequency = 8000000;  // 8 MHz
-        const uint32_t scale = 16;
-        const uint32_t multiplier = 1000;
-        const uint32_t roundingFactor = 500;
-
-        // Calculate the USARTDIV value
-        uint32_t UsartDiv = ((clockFrequency * multiplier) / (scale * config_.baudRate));
-
-        // Extract the mantissa and fraction parts
-        uint16_t divMantissa  = UsartDiv / multiplier;
-        uint16_t fractionPart = UsartDiv % multiplier;
-
-        // Calculate the fraction
-        uint8_t divFraction = ((fractionPart * scale) + roundingFactor) / multiplier;
-
-        // Assign the calculated values to the BRR register
-        usartReg->BRR.DIV_Mantissa = divMantissa;
-        usartReg->BRR.DIV_Fraction = divFraction;
-    };
-
+void Usart::Init() {
     CHECK_CONFIG();
     /* Enable usart peripheral */
     usartReg->CR1.UE = kEnabled;
@@ -90,30 +67,60 @@ void Usart<USART_NUM>::Init() {
     usartReg->CR1.PS_PCE = config_.parityMode;
     /* Set hardware flow control */
     usartReg->CR3.RTSE_CTSE = config_.flowControlState;
-    SetBaudRate();
+    
+    _SetBaudRate();
 }
 
-template<UsartNum  USART_NUM>
-void Usart<USART_NUM>::Transmit(DataValType dataValue) {
+void Usart::_SetBaudRate() {
+    const uint32_t clockFrequency = 8000000;  // 8 MHz
+    const uint32_t scale = 16;
+
+    // Calculate the USARTDIV value
+    float UsartDiv = ((clockFrequency) / (scale * config_.baudRate));
+
+    // Extract the mantissa and fraction parts
+    uint16_t divMantissa  = (uint16_t)UsartDiv;
+    float fractionPart = (UsartDiv - divMantissa);
+
+    // Calculate the fraction
+    uint8_t divFraction = (uint16_t)(fractionPart * scale);
+    
+    // Assign the calculated values to the BRR register
+    usartReg->BRR.DIV_Mantissa = divMantissa;
+    usartReg->BRR.DIV_Fraction = divFraction;
+}
+
+void Usart::Transmit(DataValType dataValue) {
     uint32_t count = 0;
-    while (!(usartReg->SR.TXE) && (count != USART_TIMEOUT) && (++count)) {}
+    while (!(usartReg->SR.TXE && (count != USART_TIMEOUT) && (++count)) ) {}
     STM32_ASSERT(count != USART_TIMEOUT);
     count = 0;
-    usartReg->DR = dataValue; 
+    usartReg->DR = dataValue;
     while (!(usartReg->SR.TC) && (count != USART_TIMEOUT) && (++count)) {}
     STM32_ASSERT(count != USART_TIMEOUT);
+    usartReg->SR.registerVal = 0;
 }
 
-template<UsartNum  USART_NUM>
-typename Usart<USART_NUM>::DataValType Usart<USART_NUM>::Receive() {
-    uint32_t count = 0;
-    while (!(usartReg->SR.RXNE) && (count != USART_TIMEOUT) && (++count)) {}
-    STM32_ASSERT(count != USART_TIMEOUT);
+void  Usart::Transmit(DataValType dataValue, pFunction pISR) {
+    // Helper_SetTransmittedData(this->config_.number, dataValue);
+    SetTransmitCompleteISR(this->config_.number, pISR);
+    this->usartReg->DR = dataValue;
+    //  Enable Transmit complete interrupt 
+    this->usartReg->CR1.TCIE = 1;
+}
+typename Usart::DataValType Usart::Receive() {
+    while (!(usartReg->SR.RXNE) ) {}
     return static_cast<DataValType>(usartReg->DR);
 }
 
-template<UsartNum  USART_NUM>
-ErrorType Usart<USART_NUM>::RetErrorDetection() {
+void Usart::Receive(DataValType* pData, pFunction pISR) {
+    SetReceiveReadyISR(this->config_.number, pISR);
+    pReceivedData_[static_cast<uint8_t>(this->config_.number)] = pData;
+    //  Enable Receive interrupt 
+    usartReg->CR1.RXNEIE = 1;
+}
+
+ErrorType Usart::RetErrorDetection() {
     if (usartReg->SR.PE == Flag::kEnabled) {
         return kParityError;
     } 
@@ -129,6 +136,84 @@ ErrorType Usart<USART_NUM>::RetErrorDetection() {
     return kSuccess;
 }
 
-template class Usart<kUsart1>;
-template class Usart<kUsart2>;
-template class Usart<kUsart3>;
+void Usart::SetTransmitCompleteISR(UsartNum number, pFunction pISR) {
+    pTransmitCompleteFun_[static_cast<uint8_t>(number)] = pISR;
+}
+
+void Usart::SetReceiveReadyISR(UsartNum number, pFunction pISR) {
+    pReceiveReadyFun_[static_cast<uint8_t>(number)] = pISR;
+}
+
+pFunction Usart::Helper_GetTransmitCompleteISR(UsartNum number) {
+    return pTransmitCompleteFun_[static_cast<uint8_t>(number)];
+}
+
+pFunction Usart::Helper_GetReceiveReadyISR(UsartNum number) {
+    return pReceiveReadyFun_[static_cast<uint8_t>(number)];
+}
+
+void Usart::Helper_SetReceivedData(UsartNum number, DataValType data)  {
+    *(Usart::pReceivedData_[static_cast<uint8_t>(number)]) = data;
+}
+
+extern "C" void USART1_IRQHandler(void) {
+    pFunction func = nullptr;
+    // Check if the transmission is complete
+    if (USART1->SR.TC == 1) {
+        func = Usart::Helper_GetTransmitCompleteISR(kUsart1);
+        if (func != NULL) {
+            func();
+        }
+        // Clear the transmission complete flag
+        USART1->SR.TC = 0;
+    }
+    // Check if data is received
+    if (USART1->SR.RXNE == 1) {
+        func = Usart::Helper_GetReceiveReadyISR(kUsart1);
+        // Store the received data
+        Usart::Helper_SetReceivedData(kUsart1, static_cast<Usart::DataValType>(USART1->DR));
+        if (func != NULL) {
+            func();
+        }
+        // Clear the receive flag
+        USART1->SR.RXNE = 0;
+    }
+}
+
+extern "C" void USART2_IRQHandler(void) {
+    pFunction func = nullptr;
+    if (USART2->SR.TC == 1) {
+        func = Usart::Helper_GetTransmitCompleteISR(kUsart2);
+        if (func != NULL) {
+            func();
+        }
+        USART2->SR.TC = 0;
+    }
+    if (USART2->SR.RXNE == 1) {
+        Usart::Helper_SetReceivedData(kUsart2, static_cast<Usart::DataValType>(USART2->DR));
+        func = Usart::Helper_GetReceiveReadyISR(kUsart2);
+        if (func != NULL) {
+            func();
+        }
+        USART2->SR.RXNE = 0;
+    }
+}
+
+extern "C" void USART3_IRQHandler(void) {
+    pFunction func = nullptr;
+    if (USART3->SR.TC == 1) {
+        func = Usart::Helper_GetTransmitCompleteISR(kUsart3);
+        if (func != NULL) {
+            func();
+        }
+        USART3->SR.TC = 0;
+    }
+    if (USART3->SR.RXNE == 1) {
+        Usart::Helper_SetReceivedData(kUsart3, static_cast<Usart::DataValType>(USART3->DR));
+        func = Usart::Helper_GetReceiveReadyISR(kUsart3);
+        if (func != NULL) {
+            func();
+        }
+        USART3->SR.RXNE = 0;
+    }
+}
