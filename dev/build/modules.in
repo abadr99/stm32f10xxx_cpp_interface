@@ -15,3 +15,4 @@ hal/SevenSegment.cpp
 hal/src/STP_74HC595.cpp
 hal/src/DC_Motor.cpp
 hal/src/Relay.cpp
+hal/src/LedMatrix.cpp
