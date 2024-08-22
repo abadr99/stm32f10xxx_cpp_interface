@@ -13,20 +13,21 @@
 using namespace stm32::dev::mcal::pin; 
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::spi;
+using namespace stm32::utils::array;
 namespace stm32 {
 namespace dev {
 namespace hal {
 namespace tft {
 enum TftCommand {
-    kSLPOUT   = 0x11,     //  Sleep out & booster on
-    kCASET    = 0x2A,     //  Column address set
-    kRASET    = 0x2B,     //  Row address set
-    kRAWMR    = 0x2C,     //  Memory write
-    kCOLMOD   = 0x3A,     //  Interface pixel format
-    kCOLMOD_P = 0x05,     //  RGB 5-6-5
-    kDISPON   = 0x29      //  Display on
+    kSLPOUT   = 0x11,   //  Sleep out & booster on
+    kCASET    = 0x2A,   //  Column address set
+    kRASET    = 0x2B,   //  Row address set
+    kRAWMR    = 0x2C,   //  Memory write
+    kCOLMOD   = 0x3A,   //  Interface pixel format
+    kCOLMOD_P = 0x05,   //  RGB 5-6-5
+    kDISPON   = 0x29    //  Display on
 };
-enum Colors {
+enum TftColors {
     kBlack   = 0x0000,
     kBlue    = 0x001F,
     kRed     = 0xF800,
@@ -39,8 +40,8 @@ enum Colors {
 class Tft {
  public:
     Tft(Pin A0, Pin rst, Spi SdSpi);
-    void DisplayImage();
-    void FillColor();
+    void DisplayImage(const Array<uint16_t, 20480> image);
+    void FillColor(TftColors color);
     void DrawRectangle();
  private:
     const Pin A0;
