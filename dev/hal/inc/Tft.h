@@ -18,13 +18,13 @@ namespace stm32 {
 namespace dev {
 namespace hal {
 namespace tft {
+#define RGB565  0x05
 enum TftCommand {
     kSLPOUT   = 0x11,   //  Sleep out & booster on
     kCASET    = 0x2A,   //  Column address set
     kRASET    = 0x2B,   //  Row address set
     kRAWMR    = 0x2C,   //  Memory write
     kCOLMOD   = 0x3A,   //  Interface pixel format
-    kCOLMOD_P = 0x05,   //  RGB 5-6-5
     kDISPON   = 0x29    //  Display on
 };
 enum TftColors {
@@ -40,15 +40,19 @@ enum TftColors {
 class Tft {
  public:
     Tft(Pin A0, Pin rst, Spi SdSpi);
+    void Reset();
     void DisplayImage(const Array<uint16_t, 20480> image);
-    void FillColor(TftColors color);
-    void DrawRectangle();
+    void DrawRectangle(uint8_t hight, uint8_t width, uint8_t xaxis, uint8_t yaxis, TftColors color);
  private:
     const Pin A0;
     const Pin rst;
     Spi TFtSpi;
     void SendCommand(uint8_t command);
     void SendData(uint8_t data);
+    void SetAddress(uint16_t startX, uint16_t endX, uint16_t startY, uint16_t endY);
+    void SetPixel(uint16_t pixel);
+    void DrawHLine(uint8_t xaxis, uint8_t yaxis, uint8_t length, TftColors color);
+    void DrawVLine(uint8_t xaxis, uint8_t yaxis, uint8_t length, TftColors color);
 };
 }   //  namespace tft
 }   //  namespace hal
