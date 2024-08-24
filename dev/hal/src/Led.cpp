@@ -47,3 +47,4 @@ void Led<CT>::Toggle() {
     TurnOn();
 }
 
+INSTANTIATE_CONNECTION_CLASS(Led)
