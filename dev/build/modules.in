@@ -22,6 +22,7 @@ mcal {
     src/Rtc.cpp
     src/Wwdg.cpp
     src/Power.cpp
+    src/Timer.cpp
 }
 
 // --- HAL PERIPHERALS  --------------------------------------------------------
