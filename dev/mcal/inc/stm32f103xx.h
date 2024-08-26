@@ -267,18 +267,28 @@ struct NvicRegDef {
     uint32_t STIR;       // Software Trigger Interrupt Register
 };
 struct  SCBRegDef {
-    uint32_t CPUID;      // CPUID Base Register
-    uint32_t ICSR;       // Interrupt Control and State Register
-    uint32_t VTOR;       // Vector Table Offset Register
-    uint32_t AIRCR;      // Application Interrupt and Reset Control Register
-    uint32_t SCR;        // System Control Register
-    uint32_t CCR;        // Configuration and Control Register
-    uint8_t  SHP[12];    // System Handlers Priority Registers
-    uint32_t SHCSR;      // System Handler Control and State Register
-    uint32_t CFSR;       // Configurable Fault Status Register
-    uint32_t HFSR;       // HardFault Status Register
-    uint32_t MMFAR;      // MemManage Fault Address Register
-    uint32_t BFAR;       // BusFault Address Register
+    RegWidth_t CPUID;      // CPUID Base Register
+    RegWidth_t ICSR;       // Interrupt Control and State Register
+    RegWidth_t VTOR;       // Vector Table Offset Register
+    RegWidth_t AIRCR;      // Application Interrupt and Reset Control Register
+    union SCR {
+        struct {
+            RegWidth_t              :1;     // Reserved
+            RegWidth_t SLEEPONEXIT  :1;
+            RegWidth_t SLEEPDEEP    :1;
+            RegWidth_t              :1;     // Reserved
+            RegWidth_t SEVONPEND    :1;
+            RegWidth_t              :27;     // Reserved
+        };
+        RegWidth_t registerVal;  //  Register value
+    }SCR;   // System Control Register
+    RegWidth_t CCR;        // Configuration and Control Register
+    RegWidth_t SHP[12];    // System Handlers Priority Registers
+    RegWidth_t SHCSR;      // System Handler Control and State Register
+    RegWidth_t CFSR;       // Configurable Fault Status Register
+    RegWidth_t HFSR;       // HardFault Status Register
+    RegWidth_t MMFAR;      // MemManage Fault Address Register
+    RegWidth_t BFAR;       // BusFault Address Register
 };
 
 
@@ -880,7 +890,232 @@ struct DMARegDef {
 #define DMA (reinterpret_cast<volatile DMARegDef*>(DMA_BASE_ADDRESS))
 
 }  // namespace dma
+namespace timer {
+struct timerRegDef {
+    union CR1 {
+        struct {
+            RegWidth_t CEN  : 1;    // Counter Enable
+            RegWidth_t UDIS : 1;   // Update Disable
+            RegWidth_t URS  : 1;    // Update Request Source
+            RegWidth_t OPM  : 1;    // One Pulse Mode
+            RegWidth_t DIR  : 1;    // Direction
+            RegWidth_t CMS  : 2;    // Center-aligned Mode Selection
+            RegWidth_t ARPE : 1;   // Auto-Reload Preload Enable
+            RegWidth_t CKD  : 2;    // Clock Division
+            RegWidth_t Reserved : 22;  // Reserved bits
+        };
+        RegWidth_t registerVal;
+    }CR1;
+    union CR2 {
+    struct {
+        RegWidth_t CCPC : 1;  // Capture/Compare Preloaded Control
+        RegWidth_t      : 1;  // Reserved
+        RegWidth_t CCUS : 1;  // Capture/Compare Control Update Selection
+        RegWidth_t CCDS : 1;  // Capture/Compare DMA Selection
+        RegWidth_t MMS  : 3;  // Master Mode Selection
+        RegWidth_t TI1S : 1;  // TI1 Selection
+        RegWidth_t OIS1 : 1;  // Output Idle State 1 (OC1 output)
+        RegWidth_t OIS1N: 1;  // Output Idle State 1 (OC1N output)
+        RegWidth_t OIS2 : 1;  // Output Idle State 2 (OC2 output)
+        RegWidth_t OIS2N: 1;  // Output Idle State 2 (OC2N output)
+        RegWidth_t OIS3 : 1;  // Output Idle State 3 (OC3 output)
+        RegWidth_t OIS3N: 1;  // Output Idle State 3 (OC3N output)
+        RegWidth_t OIS4 : 1;  // Output Idle State 4 (OC4 output)
+        RegWidth_t Reserved : 17;  // Reserved bits
+    };
+    RegWidth_t registerVal;
+    } CR2;
+    union SMCR {
+    struct {
+        RegWidth_t SMS  : 3;   // Slave Mode Selection
+        RegWidth_t      : 1;  // Reserved
+        RegWidth_t OCCS : 1;   // OCREF Clear Selection
+        RegWidth_t TS   : 3;   // Trigger Selection
+        RegWidth_t MSM  : 1;   // Master/Slave Mode
+        RegWidth_t ETF  : 4;   // External Trigger Filter
+        RegWidth_t ETPS : 2;   // External Trigger Prescaler
+        RegWidth_t ECE  : 1;   // External Clock Enable
+        RegWidth_t Reserved : 16;  // Reserved bits
+    };
+    RegWidth_t registerVal;
+    } SMCR;
+    union DIER {
+    struct {
+        RegWidth_t UIE  : 1;   // Update Interrupt Enable
+        RegWidth_t CC1IE: 1;   // Capture/Compare 1 Interrupt Enable
+        RegWidth_t CC2IE: 1;   // Capture/Compare 2 Interrupt Enable
+        RegWidth_t CC3IE: 1;   // Capture/Compare 3 Interrupt Enable
+        RegWidth_t CC4IE: 1;   // Capture/Compare 4 Interrupt Enable
+        RegWidth_t TIE  : 1;   // Trigger Interrupt Enable
+        RegWidth_t BIE  : 1;   // Break Interrupt Enable
+        RegWidth_t Reserved : 25;  // Reserved bits
+    };
+    RegWidth_t registerVal;
+    } DIER;
+    union SR {
+    struct {
+        RegWidth_t UIF  : 1;   // Update Interrupt Flag
+        RegWidth_t CC1IF: 1;   // Capture/Compare 1 Interrupt Flag
+        RegWidth_t CC2IF: 1;   // Capture/Compare 2 Interrupt Flag
+        RegWidth_t CC3IF: 1;   // Capture/Compare 3 Interrupt Flag
+        RegWidth_t CC4IF: 1;   // Capture/Compare 4 Interrupt Flag
+        RegWidth_t COMIF: 1;   // Reserved bit
+        RegWidth_t TIF  : 1;   // Trigger Interrupt Flag
+        RegWidth_t BIF  : 1;   // Break Interrupt Flag
+        RegWidth_t      : 1;   // Reserved bits
+        RegWidth_t CC1OF: 1;   // Capture/Compare 1 Overcapture Flag
+        RegWidth_t CC2OF: 1;   // Capture/Compare 2 Overcapture Flag
+        RegWidth_t CC3OF: 1;   // Capture/Compare 3 Overcapture Flag
+        RegWidth_t CC4OF: 1;   // Capture/Compare 4 Overcapture Flag
+        RegWidth_t Reserved3 : 19;  // Reserved bits
+    };
+    RegWidth_t registerVal;
+    } SR;
+    union EGR {
+    struct {
+        RegWidth_t UG   : 1;   // Update Generation
+        RegWidth_t CC1G : 1;   // Capture/Compare 1 Generation
+        RegWidth_t CC2G : 1;   // Capture/Compare 2 Generation
+        RegWidth_t CC3G : 1;   // Capture/Compare 3 Generation
+        RegWidth_t CC4G : 1;   // Capture/Compare 4 Generation
+        RegWidth_t TG   : 1;   // Trigger Generation
+        RegWidth_t BG   : 1;   // Break Generation
+        RegWidth_t Reserved : 25;  // Reserved bits
+    };
+    RegWidth_t registerVal;
+    } EGR;
+    union CCMR1 {
+    struct {
+        RegWidth_t CC1S  : 2;  // Capture/Compare 1 Selection
+        RegWidth_t IC1PSC: 2;  // Input Capture 1 Prescaler
+        RegWidth_t IC1F  : 4;  // Input Capture 1 Filter
+        RegWidth_t CC2S  : 2;  // Capture/Compare 2 Selection
+        RegWidth_t IC2PSC: 2;  // Input Capture 2 Prescaler
+        RegWidth_t IC2F  : 4;  // Input Capture 2 Filter
+        RegWidth_t Reserved : 16;  // Reserved bits
+    };
+    RegWidth_t registerVal;
+    } CCMR1;
+    union CCMR2 {
+    struct {
+        RegWidth_t CC3S  : 2;  // Capture/Compare 3 Selection
+        RegWidth_t IC3PSC: 2;  // Input Capture 3 Prescaler
+        RegWidth_t IC3F  : 4;  // Input Capture 3 Filter
+        RegWidth_t CC4S  : 2;  // Capture/Compare 4 Selection
+        RegWidth_t IC4PSC: 2;  // Input Capture 4 Prescaler
+        RegWidth_t IC4F  : 4;  // Input Capture 4 Filter
+        RegWidth_t Reserved : 16;  // Reserved bits
+    };
+    RegWidth_t registerVal;
+    } CCMR2;
+    union CCER {
+    struct {
+        RegWidth_t CC1E : 1;  // Capture/Compare 1 Output Enable
+        RegWidth_t CC1P : 1;  // Capture/Compare 1 Output Polarity
+        RegWidth_t CC1NE: 1;  // Capture/Compare 1N Output Enable
+        RegWidth_t CC1NP: 1;  // Capture/Compare 1N Output Polarity
+        RegWidth_t CC2E : 1;  // Capture/Compare 2 Output Enable
+        RegWidth_t CC2P : 1;  // Capture/Compare 2 Output Polarity
+        RegWidth_t CC2NE: 1;  // Capture/Compare 2N Output Enable
+        RegWidth_t CC2NP: 1;  // Capture/Compare 2N Output Polarity
+        RegWidth_t CC3E : 1;  // Capture/Compare 3 Output Enable
+        RegWidth_t CC3P : 1;  // Capture/Compare 3 Output Polarity
+        RegWidth_t CC3NE: 1;  // Capture/Compare 3N Output Enable
+        RegWidth_t CC3NP: 1;  // Capture/Compare 3N Output Polarity
+        RegWidth_t CC4E : 1;  // Capture/Compare 4 Output Enable
+        RegWidth_t CC4P : 1;  // Capture/Compare 4 Output Polarity
+        RegWidth_t      : 1;  // Reserved  
+        RegWidth_t CC4NP : 1;  // Capture/Compare 4 Output Polarity
+        RegWidth_t Reserved : 16;  // Reserved bits
+    };
+    RegWidth_t registerVal;
+    } CCER;
+    RegWidth_t CNT;
+    RegWidth_t PSC;
+    RegWidth_t ARR;
+    RegWidth_t RCR;
+    RegWidth_t CCR1;
+    RegWidth_t CCR2;
+    RegWidth_t CCR3;
+    RegWidth_t CCR4;
+    union BDTR {
+    struct {
+        RegWidth_t DTG   : 8;  // Dead-Time Generator Set-up
+        RegWidth_t LOCK  : 2;  // Lock Configuration
+        RegWidth_t OSSI  : 1;  // Off-State Selection for Idle mode
+        RegWidth_t OSSR  : 1;  // Off-State Selection for Run mode
+        RegWidth_t BKE   : 1;  // Break Enable
+        RegWidth_t BKP   : 1;  // Break Polarity
+        RegWidth_t AOE   : 1;  // Automatic Output Enable
+        RegWidth_t MOE   : 1;  // Main Output Enable
+        RegWidth_t Reserved : 16;  // Reserved bits
+    };
+    RegWidth_t registerVal;
+    } BDTR;
+    union DCR {
+    struct {
+        RegWidth_t DBA   : 5;  // DMA Base Address
+        RegWidth_t       : 3;  // Reserved
+        RegWidth_t DBL   : 5;  // DMA Buffer Size
+        RegWidth_t Reserved : 19;  // Reserved bits
+    };
+    RegWidth_t registerVal;
+    } DCR;
+    RegWidth_t DMAR;
+};
+#define TIMER1 (reinterpret_cast<volatile timerRegDef*>(TIMER1_BASE_ADDRESS))
+#define TIMER2 (reinterpret_cast<volatile timerRegDef*>(TIMER2_BASE_ADDRESS))
+#define TIMER3 (reinterpret_cast<volatile timerRegDef*>(TIMER3_BASE_ADDRESS))
+#define TIMER4 (reinterpret_cast<volatile timerRegDef*>(TIMER4_BASE_ADDRESS))
+#define TIMER5 (reinterpret_cast<volatile timerRegDef*>(TIMER5_BASE_ADDRESS))
+}  // namespace timer
 
+namespace pwr {
+struct PwrRegDef {
+    union CR {
+        struct {
+            RegWidth_t LPDS      : 1;   //  Low-power deep sleep
+            RegWidth_t PDDS      : 1;   //  Power down deepsleep
+            RegWidth_t CWUF      : 1;   //  Clear wakeup flag
+            RegWidth_t CSBF      : 1;   //  Clear standby flag
+            RegWidth_t PVDE      : 1;   //  Power voltage detector enable
+            RegWidth_t PLS       : 3;   //  PVD level selection
+            RegWidth_t DBP       : 1;   //  Disable backup domain write protection
+            RegWidth_t RESERVED  : 23;  //  Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }CR;    //  Power control register
+    union CSR {
+        struct {
+            RegWidth_t WUF       : 1;   // Wakeup flag
+            RegWidth_t SBF       : 1;   // Standby flag
+            RegWidth_t PVDO      : 1;   // PVD output
+            RegWidth_t RESERVED  : 5;   // Reserved, must be kept at reset value
+            RegWidth_t EWUP      : 1;   // Enable wakeup pin
+            RegWidth_t RESERVED2 : 23;  // Reserved, must be kept at reset value
+        };
+        RegWidth_t registerVal;
+    }CSR;   //  Power control/status register
+};
+#define PWR (reinterpret_cast<volatile PwrRegDef*>(PWR_BASE_ADDRESS))
+}   // namespace pwr
+
+namespace iwdg {
+struct IWDGRegDef {
+    RegWidth_t KR;
+    RegWidth_t PR;
+    RegWidth_t RLD;
+    union SR {
+        struct {
+            RegWidth_t PVU : 1;
+            RegWidth_t RVU : 1;
+            RegWidth_t     : 30;  //  Reserved
+        };
+        RegWidth_t registerVal;
+    }SR;
+};
+#define IWDG (reinterpret_cast<volatile IWDGRegDef*>(IWDG_BASE_ADDRESS))
+}  // namespace iwdg
 }  // namespace registers
 }  // namespace stm32
 

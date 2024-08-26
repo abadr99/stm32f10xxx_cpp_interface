@@ -48,6 +48,15 @@
 
 #define WWDG_BASE_ADDRESS (0x40003000)
 #define IWDG_BASE_ADDRESS (0x40002C00)
+
+#define PWR_BASE_ADDRESS    (0x40007000)
+
+#define TIMER1_BASE_ADDRESS   (0x40012C00)
+#define TIMER2_BASE_ADDRESS   (0x40000000)
+#define TIMER3_BASE_ADDRESS   (0x40000400)
+#define TIMER4_BASE_ADDRESS   (0x40000800)
+#define TIMER5_BASE_ADDRESS   (0x40000C00)
+
 namespace stm32 {
 namespace registers {
 namespace rcc {

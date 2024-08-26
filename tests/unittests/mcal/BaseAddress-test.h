@@ -39,9 +39,18 @@
 
 #define DMA_BASE_ADDRESS    (&DmaReg[0])
 
+#define IWDG_BASE_ADDRESS   (&IwdgReg[0])
 #define RTC_BASE_ADDRESS    (&RtcReg[0])
-
 #define WWDG_BASE_ADDRESS   (&WwdgReg[0])
+
+#define PWR_BASE_ADDRESS    (&PwrReg[0])
+
+#define TIMER1_BASE_ADDRESS  (&TIMER1Reg[0])
+#define TIMER2_BASE_ADDRESS  (&TIMER2Reg[0])
+#define TIMER3_BASE_ADDRESS  (&TIMER3Reg[0])
+#define TIMER4_BASE_ADDRESS  (&TIMER4Reg[0])
+#define TIMER5_BASE_ADDRESS  (&TIMER5Reg[0])
+
 extern uint32_t RccReg[10];
 
 extern uint32_t GPIOAReg[7];
@@ -66,11 +75,17 @@ extern uint32_t I2c2Reg[9];
 
 extern uint32_t WwdgReg[3];
 
-
-
-
-
 extern uint32_t DmaReg[30];
 extern uint32_t RtcReg[10];
+
+extern uint32_t PwrReg[2];
+
+extern uint32_t IwdgReg[4];
+
+extern uint32_t TIMER1Reg[22];
+extern uint32_t TIMER2Reg[22];
+extern uint32_t TIMER3Reg[22];
+extern uint32_t TIMER4Reg[22];
+extern uint32_t TIMER5Reg[22];
 
 #endif  // TESTS_UNITTESTS_MCAL_BASEADDRESS_TEST_H_

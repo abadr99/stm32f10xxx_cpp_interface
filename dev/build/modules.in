@@ -1,22 +1,43 @@
-mcal/stm32f103_startup.cpp
-mcal/Rcc.cpp
-mcal/Pin.cpp
-mcal/Nvic.cpp
-mcal/Systick.cpp
-mcal/Gpio.cpp
-mcal/Spi.cpp
-mcal/Usart.cpp
-mcal/EXTI.cpp
-mcal/I2c.cpp
-mcal/DMA.cpp
-hal/Buzzer.cpp
-hal/SevenSegment.cpp
-hal/DAC.cpp
-mcal/Rtc.cpp
-mcal/Wwdg.cpp
-hal/src/STP_74HC595.cpp
-hal/src/DC_Motor.cpp
-hal/src/Relay.cpp
-hal/Keypad.cpp
-hal/Led.cpp
+// Select input files that will be compiled 
+// Syntax:
+// parent_dir {
+//  list of files
+// }
 
+// --- MCAL PERIPHERALS  -------------------------------------------------------
+// -----------------------------------------------------------------------------
+mcal {
+    stm32f103_startup.cpp
+    src/Rcc.cpp
+    src/Pin.cpp
+    src/Nvic.cpp
+    src/Systick.cpp
+    src/Gpio.cpp
+    src/Spi.cpp
+    src/Usart.cpp
+    src/EXTI.cpp
+    src/I2c.cpp
+    src/DMA.cpp
+    src/Iwdg.cpp
+    src/Rtc.cpp
+    src/Wwdg.cpp
+    src/Power.cpp
+    src/Timer.cpp
+}
+
+// --- HAL PERIPHERALS  --------------------------------------------------------
+// -----------------------------------------------------------------------------
+hal {
+    src/Led.cpp
+    src/Buzzer.cpp
+    src/SevenSegment.cpp
+    src/IR.cpp
+    src/HC05.cpp
+    src/STP_74HC595.cpp
+    src/DC_Motor.cpp
+    src/Relay.cpp
+    src/Keypad.cpp
+    src/Esp.cpp
+    src/Lcd.cpp
+    src/Dac.cpp
+}

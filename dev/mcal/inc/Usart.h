@@ -5,12 +5,13 @@
  * @date 2024-06-24
  *
  * @copyright Copyright (c) 2024
- *
+ *  
  */
 #ifndef DEV_MCAL_INC_USART_H_
 #define DEV_MCAL_INC_USART_H_
 
 #include "../../mcal/inc/stm32f103xx.h"
+using namespace stm32::utils::types;
 using namespace stm32::registers::usart;
 
 #define USART_TIMEOUT (2000)
@@ -79,16 +80,25 @@ class Usart {
  public:
     using DataValType = uint16_t;
     explicit Usart(const UsartConfig& config);
-    void EnableClk();
     void Init();
     void Transmit(DataValType dataValue);
+    void Transmit(DataValType dataValue, pFunction pISR);
     DataValType Receive();
+    void Receive(DataValType *pData, pFunction pISR);
     ErrorType RetErrorDetection();
+    static pFunction Helper_GetTransmitCompleteISR(UsartNum number);
+    static pFunction Helper_GetReceiveReadyISR(UsartNum number);
+    static void Helper_SetReceivedData(UsartNum number, DataValType data);
  private:
     enum Flag : uint8_t {kDisabled, kEnabled};
-    void _SetBaudRate();
     const UsartConfig& config_;
     volatile UsartRegDef* usartReg;
+    static volatile DataValType *pReceivedData_[3];
+    static pFunction pTransmitCompleteFun_[3];
+    static pFunction pReceiveReadyFun_[3];
+    void _SetBaudRate();
+    static void SetTransmitCompleteISR(UsartNum number, pFunction pISR);
+    static void SetReceiveReadyISR(UsartNum number, pFunction pISR);
 };
 
 }  // namespace usart
