@@ -11,7 +11,7 @@
 
 #ifndef DEV_HAL_INC_ESP_H_
 #define DEV_HAL_INC_ESP_H_
-#include <string>
+
 using namespace stm32::dev::mcal::usart;
 namespace stm32 {
 namespace dev {
@@ -35,18 +35,29 @@ class Esp {
  public:
     explicit Esp(const UsartNum &usartNum);
     void Init();
-    void Send(const std::string str);
-    void Send(const char c);
+    void Send(const char *str);
+    void Send(Usart::DataValType n);
     void SetMode(const EspMode &mode);
     void SetEchoState(const EchoState &state);
-    void WiFiConnect(const std::string username, const std::string pswd);
-    void ServerConnect(const std::string protocol, const std::string ip, uint16_t port);
-    void SendHttpRequest(const std::string request);
-    // TODO(@MRefat): Add the implementation of it, implement receive function
-    // void RecvHttpResponse(const std::string response);
+    void WiFiConnect(const char* username, const char* pswd);
+    void ServerConnect(const char* protocol, const char* ip, uint16_t port);
+
  private:
+    enum  Commands {
+      kAT,
+      kAT_RST,
+      ATE,
+      AT_CWMODE,
+      AT_CWJAP_CUR,
+      AT_CIPSTART,
+      kSET_POSTFIX,
+      kGET_POSTFIX,
+      kAT_END,
+      kCOMMA
+    };
     UsartConfig usartConfig_;
     Usart usart_;
+    void Helper_IntToString(int num, char *str);
 };
 
 }   //  namespace esp
