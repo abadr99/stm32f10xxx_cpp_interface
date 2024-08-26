@@ -56,7 +56,7 @@ class Tft {
     explicit Tft(const TftConfig& config);
     void Reset();
     void DisplayImage(const Array<uint16_t, 20480> image);
-    void DrawRectangle(uint8_t hight, uint8_t width, uint8_t xaxis, uint8_t yaxis, TftColors color);
+    void DrawRectangle(uint8_t hight, uint8_t width, uint8_t xAxis, uint8_t yAxis, TftColors color);
  private:
     TftConfig config_;
     void SendCommand(uint8_t command);

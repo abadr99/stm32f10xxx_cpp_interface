@@ -40,30 +40,6 @@ Tft::Tft(const TftConfig& config) : config_(config) {
     //  Display on
     SendCommand(kDISPON);
 }
-void Tft::InitializeResolution() {
-    switch (config_.resolution) {
-        case k128x160:
-            config_.width = 128;
-            config_.height = 160;
-            break;
-        case k240x320:
-            config_.width = 240;
-            config_.height = 320;
-            break;
-        case k320x480:
-            config_.width = 320;
-            config_.height = 480;
-            break;
-        case k480x800:
-            config_.width = 480;
-            config_.height = 800;
-            break;
-        default:
-            config_.width = 128;  // Default to 128x160
-            config_.height = 160;
-            break;
-    }
-}
 void Tft::Reset() {
     Gpio::SetPinValue(config_.rst, Gpio::kHigh);
     Systick::Delay_ms(100);
@@ -88,6 +64,30 @@ void Tft::DrawRectangle(uint8_t hight, uint8_t width, uint8_t xAxis, uint8_t yAx
     DrawHLine(xAxis, yAxis + hight, width, color);
     DrawVLine(xAxis + width, yAxis, hight, color);
 }
+void Tft::InitializeResolution() {
+    switch (config_.resolution) {
+        case k128x160:
+            config_.width = 128;
+            config_.height = 160;
+            break;
+        case k240x320:
+            config_.width = 240;
+            config_.height = 320;
+            break;
+        case k320x480:
+            config_.width = 320;
+            config_.height = 480;
+            break;
+        case k480x800:
+            config_.width = 480;
+            config_.height = 800;
+            break;
+        default:
+            config_.width = 128;  // Default to 128x160
+            config_.height = 160;
+            break;
+    }
+}
 void Tft::SendCommand(uint8_t command) {
     Gpio::SetPinValue(config_.A0, Gpio::kLow);
     config_.TFtSpi.Write(command);
@@ -102,7 +102,7 @@ void Tft::SetAddress(uint16_t startX, uint16_t endX, uint16_t startY, uint16_t e
         SendCommand(kCASET);
         //  Start byte
         SendData(ExtractBits<uint16_t, 8>(startX));  // MS byte
-        SendData(startX);  // LS byte
+        SendData(startX);   // LS byte
         //  Stop byte
         SendData(ExtractBits<uint16_t, 8>(endX));  // MS byte
         SendData(endX);  // LS byte
