@@ -25,7 +25,7 @@ build-unittests: $(U_OBJ)
 
 # Rule for creating object files
 %.o: %.cpp
-	$(U_CXX) $(U_CXX_OPT) $(U_INC) -c $< -o $@
+	@$(U_CXX) $(U_CXX_OPT) $(U_INC) -c $< -o $@
 
 # Run the unit tests
 run-unittests:
@@ -38,5 +38,5 @@ debug:
 
 # Clean up
 clean:
-	rm -rf $(U_OBJ)
-	rm -rf $(U_TARGET)
+	@rm -rf $(U_OBJ)
+	@rm -rf $(U_TARGET)
