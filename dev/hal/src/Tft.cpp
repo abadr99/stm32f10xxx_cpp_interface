@@ -77,7 +77,7 @@ void Tft::Reset() {
     Systick::Delay_ms(120000);
 }
 void Tft::DisplayImage(const Array<uint16_t, 20480> image) {
-    SetAddress(0, 127, 0, 159);
+    SetAddress(0, config_.width, 0, config_.height);
     for (uint16_t counter = 0; counter < image.Size(); counter++) {
         SetPixel(image[counter]);
     }
@@ -97,7 +97,7 @@ void Tft::SendData(uint8_t data) {
     config_.TFtSpi.Write(data);
 }
 void Tft::SetAddress(uint16_t startX, uint16_t endX, uint16_t startY, uint16_t endY) {
-    if ((startX < 127) && (startY < 159)) {
+    if ((startX < config_.width) && (startY < config_.height)) {
         //  Set X address
         SendCommand(kCASET);
         //  Start byte
