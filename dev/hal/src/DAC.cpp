@@ -22,23 +22,23 @@ using  namespace stm32::utils::bit_manipulation;
 using namespace stm32::dev::hal::dac;
 
 Dac::Dac(Array<Pin, 8> dacPins, CLKSource clock) : dacPins_(dacPins), clock_(clock) { 
-    for (uint8_t i = 0; i < dacPins.Size(); i++) {
-        STM32_ASSERT(dacPins[i].IsAnalog());
-        STM32_ASSERT(dacPins[i].IsInput());
+    for (uint8_t i = 0; i < dacPins_.Size(); i++) {
+        STM32_ASSERT(dacPins_[i].IsAnalog());
+        STM32_ASSERT(dacPins_[i].IsInput());
     }
-    for (uint8_t i = 0; i < dacPins.Size(); i++) {
-        Gpio::Set(dacPins[i]);
+    for (uint8_t i = 0; i < dacPins_.Size(); i++) {
+        Gpio::Set(dacPins_[i]);
     }
-    Systick::Enable(clock);
+    Systick::Enable(clock_);
 }
-void Dac::DAC_Play(const Array<Pin, 8>& dacPins, uint32_t* songRaw, uint32_t songLength) {
+void Dac::DAC_Play(uint32_t* songRaw, uint32_t songLength) {
     static uint32_t count = 0;
     if (count >= songLength) {
         count = 0;
     }
-    for (uint8_t i = 0; i < dacPins.Size(); i++) {
+    for (uint8_t i = 0; i < dacPins_.Size(); i++) {
         uint32_t data = songRaw[count];
-        Gpio::SetPinValue(dacPins[i], static_cast<Gpio::State>(ExtractBits<uint32_t>(data, i)));
+        Gpio::SetPinValue(dacPins_[i], static_cast<Gpio::State>(ExtractBits<uint32_t>(data, i)));
     }
     count++;
 }
