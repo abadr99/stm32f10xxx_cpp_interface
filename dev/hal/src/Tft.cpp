@@ -10,22 +10,32 @@
  */
 #include "mcal/inc/stm32f103xx.h"
 #include "BitManipulation.h"
+#include "Rcc.h"
 #include "Pin.h"
 #include "Gpio.h"
 #include "Spi.h"
 #include "Systick.h"
 #include "Array.h"
+#include "Assert.h"
 #include "Tft.h"
 
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::spi;
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::utils::array;
 using namespace stm32::utils::bit_manipulation;
 using namespace stm32::dev::hal::tft;
 
 Tft::Tft(const TftConfig& config) : config_(config) {
+    STM32_ASSERT(config_.A0.IsOutput());
+    STM32_ASSERT(config_.rst.IsOutput());
+    switch (config_.TFtSpi.GetSpiNum()) {
+        case kSPI1: Rcc::Enable(Peripheral::kSPI1); break;
+        case kSPI2: Rcc::Enable(Peripheral::kSPI2); break;
+        default:break;
+    }
     InitializeResolution();
     Gpio::Set(config_.A0);
     Gpio::Set(config_.rst);
