@@ -39,4 +39,6 @@ hal {
     src/Keypad.cpp
     src/Esp.cpp
     src/Lcd.cpp
+    src/Tft.cpp
 }
+
