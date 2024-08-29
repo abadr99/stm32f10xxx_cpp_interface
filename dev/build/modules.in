@@ -40,4 +40,6 @@ hal {
     src/Esp.cpp
     src/Lcd.cpp
     src/Dac.cpp
+    src/Tft.cpp
 }
+
