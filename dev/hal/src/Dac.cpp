@@ -14,7 +14,7 @@
 #include "Array.h"
 #include "Assert.h"
 #include "BitManipulation.h"
-#include "DAC.h"
+#include "Dac.h"
 
 using  namespace stm32::dev::mcal::pin;
 using  namespace stm32::dev::mcal::gpio;
