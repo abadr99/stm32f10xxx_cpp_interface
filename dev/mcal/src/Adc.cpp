@@ -181,5 +181,7 @@ void ADC::ConfigureChannelSample() {
       ADC_reg->SMPR1.registerVal = WriteBits<uint32_t> (3 * adjustedChannel, 3 * adjustedChannel + 2,   //  NOLINT
                                                         ADC_reg->SMPR1.registerVal, sampleTimeBits);
     } 
-} 
-
+}
+AdcNum ADC::GetAdcNum() {
+    return config_.number;
+}

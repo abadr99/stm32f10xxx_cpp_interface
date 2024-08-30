@@ -90,6 +90,7 @@ class ADC {
      void EnableInterrupt();
      void DisableInterrupt();
      void Disable();
+     AdcNum GetAdcNum();
  private:
      const AdcConfig& config_;
      volatile ADCRegDef* ADC_reg;

@@ -8,16 +8,21 @@
  * @copyright Copyright (c) 2024
  *
  */
+#include "mcal/inc/stm32f103xx.h"
+#include "Rcc.h"
 #include "Adc.h"
 #include "LM35.h"
 
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::adc;
 using namespace stm32::dev::hal::lm35;
 
-LM35::LM35(const adc_t& adc): adc_(adc) { }
-
-
-void LM35::Init() {
+LM35::LM35(const adc_t& adc): adc_(adc) {
+    switch (adc_.GetAdcNum()) {
+        case kADC1: Rcc::Enable(Peripheral::kADC1); break;
+        case kADC2: Rcc::Enable(Peripheral::kADC2); break;
+        default: break;
+    }
     adc_.Init();
 }
 uint16_t LM35::GetTempVal() {

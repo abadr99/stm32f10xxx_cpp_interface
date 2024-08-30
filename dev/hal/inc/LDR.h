@@ -22,7 +22,6 @@ class LDR {
     using adc_t = stm32::dev::mcal::adc::ADC;
 
     explicit LDR(const adc_t& adc);
-    void Init();
     uint16_t GetValue();
 
  private:

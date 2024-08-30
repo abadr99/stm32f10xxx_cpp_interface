@@ -20,9 +20,7 @@ namespace lm35 {
 class LM35 {
  public:
     using adc_t = stm32::dev::mcal::adc::ADC;
-
     explicit LM35(const adc_t& adc);
-    void Init();
     uint16_t GetTempVal();
 
  private:
