@@ -17,7 +17,7 @@ mcal {
     src/Usart.cpp
     src/EXTI.cpp
     src/I2c.cpp
-    src/DMA.cpp
+    src/Dma.cpp
     src/Iwdg.cpp
     src/Rtc.cpp
     src/Wwdg.cpp
