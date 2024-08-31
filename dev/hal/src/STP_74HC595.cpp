@@ -62,7 +62,7 @@ void STP_74HC595::Write(ShiftRegisterWidth val) {
     // -- 2] Write data to shift register
     for (uint8_t i = 0 ; i < 8 ; ++i) {
         Pulse();
-        Gpio::State state = static_cast<Gpio::State>(ExtractBits(val, i)); 
+        Gpio::State state = static_cast<Gpio::State>(ExtractBit(val, i)); 
         Gpio::SetPinValue(pins_.serialInputPin, state);
     }
     // -- 3] output data to storage register

@@ -17,9 +17,10 @@ namespace stm32 {
 namespace utils {
 namespace types {
 
-using IO = volatile uint32_t;
 using RegWidth_t = uint32_t;
+using IO = volatile RegWidth_t;
 using pFunction = void(*)();
+using bit = bool;
 
 enum class ConnectionType {
     kForward_Bias,
