@@ -13,18 +13,11 @@
 #include "Assert.h"
 #include "Dma.h"
 
+// --- IMPORT USED NAMESPACES
 using namespace stm32::registers::dma;
 using namespace stm32::dev::mcal::dma;
 
-
-#define DMA_SET_PERIPHERAL_SIZE(channel, size)              (DMA->CHANNEL[channel].CCR.PSIZE = size)
-#define DMA_SET_MEMORY_SIZE(channel, size)                  (DMA->CHANNEL[channel].CCR.MSIZE = size)
-
-#define DMA_SET_CHANNEL_PRIORITY(channel, priority)         (DMA->CHANNEL[channel].CCR.PL = priority)   //  NOLINT
-#define DMA_SET_TRANSFER_ERROR_INT_STATE(channel, state)    (DMA->CHANNEL[channel].CCR.TEIE = state)
-#define DMA_SET_TRANSFER_COMPLETE_INT_STATE(channel, state) (DMA->CHANNEL[channel].CCR.TCIE = state)
-#define DMA_SET_NUMBER_OF_DATA(channel, dataNum)            (DMA->CHANNEL[channel].CNDTR = dataNum)
-
+// --- HELPER MACRO TO CHECK IF WE ARE USING CORRECT CONFIGURATIONS
 #define CHECK_CONFIG()\
     STM32_ASSERT(config.channel >= kChannel1 && config.channel <= kChannel7);\
     STM32_ASSERT(config.dir >= kMem2Mem && config.dir <= kPer2Mem);\
@@ -35,7 +28,6 @@ using namespace stm32::dev::mcal::dma;
     STM32_ASSERT(config.memoryDataSize >= k8bit && config.memoryDataSize <= k32bit);\
     STM32_ASSERT(config.peripheralDataSize >= k8bit && config.peripheralDataSize <= k32bit);\
     STM32_ASSERT(config.channelPriority >= kLow && config.channelPriority <= kVeryHigh);
-
 
 namespace helper {
     static inline void SetDirection(Channel dmaChannel, Direction dmaDirection) {
@@ -48,6 +40,7 @@ namespace helper {
     }
 }
 
+// --- INITIATE DMA STATIC DATA
 pFunction Dma::PointerToTransferCompleteISR[7] = {nullptr};
 pFunction Dma::PointerToTransferErrorISR[7] = {nullptr};
 
