@@ -12,7 +12,7 @@
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/stm32f103xx.h"
 #include "mcal/inc/Pin.h"
-#include "mcal/inc/DMA.h"
+#include "mcal/inc/Dma.h"
 
 using namespace stm32::utils::bit_manipulation;
 using namespace stm32::dev::mcal::pin;
