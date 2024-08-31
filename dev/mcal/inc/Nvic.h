@@ -14,7 +14,8 @@ namespace stm32 {
 namespace dev   {
 namespace mcal  {
 namespace nvic   {
-enum InterruptID {
+
+enum InterruptID : int8_t {
     // Cortex-M Processor Exceptions
     kNonMaskableInt = -14,    /*!< 2 Non Maskable Interrupt */
     kHardFault = -13,         /*!< 3 Cortex-M0 Hard Fault Interrupt */
@@ -32,7 +33,7 @@ enum InterruptID {
     kTAMPER_IRQn = 2,              /*!< Tamper Interrupt */
     kRTC_IRQn = 3,                 /*!< RTC global Interrupt */
     kFLASH_IRQn = 4,               /*!< FLASH global Interrupt */
-    kRCC_ID_IRQn = 5,                 /*!< RCC global Interrupt */
+    kRCC_ID_IRQn = 5,              /*!< RCC global Interrupt */
     kEXTI0_IRQn = 6,               /*!< EXTI Line0 Interrupt */
     kEXTI1_IRQn = 7,               /*!< EXTI Line1 Interrupt */
     kEXTI2_IRQn = 8,               /*!< EXTI Line2 Interrupt */
@@ -79,14 +80,27 @@ enum PriorityGroup {
     kSCB_1GROUP_3SUBGROUP = 0x05FA0600,
     kSCB_0GROUP_4SUBGROUP = 0x05FA0700,
 };
+
+// Wrapper data structure that used to evaluate some operations on InterruptId
+// Pos(): Function that used to extract the suitable bit positions 
+// Idx(): Function that used to get the register index.
+struct Id {
+ public:
+    Id(InterruptID id);     // NOLINT 
+    uint8_t Pos();
+    uint8_t Idx();
+ private:
+    InterruptID id_;
+};
 class Nvic {
  public:
-    static void EnableInterrupt(InterruptID id);
-    static void DisableInterrupt(InterruptID id);
-    static void SetPendingFlag(InterruptID id);
-    static void ClearPendingFlag(InterruptID id);
-    static bool GetActiveFlag(InterruptID id);
-    static void SetPriority(InterruptID id, uint8_t priority);
+    using bit = stm32::utils::types::bit;
+    static void EnableInterrupt(Id id);
+    static void DisableInterrupt(Id id);
+    static void SetPendingFlag(Id id);
+    static void ClearPendingFlag(Id id);
+    static bit  GetActiveFlag(Id id);
+    static void SetPriority(Id id, uint8_t priority);
     static void SetPriorityGroup(PriorityGroup group);
 };
 }   // namespace nvic
