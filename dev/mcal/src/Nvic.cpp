@@ -19,19 +19,6 @@ using namespace stm32::dev::mcal::nvic;
 using namespace stm32::registers::nvic;
 using namespace stm32::utils::bit_manipulation;
 using namespace stm32::utils::types;
-namespace helper {
-    uint8_t GetIndex(InterruptID id) {
-        return ExtractBits<int8_t, 5, 7>(id);
-    }
-    uint8_t GetBitPos(InterruptID id) {
-        return ExtractBits<int8_t, 0, 4>(id);
-    }
-    void SetReg(IO reg[], InterruptID id) {
-        uint8_t idx = GetIndex(id);
-        uint8_t bit = GetBitPos(id);
-        reg[idx]    = SetBit<RegWidth_t>(reg[idx], bit);
-    }
-}
 
 void Nvic::EnableInterrupt(Id id) {
     NVIC->ISER[id.Idx()] = SetBit<RegWidth_t>(NVIC->ISER[id.Idx()], id.Pos());
