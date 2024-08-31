@@ -46,8 +46,8 @@ void  Systick::SetCounterValue(uint32_t value) {
 
 void Systick::Delay_ms(uint32_t time_ms) {
     auto GetDivisor = []() {
-        return SYSTICK->CTRL.CLKSOURCE == 1 ? 1000  // STK_CLK_AHB
-                                            : 8000; // STK_CLK_AHB_DIV_8
+        return SYSTICK->CTRL.CLKSOURCE == 1 ? 1000   // STK_CLK_AHB
+                                            : 8000;  // STK_CLK_AHB_DIV_8
     };
 
     uint32_t loadValue = time_ms * (F_CPU / GetDivisor());
@@ -56,8 +56,8 @@ void Systick::Delay_ms(uint32_t time_ms) {
 
 void Systick::Delay_us(uint32_t time_us) {
     auto GetDivisor = []() {
-        return SYSTICK->CTRL.CLKSOURCE == 1 ? 1000000  // STK_CLK_AHB
-                                            : 8000000; // STK_CLK_AHB_DIV_8
+        return SYSTICK->CTRL.CLKSOURCE == 1 ? 1000000   // STK_CLK_AHB
+                                            : 8000000;  // STK_CLK_AHB_DIV_8
     };
     uint32_t loadValue = (time_us * (F_CPU / GetDivisor()));
     // DISABLE SYSTICK
