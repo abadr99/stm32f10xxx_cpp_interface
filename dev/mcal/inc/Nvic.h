@@ -89,6 +89,7 @@ struct Id {
     Id(InterruptID id);     // NOLINT 
     uint8_t Pos();
     uint8_t Idx();
+    InterruptID Val();
  private:
     InterruptID id_;
 };
@@ -102,6 +103,7 @@ class Nvic {
     static bit  GetActiveFlag(Id id);
     static void SetPriority(Id id, uint8_t priority);
     static void SetPriorityGroup(PriorityGroup group);
+    static void Reset();
 };
 }   // namespace nvic
 }   // namespace mcal

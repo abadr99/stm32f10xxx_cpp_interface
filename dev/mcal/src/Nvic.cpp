@@ -23,6 +23,7 @@ using namespace stm32::utils::types;
 Id::Id(InterruptID id) : id_(id) {}
 uint8_t Id::Pos() {return ExtractBits<int8_t, 0, 4>(id_);}
 uint8_t Id::Idx() {return ExtractBits<int8_t, 5, 7>(id_);}
+InterruptID Id::Val() {return id_;}
 
 void Nvic::EnableInterrupt(Id id) {
     NVIC->ISER[id.Idx()] = SetBit<RegWidth_t>(NVIC->ISER[id.Idx()], id.Pos());
@@ -45,9 +46,19 @@ bit Nvic::GetActiveFlag(Id id) {
 }
 
 void Nvic::SetPriority(Id id, uint8_t priority) {
-    NVIC->IPR[id.Idx()] = priority << 4;
+    NVIC->IPR[id.Val()] = priority << 4;
 }
 
 void Nvic::SetPriorityGroup(PriorityGroup group) {
     SCB->AIRCR = group;
+}
+
+void Nvic::Reset() {
+    for (uint8_t i = 0 ; i < 3 ; ++i) {
+        NVIC->ISER[i] = 0;
+        NVIC->ICER[i] = 0;
+        NVIC->ISPR[i] = 0;
+        NVIC->ICPR[i] = 0;
+        NVIC->IPR[i]  = 0; 
+    }
 }
