@@ -20,6 +20,10 @@ using namespace stm32::registers::nvic;
 using namespace stm32::utils::bit_manipulation;
 using namespace stm32::utils::types;
 
+Id::Id(InterruptID id) : id_(id) {}
+uint8_t Id::Pos() {return ExtractBits<int8_t, 0, 4>(id_);}
+uint8_t Id::Idx() {return ExtractBits<int8_t, 5, 7>(id_);}
+
 void Nvic::EnableInterrupt(Id id) {
     NVIC->ISER[id.Idx()] = SetBit<RegWidth_t>(NVIC->ISER[id.Idx()], id.Pos());
 }
