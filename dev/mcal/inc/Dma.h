@@ -18,18 +18,18 @@ namespace mcal  {
 namespace dma   {
 
 enum Channel : uint8_t {
-    kDMA_Channel1,
-    kDMA_Channel2,
-    kDMA_Channel3,
-    kDMA_Channel4,
-    kDMA_Channel5,
-    kDMA_Channel6,
-    kDMA_Channel7,
+    kChannel1,
+    kChannel2,
+    kChannel3,
+    kChannel4,
+    kChannel5,
+    kChannel6,
+    kChannel7,
 };
 enum Direction : uint8_t {
-    kMEM2MEM,
-    kMEM2PER,
-    kPER2MEM,
+    kMem2Mem,
+    kMem2Per,
+    kPer2Mem,
 };
 /**
  * @note: The circular buffer mode cannot be used if the memory-to-memory data transfer is configured on the selected Channel
@@ -39,8 +39,8 @@ enum Mode : uint8_t {
     kCircular,
 };
 enum State : uint8_t {
-    kDMA_Disable,
-    kDMA_Enable,
+    kDisable,
+    kEnable,
 };
 enum Size : uint8_t {
     k8bit,
@@ -48,10 +48,10 @@ enum Size : uint8_t {
     k32bit,
 };
 enum Priority : uint8_t {
-    kDMA_Low,
-    kDMA_Medium,
-    kDMA_High,
-    kDMA_VeryHigh,
+    kLow,
+    kMedium,
+    kHigh,
+    kVeryHigh,
 };
 struct DMAConfig {
     Channel channel;
@@ -60,27 +60,28 @@ struct DMAConfig {
     uint32_t sourceBaseAddr;
     uint32_t destinationBaseAddr;
     Size bufferSize;
-    State periphIncState;
-    State memIncState;
+    State peripheralIncrementState;
+    State memIncrementState;
     Size peripheralDataSize;
     Size memoryDataSize;
     Priority channelPriority;
-    State transErrInterrupt;
-    State transCompInterrupt;
+    State transErrorInterrupt;
+    State transCompleteInterrupt;
 };
 class Dma {
  public:
-static void Init(const DMAConfig& config);
-static void Enable(Channel dmaChannel);
-static void Disable(Channel dmaChannel);
-static void SetPointerToTransferCompleteISR(Channel channel, pFunction func);
-static void SetPointerToTransferErrorISR(Channel channel, pFunction func);
-static pFunction GetPointerToTransferCompleteISR(Channel channel);
-static pFunction GetPointerToTransferErrorISR(Channel channel);
+    static void Init(const DMAConfig& config);
+    static void Enable(Channel dmaChannel);
+    static void Disable(Channel dmaChannel);
+    static void SetPointerToTransferCompleteISR(Channel channel, pFunction func);
+    static void SetPointerToTransferErrorISR(Channel channel, pFunction func);
+    static pFunction GetPointerToTransferCompleteISR(Channel channel);
+    static pFunction GetPointerToTransferErrorISR(Channel channel);
  private:
-static pFunction PointerToTransferCompleteISR[7];
-static pFunction PointerToTransferErrorISR[7];
+    static pFunction PointerToTransferCompleteISR[7];
+    static pFunction PointerToTransferErrorISR[7];
 };
+
 }   // namespace dma
 }   // namespace mcal
 }   // namespace dev

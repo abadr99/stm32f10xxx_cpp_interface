@@ -50,7 +50,7 @@ void Gpio::SetPinValue(const Pin& pin, State pinState) {
 
 typename Gpio::PinVal_t Gpio::GetPinValue(Pin pin) {
     RegWidth_t pin_num = pin.GetPinNumber();
-    return ExtractBits<RegWidth_t>(GPIOx[pin.GetPort()]->IDR, pin_num);
+    return ExtractBit<RegWidth_t>(GPIOx[pin.GetPort()]->IDR, pin_num);
 }
 
 void Gpio::SetPinMode(const Pin& pin, PinMode mode) {

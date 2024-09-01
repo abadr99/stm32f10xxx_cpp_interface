@@ -17,15 +17,14 @@ using namespace stm32::utils::bit_manipulation;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::registers::systick;
 
-// Some asserts to make sure SYSTICK struct members are in correct orders
+// ------- ASSERTS TO ENSURE SYSTICK LAYOUT
 ASSERT_STRUCT_SIZE(SystickRegDef, (sizeof(RegWidth_t) * 3));
-
 ASSERT_MEMBER_OFFSET(SystickRegDef, CTRL, 0);
 ASSERT_MEMBER_OFFSET(SystickRegDef, LOAD, sizeof(RegWidth_t) * 1);
 ASSERT_MEMBER_OFFSET(SystickRegDef, VAL,  sizeof(RegWidth_t) * 2);
 
-
-#define SYSTICK_MAX_VALUE   GetOnes<uint32_t>(24)  //  24 bit
+// ------- DEFINE SOME USEFUL CONSTANTS
+static constexpr uint32_t kSystickMaxVal = GetOnes<uint32_t>(24);
 
 typename Systick::pFunction Systick::PointerToISR = nullptr;
 
@@ -33,11 +32,11 @@ void Systick::Enable(CLKSource clksource) {
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->CTRL.TICKINT = 0;
     SYSTICK->CTRL.CLKSOURCE = clksource;
-    Helper_SetPointerToISR(nullptr);
+    SetPointerToISR(nullptr);
 }
 
 void  Systick::SetCounterValue(uint32_t value) {
-    STM32_ASSERT(value <= SYSTICK_MAX_VALUE);
+    STM32_ASSERT(value <= kSystickMaxVal);
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->LOAD = value;
     while (SYSTICK->CTRL.COUNTFLAG == 0) {}
@@ -46,39 +45,30 @@ void  Systick::SetCounterValue(uint32_t value) {
 }
 
 void Systick::Delay_ms(uint32_t time_ms) {
-    uint32_t loadValue = 0;
-    /* Case STK_CLK_AHB */
-    if (SYSTICK->CTRL.CLKSOURCE == 1) {
-        loadValue = (time_ms * (F_CPU/1000));
-    } else { /* Case STK_CLK_AHB_DIV_8 */
-        loadValue = (time_ms * (F_CPU/8000));
-    }
+    auto GetDivisor = []() {
+        return SYSTICK->CTRL.CLKSOURCE == 1 ? 1000   // STK_CLK_AHB
+                                            : 8000;  // STK_CLK_AHB_DIV_8
+    };
 
-    if (loadValue <= SYSTICK_MAX_VALUE) {
-        SetCounterValue(loadValue);
-    }
+    uint32_t loadValue = time_ms * (F_CPU / GetDivisor());
+    SetCounterValue(loadValue);
 }
 
 void Systick::Delay_us(uint32_t time_us) {
-    uint32_t loadValue = 0;
-    /* Disable SYSTICK */
+    auto GetDivisor = []() {
+        return SYSTICK->CTRL.CLKSOURCE == 1 ? 1000000   // STK_CLK_AHB
+                                            : 8000000;  // STK_CLK_AHB_DIV_8
+    };
+    uint32_t loadValue = (time_us * (F_CPU / GetDivisor()));
+    // DISABLE SYSTICK
     SYSTICK->CTRL.ENABLE = 0;
-    /* Case STK_CLK_AHB */
-    if (SYSTICK->CTRL.CLKSOURCE == 1) {
-        loadValue = (time_us * (F_CPU/1000000));
-    } else {  /* Case STK_CLK_AHB_DIV_8 */
-        loadValue = (time_us * (F_CPU/8000000));
-    }
-
-    if (loadValue <= SYSTICK_MAX_VALUE) {
-        SetCounterValue(loadValue);
-    }
+    SetCounterValue(loadValue);
 }
 
 void Systick::Delay_By_Exception(uint32_t value, pFunction func) {
-    STM32_ASSERT(func != NULL && value <= SYSTICK_MAX_VALUE);
+    STM32_ASSERT(func != NULL && value <= kSystickMaxVal);
     SYSTICK->LOAD = value;
-    Helper_SetPointerToISR(func);
+    SetPointerToISR(func);
     SYSTICK->CTRL.TICKINT = 1;
 }
 
@@ -89,18 +79,18 @@ uint32_t Systick::GetElapsedTime() {
 void Systick::Disable() {
     SYSTICK->CTRL.ENABLE = 0;
     SYSTICK->CTRL.CLKSOURCE = kAHB;
-    Helper_SetPointerToISR(nullptr);
+    SetPointerToISR(nullptr);
 }
 
-void Systick::Helper_SetPointerToISR(pFunction func) {
+void Systick::SetPointerToISR(pFunction func) {
     Systick::PointerToISR = func;
 }
-typename Systick::pFunction Systick::Helper_GetPointerToISR() {
+typename Systick::pFunction Systick::GetPointerToISR() {
     return Systick::PointerToISR;
 }
 
 extern "C" void SysTick_Handler(void) {
-    typename Systick::pFunction fun = Systick::Helper_GetPointerToISR();
+    typename Systick::pFunction fun = Systick::GetPointerToISR();
     if (fun != NULL) {
         fun();
         SYSTICK->CTRL.ENABLE = 0;

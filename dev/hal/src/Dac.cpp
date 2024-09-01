@@ -46,7 +46,7 @@ void Dac::DAC_Play(uint32_t* songRaw, uint32_t songLength) {
     }
     for (uint8_t i = 0; i < dacPins_.Size(); i++) {
         uint32_t data = songRaw[count];
-        Gpio::SetPinValue(dacPins_[i], static_cast<Gpio::State>(ExtractBits<uint32_t>(data, i)));
+        Gpio::SetPinValue(dacPins_[i], static_cast<Gpio::State>(ExtractBit<uint32_t>(data, i)));
     }
     count++;
 }

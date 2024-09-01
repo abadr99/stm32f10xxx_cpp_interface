@@ -53,7 +53,7 @@ void Lcd<M>::SendFallingEdgePulse() {
 template<LcdMode M>
 void Lcd<M>::WriteOutputPins(uint8_t value) {
     for (uint8_t i = 0; i < config_.dataPins.Size(); ++i) {
-        Gpio::SetPinValue(config_.dataPins[i], static_cast<Gpio::State>(ExtractBits<uint8_t>(value, i)));  // NOLINT
+        Gpio::SetPinValue(config_.dataPins[i], static_cast<Gpio::State>(ExtractBit<uint8_t>(value, i)));  // NOLINT
     } 
 }
 

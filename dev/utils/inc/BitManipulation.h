@@ -40,7 +40,7 @@ constexpr T ExtractBits(const T value) {
 }
 
 template<typename T>
-constexpr T ExtractBits(const T value, uint8_t startBit) {
+constexpr T ExtractBit(const T value, uint8_t startBit) {
     return (value >> startBit) & (GetOnes<T>(1));
 }
 
@@ -99,7 +99,7 @@ inline constexpr T ClearBit(T container, T bit_number) {
 }
 
 template<typename T>
-inline constexpr T SetBit(T container, T bit_number) {
+inline constexpr T SetBit(const T container, T bit_number) {
     return container | (1 << bit_number);
 }
 

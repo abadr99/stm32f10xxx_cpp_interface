@@ -24,17 +24,18 @@ enum CLKSource {
 class Systick {
  public:
     using pFunction = stm32::utils::types::pFunction;
+    using time_t = uint32_t;
     static void Enable(CLKSource clksource);
     static void SetCounterValue(uint32_t value);
     static void Delay_ms(uint32_t time_ms);
     static void Delay_us(uint32_t time_us);
     static void Delay_By_Exception(uint32_t value, pFunction func);
-    uint32_t GetElapsedTime();
+    time_t      GetElapsedTime();
     static void Disable();
-    static pFunction Helper_GetPointerToISR();
+    static pFunction GetPointerToISR();
  private:
     static pFunction PointerToISR;
-    static void Helper_SetPointerToISR(pFunction func);
+    static void SetPointerToISR(pFunction func);
 };
 
 

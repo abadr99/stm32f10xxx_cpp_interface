@@ -9,32 +9,56 @@
  */
 #include <stdint.h>
 #include "mcal/inc/stm32f103xx.h"
+#include "Types.h"
 #include "utils/inc/BitSet.h"
 #include "utils/inc/Assert.h"
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Nvic.h"
 
-using namespace stm32::dev::mcal::nvic; // NOLINT[build/namespaces]
-using namespace stm32::registers::nvic; // NOLINT[build/namespaces]
+using namespace stm32::dev::mcal::nvic;
+using namespace stm32::registers::nvic;
+using namespace stm32::utils::bit_manipulation;
+using namespace stm32::utils::types;
 
-void Nvic::EnableInterrupt(InterruptID id) {
-    NVIC->ISER[static_cast<uint32_t>(id) >> 5] = (1 << (static_cast<uint32_t>(id) & 0x1f));
+Id::Id(InterruptID id) : id_(id) {}
+uint8_t Id::Pos() {return ExtractBits<int8_t, 0, 4>(id_);}
+uint8_t Id::Idx() {return ExtractBits<int8_t, 5, 7>(id_);}
+InterruptID Id::Val() {return id_;}
+
+void Nvic::EnableInterrupt(Id id) {
+    NVIC->ISER[id.Idx()] = SetBit<RegWidth_t>(NVIC->ISER[id.Idx()], id.Pos());
 }
-void Nvic::DisableInterrupt(InterruptID id) {
-    NVIC->ICER[static_cast<uint32_t>(id) >> 5] = (1 << (static_cast<uint32_t>(id)) & 0x1f);
+
+void Nvic::DisableInterrupt(Id id) {
+    NVIC->ICER[id.Idx()] = SetBit<RegWidth_t>(NVIC->ICER[id.Idx()], id.Pos());
 }
-void Nvic::SetPendingFlag(InterruptID id) {
-    NVIC->ISPR[static_cast<uint32_t>(id) >> 5] = (1 << ((static_cast<uint32_t>(id)) & 0x1f));
+
+void Nvic::SetPendingFlag(Id id) {
+    NVIC->ISPR[id.Idx()] = SetBit<RegWidth_t>(NVIC->ISPR[id.Idx()], id.Pos());
 }
-void Nvic::ClearPendingFlag(InterruptID id) {
-    NVIC->ICPR[static_cast<uint32_t>(id) >> 5] = (1 << (static_cast<uint32_t>(id)) & 0x1f);
+
+void Nvic::ClearPendingFlag(Id id) {
+    NVIC->ICPR[id.Idx()] = SetBit<RegWidth_t>(NVIC->ICPR[id.Idx()], id.Pos());
 }
-bool Nvic::GetActiveFlag(InterruptID id) {
-    return ((NVIC->IABR[static_cast<uint32_t>(id) >> 5] >> (static_cast<uint32_t>(id) & 0x1f)) & 0x1);  //  NOLINT
+
+bit Nvic::GetActiveFlag(Id id) {
+    return ExtractBit(NVIC->IABR[id.Idx()], id.Pos());
 }
-void Nvic::SetPriority(InterruptID id, uint8_t priority) {
-    NVIC->IPR[id] = priority << 4;
+
+void Nvic::SetPriority(Id id, uint8_t priority) {
+    NVIC->IPR[id.Val()] = priority << 4;
 }
+
 void Nvic::SetPriorityGroup(PriorityGroup group) {
     SCB->AIRCR = group;
+}
+
+void Nvic::Reset() {
+    for (uint8_t i = 0 ; i < 3 ; ++i) {
+        NVIC->ISER[i] = 0;
+        NVIC->ICER[i] = 0;
+        NVIC->ISPR[i] = 0;
+        NVIC->ICPR[i] = 0;
+        NVIC->IPR[i]  = 0; 
+    }
 }

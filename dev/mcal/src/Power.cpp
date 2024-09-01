@@ -1,6 +1,6 @@
 /**
  * @file Power.cpp
- * @author noura36
+ * @author
  * @brief 
  * @version 0.1
  * @date 2024-08-14
@@ -9,7 +9,8 @@
  * 
  */
 #include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/Types.h"
+#include "Assert.h"
+#include "Types.h"
 #include "Power.h"
 
 using namespace stm32::registers::nvic;
@@ -28,11 +29,7 @@ void Pwr::EnterSleepMode(PwrEntry sleepEntry, SleepType type) {
 }
 void Pwr::EnterStopMode(PwrEntry stopEntry, PwrRegulator regulator) {
     //  Select the voltage regulator mode
-    if (regulator == PwrRegulator::kLowPower) {
-        PWR->CR.LPDS = 1;
-    } else if (regulator == PwrRegulator::kOn) {
-        PWR->CR.LPDS = 0;
-    }
+    PWR->CR.LPDS = regulator == PwrRegulator::kLowPower ? 1 : 0;
     //  Ensure entering stop mode, not standby
     PWR->CR.PDDS = 0;
     //  Enable deep sleep mode
@@ -48,17 +45,14 @@ void Pwr::EnterStandbyMode(PwrEntry standbyEntry) {
     EnterLowPowerMode(standbyEntry);
 }
 void Pwr::WakeupPinState(State state) {
-    if (state == State::kDisable) {
-        PWR->CSR.EWUP = 0;
-    } else if (state == State::kEnable) {
-        PWR->CSR.EWUP = 1;
-    }
+    PWR->CSR.EWUP = state == State::kDisable ? 0 : 1;
 }
+
 void Pwr::ClearFlag(PwrFlag flag) {
-    if (flag == PwrFlag::kWU) {
-        PWR->CR.CWUF = 1;
-    } else if (flag == PwrFlag::kSB) {
-        PWR->CR.CSBF = 1;
+    switch (flag) {
+        case PwrFlag::kWU : PWR->CR.CWUF = 1; break;
+        case PwrFlag::kSB : PWR->CR.CSBF = 1; break;
+        default: STM32_ASSERT(1); 
     }
 }
 #ifndef UNIT_TEST
@@ -72,6 +66,9 @@ void Pwr::EnterLowPowerMode(PwrEntry entry) {
 #else 
 void Pwr::EnterLowPowerMode(PwrEntry entry) {
     /* DO NO THING */
+    // This fake lambda is used to avoid warning for un_used
+    // variable 'enty' as we want this function to have the same
+    // signature as one in non UNIT_TEST mode
     auto FakeLambda = [entry](){ return entry; };
     FakeLambda();
 }
