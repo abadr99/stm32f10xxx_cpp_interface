@@ -17,9 +17,8 @@ namespace stm32 {
 namespace dev {
 namespace mcal {
 namespace exti {
-
-
-enum class Line {
+    
+enum Line {
     kExti0,
     kExti1,
     kExti2,
@@ -42,7 +41,7 @@ enum class Line {
     kExti19
 };
 
-enum class Trigger {
+enum Trigger {
     kRising,
     kFalling,
     kBoth
