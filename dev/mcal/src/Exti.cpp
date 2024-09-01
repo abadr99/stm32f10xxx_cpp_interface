@@ -13,7 +13,7 @@
 #include "mcal/inc/Pin.h"
 #include "utils/inc/BitManipulation.h"
 #include "utils/inc/Assert.h"
-#include "mcal/inc/EXTI.h"
+#include "mcal/inc/Exti.h"
 
 // --- IMPORT USED NAMESPACES
 using namespace stm32::registers::exti;

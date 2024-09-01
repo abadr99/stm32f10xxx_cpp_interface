@@ -1,5 +1,5 @@
 /**
- * @file EXTI.h
+ * @file Exti.h
  * @author
  * @brief 
  * @version 0.1
