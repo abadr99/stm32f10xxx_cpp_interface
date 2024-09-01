@@ -41,9 +41,9 @@ enum  Alignment {
         kLeft
 };
 enum AdcMode {
-        kSingle = 0,
+        kSingleRegular = 0,
         kContinous = 1,
-        kInjected
+        kSingleInjected
 };
 enum TriggerSource {
         kTimer1_CC1 = 0b000,

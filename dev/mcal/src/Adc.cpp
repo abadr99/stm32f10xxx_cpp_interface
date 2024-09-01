@@ -58,7 +58,7 @@ void ADC::Init() {
     if (config_.trigSource != kSoftware) {
         ADC_reg->CR2.ADON = 1;
         return;
-    } else if (config_.mode == kInjected) {
+    } else if (config_.mode == kSingleInjected) {
         ADC_reg->CR2.JEXTTRIG = 1;
         ADC_reg->CR2.JEXTSEL = static_cast<RegWidth_t>(config_.trigSource);
     } else {
@@ -136,10 +136,10 @@ uint16_t ADC::StartInjectedConversion() {
 
 void ADC::EnableInterrupt() {
     switch (config_.mode) {
-    case kSingle:
+    case kSingleRegular:
         ADC_reg->CR1.EOCIE = 1;
         break;
-    case kInjected:
+    case kSingleInjected:
         ADC_reg->CR1.JEOCIE = 1;
         break;
     default:
@@ -149,10 +149,10 @@ void ADC::EnableInterrupt() {
 
 void ADC::DisableInterrupt() {
     switch (config_.mode) {
-    case kSingle:
+    case kSingleRegular:
         ADC_reg->CR1.EOCIE = 0;
         break;
-    case kInjected:
+    case kSingleInjected:
         ADC_reg->CR1.JEOCIE = 0;
         break;
     default:
