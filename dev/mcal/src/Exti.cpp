@@ -64,9 +64,9 @@ uint8_t Exti::GetPendingFlag(const EXTI_Config& config) {
 }
 
 void Exti::SetpCallBackFunction(Line line, void (*pCallBackFun)(void)) {
-    if (line >= Line::kEXTI5 && line <= Line::kEXTI9) {
+    if (line >= Line::kExti5 && line <= Line::kExti9) {
         pGlobalCallBackFunctions[5] = pCallBackFun;
-    } else if (line >= Line::kEXTI10 && line <= Line::kEXTI15) {
+    } else if (line >= Line::kExti10 && line <= Line::kExti15) {
         pGlobalCallBackFunctions[6] = pCallBackFun;
     } else {
         pGlobalCallBackFunctions[static_cast<uint8_t>(line)] = pCallBackFun;
@@ -74,9 +74,9 @@ void Exti::SetpCallBackFunction(Line line, void (*pCallBackFun)(void)) {
 }
 pFunction Exti::GetpCallBackFunction(Line line) {   
     pFunction pRetFunction = nullptr;
-    if (line >= Line::kEXTI5 && line <= Line::kEXTI9) {
+    if (line >= Line::kExti5 && line <= Line::kExti9) {
         return pGlobalCallBackFunctions[5];
-    } else if (line >= Line::kEXTI10 && line <= Line::kEXTI15) {
+    } else if (line >= Line::kExti10 && line <= Line::kExti15) {
         return pGlobalCallBackFunctions[6];
     }
     return pRetFunction = pGlobalCallBackFunctions[static_cast<uint8_t>(line)];
