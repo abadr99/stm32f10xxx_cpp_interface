@@ -79,7 +79,7 @@ struct I2cConfig {
 
 class I2c {
  public:
-    I2c(const I2cConfig & I2c);
+    explicit I2c(const I2cConfig & I2c);
     void MasterTransmit(uint16_t slave, uint8_t * data, uint8_t size);
     void MasterRead(uint16_t slave, uint8_t * data, uint8_t size);
     void SlaveTransmit(uint8_t * data, uint8_t size);
