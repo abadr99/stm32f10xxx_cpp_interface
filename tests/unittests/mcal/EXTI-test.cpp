@@ -12,7 +12,7 @@
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/stm32f103xx.h"
 #include "mcal/inc/Pin.h"
-#include "mcal/inc/EXTI.h"
+#include "mcal/inc/Exti.h"
 
 using namespace stm32::utils::bit_manipulation;
 using namespace stm32::dev::mcal::pin;
@@ -27,7 +27,7 @@ uint32_t EXTIReg[6] = {0x0};
 TEST(EXTItest, Enable) {
     EXTI_Config exti;
     exti.port = kPortA;
-    exti.line = Line::kEXTI0;
+    exti.line = Line::kExti0;
     exti.trigger = Trigger::kRising;
     Exti::Enable(exti);
     EXPECT_EQ(0x0,    AFIO->EXTICRx[0]);
@@ -37,7 +37,7 @@ TEST(EXTItest, Enable) {
 TEST(EXTItest, Disable) {
     EXTI_Config exti;
     exti.port = kPortB;
-    exti.line = Line::kEXTI10;
+    exti.line = Line::kExti10;
     exti.trigger = Trigger::kFalling;
     Exti::Disable(exti);
     EXPECT_EQ(0x1,      EXTI->IMR);  //  EXTI0 is enable in previous test
@@ -46,7 +46,7 @@ TEST(EXTItest, Disable) {
 TEST(EXTItest, SetPendingFlag) {
     EXTI_Config exti;
     exti.port = kPortB;
-    exti.line = Line::kEXTI6;
+    exti.line = Line::kExti6;
     exti.trigger = Trigger::kFalling;
     Exti::SetPendingFlag(exti);
     EXPECT_EQ(0x40,       EXTI->PR);
@@ -54,7 +54,7 @@ TEST(EXTItest, SetPendingFlag) {
 TEST(EXTItest, ClearPendingFlag) {
     EXTI_Config exti;
     exti.port = kPortB;
-    exti.line = Line::kEXTI16;
+    exti.line = Line::kExti16;
     exti.trigger = Trigger::kFalling;
     Exti::ClearPendingFlag(exti);
     EXPECT_EQ(0x40,       EXTI->PR);

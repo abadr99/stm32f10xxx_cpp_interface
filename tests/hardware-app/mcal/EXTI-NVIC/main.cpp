@@ -15,7 +15,7 @@
 #include "mcal/inc/Gpio.h"
 #include "mcal/inc/Rcc.h"
 #include "mcal/inc/Nvic.h"
-#include "mcal/inc/EXTI.h"
+#include "mcal/inc/Exti.h"
 #include "mcal/inc/Systick.h"
 
 

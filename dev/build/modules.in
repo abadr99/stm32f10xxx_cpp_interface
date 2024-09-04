@@ -15,7 +15,7 @@ mcal {
     src/Gpio.cpp
     src/Spi.cpp
     src/Usart.cpp
-    src/EXTI.cpp
+    src/Exti.cpp
     src/I2c.cpp
     src/Dma.cpp
     src/Iwdg.cpp

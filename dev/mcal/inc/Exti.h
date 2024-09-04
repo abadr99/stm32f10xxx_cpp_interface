@@ -1,6 +1,6 @@
 /**
- * @file EXTI.h
- * @author Manar
+ * @file Exti.h
+ * @author
  * @brief 
  * @version 0.1
  * @date 2024-04-28
@@ -17,32 +17,31 @@ namespace stm32 {
 namespace dev {
 namespace mcal {
 namespace exti {
-
-
-enum class Line {
-    kEXTI0,
-    kEXTI1,
-    kEXTI2,
-    kEXTI3,    
-    kEXTI4,
-    kEXTI5,
-    kEXTI6,
-    kEXTI7,
-    kEXTI8,
-    kEXTI9,
-    kEXTI10,
-    kEXTI11,
-    kEXTI12,
-    kEXTI13,
-    kEXTI14,
-    kEXTI15,
-    kEXTI16,
-    kEXTI17,
-    kEXTI18,
-    kEXTI19
+    
+enum Line {
+    kExti0,
+    kExti1,
+    kExti2,
+    kExti3,    
+    kExti4,
+    kExti5,
+    kExti6,
+    kExti7,
+    kExti8,
+    kExti9,
+    kExti10,
+    kExti11,
+    kExti12,
+    kExti13,
+    kExti14,
+    kExti15,
+    kExti16,
+    kExti17,
+    kExti18,
+    kExti19
 };
 
-enum class Trigger {
+enum Trigger {
     kRising,
     kFalling,
     kBoth
@@ -68,10 +67,10 @@ class Exti {
     static pFunction GetpCallBackFunction(Line line);
  private:
     static pFunction pGlobalCallBackFunctions[7];
-    static void Helper_InitAFIOReg(Line line, Port port);
-    static void Helper_SetTrigger(Line line, Trigger trigger);
-    static void Helper_ClrTrigger(Line line, Trigger trigger);
-    static uint8_t Helper_GetPendingBit(Line line);
+    static void InitAFIOReg(Line line, Port port);
+    static void SetTrigger(Line line, Trigger trigger);
+    static void ClrTrigger(Line line, Trigger trigger);
+    static uint8_t GetPendingBit(Line line);
 };
 
 }  // namespace exti
