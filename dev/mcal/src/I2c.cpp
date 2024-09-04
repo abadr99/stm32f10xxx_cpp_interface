@@ -35,7 +35,13 @@ ASSERT_MEMBER_OFFSET(I2CRegDef, SR2,   sizeof(RegWidth_t) * 6);
 ASSERT_MEMBER_OFFSET(I2CRegDef, CCR,   sizeof(RegWidth_t) * 7);
 ASSERT_MEMBER_OFFSET(I2CRegDef, TRISE, sizeof(RegWidth_t) * 8);
 
-
+#define READ(reg) \
+    asm volatile ( \
+        "LDR R0, [%0]"  /* Load the value at the address of SR1 into R0 */ \
+        :               /* No output operands */ \
+        : "r" (&(reg)) /* Input operand: address of SR1 register */ \
+        : "r0"          /* Clobbered register (R0 is modified) */ \
+    )
 I2c::I2c(const I2cConfig & I2c) {
     i2c_reg                   = (I2c.i2cx == kI2C1) ? I2C1 : I2C2;
     i2c_reg->CR1.PE           = 0;
@@ -90,39 +96,35 @@ void I2c::SlaveRead(uint8_t * data, uint8_t size) {
     StopCondition();
 }
 
-void I2c::DeInit(const I2cConfig & I2c) {
+void I2c::DeInit() {
     i2c_reg->CR1.PE = 0;
 }
 
 void I2c::Send_7Bit_Add(uint8_t address, Direction direction) {
-    uint16_t Reading = 0;
     address = direction != kTransmitter ? SetBit<uint16_t, 1>(address)     // Set address for read
                                         : ClearBit<uint16_t, 1>(address);  // Reset
     i2c_reg->DR = address;    
     while (i2c_reg->SR1.ADDR != 1) {}
-    Reading = i2c_reg->SR1.registerVal;
-    Reading = i2c_reg->SR2.registerVal;
+    READ(i2c_reg->SR1);
+    READ(i2c_reg->SR2);
 }
 
 void I2c::TransmitData(uint8_t data) {
-    uint16_t Reading = 0;
     while (i2c_reg->SR1.TxE ==0) {}
-    Reading = i2c_reg->SR1.registerVal;
+    READ(i2c_reg->SR1);
     i2c_reg->DR = data;
 }
 
 void I2c::ReceiveData(uint8_t* data) {
-    uint16_t Reading = 0;
     while (i2c_reg->SR1.RxNE == 0) {}
-    Reading = i2c_reg->SR1.registerVal;
+    READ(i2c_reg->SR1);
     *data = static_cast<uint8_t>(i2c_reg->DR);
 }
 
 void I2c::StartCondition() {
-    uint16_t Reading = 0;
     i2c_reg->CR1.START = 1;
     while (i2c_reg->SR1.SB == 1) {}
-    Reading = i2c_reg->SR1.registerVal;
+    READ(i2c_reg->SR1);
 }
 
 void I2c::StopCondition() {
@@ -130,24 +132,24 @@ void I2c::StopCondition() {
 }
 
 void I2c::SetClk(const I2cConfig & I2c) {
-    uint32_t APB1Freq = RCC->CFGR.PPRE1;
-    uint32_t I2CFreq  = static_cast<uint16_t>(APB1Freq/1000000);
-    uint16_t CR2_Reading = 0;
+    uint32_t Apb1_freq = RCC->CFGR.PPRE1;
+    uint32_t i2c_freq  = static_cast<uint16_t>(Apb1_freq / 1000000);
+    uint16_t cr2 = i2c_reg->CR2.registerVal;
 
     // RESET FREQ BIT
-    CR2_Reading = ClearBits<uint16_t, 0, 5>(CR2_Reading);
-    i2c_reg->CR2.registerVal = CR2_Reading;
-    CR2_Reading = i2c_reg->CR2.registerVal;
-    CR2_Reading |= I2CFreq;
-    i2c_reg->CR2.registerVal = CR2_Reading;
+    cr2 = ClearBits<uint16_t, 0, 5>(cr2);
+    i2c_reg->CR2.registerVal = cr2;
+    cr2 = i2c_reg->CR2.registerVal;
+    cr2 |= i2c_freq;
+    i2c_reg->CR2.registerVal = cr2;
 
     auto HandleSM = [&]() -> uint16_t {
         uint16_t result;
         // -- CONFIGURE TRISE WITH MAX SCL
-        i2c_reg->TRISE = I2CFreq +1;
+        i2c_reg->TRISE = i2c_freq +1;
         // -- DO SM CALCULATION
         //    Thigh = Tlow = CCR * TPCLK1
-        result = static_cast<uint16_t>(APB1Freq/(I2c.speed));
+        result = static_cast<uint16_t>(Apb1_freq/(I2c.speed));
         // CHECK RESULT FOR ALLOWED CCR
         if (result < kMin_Sm) {
             return kMin_Sm;
@@ -158,12 +160,12 @@ void I2c::SetClk(const I2cConfig & I2c) {
     auto HandleFM = [&]() -> uint16_t {
         uint16_t result;
         // -- CONFIGURE MAX RAISE TIME FOR FM
-        i2c_reg->TRISE = static_cast<uint16_t>((I2CFreq * 300) / 1000 + 1);
+        i2c_reg->TRISE = static_cast<uint16_t>((i2c_freq * 300) / 1000 + 1);
         if (I2c.dutyCycle == kduty_cycle_2) {
-            i2c_reg->CCR.DUTY = kduty_cycle_2;
-            result = static_cast<uint16_t>(APB1Freq / (I2c.speed * 3));
+            // i2c_reg->CCR.DUTY = kduty_cycle_2;
+            result = static_cast<uint16_t>(Apb1_freq / (I2c.speed * 3));
         } else {
-            result = static_cast<uint16_t>(APB1Freq / (I2c.speed * 25));
+            result = static_cast<uint16_t>(Apb1_freq / (I2c.speed * 25));
             result |= kduty_cycle_16_9;
         }
         // --- HANDLE BOUNDARY

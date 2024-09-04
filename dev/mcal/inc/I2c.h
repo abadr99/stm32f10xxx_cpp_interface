@@ -84,7 +84,7 @@ class I2c {
     void MasterRead(uint16_t slave, uint8_t * data, uint8_t size);
     void SlaveTransmit(uint8_t * data, uint8_t size);
     void SlaveRead(uint8_t * data, uint8_t size);
-    void DeInit(const I2cConfig & I2c);
+    void DeInit();
 
  private:
     volatile I2CRegDef* i2c_reg;
