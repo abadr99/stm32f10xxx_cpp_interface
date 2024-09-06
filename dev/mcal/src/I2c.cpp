@@ -35,13 +35,19 @@ ASSERT_MEMBER_OFFSET(I2CRegDef, SR2,   sizeof(RegWidth_t) * 6);
 ASSERT_MEMBER_OFFSET(I2CRegDef, CCR,   sizeof(RegWidth_t) * 7);
 ASSERT_MEMBER_OFFSET(I2CRegDef, TRISE, sizeof(RegWidth_t) * 8);
 
+// TODO: Check if we should use another assembly instructions here e.g. READ
+#ifndef UNIT_TEST
 #define READ(reg) \
     asm volatile ( \
-        "LDR R0, [%0]"  /* Load the value at the address of SR1 into R0 */ \
+        "LDR R0, [%0]"  /* Load the value at the register address into R0 */ \
         :               /* No output operands */ \
-        : "r" (&(reg)) /* Input operand: address of SR1 register */ \
+        : "r" (&(reg)) /* Input operand: address of register */ \
         : "r0"          /* Clobbered register (R0 is modified) */ \
     )
+#else 
+#define READ(ref)
+#endif
+
 I2c::I2c(const I2cConfig & I2c) {
     i2c_reg                   = (I2c.i2cx == kI2C1) ? I2C1 : I2C2;
     i2c_reg->CR1.PE           = 0;
