@@ -20,7 +20,7 @@
 using  namespace stm32::dev::mcal::pin;
 using  namespace stm32::dev::mcal::gpio;
 using  namespace stm32::dev::mcal::rcc;
-using  namespace stm32::utils::bit_manipulation;
+using  namespace stm32::util;
 using namespace stm32::dev::hal::dac;
 
 Dac::Dac(Array<Pin, 8> dacPins, CLKSource clock) : dacPins_(dacPins), clock_(clock) { 

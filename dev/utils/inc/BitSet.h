@@ -14,8 +14,7 @@
 #include "BitManipulation.h"
 
 namespace stm32 {
-namespace utils {
-namespace bitset {
+namespace util {
 
 template <typename T>
 class BitSet {
@@ -25,17 +24,17 @@ class BitSet {
     { }
     template <T FROM, T TO = FROM>
     inline constexpr void SetValue(T val) {
-        bits_ = stm32::utils::bit_manipulation::WriteBits<T, FROM, TO>(bits_, val);   // NOLINT [whitespace/end_of_line]
+        bits_ = stm32::util::WriteBits<T, FROM, TO>(bits_, val);   // NOLINT [whitespace/end_of_line]
     }
 
     template <T FROM, T TO = FROM>
     constexpr T GetValue() {
-        return stm32::utils::bit_manipulation::ExtractBits<T, FROM, TO>(bits_);
+        return stm32::util::ExtractBits<T, FROM, TO>(bits_);
     }
 
     template <T FROM, T TO = FROM>
     T GetValue() const {
-        return stm32::utils::bit_manipulation::ExtractBits<T, FROM, TO>(bits_);
+        return stm32::util::ExtractBits<T, FROM, TO>(bits_);
     }
     
     Bit_t operator[](uint8_t idx) {
@@ -46,7 +45,6 @@ class BitSet {
     T bits_;
 };
 
-}   // namespace bitset
-}   // namespace utils
+}   // namespace util
 }   // namespace stm32
 #endif  // DEV_UTILS_INC_BITSET_H_

@@ -18,7 +18,7 @@ using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::buzzer;
 
-using namespace stm32::utils::types;
+using namespace stm32::util;
 
 template<ConnectionType CT>
 Buzzer<CT>::Buzzer(const Pin& buzzerPin)

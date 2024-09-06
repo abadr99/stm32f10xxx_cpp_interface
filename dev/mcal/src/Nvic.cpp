@@ -17,8 +17,8 @@
 
 using namespace stm32::dev::mcal::nvic;
 using namespace stm32::registers::nvic;
-using namespace stm32::utils::bit_manipulation;
-using namespace stm32::utils::types;
+using namespace stm32::util;
+using namespace stm32::util;
 
 Id::Id(InterruptID id) : id_(id) {}
 uint8_t Id::Pos() {return ExtractBits<int8_t, 0, 4>(id_);}

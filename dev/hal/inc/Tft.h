@@ -13,7 +13,7 @@
 using namespace stm32::dev::mcal::pin; 
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::spi;
-using namespace stm32::utils::array;
+using namespace stm32::util;
 namespace stm32 {
 namespace dev {
 namespace hal {

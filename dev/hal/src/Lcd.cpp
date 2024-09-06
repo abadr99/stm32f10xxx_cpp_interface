@@ -26,10 +26,10 @@ using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::dev::hal::lcd;
-using namespace stm32::utils::array;
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::rcc;
-using namespace stm32::utils;
+using namespace stm32::util;
 
 template<LcdMode M>
 Lcd<M>::Lcd(const LCD_Config<M> &config) : config_(config) {

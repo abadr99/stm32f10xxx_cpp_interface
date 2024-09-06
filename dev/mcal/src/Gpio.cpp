@@ -19,7 +19,7 @@ using namespace stm32::dev::mcal::pin;
 using namespace stm32::registers::gpio;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::registers::rcc;
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
 
 ASSERT_STRUCT_SIZE(GpioRegDef, (sizeof(RegWidth_t) * 7));
 

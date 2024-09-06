@@ -12,9 +12,9 @@
 #define DEV_HAL_INC_DAC_H_
 
 using namespace stm32::dev::mcal::pin; 
-using namespace stm32::utils::types;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::systick;
-using namespace stm32::utils::array;
+using namespace stm32::util;
 namespace stm32 {
 namespace dev {
 namespace hal {

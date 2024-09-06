@@ -15,7 +15,7 @@
 
 uint32_t SYSTICKReg[3] = {0x0};
 
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::registers::systick;
 

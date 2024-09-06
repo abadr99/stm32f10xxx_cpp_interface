@@ -14,7 +14,7 @@
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Dma.h"
 
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::dma;
 using namespace stm32::registers::dma;

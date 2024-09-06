@@ -15,7 +15,7 @@ uint32_t GPIOAReg[7] = {};
 uint32_t GPIOBReg[7] = {};
 uint32_t GPIOCReg[7] = {};
 
-using namespace stm32::utils::bit_manipulation;  // NOLINT [build/namespaces]
+using namespace stm32::util;  // NOLINT [build/namespaces]
 using namespace stm32::dev::mcal::pin;           // NOLINT [build/namespaces]
 using namespace stm32::registers::gpio;          // NOLINT [build/namespaces]
 

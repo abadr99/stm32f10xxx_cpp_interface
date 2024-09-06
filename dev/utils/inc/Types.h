@@ -14,8 +14,7 @@
 #include <stdint.h>
 
 namespace stm32 {
-namespace utils {
-namespace types {
+namespace util {
 
 using RegWidth_t = uint32_t;
 using IO = volatile RegWidth_t;
@@ -39,8 +38,7 @@ enum class ConnectionType {
 
 #define F_CPU (8000000U)
 
-}  // namespace types
-}  // namespace utils
+}  // namespace util
 }  // namespace stm32
 
 #endif  //  DEV_UTILS_INC_TYPES_H_

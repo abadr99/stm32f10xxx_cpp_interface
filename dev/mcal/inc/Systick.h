@@ -23,7 +23,7 @@ enum CLKSource {
 
 class Systick {
  public:
-    using pFunction = stm32::utils::types::pFunction;
+    using pFunction = stm32::util::pFunction;
     using time_t = uint32_t;
     static void Enable(CLKSource clksource);
     static void SetCounterValue(uint32_t value);

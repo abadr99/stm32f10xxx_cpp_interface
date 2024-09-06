@@ -20,7 +20,7 @@
 
 #define SR_CLK_PERIOD_US   (10)
 
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::systick;

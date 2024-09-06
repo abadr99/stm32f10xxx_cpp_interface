@@ -20,7 +20,7 @@ using namespace stm32::registers::exti;
 using namespace stm32::registers::afio;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::exti;
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
 
 // --- CHECK 'EXTI' LAYOUT
 ASSERT_STRUCT_SIZE(EXTIRegDef, (sizeof(RegWidth_t) * 6));

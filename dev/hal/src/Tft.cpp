@@ -24,8 +24,8 @@ using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::spi;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::systick;
-using namespace stm32::utils::array;
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
+using namespace stm32::util;
 using namespace stm32::dev::hal::tft;
 
 Tft::Tft(const TftConfig& config) : config_(config) {

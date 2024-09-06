@@ -17,8 +17,8 @@
 
 using  namespace stm32::dev::mcal::pin;
 using  namespace stm32::registers::gpio;
-using  namespace stm32::utils::bitset;
-using  namespace stm32::utils::bit_manipulation;
+using  namespace stm32::util;
+using  namespace stm32::util;
 
 Pin::Pin(Port port, PinNumber pinNumber, PinMode pinMode):data_(0) {
     data_.SetValue<0, 1>(port);

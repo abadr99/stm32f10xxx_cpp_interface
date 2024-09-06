@@ -15,7 +15,7 @@
 #include "Gpio.h"
 #include "Led.h"
 
-using namespace stm32::utils::types;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::led;
