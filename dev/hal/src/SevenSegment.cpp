@@ -12,6 +12,7 @@
 #include "mcal/inc/stm32f103xx.h"
 
 #include "Types.h"
+#include "Constant.h"
 #include "Assert.h"
 #include "BitManipulation.h"
 #include "Pin.h"
@@ -20,10 +21,10 @@
 #include "Gpio.h"
 #include "SevenSegment.h"
 
-using namespace stm32::util;
+using namespace stm32;
+using namespace stm32::type;
 using namespace stm32::dev::mcal::pin;
-using namespace stm32::dev::mcal::gpio;          
-using namespace stm32::util; 
+using namespace stm32::dev::mcal::gpio;           
 using namespace stm32::dev::hal::ssd;
 
 
@@ -68,33 +69,33 @@ void SevenSegment<connectionType>::Init() {
     
     // 4] -- SET INITIAL STATE OF THE LEDS
     for (uint8_t pin = 0; pin < 7; pin++) {
-        Gpio::SetPinValue(dataPins_[pin], HANDLE_INACTIVE_VOLTAGE(connectionType));
+        Gpio::SetPinValue(dataPins_[pin], constant::DigitalState<connectionType>::kInActiveVoltage);    // NOLINT [whitespace/line_length] 
     }
 }
 
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::Enable() {
     if (isEnablePinUsed_) {
-        Gpio::SetPinValue(enablePin_, HANDLE_ACTIVE_VOLTAGE(connectionType));
+        Gpio::SetPinValue(enablePin_, constant::DigitalState<connectionType>::kActiveVoltage);
     }
 }
 
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::Disable() {
     if (isEnablePinUsed_) {
-        Gpio::SetPinValue(enablePin_, HANDLE_INACTIVE_VOLTAGE(connectionType));
+        Gpio::SetPinValue(enablePin_, constant::DigitalState<connectionType>::kInActiveVoltage);    
     }
 }
 
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::SendNumber(SSdDisplay num) {
     STM32_ASSERT(num >= kZero && num <= kNine);
-    auto ConvertSSDtoInt = [&](uint8_t idx) -> Gpio::State {
-        return (num & (1 << (6 - idx))) == false ? HANDLE_INACTIVE_VOLTAGE(connectionType) 
-                                                 : HANDLE_ACTIVE_VOLTAGE(connectionType);
+    auto ConvertSSDtoInt = [&](uint8_t idx) -> DigitalVoltage {
+        return (num & (1 << (6 - idx))) == false ? constant::DigitalState<connectionType>::kInActiveVoltage  // NOLINT [whitespace/line_length] 
+                                                 : constant::DigitalState<connectionType>::kActiveVoltage;   // NOLINT [whitespace/line_length] 
     };
     for (uint8_t i = 0; i < 7; i++) {
-        Gpio::State pinState = ConvertSSDtoInt(i);
+        DigitalVoltage pinState = ConvertSSDtoInt(i);
         Gpio::SetPinValue(dataPins_[i], pinState);
     }
 }

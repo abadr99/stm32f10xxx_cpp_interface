@@ -15,34 +15,34 @@
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Nvic.h"
 
+using namespace stm32;
+using namespace stm32::type;
 using namespace stm32::dev::mcal::nvic;
 using namespace stm32::registers::nvic;
-using namespace stm32::util;
-using namespace stm32::util;
 
 Id::Id(InterruptID id) : id_(id) {}
-uint8_t Id::Pos() {return ExtractBits<int8_t, 0, 4>(id_);}
-uint8_t Id::Idx() {return ExtractBits<int8_t, 5, 7>(id_);}
+uint8_t Id::Pos() {return util::ExtractBits<int8_t, 0, 4>(id_);}
+uint8_t Id::Idx() {return util::ExtractBits<int8_t, 5, 7>(id_);}
 InterruptID Id::Val() {return id_;}
 
 void Nvic::EnableInterrupt(Id id) {
-    NVIC->ISER[id.Idx()] = SetBit<RegWidth_t>(NVIC->ISER[id.Idx()], id.Pos());
+    NVIC->ISER[id.Idx()] = util::SetBit<RegWidth_t>(NVIC->ISER[id.Idx()], id.Pos());
 }
 
 void Nvic::DisableInterrupt(Id id) {
-    NVIC->ICER[id.Idx()] = SetBit<RegWidth_t>(NVIC->ICER[id.Idx()], id.Pos());
+    NVIC->ICER[id.Idx()] = util::SetBit<RegWidth_t>(NVIC->ICER[id.Idx()], id.Pos());
 }
 
 void Nvic::SetPendingFlag(Id id) {
-    NVIC->ISPR[id.Idx()] = SetBit<RegWidth_t>(NVIC->ISPR[id.Idx()], id.Pos());
+    NVIC->ISPR[id.Idx()] = util::SetBit<RegWidth_t>(NVIC->ISPR[id.Idx()], id.Pos());
 }
 
 void Nvic::ClearPendingFlag(Id id) {
-    NVIC->ICPR[id.Idx()] = SetBit<RegWidth_t>(NVIC->ICPR[id.Idx()], id.Pos());
+    NVIC->ICPR[id.Idx()] = util::SetBit<RegWidth_t>(NVIC->ICPR[id.Idx()], id.Pos());
 }
 
 bit Nvic::GetActiveFlag(Id id) {
-    return ExtractBit(NVIC->IABR[id.Idx()], id.Pos());
+    return util::ExtractBit(NVIC->IABR[id.Idx()], id.Pos());
 }
 
 void Nvic::SetPriority(Id id, uint8_t priority) {

@@ -20,7 +20,7 @@
 
 #include "../../utils/inc/Types.h"
 
-using RegWidth_t = stm32::util::RegWidth_t;
+using RegWidth_t = stm32::type::RegWidth<uint32_t>;
 namespace stm32 {
 namespace registers {
 namespace rcc {

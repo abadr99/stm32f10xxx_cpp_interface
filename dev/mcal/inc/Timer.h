@@ -13,7 +13,7 @@
 #include "utils/inc/Types.h"
 
 using namespace stm32::registers::timer;
-using namespace stm32::util;
+using namespace stm32::type;
 namespace stm32 {
 namespace dev {
 namespace mcal {

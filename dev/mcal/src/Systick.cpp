@@ -13,7 +13,8 @@
 #include "mcal/inc/Systick.h"
 #include "utils/inc/Assert.h"
 
-using namespace stm32::util;
+using namespace stm32;
+using namespace stm32::type;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::registers::systick;
 
@@ -24,7 +25,7 @@ ASSERT_MEMBER_OFFSET(SystickRegDef, LOAD, sizeof(RegWidth_t) * 1);
 ASSERT_MEMBER_OFFSET(SystickRegDef, VAL,  sizeof(RegWidth_t) * 2);
 
 // ------- DEFINE SOME USEFUL CONSTANTS
-static constexpr uint32_t kSystickMaxVal = GetOnes<uint32_t>(24);
+static constexpr uint32_t kSystickMaxVal = util::GetOnes<uint32_t>(24);
 
 typename Systick::pFunction Systick::PointerToISR = nullptr;
 

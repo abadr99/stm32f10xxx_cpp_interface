@@ -16,6 +16,7 @@
 // --- IMPORT USED NAMESPACES
 using namespace stm32::registers::dma;
 using namespace stm32::dev::mcal::dma;
+using namespace stm32::type;
 
 // --- HELPER MACRO TO CHECK IF WE ARE USING CORRECT CONFIGURATIONS
 #define CHECK_CONFIG()\

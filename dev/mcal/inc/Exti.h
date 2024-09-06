@@ -12,7 +12,7 @@
 #define DEV_MCAL_INC_EXTI_H_
 
 using namespace stm32::dev::mcal::pin;
-using namespace stm32::util;
+using namespace stm32::type;
 namespace stm32 {
 namespace dev {
 namespace mcal {

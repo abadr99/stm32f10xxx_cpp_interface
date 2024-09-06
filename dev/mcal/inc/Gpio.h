@@ -11,6 +11,8 @@
 #ifndef DEV_MCAL_INC_GPIO_H_
 #define DEV_MCAL_INC_GPIO_H_
 
+#include "Types.h"
+
 namespace stm32 {
 namespace dev {
 namespace mcal {
@@ -22,14 +24,13 @@ class Gpio {
   using Port = stm32::dev::mcal::pin::Port;
   using PinMode = stm32::dev::mcal::pin::PinMode;
   using PinVal_t = uint8_t;
-  enum State { kLow, kHigh };
-  
-  // As Gpio class is used to deal with general purpose IO and all pin's 
+
+    // As Gpio class is used to deal with general purpose IO and all pin's 
   // configurations are abstracted in Pin class so we can use Set() method 
   // to set all gpio configurations
   static void Set(const Pin& pin);
   static void SetPinMode(const Pin& pin, PinMode mode);
-  static void SetPinValue(const Pin& pin, State pinState);
+  static void SetPinValue(const Pin& pin, stm32::type::DigitalVoltage pinState);
   static PinVal_t GetPinValue(Pin pin);
 };
 

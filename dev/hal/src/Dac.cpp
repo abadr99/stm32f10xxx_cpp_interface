@@ -17,10 +17,10 @@
 #include "BitManipulation.h"
 #include "Dac.h"
 
-using  namespace stm32::dev::mcal::pin;
-using  namespace stm32::dev::mcal::gpio;
-using  namespace stm32::dev::mcal::rcc;
-using  namespace stm32::util;
+using namespace stm32::dev::mcal::pin;
+using namespace stm32::dev::mcal::gpio;
+using namespace stm32::dev::mcal::rcc;
+using namespace stm32::util;
 using namespace stm32::dev::hal::dac;
 
 Dac::Dac(Array<Pin, 8> dacPins, CLKSource clock) : dacPins_(dacPins), clock_(clock) { 
@@ -46,7 +46,7 @@ void Dac::DAC_Play(uint32_t* songRaw, uint32_t songLength) {
     }
     for (uint8_t i = 0; i < dacPins_.Size(); i++) {
         uint32_t data = songRaw[count];
-        Gpio::SetPinValue(dacPins_[i], static_cast<Gpio::State>(ExtractBit<uint32_t>(data, i)));
+        Gpio::SetPinValue(dacPins_[i], static_cast<DigitalVoltage>(ExtractBit<uint32_t>(data, i)));
     }
     count++;
 }

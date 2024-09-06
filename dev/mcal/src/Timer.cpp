@@ -14,7 +14,7 @@
 
 using namespace stm32::dev::mcal::timer;
 using namespace stm32::registers::timer;
-
+using namespace stm32::type;
 
 pFunction Timer::pGlobalCallBackFunction[5] = {nullptr};
 

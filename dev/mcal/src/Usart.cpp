@@ -18,6 +18,7 @@
 using namespace stm32::registers::rcc;
 using namespace stm32::registers::usart;
 using namespace stm32::dev::mcal::usart;
+using namespace stm32::type;
 
 pFunction  Usart::pTransmitCompleteFun_[3] = {nullptr};
 pFunction  Usart::pReceiveReadyFun_[3] = {nullptr};

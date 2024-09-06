@@ -10,16 +10,18 @@
  */
 
 #include "mcal/inc/stm32f103xx.h"
+#include "Types.h"
 #include "utils/inc/Assert.h"
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
 
+using namespace stm32;
+using namespace stm32::type;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::registers::gpio;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::registers::rcc;
-using namespace stm32::util;
 
 ASSERT_STRUCT_SIZE(GpioRegDef, (sizeof(RegWidth_t) * 7));
 
@@ -37,20 +39,20 @@ void Gpio::Set(const Pin& pin) {
     SetPinMode(pin, pin.GetPinMode());
 }
 
-void Gpio::SetPinValue(const Pin& pin, State pinState) {
+void Gpio::SetPinValue(const Pin& pin, DigitalVoltage pinState) {
     const PinNumber pin_num   = pin.GetPinNumber();
     volatile GpioRegDef* gpio = GPIOx[pin.GetPort()];
 
     switch (pinState) {
-        case State::kLow  : gpio->ODR = ClearBit<RegWidth_t>(gpio->ODR, pin_num); break;
-        case State::kHigh : gpio->ODR = SetBit<RegWidth_t>(gpio->ODR, pin_num);   break;
+        case kLow  : gpio->ODR = util::ClearBit<RegWidth_t>(gpio->ODR, pin_num); break;
+        case kHigh : gpio->ODR = util::SetBit<RegWidth_t>(gpio->ODR, pin_num);   break;
         default: /* TODO(@abadr99): Support Unreachable code */ break;
     }
 }
 
 typename Gpio::PinVal_t Gpio::GetPinValue(Pin pin) {
     RegWidth_t pin_num = pin.GetPinNumber();
-    return ExtractBit<RegWidth_t>(GPIOx[pin.GetPort()]->IDR, pin_num);
+    return util::ExtractBit<RegWidth_t>(GPIOx[pin.GetPort()]->IDR, pin_num);
 }
 
 void Gpio::SetPinMode(const Pin& pin, PinMode mode) {
@@ -64,20 +66,20 @@ void Gpio::SetPinMode(const Pin& pin, PinMode mode) {
     
     if (pinNum <= PinNumber::kPin7) {
         startBit = pinNum * 4;
-        gpio->CRL = WriteBits<RegWidth_t>(startBit, startBit + 3, gpio->CRL, static_cast<RegWidth_t>(mode));  // NOLINT [whitespace/line_length]
+        gpio->CRL = util::WriteBits<RegWidth_t>(startBit, startBit + 3, gpio->CRL, static_cast<RegWidth_t>(mode));  // NOLINT [whitespace/line_length]
     } else {
         startBit = (pinNum - 8) * 4;
-        gpio->CRH = WriteBits<uint32_t>(startBit, startBit + 3, gpio->CRH, static_cast<RegWidth_t>(mode));  // NOLINT [whitespace/line_length]
+        gpio->CRH = util::WriteBits<uint32_t>(startBit, startBit + 3, gpio->CRH, static_cast<RegWidth_t>(mode));  // NOLINT [whitespace/line_length]
     }
 
     // --- SPECIAL CARE FOR INPUT-PULLUP/DOWN MODES
     if (IsInput()) {
         switch (mode) {
             case PinMode::kInputPullDown:
-                gpio->ODR = ClearBit<RegWidth_t>(gpio->ODR, pinNum);
+                gpio->ODR = util::ClearBit<RegWidth_t>(gpio->ODR, pinNum);
                 break;
             case PinMode::kInputPullUp:
-                gpio->ODR = SetBit<RegWidth_t>(gpio->ODR, pinNum);
+                gpio->ODR = util::SetBit<RegWidth_t>(gpio->ODR, pinNum);
                 break;
             default: /* DO NO THING */ break;
         }

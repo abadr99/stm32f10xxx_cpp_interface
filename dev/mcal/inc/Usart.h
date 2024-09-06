@@ -11,7 +11,7 @@
 #define DEV_MCAL_INC_USART_H_
 
 #include "../../mcal/inc/stm32f103xx.h"
-using namespace stm32::util;
+using namespace stm32::type;
 using namespace stm32::registers::usart;
 
 #define USART_TIMEOUT (2000)

@@ -36,7 +36,7 @@ enum SSdDisplay: uint8_t {
 
 // NOTE: DATA PINS AND ENABLE PIN SHOULD BE CONNECTED TO THE SAME PORT, 
 //       OTHERWISE ENABLE DIFFERENT PORT'S CLOCK BY YOURSELF.  
-template<stm32::util::ConnectionType connectionType>
+template<stm32::type::ConnectionType connectionType>
 class SevenSegment {
  public:
     using Array_t = stm32::util::Array<Pin, 7>;

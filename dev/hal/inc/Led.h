@@ -19,7 +19,7 @@ namespace dev {
 namespace hal {
 namespace led {
 
-template<stm32::util::ConnectionType CT>
+template<stm32::type::ConnectionType CT>
 class Led {
  public:
   explicit Led(Pin LedPin);

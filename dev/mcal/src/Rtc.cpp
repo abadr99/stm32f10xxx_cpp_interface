@@ -17,7 +17,7 @@
 
 using namespace stm32::dev::mcal::rtc;  // NOLINT[build/namespaces]
 using namespace stm32::registers::rtc;  // NOLINT[build/namespaces]
-using namespace stm32::util;    // NOLINT[build/namespaces]
+using namespace stm32::type;    // NOLINT[build/namespaces]
 
 
 #define CLEAR_ALARM_INTERRUPT_FLAG()     (RTC->CRL.ALRF = 0)

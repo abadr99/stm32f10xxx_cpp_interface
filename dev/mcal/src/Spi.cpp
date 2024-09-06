@@ -13,7 +13,7 @@
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Spi.h"
 
-using namespace stm32::util;
+using namespace stm32::type;
 using namespace stm32::registers::rcc; 
 using namespace stm32::dev::mcal::spi;
 using namespace stm32::registers::spi;

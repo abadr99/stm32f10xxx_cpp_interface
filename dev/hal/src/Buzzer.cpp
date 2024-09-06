@@ -10,15 +10,17 @@
  */
 #include "mcal/inc/stm32f103xx.h"
 #include "Types.h"
+#include "Constant.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
 #include "hal/inc/Buzzer.h"
 
+using namespace stm32;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::buzzer;
 
-using namespace stm32::util;
+using namespace stm32::type;
 
 template<ConnectionType CT>
 Buzzer<CT>::Buzzer(const Pin& buzzerPin)
@@ -28,13 +30,13 @@ Buzzer<CT>::Buzzer(const Pin& buzzerPin)
 
 template<ConnectionType CT>
 void Buzzer<CT>::TurnOn() {
-    Gpio::SetPinValue(buzzerPin_, HANDLE_ACTIVE_VOLTAGE(CT));
+    Gpio::SetPinValue(buzzerPin_, constant::DigitalState<CT>::kActiveVoltage);
     buzzerState_ = kOn;
 }
 
 template<ConnectionType CT>
 void Buzzer<CT>::TurnOff() {
-    Gpio::SetPinValue(buzzerPin_, HANDLE_INACTIVE_VOLTAGE(CT));
+    Gpio::SetPinValue(buzzerPin_, constant::DigitalState<CT>::kInActiveVoltage);
     buzzerState_ = kOff;
 }
 
