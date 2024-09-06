@@ -32,12 +32,6 @@ enum class ConnectionType {
     kReverse_Bias,
 };
 
-#define INSTANTIATE_CONNECTION_CLASS(clazz)\
-    template class clazz<ConnectionType::kForward_Bias>;\
-    template class clazz<ConnectionType::kReverse_Bias>;
-
-#define F_CPU (8000000U)
-
 }  // namespace type
 }  // namespace stm32
 

@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include "mcal/inc/stm32f103xx.h"
 #include "Constant.h"
+#include "Define.h"
 #include "Assert.h"
 #include "Pin.h"
 #include "Gpio.h"

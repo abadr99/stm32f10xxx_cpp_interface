@@ -10,6 +10,7 @@
  */
 #include "mcal/inc/stm32f103xx.h"
 #include "Types.h"
+#include "Define.h"
 #include "Constant.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"

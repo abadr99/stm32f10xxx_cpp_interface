@@ -10,7 +10,9 @@
  */
 
 #include "mcal/inc/stm32f103xx.h"
+#include "Constant.h"
 #include "BitManipulation.h"
+#include "Util.h"
 #include "Types.h"
 #include "Assert.h"
 #include "Usart.h"
@@ -93,7 +95,7 @@ void Usart::_SetBaudRate() {
 
 void Usart::Transmit(DataValType dataValue) {
     uint32_t count = 0;
-    while (!(usartReg->SR.TXE && (count != USART_TIMEOUT) && (++count)) ) {}
+    util::BusyWait<constant::TimeOut::kUsart>([&](){return usartReg->SR.TXE;});
     STM32_ASSERT(count != USART_TIMEOUT);
     count = 0;
     usartReg->DR = dataValue;

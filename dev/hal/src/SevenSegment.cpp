@@ -12,6 +12,7 @@
 #include "mcal/inc/stm32f103xx.h"
 
 #include "Types.h"
+#include "Define.h"
 #include "Constant.h"
 #include "Assert.h"
 #include "BitManipulation.h"

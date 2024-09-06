@@ -36,6 +36,13 @@ struct DigitalState<ConnectionType::kReverse_Bias> {
 };
 
 struct TimeOut {
+    static constexpr uint32_t kDefault = 5000UL;
+    static constexpr uint32_t kUsart   = 2000UL;
+    static constexpr uint32_t kSdCard  = 200UL;
+    static constexpr uint32_t kRcc     = 400UL;
+    static constexpr uint32_t kRtc     = 1000UL;
+    static constexpr uint32_t kSpi     = 400UL;
+
 };
 
 }  // namespace constant

@@ -12,9 +12,10 @@
 #ifndef DEV_UTILS_INC_UTIL_H_
 #define DEV_UTILS_INC_UTIL_H_
 
+#include "Assert.h"
 #include "Rcc.h"
 #include "Pin.h"
-
+#include <functional>
 namespace stm32 {
 namespace util {
     
@@ -29,6 +30,12 @@ namespace util {
         }
         STM32_ASSERT(1);
         return Peripheral::kUnknown;
+    }
+    
+    using Func = std::function<bool()>;
+    template <int timeout>
+    void BusyWait(const Func& cond) {
+        for (int i = 0; cond() && i != timeout; ++i){}
     }
 
 }   // namespace util
