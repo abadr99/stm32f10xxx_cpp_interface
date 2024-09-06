@@ -35,7 +35,9 @@ ASSERT_MEMBER_OFFSET(I2CRegDef, SR2,   sizeof(RegWidth_t) * 6);
 ASSERT_MEMBER_OFFSET(I2CRegDef, CCR,   sizeof(RegWidth_t) * 7);
 ASSERT_MEMBER_OFFSET(I2CRegDef, TRISE, sizeof(RegWidth_t) * 8);
 
-// TODO: Check if we should use another assembly instructions here e.g. READ
+// TODO(@ManarAbdelraouf): Check if we should use another assembly 
+//                         instructions here e.g. READ
+
 #ifndef UNIT_TEST
 #define READ(reg) \
     asm volatile ( \
@@ -188,3 +190,4 @@ void I2c::SetClk(const I2cConfig & I2c) {
     }
 }
 
+#undef READ
