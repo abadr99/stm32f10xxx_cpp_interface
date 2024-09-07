@@ -102,9 +102,9 @@ void Rcc::AdjustInternalClock(uint8_t CalibrationValue) {
 
 void Rcc::WaitToReady(Flags flag) {
     switch (flag) {
-        case kHSIRDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return RCC->CR.HSIRDY; });  break;    // NOLINT [whitespace/line_length]
-        case kHSERDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return RCC->CR.HSERDY; });  break;    // NOLINT [whitespace/line_length]
-        case kPLLRDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return RCC->CR.PLLRDY; });  break;    // NOLINT [whitespace/line_length]
+        case kHSIRDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return !RCC->CR.HSIRDY; });  break;    // NOLINT [whitespace/line_length]
+        case kHSERDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return !RCC->CR.HSERDY; });  break;    // NOLINT [whitespace/line_length]
+        case kPLLRDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return !RCC->CR.PLLRDY; });  break;    // NOLINT [whitespace/line_length]
         default: STM32_ASSERT(1);
     }
 }
