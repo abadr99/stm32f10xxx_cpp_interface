@@ -15,6 +15,7 @@
 #include "Assert.h"
 #include "Rcc.h"
 #include "Pin.h"
+#include "Constant.h"
 #include <functional>
 namespace stm32 {
 namespace util {
