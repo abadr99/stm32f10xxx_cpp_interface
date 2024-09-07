@@ -26,49 +26,56 @@ Timer::Timer(const TimerConfig & config): config_(config) {
         case kTimer4 : timerReg = (reinterpret_cast<volatile timerRegDef*>(TIMER4)); break;
         case kTimer5 : timerReg = (reinterpret_cast<volatile timerRegDef*>(TIMER5)); break; 
         default: break;
-    } 
+    }
+    Init();
 }
     
-void Timer::Init(const TimerConfig & config) {
+void Timer::Init() {
     // Disable Timer at first
     timerReg->CR1.CEN = 0;
     // Set Reload value
-    timerReg->ARR = config.ReloadValue;
+    timerReg->ARR = config_.ReloadValue;
     // Set counter Direction
-    timerReg->CR1.DIR = config.Direction;
+    timerReg->CR1.DIR = config_.Direction;
     // Set prescaler value
-    timerReg->PSC = config.Prescaler;
+    timerReg->PSC = config_.Prescaler;
     // Set Interrupt update
     timerReg->DIER.UIE = 1;
-    pGlobalCallBackFunction[config.Timerid] = config.pfunction;
+    pGlobalCallBackFunction[config_.Timerid] = config_.pfunction;
     // Enable Timer at first
     timerReg->CR1.CEN = 1;
 }
-pFunction Timer::Helper_GetFunToISR(TimerID id) {
+
+pFunction Timer::GetFunToISR(TimerID id) {
     return pGlobalCallBackFunction[id];
 }
+
 extern "C" void TIM1_UP_IRQHandler(void) {
-    pFunction func = Timer::Helper_GetFunToISR(kTimer1);
+    pFunction func = Timer::GetFunToISR(kTimer1);
     TIMER1->SR.UIF ^= 1;
     func();
 }
+
 extern "C" void TIM2_IRQHandler(void) {
-    pFunction func = Timer::Helper_GetFunToISR(kTimer2);
+    pFunction func = Timer::GetFunToISR(kTimer2);
     TIMER2->SR.UIF ^= 1;
     func();
 }
+
 extern "C" void TIM3_IRQHandler(void) {
-    pFunction func = Timer::Helper_GetFunToISR(kTimer3);
+    pFunction func = Timer::GetFunToISR(kTimer3);
     TIMER3->SR.UIF ^= 1;
     func();
 }
+
 extern "C" void TIM4_IRQHandler(void) {
-    pFunction func = Timer::Helper_GetFunToISR(kTimer4);
+    pFunction func = Timer::GetFunToISR(kTimer4);
     TIMER4->SR.UIF ^= 1;
     func();
 }
+
 extern "C" void TIM5_IRQHandler(void) {
-    pFunction func = Timer::Helper_GetFunToISR(kTimer5);
+    pFunction func = Timer::GetFunToISR(kTimer5);
     TIMER5->SR.UIF ^= 1;
     func();
 }

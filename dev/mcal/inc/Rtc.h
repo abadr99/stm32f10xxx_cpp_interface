@@ -12,14 +12,10 @@
 #ifndef DEV_MCAL_INC_RTC_H_
 #define DEV_MCAL_INC_RTC_H_
 
-using namespace stm32::type;
-
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
 namespace rtc   {
-
-#define RTC_TIMEOUT  (1000)
 
 struct Time {
     uint8_t hour;

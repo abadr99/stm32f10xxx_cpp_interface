@@ -8,8 +8,6 @@
  */
 #ifndef DEV_MCAL_INC_I2C_H_
 #define DEV_MCAL_INC_I2C_H_
-using namespace stm32::registers::i2c;
-
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -87,7 +85,7 @@ class I2c {
     void DeInit();
 
  private:
-    volatile I2CRegDef* i2c_reg;
+    volatile stm32::registers::i2c::I2CRegDef* i2c_reg;
     void Send_7Bit_Add(uint8_t address, Direction direction);
     void TransmitData(uint8_t data);
     void ReceiveData(uint8_t * data);
@@ -95,6 +93,7 @@ class I2c {
     void StopCondition();
     void SetClk(const I2cConfig & I2c);
 };
+
 }   // namespace i2c
 }   // namespace mcal
 }   // namespace dev

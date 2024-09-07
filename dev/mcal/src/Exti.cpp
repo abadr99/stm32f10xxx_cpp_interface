@@ -60,7 +60,7 @@ void Exti::ClearPendingFlag(const EXTI_Config& config) {
     EXTI->PR = util::SetBit<uint32_t>(EXTI->PR, config.line);
 }
 
-uint8_t Exti::GetPendingFlag(const EXTI_Config& config) {
+bool Exti::GetPendingFlag(const EXTI_Config& config) {
     return Exti::GetPendingBit(config.line);
 }
 
@@ -107,7 +107,7 @@ void Exti::ClrTrigger(Line line, Trigger trigger) {
     }
 }
 
-uint8_t Exti::GetPendingBit(Line line) {
+bool Exti::GetPendingBit(Line line) {
     uint32_t Bit = static_cast<uint32_t>(line);
     return util::ExtractBit<uint32_t>(EXTI->PR, Bit);
 }

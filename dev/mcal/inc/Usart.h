@@ -10,11 +10,7 @@
 #ifndef DEV_MCAL_INC_USART_H_
 #define DEV_MCAL_INC_USART_H_
 
-#include "../../mcal/inc/stm32f103xx.h"
-using namespace stm32::type;
-using namespace stm32::registers::usart;
-
-#define USART_TIMEOUT (2000)
+#include "stm32f103xx.h"
 
 namespace stm32 {
 namespace dev {
@@ -79,6 +75,7 @@ struct UsartConfig {
 class Usart {
  public:
     using DataValType = uint16_t;
+    using pFunction = stm32::type::pFunction;
     explicit Usart(const UsartConfig& config);
     void Init();
     void Transmit(DataValType dataValue);
@@ -92,7 +89,7 @@ class Usart {
  private:
     enum Flag : uint8_t {kDisabled, kEnabled};
     const UsartConfig& config_;
-    volatile UsartRegDef* usartReg;
+    volatile stm32::registers::usart::UsartRegDef* usartReg;
     static volatile DataValType *pReceivedData_[3];
     static pFunction pTransmitCompleteFun_[3];
     static pFunction pReceiveReadyFun_[3];

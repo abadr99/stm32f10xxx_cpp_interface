@@ -22,8 +22,8 @@ cpplint:
 # make build
 # ------------------------------------------
 build: $(OBJS) 
-	$(CXX) $(CXX_FLAGS)  $(INC) $(OBJS) $(STARTUPOBJ_PATH) ./main.cpp $(LDFLAGS) -T build/$(MCU).ld -o $(ELF_TARGET)
-	$(OBJ_COPY) $(OBJ_COPY_OPTS) $(ELF_TARGET) $(HEX_TARGET)
+	@$(CXX) $(CXX_FLAGS)  $(INC) $(OBJS) $(STARTUPOBJ_PATH) ./main.cpp $(LDFLAGS) -T build/$(MCU).ld -o $(ELF_TARGET)
+	@$(OBJ_COPY) $(OBJ_COPY_OPTS) $(ELF_TARGET) $(HEX_TARGET)
 	@echo "\n[Makefile][build] : Compiled successfully."
 
 # ------------------------------------------

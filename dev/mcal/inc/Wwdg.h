@@ -9,7 +9,7 @@
  */
 #ifndef DEV_MCAL_INC_WWDG_H_
 #define DEV_MCAL_INC_WWDG_H_
-using namespace stm32::registers::wwdg;
+
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -34,7 +34,7 @@ class Wwdg {
     bool isEarlyWakeupFlagSet();
     void clearEarlyWakeupFlag();
  private:
-Config config_;
+    Config config_;
 };
 }   // namespace wwdg
 }   // namespace mcal

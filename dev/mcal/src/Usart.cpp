@@ -94,13 +94,9 @@ void Usart::_SetBaudRate() {
 }
 
 void Usart::Transmit(DataValType dataValue) {
-    uint32_t count = 0;
     util::BusyWait<constant::TimeOut::kUsart>([&](){return usartReg->SR.TXE;});
-    STM32_ASSERT(count != USART_TIMEOUT);
-    count = 0;
     usartReg->DR = dataValue;
-    util::BusyWait<constant::TimeOut::kUsart>([&](){ return !(usartReg->SR.TC); });
-    STM32_ASSERT(count != USART_TIMEOUT);
+    util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg->SR.TC);});
     usartReg->SR.registerVal = 0;
 }
 
@@ -112,7 +108,7 @@ void  Usart::Transmit(DataValType dataValue, pFunction pISR) {
     this->usartReg->CR1.TCIE = 1;
 }
 typename Usart::DataValType Usart::Receive() {
-    util::BusyWait<constant::TimeOut::kUsart>([&](){ return !(usartReg->SR.RXNE); });
+    util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg->SR.RXNE);});
     return static_cast<DataValType>(usartReg->DR);
 }
 
