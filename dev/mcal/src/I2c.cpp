@@ -110,8 +110,8 @@ void I2c::DeInit() {
 }
 
 void I2c::Send_7Bit_Add(uint8_t address, Direction direction) {
-    address = direction != kTransmitter ? util::SetBit<uint16_t, 1>(address)     // Set address for read
-                                        : util::ClearBit<uint16_t, 1>(address);  // Reset
+    address = direction != kTransmitter ? util::SetBit<uint16_t, 1>(address)
+                                        : util::ClearBit<uint16_t, 1>(address);
     i2c_reg->DR = address;
     util::BusyWait([&](){return i2c_reg->SR1.ADDR;});
     READ(i2c_reg->SR1);
