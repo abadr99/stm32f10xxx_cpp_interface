@@ -28,13 +28,13 @@ struct Config {
 class Wwdg {
  public:
     explicit Wwdg(const Config& config);
-    void Init();
-    void enableInterrupt();
-    void disableInterrupt();
-    bool isEarlyWakeupFlagSet();
-    void clearEarlyWakeupFlag();
+    void EnableInterrupt();
+    void DisableInterrupt();
+    bool IsEarlyWakeupFlagSet();
+    void ClearEarlyWakeupFlag();
  private:
     Config config_;
+    void Init();
 };
 }   // namespace wwdg
 }   // namespace mcal
