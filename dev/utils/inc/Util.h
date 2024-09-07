@@ -36,7 +36,11 @@ namespace util {
     using Func = std::function<bool()>;
     template <int timeout = stm32::constant::TimeOut::kDefault>
     void BusyWait(const Func& cond) {
-        for (int i = 0; cond() && i != timeout; ++i) {}
+        uint32_t i = 0;
+        for (; cond() && i != timeout; ++i) {}
+        if (i >= timeout) {
+            STM32_ASSERT(1);
+        }
     }
 
 }   // namespace util

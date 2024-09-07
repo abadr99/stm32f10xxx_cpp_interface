@@ -9,12 +9,13 @@
 
 // --- INCLUDES
 #include <stdint.h>
-#include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/BitSet.h"
-#include "utils/inc/Assert.h"
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/Rcc.h"
-#include "mcal/inc/I2c.h"
+#include "stm32f103xx.h"
+#include "BitSet.h"
+#include "Assert.h"
+#include "BitManipulation.h"
+#include "Util.h"
+#include "Rcc.h"
+#include "I2c.h"
 
 // --- IMPORT USED NAMESPACE
 using namespace stm32;
@@ -111,27 +112,27 @@ void I2c::DeInit() {
 void I2c::Send_7Bit_Add(uint8_t address, Direction direction) {
     address = direction != kTransmitter ? util::SetBit<uint16_t, 1>(address)     // Set address for read
                                         : util::ClearBit<uint16_t, 1>(address);  // Reset
-    i2c_reg->DR = address;    
-    while (i2c_reg->SR1.ADDR != 1) {}
+    i2c_reg->DR = address;
+    util::BusyWait([&](){return i2c_reg->SR1.ADDR;});
     READ(i2c_reg->SR1);
     READ(i2c_reg->SR2);
 }
 
 void I2c::TransmitData(uint8_t data) {
-    while (i2c_reg->SR1.TxE ==0) {}
+    util::BusyWait([&](){return i2c_reg->SR1.TxE == 0;});
     READ(i2c_reg->SR1);
     i2c_reg->DR = data;
 }
 
 void I2c::ReceiveData(uint8_t* data) {
-    while (i2c_reg->SR1.RxNE == 0) {}
+    util::BusyWait([&](){return i2c_reg->SR1.RxNE == 0;});
     READ(i2c_reg->SR1);
     *data = static_cast<uint8_t>(i2c_reg->DR);
 }
 
 void I2c::StartCondition() {
     i2c_reg->CR1.START = 1;
-    while (i2c_reg->SR1.SB == 1) {}
+    util::BusyWait([&](){return i2c_reg->SR1.SB;});
     READ(i2c_reg->SR1);
 }
 

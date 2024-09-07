@@ -8,11 +8,12 @@
  * 
  */
 #include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/Types.h"
+#include "Types.h"
+#include "Util.h"
 #include "Constant.h"
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/Systick.h"
-#include "utils/inc/Assert.h"
+#include "BitManipulation.h"
+#include "Systick.h"
+#include "Assert.h"
 
 using namespace stm32;
 using namespace stm32::type;
@@ -37,11 +38,11 @@ void Systick::Enable(CLKSource clksource) {
     SetPointerToISR(nullptr);
 }
 
-void  Systick::SetCounterValue(uint32_t value) {
+void Systick::SetCounterValue(uint32_t value) {
     STM32_ASSERT(value <= kSystickMaxVal);
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->LOAD = value;
-    while (SYSTICK->CTRL.COUNTFLAG == 0) {}
+    util::BusyWait([&](){ return SYSTICK->CTRL.COUNTFLAG == 0; });
     SYSTICK->CTRL.COUNTFLAG = 0;
     SYSTICK->CTRL.ENABLE = 0;
 }

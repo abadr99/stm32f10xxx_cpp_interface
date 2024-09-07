@@ -9,10 +9,13 @@
  *
  */
 
-#include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/Assert.h"
-#include "mcal/inc/Rcc.h"
+#include "stm32f103xx.h"
+#include "Util.h"
+#include "Constant.h"
+#include "Assert.h"
+#include "Rcc.h"
 
+using namespace stm32;
 using namespace stm32::dev::mcal::rcc; 
 using namespace stm32::registers::rcc; 
 
@@ -98,15 +101,12 @@ void Rcc::AdjustInternalClock(uint8_t CalibrationValue) {
 }
 
 void Rcc::WaitToReady(Flags flag) {
-    uint16_t ctr = 0;
-
     switch (flag) {
-        case kHSIRDY: while ((!(RCC->CR.HSIRDY)) && (ctr != RCC_TIMEOUT) && (++ctr));  break;    // NOLINT
-        case kHSERDY: while ((!(RCC->CR.HSERDY)) && (ctr != RCC_TIMEOUT) && (++ctr));  break;    // NOLINT
-        case kPLLRDY: while ((!(RCC->CR.PLLRDY)) && (ctr != RCC_TIMEOUT) && (++ctr));  break;    // NOLINT
+        case kHSIRDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return RCC->CR.HSIRDY; });  break;    // NOLINT [whitespace/line_length]
+        case kHSERDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return RCC->CR.HSERDY; });  break;    // NOLINT [whitespace/line_length]
+        case kPLLRDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return RCC->CR.PLLRDY; });  break;    // NOLINT [whitespace/line_length]
+        default: STM32_ASSERT(1);
     }
-
-    STM32_ASSERT(ctr != RCC_TIMEOUT);
 }
 
 void Rcc::SetInternalHighSpeedClk() {

@@ -99,7 +99,7 @@ void Usart::Transmit(DataValType dataValue) {
     STM32_ASSERT(count != USART_TIMEOUT);
     count = 0;
     usartReg->DR = dataValue;
-    while (!(usartReg->SR.TC) && (count != USART_TIMEOUT) && (++count)) {}
+    util::BusyWait<constant::TimeOut::kUsart>([&](){ return !(usartReg->SR.TC); });
     STM32_ASSERT(count != USART_TIMEOUT);
     usartReg->SR.registerVal = 0;
 }
@@ -112,7 +112,7 @@ void  Usart::Transmit(DataValType dataValue, pFunction pISR) {
     this->usartReg->CR1.TCIE = 1;
 }
 typename Usart::DataValType Usart::Receive() {
-    while (!(usartReg->SR.RXNE) ) {}
+    util::BusyWait<constant::TimeOut::kUsart>([&](){ return !(usartReg->SR.RXNE); });
     return static_cast<DataValType>(usartReg->DR);
 }
 

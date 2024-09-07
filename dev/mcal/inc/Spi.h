@@ -67,10 +67,10 @@ class Spi {
     uint8_t Read();
     Spinum GetSpiNum();
  private:
-    void Helper_SetDataFrame();
-    void Helper_SetClockMode();
-    void Helper_SetFrameFormat();
-    void Helper_MasterBaudRate();
+    void SetDataFrame();
+    void SetClockMode();
+    void SetFrameFormat();
+    void MasterBaudRate();
     const SpiConfig& config_;
     volatile SpiRegDef* spi_reg;
 }; 
