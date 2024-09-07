@@ -42,7 +42,7 @@ int main() {
     usart1.Init();
     
 
-    Gpio::SetPinValue(pc13, Gpio::kHigh);
+    Gpio::SetPinValue(pc13, kHigh);
     uint32_t msg_idx = 0;
     const char msg[] = "Hello \r\n";
     while (msg[msg_idx] != '\0') {
@@ -53,10 +53,10 @@ int main() {
         const char data = usart1.Receive();
         if (data == 'r') {
             // Turn on the Led
-            Gpio::SetPinValue(pc13, Gpio::kLow);
+            Gpio::SetPinValue(pc13, kLow);
         } else if (data == 'n') {
             // Turn off the Led
-            Gpio::SetPinValue(pc13, Gpio::kHigh);
+            Gpio::SetPinValue(pc13, kHigh);
         }
     }
 }
