@@ -1,3 +1,14 @@
+/**
+ * @file Define.h
+ * @author
+ * @brief 
+ * @version 0.1
+ * @date 2024-09-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #pragma once
 
 
@@ -8,5 +19,5 @@
 #define F_CPU (8000000U)
 
 #define BUSY_WAIT(cond_, timeout_)\
-    for(int i = 0 ; cond_ && i != timeout; ++i);
-    
+    for (int i = 0 ; cond_ && i != timeout; ++i) { }
+
