@@ -16,8 +16,9 @@
 #include "mcal/inc/Gpio.h"
 #include "hal/inc/Keypad.h"
 
-using  namespace stm32::dev::mcal::pin;
-using  namespace stm32::dev::mcal::gpio;
+using namespace stm32::type;
+using namespace stm32::dev::mcal::pin;
+using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::keypad;
 
 Keypad::Keypad(uint8_t numRows, uint8_t numCols) {
@@ -46,12 +47,12 @@ void Keypad::KeypadInit() {
     for (uint8_t numCol = 0; numCol <colNum; numCol++) {
         STM32_ASSERT(KeypadCol[numCol].IsOutput());
         Gpio::Set(KeypadCol[numCol]);
-        Gpio::SetPinValue(KeypadCol[numCol], Gpio::State::kHigh);
+        Gpio::SetPinValue(KeypadCol[numCol], DigitalVoltage::kHigh);
     }
 }
 
 uint8_t Keypad::GetPressed(uint8_t** keypadButtons) {
-    using State = Gpio::State;
+    using State = DigitalVoltage;
     uint8_t buttonVal = 0xff;
     for (uint8_t numCol =0; numCol <colNum; numCol++) {
         Gpio::SetPinValue(KeypadCol[numCol], State::kLow);

@@ -1,6 +1,6 @@
 /**
  * @file RTC.h
- * @author Mohamed Refat
+ * @author
  * @brief 
  * @version 0.1
  * @date 2024-07-26
@@ -12,14 +12,10 @@
 #ifndef DEV_MCAL_INC_RTC_H_
 #define DEV_MCAL_INC_RTC_H_
 
-using namespace stm32::utils::types;
-
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
 namespace rtc   {
-
-#define RTC_TIMEOUT  (1000)
 
 struct Time {
     uint8_t hour;
@@ -31,13 +27,14 @@ struct RtcConfig {
     uint32_t prescaler_value;
     uint32_t counter_value;
     uint32_t alarm_value;
-    pFunction SecondISR;
-    pFunction AlarmISR;
-    pFunction OverflowISR;
+    stm32::type::pFunction SecondISR;
+    stm32::type::pFunction AlarmISR;
+    stm32::type::pFunction OverflowISR;
 };
 
 class Rtc {
  public:
+    using pFunction = stm32::type::pFunction;
     // Initialization and control
     static void Init(const RtcConfig &config);
     static void GetCurrentTime(Time *pCurrent_time);
@@ -53,7 +50,6 @@ class Rtc {
     static void Enable(void);
     static void Disable(void);
     
-
     static pFunction GetAlarmISR(void);
     static pFunction GetOverflowISR(void);
     static pFunction GetSecondISR(void);

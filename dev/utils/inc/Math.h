@@ -13,7 +13,7 @@
 #define DEV_UTILS_INC_MATH_H_
 
 namespace stm32 {
-namespace utils {
+namespace util {
 namespace math {
 }}}
 

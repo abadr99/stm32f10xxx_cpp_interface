@@ -11,11 +11,9 @@
 #ifndef DEV_MCAL_INC_EXTI_H_
 #define DEV_MCAL_INC_EXTI_H_
 
-using namespace stm32::dev::mcal::pin;
-using namespace stm32::utils::types;
 namespace stm32 {
 namespace dev {
-namespace mcal {
+namespace mcal { 
 namespace exti {
     
 enum Line {
@@ -48,29 +46,33 @@ enum Trigger {
 };
 
 struct EXTI_Config {
+    using Port = stm32::dev::mcal::pin::Port;
     Port port;
     Line line;
     Trigger trigger;
 };
+
 /**
  * @brief : Manage EXTIx.
  * @note  : Don't forget to Enable NVIC Befor Using EXTIx.
  */
 class Exti {
  public:
+    using pFunction = stm32::type::pFunction;
     static void Enable(const EXTI_Config& config);
     static void Disable(const EXTI_Config& config);
     static void SetPendingFlag(const EXTI_Config& config);
     static void ClearPendingFlag(const EXTI_Config& config);
-    uint8_t GetPendingFlag(const EXTI_Config& config);
+    static bool GetPendingFlag(const EXTI_Config& config);
     static void SetpCallBackFunction(Line line , void (*pCallBackFun)(void));
     static pFunction GetpCallBackFunction(Line line);
  private:
+    using Port = stm32::dev::mcal::pin::Port;
     static pFunction pGlobalCallBackFunctions[7];
     static void InitAFIOReg(Line line, Port port);
     static void SetTrigger(Line line, Trigger trigger);
     static void ClrTrigger(Line line, Trigger trigger);
-    static uint8_t GetPendingBit(Line line);
+    static bool GetPendingBit(Line line);
 };
 
 }  // namespace exti

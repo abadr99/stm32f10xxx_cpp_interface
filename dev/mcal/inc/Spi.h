@@ -9,8 +9,7 @@
  */
 #ifndef DEV_MCAL_INC_SPI_H_
 #define DEV_MCAL_INC_SPI_H_
-using namespace stm32::registers::spi;
-#define SPI_TIMEOUT    (400)
+
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -67,12 +66,12 @@ class Spi {
     uint8_t Read();
     Spinum GetSpiNum();
  private:
-    void Helper_SetDataFrame();
-    void Helper_SetClockMode();
-    void Helper_SetFrameFormat();
-    void Helper_MasterBaudRate();
+    void SetDataFrame();
+    void SetClockMode();
+    void SetFrameFormat();
+    void MasterBaudRate();
     const SpiConfig& config_;
-    volatile SpiRegDef* spi_reg;
+    volatile stm32::registers::spi::SpiRegDef* spi_reg;
 }; 
 }   // namespace spi
 }   // namespace mcal

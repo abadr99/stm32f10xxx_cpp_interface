@@ -20,7 +20,8 @@
 
 #define SR_CLK_PERIOD_US   (10)
 
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32;
+using namespace stm32::type;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::systick;
@@ -42,29 +43,29 @@ STP_74HC595::STP_74HC595(const Pin& serialInputPin, const Pin& shiftClkPin, cons
         Gpio::Set(pins_.storageClk);
         
         // Set pins as low
-        Gpio::SetPinValue(pins_.serialInputPin, Gpio::State::kLow);
-        Gpio::SetPinValue(pins_.shiftClkPin,    Gpio::State::kLow);
-        Gpio::SetPinValue(pins_.storageClk,     Gpio::State::kLow);
+        Gpio::SetPinValue(pins_.serialInputPin, DigitalVoltage::kLow);
+        Gpio::SetPinValue(pins_.shiftClkPin,    DigitalVoltage::kLow);
+        Gpio::SetPinValue(pins_.storageClk,     DigitalVoltage::kLow);
     }
 
 
 void STP_74HC595::Pulse() {
-    Gpio::SetPinValue(pins_.shiftClkPin, Gpio::State::kHigh);
+    Gpio::SetPinValue(pins_.shiftClkPin, DigitalVoltage::kHigh);
     Systick::Delay_us(SR_CLK_PERIOD_US);
-    Gpio::SetPinValue(pins_.shiftClkPin, Gpio::State::kLow);
+    Gpio::SetPinValue(pins_.shiftClkPin, DigitalVoltage::kLow);
     Systick::Delay_us(SR_CLK_PERIOD_US);
 }
 
 void STP_74HC595::Write(ShiftRegisterWidth val) {
     // -- 1] Disable Latch until we fill storage register
-    Gpio::SetPinValue(pins_.storageClk, Gpio::State::kLow);
+    Gpio::SetPinValue(pins_.storageClk, DigitalVoltage::kLow);
 
     // -- 2] Write data to shift register
     for (uint8_t i = 0 ; i < 8 ; ++i) {
         Pulse();
-        Gpio::State state = static_cast<Gpio::State>(ExtractBit(val, i)); 
+        DigitalVoltage state = static_cast<DigitalVoltage>(util::ExtractBit(val, i)); 
         Gpio::SetPinValue(pins_.serialInputPin, state);
     }
     // -- 3] output data to storage register
-    Gpio::SetPinValue(pins_.storageClk, Gpio::State::kHigh);
+    Gpio::SetPinValue(pins_.storageClk, DigitalVoltage::kHigh);
 }

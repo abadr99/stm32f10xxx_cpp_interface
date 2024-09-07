@@ -1,6 +1,6 @@
 /**
  * @file Rtc.cpp
- * @author Mohamed Refat
+ * @author
  * @brief 
  * @version 0.1
  * @date 2024-07-26
@@ -10,19 +10,14 @@
  */
 
 #include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/Assert.h"
-#include "utils/inc/Types.h"
-#include "mcal/inc/Rtc.h"
+#include "Assert.h"
+#include "Types.h"
+#include "Util.h"
+#include "Rtc.h"
 
-
-using namespace stm32::dev::mcal::rtc;  // NOLINT[build/namespaces]
-using namespace stm32::registers::rtc;  // NOLINT[build/namespaces]
-using namespace stm32::utils::types;    // NOLINT[build/namespaces]
-
-
-#define CLEAR_ALARM_INTERRUPT_FLAG()     (RTC->CRL.ALRF = 0)
-#define CLEAR_SECOND_INTERRUPT_FLAG()    (RTC->CRL.SECF = 0)
-#define CLEAR_OVERFLOW_INTERRUPT_FLAG()  (RTC->CRL.OWF = 0)
+using namespace stm32::dev::mcal::rtc;
+using namespace stm32::registers::rtc;
+using namespace stm32::type;          
 
 pFunction Rtc::pRtcCallBackFunctions[3] = {nullptr, nullptr, nullptr};
 
@@ -120,16 +115,14 @@ void Rtc::GetCurrentTime(Time *pCurrent_time) {
 }
 
 void Rtc::WaitForLastTask(void) {
-    uint16_t ctr = 0;
-    while ((RTC->CRL.RTOFF == 0) && (ctr++ != RTC_TIMEOUT) ) {}
+    util::BusyWait<constant::TimeOut::kRtc>([&](){ return RTC->CRL.RTOFF == 0; });
 }
 
 void Rtc::WaitForSync(void) {
-    uint16_t ctr = 0;
     // Clear Registers synchronized flag
     RTC->CRL.RSF = 0;
     // Wait for RSF to be set
-    while ((RTC->CRL.RSF == 0) && (ctr++ != RTC_TIMEOUT) ) {}
+    util::BusyWait<constant::TimeOut::kRtc>([&](){ return RTC->CRL.RSF == 0; });
 }
 
 void Rtc::SetAlarmISR(pFunction fun) {
@@ -171,7 +164,7 @@ extern "C" void RTC_IRQHandler(void) {
         if (fun != nullptr) {
             fun();
         }
-        CLEAR_ALARM_INTERRUPT_FLAG();
+        RTC->CRL.ALRF = 0;
     }
 
     if ((RTC->CRL.SECF == 1) && (RTC->CRH.SECIE == 1)) {
@@ -179,7 +172,7 @@ extern "C" void RTC_IRQHandler(void) {
         if (fun != nullptr) {
             fun();
         }
-        CLEAR_SECOND_INTERRUPT_FLAG();
+        RTC->CRL.SECF = 0;
     }
 
     if ((RTC->CRL.OWF == 1) && (RTC->CRH.OWIE == 1)) {
@@ -187,6 +180,6 @@ extern "C" void RTC_IRQHandler(void) {
         if (fun != nullptr) {
             fun();
         }
-        CLEAR_OVERFLOW_INTERRUPT_FLAG();
+        RTC->CRL.OWF = 0;
     }
 }

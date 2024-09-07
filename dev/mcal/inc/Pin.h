@@ -84,7 +84,7 @@ class Pin {
     bool IsAnalog() const;
 
  private:
-    using DataType = stm32::utils::bitset::BitSet<uint16_t>;
+    using DataType = stm32::util::BitSet<uint16_t>;
     /**
      * @brief Holds important class data as following:
      *      Bits 0 .. 1: Holds port

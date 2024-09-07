@@ -13,7 +13,7 @@
 using namespace stm32::dev::mcal::pin; 
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::spi;
-using namespace stm32::utils::array;
+using namespace stm32::type;
 namespace stm32 {
 namespace dev {
 namespace hal {
@@ -55,7 +55,7 @@ class Tft {
  public:
     explicit Tft(const TftConfig& config);
     void Reset();
-    void DisplayImage(const Array<uint16_t, 20480> image);
+    void DisplayImage(const util::Array<uint16_t, 20480> image);
     void DrawRectangle(uint8_t hight, uint8_t width, uint8_t xAxis, uint8_t yAxis, TftColors color);
  private:
     TftConfig config_;

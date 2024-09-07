@@ -95,7 +95,7 @@ struct Id {
 };
 class Nvic {
  public:
-    using bit = stm32::utils::types::bit;
+    using bit = stm32::type::bit;
     static void EnableInterrupt(Id id);
     static void DisableInterrupt(Id id);
     static void SetPendingFlag(Id id);

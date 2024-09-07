@@ -9,7 +9,7 @@
  */
 #ifndef DEV_MCAL_INC_WWDG_H_
 #define DEV_MCAL_INC_WWDG_H_
-using namespace stm32::registers::wwdg;
+
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -28,13 +28,13 @@ struct Config {
 class Wwdg {
  public:
     explicit Wwdg(const Config& config);
-    void Init();
-    void enableInterrupt();
-    void disableInterrupt();
-    bool isEarlyWakeupFlagSet();
-    void clearEarlyWakeupFlag();
+    void EnableInterrupt();
+    void DisableInterrupt();
+    bool IsEarlyWakeupFlagSet();
+    void ClearEarlyWakeupFlag();
  private:
-Config config_;
+    Config config_;
+    void Init();
 };
 }   // namespace wwdg
 }   // namespace mcal

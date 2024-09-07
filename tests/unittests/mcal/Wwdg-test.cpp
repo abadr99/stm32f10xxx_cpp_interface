@@ -14,6 +14,6 @@
 #include "mcal/inc/Wwdg.h" 
  
 uint32_t WwdgReg[3] = {0x0}; 
-using namespace stm32::utils::bit_manipulation; 
+using namespace stm32::util; 
 using namespace stm32::dev::mcal::wwdg; 
 using namespace stm32::registers::wwdg;

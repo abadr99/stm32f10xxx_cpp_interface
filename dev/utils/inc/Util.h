@@ -12,11 +12,13 @@
 #ifndef DEV_UTILS_INC_UTIL_H_
 #define DEV_UTILS_INC_UTIL_H_
 
+#include "Assert.h"
 #include "Rcc.h"
 #include "Pin.h"
-
+#include "Constant.h"
+#include <functional>
 namespace stm32 {
-namespace utils {
+namespace util {
     
     inline stm32::dev::mcal::rcc::Peripheral 
     MapPortToPeripheral(stm32::dev::mcal::pin::Port port) {
@@ -27,11 +29,21 @@ namespace utils {
             case Port::kPortB:    return Peripheral::kIOPB;
             case Port::kPortC:    return Peripheral::kIOPC;
         }
-        STM32_ASSERT(1);
+        STM32_ASSERT(0);
         return Peripheral::kUnknown;
     }
+    
+    using Func = std::function<bool()>;
+    template <int timeout = stm32::constant::TimeOut::kDefault>
+    void BusyWait(const Func& cond) {
+        uint32_t i = 0;
+        for (; cond() && i != timeout; ++i) {}
+        if (i >= timeout) {
+            STM32_ASSERT(0);
+        }
+    }
 
-}   // namespace utils
+}   // namespace util
 }   // namespace stm32
 
 #endif  // DEV_UTILS_INC_UTIL_H_

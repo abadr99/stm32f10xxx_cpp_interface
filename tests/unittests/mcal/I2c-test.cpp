@@ -15,6 +15,6 @@
 
 uint32_t I2c1Reg[9] = {0x0};
 uint32_t I2c2Reg[9] = {0x0};
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::i2c;
 using namespace stm32::registers::i2c;

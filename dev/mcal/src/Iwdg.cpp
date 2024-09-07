@@ -9,20 +9,21 @@
  * 
  */
 #include <stdint.h>
-#include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/BitSet.h"
-#include "utils/inc/Assert.h"
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/Iwdg.h"
+#include "stm32f103xx.h"
+#include "BitSet.h"
+#include "Assert.h"
+#include "BitManipulation.h"
+#include "Util.h"
+#include "Iwdg.h"
 
 using namespace stm32::dev::mcal::iwdg; // NOLINT[build/namespaces]
 using namespace stm32::registers::iwdg; 
 
 Iwdg::Iwdg(Prescaler prescaler, uint16_t reloadVal) {
     IWDG->KR = 0x5555;
-    while (IWDG->SR.PVU == 1) {}
+    util::BusyWait([&](){return IWDG->SR.PVU;});
     IWDG->PR = prescaler;
-    while (IWDG->SR.RVU == 1) {}
+    util::BusyWait([&](){return IWDG->SR.RVU;});
     IWDG->RLD = reloadVal;
     IWDG->KR = 0xCCCC;
 }

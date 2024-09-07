@@ -24,8 +24,8 @@ using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::spi;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::systick;
-using namespace stm32::utils::array;
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::type;
+using namespace stm32::type;
 using namespace stm32::dev::hal::tft;
 
 Tft::Tft(const TftConfig& config) : config_(config) {
@@ -51,18 +51,18 @@ Tft::Tft(const TftConfig& config) : config_(config) {
     SendCommand(kDISPON);
 }
 void Tft::Reset() {
-    Gpio::SetPinValue(config_.rst, Gpio::kHigh);
+    Gpio::SetPinValue(config_.rst, kHigh);
     Systick::Delay_ms(100);
-    Gpio::SetPinValue(config_.rst, Gpio::kLow);
+    Gpio::SetPinValue(config_.rst, kLow);
     Systick::Delay_ms(2);
-    Gpio::SetPinValue(config_.rst, Gpio::kHigh);
+    Gpio::SetPinValue(config_.rst, kHigh);
     Systick::Delay_ms(100);
-    Gpio::SetPinValue(config_.rst, Gpio::kLow);
+    Gpio::SetPinValue(config_.rst, kLow);
     Systick::Delay_ms(100);
-    Gpio::SetPinValue(config_.rst, Gpio::kHigh);
+    Gpio::SetPinValue(config_.rst, kHigh);
     Systick::Delay_ms(120000);
 }
-void Tft::DisplayImage(const Array<uint16_t, 20480> image) {
+void Tft::DisplayImage(const util::Array<uint16_t, 20480> image) {
     SetAddress(0, config_.width, 0, config_.height);
     for (uint16_t counter = 0; counter < image.Size(); counter++) {
         SetPixel(image[counter]);
@@ -99,11 +99,11 @@ void Tft::InitializeResolution() {
     }
 }
 void Tft::SendCommand(uint8_t command) {
-    Gpio::SetPinValue(config_.A0, Gpio::kLow);
+    Gpio::SetPinValue(config_.A0, kLow);
     config_.TFtSpi.Write(command);
 }
 void Tft::SendData(uint8_t data) {
-    Gpio::SetPinValue(config_.A0, Gpio::kHigh);
+    Gpio::SetPinValue(config_.A0, kHigh);
     config_.TFtSpi.Write(data);
 }
 void Tft::SetAddress(uint16_t startX, uint16_t endX, uint16_t startY, uint16_t endY) {
@@ -111,18 +111,18 @@ void Tft::SetAddress(uint16_t startX, uint16_t endX, uint16_t startY, uint16_t e
         //  Set X address
         SendCommand(kCASET);
         //  Start byte
-        SendData(ExtractBits<uint16_t, 8>(startX));  // MS byte
+        SendData(util::ExtractBits<uint16_t, 8>(startX));  // MS byte
         SendData(startX);   // LS byte
         //  Stop byte
-        SendData(ExtractBits<uint16_t, 8>(endX));  // MS byte
+        SendData(util::ExtractBits<uint16_t, 8>(endX));  // MS byte
         SendData(endX);  // LS byte
         //  Set Y address
         SendCommand(kRASET);
         //  Start byte
-        SendData(ExtractBits<uint16_t, 8>(startY));  // MS byte
+        SendData(util::ExtractBits<uint16_t, 8>(startY));  // MS byte
         SendData(startY);  // LS byte
         //  Stop byte
-        SendData(ExtractBits<uint16_t, 8>(endY));  // MS byte
+        SendData(util::ExtractBits<uint16_t, 8>(endY));  // MS byte
         SendData(endY);  // LS byte
         //  Memory write
         SendCommand(kRAWMR);    //  This tells the display that pixel data will follow.
@@ -130,7 +130,7 @@ void Tft::SetAddress(uint16_t startX, uint16_t endX, uint16_t startY, uint16_t e
 }
 void Tft::SetPixel(uint16_t pixel) {
     //  write high byte
-    SendData(ExtractBits<uint16_t, 8>(pixel));
+    SendData(util::ExtractBits<uint16_t, 8>(pixel));
     //  write low byte
     SendData(pixel & 0x00ff);
 }

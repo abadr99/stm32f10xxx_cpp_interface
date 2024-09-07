@@ -14,7 +14,7 @@
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Exti.h"
 
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::exti;
 using namespace stm32::registers::exti;

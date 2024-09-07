@@ -57,7 +57,7 @@ template<LcdMode M>
 struct LCD_Config {
     using Pin  = stm32::dev::mcal::pin::Pin;
     using Port = stm32::dev::mcal::pin::Port;
-    stm32::utils::array::Array<Pin, M> dataPins;
+    stm32::util::Array<Pin, M> dataPins;
     Port controlPort;
     Pin RSpin;
     Pin RWpin;

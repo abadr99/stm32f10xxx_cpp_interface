@@ -15,8 +15,7 @@
 #include <stdint.h>
 #include <assert.h>
 namespace stm32 {
-namespace utils {
-namespace bit_manipulation {
+namespace util {
 
 template<typename T>
 inline constexpr T GetAllOnes() {
@@ -106,8 +105,7 @@ inline constexpr T ClearBit(const T container) {
     return container & ~(1 << TBitNum);
 }
 
-}  // namespace bit_manipulation
-}  // namespace utils
+}  // namespace util
 }  // namespace stm32
 
 #endif  // DEV_UTILS_INC_BITMANIPULATION_H_

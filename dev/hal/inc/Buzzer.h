@@ -24,7 +24,7 @@ enum BuzzerState : uint8_t {
     kOn, kOff
 };
 
-template<stm32::utils::types::ConnectionType CT>
+template<stm32::type::ConnectionType CT>
 class Buzzer {
  public:
     explicit Buzzer(const Pin& buzzerPin);
