@@ -33,7 +33,7 @@ namespace util {
     }
     
     using Func = std::function<bool()>;
-    template <int timeout>
+    template <int timeout = stm32::constant::TimeOut::kDefault>
     void BusyWait(const Func& cond) {
         for (int i = 0; cond() && i != timeout; ++i){}
     }
