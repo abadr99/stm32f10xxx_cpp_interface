@@ -29,7 +29,7 @@ namespace util {
             case Port::kPortB:    return Peripheral::kIOPB;
             case Port::kPortC:    return Peripheral::kIOPC;
         }
-        STM32_ASSERT(1);
+        STM32_ASSERT(0);
         return Peripheral::kUnknown;
     }
     
@@ -39,7 +39,7 @@ namespace util {
         uint32_t i = 0;
         for (; cond() && i != timeout; ++i) {}
         if (i >= timeout) {
-            STM32_ASSERT(1);
+            STM32_ASSERT(0);
         }
     }
 
