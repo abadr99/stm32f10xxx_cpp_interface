@@ -10,12 +10,15 @@
 
 #include <stdint.h>
 #include "mcal/inc/stm32f103xx.h"
+#include "Constant.h"
+#include "Define.h"
 #include "Assert.h"
 #include "Pin.h"
 #include "Gpio.h"
 #include "Led.h"
 
-using namespace stm32::utils::types;
+using namespace stm32;
+using namespace stm32::type;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::led;
@@ -28,13 +31,13 @@ Led<CT>::Led(Pin LedPin) : LedPin(LedPin) {
 
 template<ConnectionType CT>
 void Led<CT>::TurnOn() {
-    Gpio::SetPinValue(LedPin, HANDLE_ACTIVE_VOLTAGE(CT));
+    Gpio::SetPinValue(LedPin, constant::DigitalState<CT>::kActiveVoltage);
     LedState = kTurnedOn;
 }
 
 template<ConnectionType CT>
 void Led<CT>::TurnOff() {
-    Gpio::SetPinValue(LedPin, HANDLE_ACTIVE_VOLTAGE(CT));
+    Gpio::SetPinValue(LedPin, constant::DigitalState<CT>::kInActiveVoltage);
     LedState = kTurnedOff;
 }
 

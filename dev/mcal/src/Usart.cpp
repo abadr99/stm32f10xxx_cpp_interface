@@ -10,7 +10,9 @@
  */
 
 #include "mcal/inc/stm32f103xx.h"
+#include "Constant.h"
 #include "BitManipulation.h"
+#include "Util.h"
 #include "Types.h"
 #include "Assert.h"
 #include "Usart.h"
@@ -18,6 +20,7 @@
 using namespace stm32::registers::rcc;
 using namespace stm32::registers::usart;
 using namespace stm32::dev::mcal::usart;
+using namespace stm32::type;
 
 pFunction  Usart::pTransmitCompleteFun_[3] = {nullptr};
 pFunction  Usart::pReceiveReadyFun_[3] = {nullptr};
@@ -91,13 +94,9 @@ void Usart::_SetBaudRate() {
 }
 
 void Usart::Transmit(DataValType dataValue) {
-    uint32_t count = 0;
-    while (!(usartReg->SR.TXE && (count != USART_TIMEOUT) && (++count)) ) {}
-    STM32_ASSERT(count != USART_TIMEOUT);
-    count = 0;
+    util::BusyWait<constant::TimeOut::kUsart>([&](){return usartReg->SR.TXE;});
     usartReg->DR = dataValue;
-    while (!(usartReg->SR.TC) && (count != USART_TIMEOUT) && (++count)) {}
-    STM32_ASSERT(count != USART_TIMEOUT);
+    util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg->SR.TC);});
     usartReg->SR.registerVal = 0;
 }
 
@@ -109,7 +108,7 @@ void  Usart::Transmit(DataValType dataValue, pFunction pISR) {
     this->usartReg->CR1.TCIE = 1;
 }
 typename Usart::DataValType Usart::Receive() {
-    while (!(usartReg->SR.RXNE) ) {}
+    util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg->SR.RXNE);});
     return static_cast<DataValType>(usartReg->DR);
 }
 

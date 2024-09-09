@@ -11,7 +11,6 @@
 #ifndef DEV_MCAL_INC_DMA_H_
 #define DEV_MCAL_INC_DMA_H_
 
-using namespace stm32::utils::types;
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -70,6 +69,7 @@ struct DMAConfig {
 };
 class Dma {
  public:
+    using pFunction = stm32::type::pFunction;
     static void Init(const DMAConfig& config);
     static void Enable(Channel dmaChannel);
     static void Disable(Channel dmaChannel);

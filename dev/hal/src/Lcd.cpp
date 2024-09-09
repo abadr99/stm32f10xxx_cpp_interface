@@ -22,45 +22,44 @@
 #include "Array.h"
 #include "Lcd.h"
 
+using namespace stm32;
+using namespace stm32::type;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::dev::hal::lcd;
-using namespace stm32::utils::array;
-using namespace stm32::utils::bit_manipulation;
 using namespace stm32::dev::mcal::rcc;
-using namespace stm32::utils;
 
 template<LcdMode M>
 Lcd<M>::Lcd(const LCD_Config<M> &config) : config_(config) {
     for (uint8_t i = 0; i < config_.dataPins.Size(); ++i) {
-        Peripheral p = MapPortToPeripheral(config_.dataPins[i].GetPort());
+        Peripheral p = util::MapPortToPeripheral(config_.dataPins[i].GetPort());
         Rcc::Enable(p);
     } 
-    Rcc::Enable(MapPortToPeripheral(config_.controlPort));
+    Rcc::Enable(util::MapPortToPeripheral(config_.controlPort));
     // TODO(@noura36): Should we call this function here ?
     Init();
 }
 
 template<LcdMode M>
 void Lcd<M>::SendFallingEdgePulse() {
-    Gpio::SetPinValue(config_.ENpin, Gpio::State::kHigh);
+    Gpio::SetPinValue(config_.ENpin, DigitalVoltage::kHigh);
     Systick::Delay_ms(1);
-    Gpio::SetPinValue(config_.ENpin, Gpio::State::kLow);
+    Gpio::SetPinValue(config_.ENpin, DigitalVoltage::kLow);
     Systick::Delay_ms(1);
 }
 
 template<LcdMode M>
 void Lcd<M>::WriteOutputPins(uint8_t value) {
     for (uint8_t i = 0; i < config_.dataPins.Size(); ++i) {
-        Gpio::SetPinValue(config_.dataPins[i], static_cast<Gpio::State>(ExtractBit<uint8_t>(value, i)));  // NOLINT
+        Gpio::SetPinValue(config_.dataPins[i], static_cast<DigitalVoltage>(util::ExtractBit<uint8_t>(value, i)));  // NOLINT [whitespace/line_length] 
     } 
 }
 
 template<LcdMode M>
 void Lcd<M>::SendData(uint8_t data) {
-    Gpio::SetPinValue(config_.RSpin, Gpio::State::kHigh);
-    Gpio::SetPinValue(config_.RWpin, Gpio::State::kLow);
+    Gpio::SetPinValue(config_.RSpin, DigitalVoltage::kHigh);
+    Gpio::SetPinValue(config_.RWpin, DigitalVoltage::kLow);
     
     // -- 8-BIT MODE
     if constexpr (M == kEightBit) {
@@ -78,8 +77,8 @@ void Lcd<M>::SendData(uint8_t data) {
 
 template<LcdMode M>
 void Lcd<M>::SendCommand(uint32_t command) {
-    Gpio::SetPinValue(config_.RSpin, Gpio::State::kLow);
-    Gpio::SetPinValue(config_.RWpin, Gpio::State::kLow);
+    Gpio::SetPinValue(config_.RSpin, DigitalVoltage::kLow);
+    Gpio::SetPinValue(config_.RWpin, DigitalVoltage::kLow);
 
     if constexpr (M == kEightBit) {
         WriteOutputPins(command);

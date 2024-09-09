@@ -15,9 +15,7 @@
 #include <cstddef>
 
 namespace stm32 {
-namespace utils {
-namespace array {
-
+namespace util {
 template<typename T, std::size_t kSize>
 class Array {
  public:
@@ -58,8 +56,7 @@ class Array {
     T arr_[kSize];
 };
 
-}  // namespace array
-}  // namespace utils
+}  // namespace util
 }  // namespace stm32
 
 #endif  // DEV_UTILS_INC_ARRAY_H_

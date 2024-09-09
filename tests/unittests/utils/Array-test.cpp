@@ -14,7 +14,7 @@
 
 #include "Array.h"
 
-using namespace stm32::utils::array;
+using namespace stm32::util;
 
 TEST(ArrayTest, BasicTest1) {
     Array<int, 5> arr;

@@ -9,11 +9,9 @@
 #ifndef DEV_MCAL_INC_TIMER_H_
 #define DEV_MCAL_INC_TIMER_H_
 
-#include "../../mcal/inc/stm32f103xx.h"
-#include "utils/inc/Types.h"
+#include "stm32f103xx.h"
+#include "Types.h"
 
-using namespace stm32::registers::timer;
-using namespace stm32::utils::types;
 namespace stm32 {
 namespace dev {
 namespace mcal {
@@ -36,16 +34,17 @@ struct TimerConfig {
     TimerDirection Direction;
     uint16_t ReloadValue;
     uint16_t Prescaler = 44999;  // if bus clk = 45MHz , psc = 44999+1 --> time base = 1ms
-    pFunction pfunction;
+    stm32::type::pFunction pfunction;
 };
 class Timer {
- public:  
+ public:
+    using pFunction = stm32::type::pFunction;
     explicit Timer(const TimerConfig & config);
-    void Init(const TimerConfig & config);
-    static pFunction Helper_GetFunToISR(TimerID id);
+    static pFunction GetFunToISR(TimerID id);
  private:
+    void Init();
     const TimerConfig& config_;
-    volatile timerRegDef* timerReg;
+    volatile stm32::registers::timer::timerRegDef* timerReg;
     static pFunction pGlobalCallBackFunction[5];
 };
 }  // namespace timer

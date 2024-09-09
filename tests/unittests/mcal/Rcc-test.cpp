@@ -14,7 +14,7 @@
 
 uint32_t RccReg[10] = {};
 
-using namespace stm32::utils::bit_manipulation;   // NOLINT [build/namespaces]
+using namespace stm32::util;   // NOLINT [build/namespaces]
 using namespace stm32::dev::mcal::rcc;            // NOLINT [build/namespaces]
 using namespace stm32::registers::rcc;            // NOLINT [build/namespaces]
 using ExpectedVal = uint32_t;

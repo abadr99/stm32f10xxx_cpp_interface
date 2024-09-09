@@ -12,9 +12,9 @@
 #define DEV_HAL_INC_DAC_H_
 
 using namespace stm32::dev::mcal::pin; 
-using namespace stm32::utils::types;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::systick;
-using namespace stm32::utils::array;
+using namespace stm32::type;
 namespace stm32 {
 namespace dev {
 namespace hal {
@@ -22,11 +22,11 @@ namespace dac {
 
 class Dac {
  public:
-    Dac(Array<Pin, 8> dacPins, CLKSource clock);
-    void DAC_Play(uint32_t* songRaw, uint32_t songLength);
+  Dac(util::Array<Pin, 8> dacPins, CLKSource clock);
+  void DAC_Play(uint32_t* songRaw, uint32_t songLength);
  private: 
-    Array<Pin, 8> dacPins_;
-    CLKSource clock_;
+  Array<Pin, 8> dacPins_;
+  CLKSource clock_;
 };
 }   // namespace dac
 }   // namespace hal

@@ -13,7 +13,7 @@
 
 #include "utils/inc/BitSet.h"
 
-using stm32::utils::bitset::BitSet;
+using stm32::util::BitSet;
 
 TEST(BitSet, BasicTest1) {
     BitSet<uint8_t> bs(0b11110000);

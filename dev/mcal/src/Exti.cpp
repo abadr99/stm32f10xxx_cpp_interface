@@ -16,11 +16,12 @@
 #include "mcal/inc/Exti.h"
 
 // --- IMPORT USED NAMESPACES
+using namespace stm32;
+using namespace stm32::type;
 using namespace stm32::registers::exti;
 using namespace stm32::registers::afio;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::exti;
-using namespace stm32::utils::bit_manipulation;
 
 // --- CHECK 'EXTI' LAYOUT
 ASSERT_STRUCT_SIZE(EXTIRegDef, (sizeof(RegWidth_t) * 6));
@@ -36,12 +37,12 @@ pFunction Exti::pGlobalCallBackFunctions[7] = {nullptr};
 
 void Exti::Enable(const EXTI_Config& config) {
     Exti::InitAFIOReg(config.line, config.port);
-    EXTI->IMR = SetBit<uint32_t>(EXTI->IMR, config.line);
+    EXTI->IMR = util::SetBit<uint32_t>(EXTI->IMR, config.line);
     Exti::SetTrigger(config.line, config.trigger);
 }
 
 void Exti::Disable(const EXTI_Config& config) {
-    EXTI->IMR = ClearBit<uint32_t>(EXTI->IMR, config.line);
+    EXTI->IMR = util::ClearBit<uint32_t>(EXTI->IMR, config.line);
     Exti::ClrTrigger(config.line, config.trigger);
 }
 
@@ -49,17 +50,17 @@ void Exti::SetPendingFlag(const EXTI_Config& config) {
     if (Exti::GetPendingBit(config.line) == 1) { 
         return;  // EARLY EXIT
     }
-    EXTI->PR = SetBit<uint32_t>(EXTI->PR, config.line);
+    EXTI->PR = util::SetBit<uint32_t>(EXTI->PR, config.line);
 }
 
 void Exti::ClearPendingFlag(const EXTI_Config& config) {
     if (Exti::GetPendingBit(config.line) == 0) { 
         return;     // EARLY EXIT
     }
-    EXTI->PR = SetBit<uint32_t>(EXTI->PR, config.line);
+    EXTI->PR = util::SetBit<uint32_t>(EXTI->PR, config.line);
 }
 
-uint8_t Exti::GetPendingFlag(const EXTI_Config& config) {
+bool Exti::GetPendingFlag(const EXTI_Config& config) {
     return Exti::GetPendingBit(config.line);
 }
 
@@ -85,30 +86,30 @@ pFunction Exti::GetpCallBackFunction(Line line) {
 void Exti::InitAFIOReg(Line line, Port port) {
     uint8_t startBit = (static_cast<uint8_t>(line) % 4) << 2;
     uint8_t CRx = static_cast<uint8_t>(line) >> 2;
-    AFIO->EXTICRx[CRx] = WriteBits<uint32_t>(startBit, startBit + 3, AFIO->EXTICRx[CRx], port);
+    AFIO->EXTICRx[CRx] = util::WriteBits<uint32_t>(startBit, startBit + 3, AFIO->EXTICRx[CRx], port);       // NOLINT
 }
 
 void Exti::SetTrigger(Line line, Trigger trigger) {
     if (trigger == Trigger::kRising || trigger == Trigger::kBoth) {
-        EXTI->RTSR = SetBit<uint32_t>(EXTI->RTSR, line);
+        EXTI->RTSR = util::SetBit<uint32_t>(EXTI->RTSR, line);
     }
     if (trigger == Trigger::kFalling || trigger == Trigger::kBoth) {
-        EXTI->FTSR = SetBit<uint32_t>(EXTI->FTSR, line);
+        EXTI->FTSR = util::SetBit<uint32_t>(EXTI->FTSR, line);
     }
 }
 
 void Exti::ClrTrigger(Line line, Trigger trigger) {
     if (trigger == Trigger::kRising || trigger == Trigger::kBoth) {
-        EXTI->RTSR = ClearBit<uint32_t>(EXTI->RTSR, line);
+        EXTI->RTSR = util::ClearBit<uint32_t>(EXTI->RTSR, line);
     }
     if (trigger == Trigger::kFalling || trigger == Trigger::kBoth) {
-        EXTI->RTSR = ClearBit<uint32_t>(EXTI->RTSR, line);
+        EXTI->RTSR = util::ClearBit<uint32_t>(EXTI->RTSR, line);
     }
 }
 
-uint8_t Exti::GetPendingBit(Line line) {
+bool Exti::GetPendingBit(Line line) {
     uint32_t Bit = static_cast<uint32_t>(line);
-    return ExtractBit<uint32_t>(EXTI->PR, Bit);
+    return util::ExtractBit<uint32_t>(EXTI->PR, Bit);
 }
 
 

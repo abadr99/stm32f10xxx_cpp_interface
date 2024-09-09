@@ -7,13 +7,16 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/Types.h"
-#include "utils/inc/Assert.h"
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/Spi.h"
 
-using namespace stm32::utils::bit_manipulation;
+#include "mcal/inc/stm32f103xx.h"
+#include "Types.h"
+#include "Assert.h"
+#include "BitManipulation.h"
+#include "Util.h"
+#include "Spi.h"
+
+using namespace stm32;
+using namespace stm32::type;
 using namespace stm32::registers::rcc; 
 using namespace stm32::dev::mcal::spi;
 using namespace stm32::registers::spi;
@@ -29,13 +32,13 @@ Spi::Spi(const SpiConfig& config) :config_(config) {
 
 void Spi::MasterInit() {
     // baud rate
-    Helper_MasterBaudRate();
+    MasterBaudRate();
     // CPOL & CPHA
-    Helper_SetClockMode();
+    SetClockMode();
     // DDF
-    Helper_SetDataFrame();
+    SetDataFrame();
     // LSBFIRST
-    Helper_SetFrameFormat();
+    SetFrameFormat();
     // HW or SW slave manage
     spi_reg->CR1.SSM = (config_.slave == kSW);
     spi_reg->CR1.SSI = (config_.slave == kHW);
@@ -46,11 +49,11 @@ void Spi::MasterInit() {
 
 void Spi::SlaveInit() {
     // DDF
-    Helper_SetDataFrame();
+    SetDataFrame();
     // CPOL & CPHA
-    Helper_SetClockMode();
+    SetClockMode();
     // LSBFIRST
-    Helper_SetFrameFormat();
+    SetFrameFormat();
     // HW or SW slave manage
     spi_reg->CR1.SSM = (config_.slave == kSW);
     spi_reg->CR1.SSI = (config_.slave == kHW);
@@ -61,40 +64,31 @@ void Spi::SlaveInit() {
 
 void Spi::Write(uint8_t data) {
     spi_reg->DR = data;
-    uint32_t ctr = 0;
-    while ((!spi_reg->SR.TXE) && (ctr != SPI_TIMEOUT) && (++ctr)) {
-    }
-    STM32_ASSERT(ctr != SPI_TIMEOUT);
+    util::BusyWait<constant::TimeOut::kSpi>([&](){ return !spi_reg->SR.TXE; });
 }
 
 uint8_t Spi::Read() {
-    uint32_t ctr = 0;
-    while (!(spi_reg->SR.RXNE) && (ctr != SPI_TIMEOUT) && (++ctr)) {
-    }
-    STM32_ASSERT(ctr != SPI_TIMEOUT);
+    util::BusyWait<constant::TimeOut::kSpi>([&](){ return !(spi_reg->SR.RXNE); });
     return spi_reg->DR;
 }
+
 Spinum Spi::GetSpiNum() {
     return config_.number;
 }
-inline void Spi::Helper_SetDataFrame() {
+
+void Spi::SetDataFrame() {
     spi_reg->CR1.DFF = (config_.data == kSpi_16bt);
 }
 
-void Spi::Helper_SetClockMode() {
-    switch (config_.clk) {
-        case kMode0: spi_reg->CR1.registerVal &= ~0x03; break;
-        case kMode1: spi_reg->CR1.registerVal = (spi_reg->CR1.registerVal & ~0x03) | 0x01; break;
-        case kMode2: spi_reg->CR1.registerVal = (spi_reg->CR1.registerVal & ~0x03) | 0x02; break;
-        case kMode3: spi_reg->CR1.registerVal |= 0x03; break;
-    }
+void Spi::SetClockMode() {
+    util::WriteBits<RegWidth_t, 0, 1>(spi_reg->CR1.registerVal, config_.clk);
 }
 
-void Spi::Helper_SetFrameFormat() {
+void Spi::SetFrameFormat() {
     spi_reg->CR1.LSBFIRST = (config_.frame == kLSB);
 }
 
-void Spi::Helper_MasterBaudRate() {
+void Spi::MasterBaudRate() {
     STM32_ASSERT(config_.br >= kF_DIV_2 && config_.br <= kF_DIV_256);
     spi_reg->CR1.BR = static_cast<uint8_t>(config_.br);
 }

@@ -17,6 +17,6 @@ uint32_t TIMER2Reg[22] = {0x0};
 uint32_t TIMER3Reg[22] = {0x0};
 uint32_t TIMER4Reg[22] = {0x0};
 uint32_t TIMER5Reg[22] = {0x0};
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::timer;
 using namespace stm32::registers::timer;
