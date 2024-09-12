@@ -66,4 +66,6 @@ jobs:
         name: objects-artifact
         path: tests/unittests/
     - name: Running tests
-      run: ./tests/unittests/unittests.elf --gtest_shuffle
+      run: |
+       chmod -R 777 ./tests/ 
+       ./tests/unittests/unittests.elf --gtest_shuffle
