@@ -63,7 +63,7 @@ jobs:
     - name: Download artifact 
       uses: actions/download-artifact@v4 
       with:
-        name: test-object-artifact
+        name: objects-artifact
         path: tests/unittests/
     - name: Running tests
       run: ./tests/unittests/unittests.elf --gtest_shuffle
