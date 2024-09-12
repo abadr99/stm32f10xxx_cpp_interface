@@ -6,26 +6,51 @@ on:
   pull_request:
     branches: [ "main" ]
 
-stages:
-  - stage: Lint
+jobs:
+  dev-style-checking:
     runs-on: ubuntu-latest
-  - displayName: Lint
-  - jobs:
-    - job: dev-style-checking
-    - displayName: dev-style-checking
-      steps:
-        - uses: actions/checkout@v3
-        - name: Dev-Style-Check 
-          run:  make -C dev cpplint
-    - job: test-style-checking
-    - displayName: test-style-checking
-      steps:
-        - uses: actions/checkout@v3
-        - name: Test-Style-Check
-          run:  make -C tests cpplint
-    - job: cpp-check
-    - displayName: cpp-check
-      steps:
-      - uses: actions/checkout@v4
-      - name: Static-Analysis
-        run:  sh tools/github/cppcheck-config.sh
+    steps:
+    - uses: actions/checkout@v3
+    - name: Dev-Style-Check 
+      run:  make -C dev cpplint
+  test-style-checking:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Test-Style-Check
+      run:  make -C tests cpplint
+  cpp-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup-Static-Analysis
+      run:  sh tools/github/cppcheck-config.sh
+    - name: Run-Static-Analysis
+      run:  sh tools/github/cppcheck.sh
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [dev-style-checking, test-style-checking]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure Building
+      run: sh tools/github/configure.sh
+    - name: Building For STM32f103 Target
+      run: make -C dev build
+    - name: Upload objects artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: objects-artifact
+        path: dev/.build/
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [dev-style-checking, test-style-checking, build]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure gtest
+      run: sh tools/github/configure-test.sh
+    - name: Building tests
+      run: make -C tests build-unittests
+    - name: Running tests
+      run: make -C tests run-unittests
