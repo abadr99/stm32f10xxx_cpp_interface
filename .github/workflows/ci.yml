@@ -30,10 +30,10 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking]
+    needs: [dev-style-checking, test-style-checking, cpp-check]
     steps:
     - uses: actions/checkout@v3
-    - name: Configure Building
+    - name: Configure dev Building
       run: sh tools/github/configure.sh
     - name: Building For STM32f103 Target
       run: make -C dev build
@@ -42,15 +42,22 @@ jobs:
       with:
         name: objects-artifact
         path: dev/.build/
+    - name: Configure gtest
+      run: sh tools/github/configure-test.sh
+    - name: Building unit tests
+      run: make -C tests build-unittests
+    - name: Upload objects artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: objects-artifact
+        path: ./
+    - name: Building hardware tests
+      run: echo "TODO"
 
   test:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking, build]
+    needs: [dev-style-checking, test-style-checking, cpp-check, build]
     steps:
     - uses: actions/checkout@v3
-    - name: Configure gtest
-      run: sh tools/github/configure-test.sh
-    - name: Building tests
-      run: make -C tests build-unittests
     - name: Running tests
       run: make -C tests run-unittests
