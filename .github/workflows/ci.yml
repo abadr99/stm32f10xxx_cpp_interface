@@ -64,6 +64,6 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-object-artifact
-        path: /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/fctests/unittests/unittests.elf
+        path: /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/tests/unittests/unittests.elf
     - name: Running tests
       run: ./tests/unittests/unittests.elf --gtest_shuffle
