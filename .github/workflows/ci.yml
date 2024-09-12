@@ -16,9 +16,17 @@ jobs:
   test-style-checking:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     - name: Test-Style-Check
       run:  make -C tests cpplint
+  cpp-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup-Static-Analysis
+      run:  sh tools/github/cppcheck-config.sh
+    - name: Run-Static-Analysis
+      run:  sh tools/github/cppcheck.sh
 
   build:
     runs-on: ubuntu-latest
