@@ -34,14 +34,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Configure Building
-      run: sh /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/tools/github/configure.sh
+      run: sh tools/github/configure.sh
     - name: Building For STM32f103 Target
       run: make -C dev build
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
         name: objects-artifact
-        path: /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/dev/.build/
+        path: dev/.build/
 
   test:
     runs-on: ubuntu-latest
@@ -49,7 +49,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Configure gtest
-      run: sh /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/tools/github/configure-test.sh
+      run: sh tools/github/configure-test.sh
     - name: Building tests
       run: make -C tests build-unittests
     - name: Running tests
