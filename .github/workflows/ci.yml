@@ -55,15 +55,15 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: objects-artifact
-        path: /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/tests/unittests/unittests.elf
+        path: tests/unittests/
   test:
     runs-on: ubuntu-latest
     needs: [dev-style-checking, test-style-checking, static-analysis, build]
     steps:
     - name: Download artifact 
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v4 
       with:
         name: test-object-artifact
-        path: /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/tests/unittests/unittests.elf
+        path: tests/unittests/
     - name: Running tests
       run: ./tests/unittests/unittests.elf --gtest_shuffle
