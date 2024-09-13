@@ -13,6 +13,7 @@
 #include "Rcc.h"
 #include "Systick.h"
 #include "Array.h"
+#include "Util.h"
 #include "Assert.h"
 #include "BitManipulation.h"
 #include "Dac.h"
@@ -23,7 +24,7 @@ using namespace stm32::dev::mcal::rcc;
 using namespace stm32::util;
 using namespace stm32::dev::hal::dac;
 
-Dac::Dac(const Array<Pin, 8> dacPins, CLKSource clock) : dacPins_(dacPins), clock_(clock) { 
+Dac::Dac(const Array<Pin, 8>& dacPins, CLKSource clock) : dacPins_(dacPins), clock_(clock) { 
     InitializePins();
     Systick::Enable(clock_);
 }
@@ -43,12 +44,7 @@ void Dac::DAC_Play(uint32_t* songRaw, uint32_t songLength) {
 void Dac::InitializePins() {
     for (uint8_t i = 0; i < dacPins_.Size(); i++) {
     STM32_ASSERT(dacPins_[i].IsAnalog() && dacPins_[i].IsInput());
-    switch (dacPins_[i].GetPort()) {
-        case kPortA: Rcc::Enable(Peripheral::kIOPA); break;
-        case kPortB: Rcc::Enable(Peripheral::kIOPB); break;
-        case kPortC: Rcc::Enable(Peripheral::kIOPC); break;
-        default:break;
-    }
+    Rcc::Enable(MapPortToPeripheral(dacPins_[i].GetPort()));
     Gpio::Set(dacPins_[i]);
     }
 }

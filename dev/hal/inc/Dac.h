@@ -22,7 +22,7 @@ namespace dac {
 
 class Dac {
  public:
-  Dac(const util::Array<Pin, 8> dacPins, CLKSource clock);
+  Dac(const util::Array<Pin, 8>& dacPins, CLKSource clock);
   void DAC_Play(uint32_t* songRaw, uint32_t songLength);
  private: 
   Array<Pin, 8> dacPins_;
