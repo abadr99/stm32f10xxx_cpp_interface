@@ -2,7 +2,7 @@
 LINT_PATH := ../tools/cppliny.py
 
 U_CXX := g++
-U_CXX_OPT := -std=c++17 -Wall -Wextra -g -DUNIT_TEST
+U_CXX_OPT := -std=c++17 -Wall -Wextra -g -DUNIT_TEST -fprofile-arcs -ftest-coverage
 
 # Find source files in 'unittests' and specific 'dev' directories
 U_SRCS_DIRS := ./unittests ../dev/hal ../dev/mcal ../dev/utils

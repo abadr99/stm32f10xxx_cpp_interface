@@ -58,7 +58,7 @@ jobs:
         path: tests/unittests/
   test:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking, static-analysis, build]
+    needs: [dev-style-checking, test-style-checking, static-analysis, build, build-unitests]
     steps:
     - name: Download artifact 
       uses: actions/download-artifact@v4 
@@ -69,3 +69,18 @@ jobs:
       run: |
        chmod -R 777 ./tests/ 
        ./tests/unittests/unittests.elf --gtest_shuffle
+  code-coverage:
+    runs-on: ubuntu-latest
+    needs: [dev-style-checking, test-style-checking, static-analysis, build, build-unitests, test]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure lcov
+        run: sh tools/github/lcov-config.sh
+      - name: Run lcov
+        run: sh tools/github/lcov.sh
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage.info
+    
