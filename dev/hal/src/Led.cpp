@@ -13,6 +13,7 @@
 #include "Constant.h"
 #include "Define.h"
 #include "Assert.h"
+#include "Rcc.h"
 #include "Pin.h"
 #include "Gpio.h"
 #include "Led.h"
@@ -21,11 +22,18 @@ using namespace stm32;
 using namespace stm32::type;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::hal::led;
 
 template<ConnectionType CT>
 Led<CT>::Led(Pin LedPin) : LedPin(LedPin) {
     STM32_ASSERT(LedPin.IsOutput());
+        switch (LedPin.GetPort()) {
+        case kPortA: Rcc::Enable(Peripheral::kIOPA); break;
+        case kPortB: Rcc::Enable(Peripheral::kIOPB); break;
+        case kPortC: Rcc::Enable(Peripheral::kIOPC); break;
+        default:STM32_ASSERT(false);                 break;
+    }
     Gpio::Set(LedPin);
 }
 

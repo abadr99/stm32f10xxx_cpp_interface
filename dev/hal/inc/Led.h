@@ -22,7 +22,7 @@ namespace led {
 template<stm32::type::ConnectionType CT>
 class Led {
  public:
-  explicit Led(Pin LedPin);
+  explicit Led(const Pin LedPin);
   void TurnOn();
   void TurnOff();
   void Toggle();
