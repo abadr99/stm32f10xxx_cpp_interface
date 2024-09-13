@@ -35,13 +35,14 @@ TEST(EXTItest, Enable) {
     EXPECT_EQ(0x1,       EXTI->RTSR);
 }
 
-TEST(DISABLE_EXTItest, Disable) {
+TEST(EXTItest, Disable) {
     EXTI_Config exti;
+    EXTI->IMR = 0;
     exti.port = kPortB;
     exti.line = Line::kExti10;
     exti.trigger = Trigger::kFalling;
     Exti::Disable(exti);
-    EXPECT_EQ(0x1,      EXTI->IMR);
+    EXPECT_EQ(0x0,      EXTI->IMR);  //  EXTI0 is enable in previous test
     EXPECT_EQ(0x0,      EXTI->FTSR);
 }
 
