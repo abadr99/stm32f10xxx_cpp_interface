@@ -29,7 +29,7 @@ using namespace stm32::type;
 
 template<ConnectionType CT>
 Buzzer<CT>::Buzzer(const Pin& buzzerPin)
-: buzzerPin_(buzzerPin) {
+: buzzerState_(kOff), buzzerPin_(buzzerPin) {
     STM32_ASSERT(buzzerPin.IsOutput());
     Rcc::Enable(MapPortToPeripheral(buzzerPin_.GetPort()));
     Gpio::Set(buzzerPin_);

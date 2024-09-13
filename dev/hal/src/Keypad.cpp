@@ -10,39 +10,43 @@
 
 #include <stdint.h>
 #include <cstdlib>
-#include "mcal/inc/stm32f103xx.h"
+#include "stm32f103xx.h"
 #include "Assert.h"
-#include "mcal/inc/Pin.h"
-#include "mcal/inc/Gpio.h"
-#include "hal/inc/Keypad.h"
+#include "Util.h"
+#include "Rcc.h"
+#include "Pin.h"
+#include "Gpio.h"
+#include "Keypad.h"
 
+using namespace stm32::util;
 using namespace stm32::type;
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::keypad;
 
-Keypad::Keypad(uint8_t numRows, uint8_t numCols) {
-    rowsNum = numRows;
-    colNum = numCols;
+Keypad::Keypad(uint8_t numRows, uint8_t numCols) :rowsNum(numRows), colNum(numCols) {
     KeypadRow = static_cast<Pin*>(malloc(rowsNum * sizeof(Pin)));
     KeypadCol = static_cast<Pin*>(malloc(colNum * sizeof(Pin)));
 }
 
-void Keypad::SetRowArr(Pin* rows) {
+void Keypad::SetRowArr(const Pin* rows) {
     for (uint8_t numRow =0 ; numRow <rowsNum; numRow++) {
         KeypadRow[numRow] = rows[numRow];
+        Rcc::Enable(MapPortToPeripheral(KeypadRow[numRow].GetPort()));
     }
 }
 
-void Keypad::setColArr(Pin* cols) {
+void Keypad::setColArr(const Pin* cols) {
     for (uint8_t numCol =0; numCol <colNum; numCol++) {
         KeypadCol[numCol] = cols[numCol];
+        Rcc::Enable(MapPortToPeripheral(KeypadCol[numCol].GetPort()));
     }
 }
 
-void Keypad::KeypadInit() {
+void Keypad::Init() {
     for (uint8_t numRow = 0 ; numRow <rowsNum; numRow++) {
-        Gpio::SetPinMode(KeypadRow[numRow], PinMode::kInputPullUp);
+        Gpio::Set(KeypadRow[numRow]);
     }
     for (uint8_t numCol = 0; numCol <colNum; numCol++) {
         STM32_ASSERT(KeypadCol[numCol].IsOutput());
@@ -51,7 +55,7 @@ void Keypad::KeypadInit() {
     }
 }
 
-uint8_t Keypad::GetPressed(uint8_t** keypadButtons) {
+uint8_t Keypad::GetPressed(const uint8_t* const* keypadButtons) {
     using State = DigitalVoltage;
     uint8_t buttonVal = 0xff;
     for (uint8_t numCol =0; numCol <colNum; numCol++) {
