@@ -10,6 +10,7 @@
  */
 #include "stm32f103xx.h"
 #include "Types.h"
+#include "Util.h"
 #include "Define.h"
 #include "Constant.h"
 #include "Assert.h"
@@ -19,6 +20,7 @@
 #include "Buzzer.h"
 
 using namespace stm32;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::buzzer;
@@ -29,18 +31,10 @@ template<ConnectionType CT>
 Buzzer<CT>::Buzzer(const Pin& buzzerPin)
 : buzzerPin_(buzzerPin) {
     STM32_ASSERT(buzzerPin.IsOutput());
-    InitializePins();
-}
-template<ConnectionType CT>
-void Buzzer<CT>::InitializePins() {
-    switch (buzzerPin_.GetPort()) {
-        case kPortA: Rcc::Enable(Peripheral::kIOPA); break;
-        case kPortB: Rcc::Enable(Peripheral::kIOPB); break;
-        case kPortC: Rcc::Enable(Peripheral::kIOPC); break;
-        default:STM32_ASSERT(false);                 break;
-    }
+    Rcc::Enable(MapPortToPeripheral(buzzerPin_.GetPort()));
     Gpio::Set(buzzerPin_);
 }
+
 template<ConnectionType CT>
 void Buzzer<CT>::TurnOn() {
     Gpio::SetPinValue(buzzerPin_, constant::DigitalState<CT>::kActiveVoltage);
