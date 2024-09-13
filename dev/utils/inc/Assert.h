@@ -22,7 +22,7 @@ using namespace stm32::utils::logger;
 #define STM32_ASSERT(cond_, msg_) \
     do {  \
         if ( !cond_) { \
-            Logger::Print(TO_STRING(__FILE__:__LINE__ : )); \
+            Logger::Print(TO_STRING(__FILE__:__LINE__ :)); \
             Logger::Error(msg_); \
             assert(cond_);\
         }\

@@ -36,10 +36,14 @@ volatile Usart::DataValType* Usart::pReceivedData_[3] = {nullptr, nullptr, nullp
 
 #define CHECK_CONFIG()\
     STM32_ASSERT((config_.mode >= kRx) && (config_.mode <= kRxTx), USART_CONFIG_ERROR(Mode));\
-    STM32_ASSERT((config_.numOfSB >= kSb_1_) && (config_.numOfSB <= kSb_1_5_), USART_CONFIG_ERROR(Stop Bit));\
-    STM32_ASSERT((config_.dataBits == kDataBits_8_) || (config_.dataBits == kDataBits_9_), USART_CONFIG_ERROR(Data Bits));\
-    STM32_ASSERT((config_.parityMode >= kNo_Parity) && (config_.parityMode <= kOdd_Parity), USART_CONFIG_ERROR(Parity Modes));\
-    STM32_ASSERT((config_.flowControlState >= kNone) && (config_.flowControlState <= kRTS_CTS), USART_CONFIG_ERROR( HW Flow Control));
+    STM32_ASSERT((config_.numOfSB >= kSb_1_) && (config_.numOfSB <= kSb_1_5_), \
+    USART_CONFIG_ERROR(Stop Bit));\
+    STM32_ASSERT((config_.dataBits == kDataBits_8_) || (config_.dataBits == kDataBits_9_), \
+    USART_CONFIG_ERROR(Data Bits));\
+    STM32_ASSERT((config_.parityMode >= kNo_Parity) && (config_.parityMode <= kOdd_Parity), \
+    USART_CONFIG_ERROR(Parity Modes));\
+    STM32_ASSERT((config_.flowControlState >= kNone) && (config_.flowControlState <= kRTS_CTS), \
+    USART_CONFIG_ERROR(HW Flow Control));
 
 
 ASSERT_STRUCT_SIZE(UsartRegDef, (sizeof(RegWidth_t) * 7));

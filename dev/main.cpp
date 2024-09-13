@@ -46,7 +46,7 @@ int main() {
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
     Rcc::Enable(Peripheral::kIOPC);
-    Rcc::Enable(Peripheral::kUSART1); // Logger Usart
+    Rcc::Enable(Peripheral::kUSART1);  // Logger Usart
 
     Logger::Init();
     Pin pc13(kPortC, kPin13, PinMode::kOutputPushPull_10MHz);

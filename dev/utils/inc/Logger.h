@@ -22,7 +22,7 @@ namespace logger {
 
 class Logger {
  public:
-    void static Init(void);
+    static void Init(void);
     static void Info(const char *str);
     static void Print(const char *str);
     static void Error(const char *str);
