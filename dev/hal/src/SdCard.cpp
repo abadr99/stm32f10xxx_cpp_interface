@@ -9,8 +9,9 @@
  */
 
 #include <stdint.h>
-#include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/BitManipulation.h"
+#include "stm32f103xx.h"
+#include "BitManipulation.h"
+#include "Util.h"
 #include "Rcc.h"
 #include "Assert.h"
 #include "Pin.h"
@@ -19,6 +20,7 @@
 #include "SdCard.h"
 
 using namespace stm32;
+using namespace stm32::util;
 using namespace stm32::type;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
@@ -32,6 +34,7 @@ SD::SD(const Pin& Sdpin, Spi SdSpi) : Sdpin(Sdpin) , SdSpi(SdSpi) {
     case kSPI2: Rcc::Enable(Peripheral::kSPI2); break;
     default: break;
     }
+    Rcc::Enable(MapPortToPeripheral(Sdpin.GetPort()));
 }
 void SD::ToggleClock(int cycles) {
     for (int i = 0; i < cycles; i++) {
