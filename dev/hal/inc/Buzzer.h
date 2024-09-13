@@ -33,8 +33,9 @@ class Buzzer {
     void Toggle();
     BuzzerState GetBuzzerState();
  private:
-    BuzzerState buzzerState_;
+    BuzzerState buzzerState_ = kOff;
     Pin buzzerPin_;
+    void InitializePins();
 };
 }  // namespace buzzer
 }  // namespace hal
