@@ -9,18 +9,22 @@
  */
 
 #include <stdint.h>
-#include "mcal/inc/stm32f103xx.h"
+#include "stm32f103xx.h"
 #include "Assert.h"
-#include "mcal/inc/Pin.h"
-#include "mcal/inc/Gpio.h"
-#include "hal/inc/IR.h"
-
+#include "Util.h"
+#include "Rcc.h"
+#include "Pin.h"
+#include "Gpio.h"
+#include "IR.h"
+using namespace stm32::util;
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::ir;
 
 IR::IR(const Pin& IrPin) : IrPin_(IrPin) {
     STM32_ASSERT(IrPin.IsInput());
+    Rcc::Enable(MapPortToPeripheral(IrPin_.GetPort())); 
     Gpio::Set(IrPin);
 }
 

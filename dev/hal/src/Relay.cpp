@@ -11,17 +11,22 @@
 #include "BitManipulation.h"
 #include "Types.h"
 #include "Assert.h"
+#include "Util.h"
+#include "Rcc.h"
 #include "Pin.h"
 #include "Gpio.h"
 #include "Relay.h"
 
+using namespace stm32::util;
 using namespace stm32::type;
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::relay;
 
-Relay::Relay(Pin relayPin) : relayPin(relayPin) {
+Relay::Relay(const Pin& relayPin) : relayPin(relayPin) {
     STM32_ASSERT(relayPin.IsOutput());
+    Rcc::Enable(MapPortToPeripheral(relayPin.GetPort()));
     Gpio::Set(relayPin);
 }
 

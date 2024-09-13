@@ -20,7 +20,7 @@ namespace hal {
 namespace relay {
 class Relay {
  public:
-    explicit Relay(Pin relayPin);
+    explicit Relay(const Pin& relayPin);
     void Control(stm32::type::DigitalVoltage state);
  private:
     Pin relayPin;
