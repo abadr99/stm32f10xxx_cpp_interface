@@ -10,11 +10,12 @@
 #include "mcal/inc/stm32f103xx.h"
 #include "Types.h"
 #include "Assert.h"
+#include "Util.h"
 #include "BitManipulation.h"
 #include "Rcc.h"
 #include "Adc.h"
 
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
 using namespace stm32::registers::rcc; 
 using namespace stm32::dev::mcal::adc;
 using namespace stm32::registers::adc;
