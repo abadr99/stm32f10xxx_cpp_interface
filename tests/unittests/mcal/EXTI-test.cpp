@@ -43,7 +43,7 @@ TEST(EXTItest, Disable) {
     exti.line = Line::kExti10;
     exti.trigger = Trigger::kFalling;
     Exti::Disable(exti);
-    EXPECT_EQ(0x0,      EXTI->IMR);  //  EXTI0 is enable in previous test
+    EXPECT_EQ(0x0,      EXTI->IMR);
     EXPECT_EQ(0x0,      EXTI->FTSR);
 }
 
