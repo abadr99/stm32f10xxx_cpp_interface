@@ -15,6 +15,6 @@
 
 uint32_t ADC1Reg[20] = {0x0};
 uint32_t ADC2Reg[20] = {0x0};
-using namespace stm32::utils::bit_manipulation;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::adc;
 using namespace stm32::registers::adc;
