@@ -1,5 +1,6 @@
 #/!/bin/sh
 
+chmod 777 ../../tests/unittests
 lcov --capture --no-external --directory ../../tests/unittests/ --output-file ../../coverage.info
 echo "Displaying coverage.info"
 cat ../../coverage.info
