@@ -17,13 +17,15 @@
 #include "Pin.h"
 #include "Constant.h"
 #include <functional>
+
 namespace stm32 {
 namespace util {
     
-    inline stm32::dev::mcal::rcc::Peripheral 
-    MapPortToPeripheral(stm32::dev::mcal::pin::Port port) {
-        using Peripheral = stm32::dev::mcal::rcc::Peripheral; 
-        using Port       = stm32::dev::mcal::pin::Port; 
+    using stm32::dev::mcal::rcc::Peripheral; 
+    using stm32::dev::mcal::pin::Port; 
+    using stm32::constant::TimeOut;
+    
+    inline Peripheral MapPortToPeripheral(Port port) {
         switch (port) {
             case Port::kPortA:    return Peripheral::kIOPA;
             case Port::kPortB:    return Peripheral::kIOPB;
@@ -34,7 +36,7 @@ namespace util {
     }
     
     using Func = std::function<bool()>;
-    template <int timeout = stm32::constant::TimeOut::kDefault>
+    template <int timeout = TimeOut::kDefault>
     void BusyWait(const Func& cond) {
         uint32_t i = 0;
         for (; cond() && i != timeout; ++i) {}
