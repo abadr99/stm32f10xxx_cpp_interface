@@ -35,11 +35,11 @@ static constexpr const char* commandStrings[] = {
 
 #define TCP "TCP"
 #define UDP "UDP"
-using namespace stm32::util;
+using namespace stm32::util::helpers;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::usart;
 using namespace stm32::dev::hal::esp;
-using namespace stm32::dev::hal::esp::helpers;
+
 
 Esp::Esp(const UsartNum &usartNum) 
 :usartConfig_ {
@@ -109,40 +109,9 @@ void Esp::ServerConnect(const char* protocol, const char* ip, uint16_t port) {
     this->Send(ip);
     this->Send(commandStrings[Commands::kCOMMA]);
     char strPort[6] = {0};
-    Helper_IntToString(port, strPort);
+    IntToString(port, strPort);
     Send(strPort);
     this->Send(commandStrings[Commands::kAT_END]);
 }
 
 
-void helpers::Helper_IntToString(int num, char *str) {
-    int index = 0;
-    int  negFlag = 0;
-    // Handle the case when the number is 0
-    if (num == 0) {
-        str[index++] = '0';
-        str[index] = '\0';
-        return;
-    }   
-    // Handle the case when the number is negative
-    if (num < 0) {
-        num *= -1;
-        str[index++] = '-';
-        negFlag = 1;
-    }
-
-    // Process each digit of the number
-    while (num != 0) {
-        str[index] = (num % 10) + '0';  //  Convert digit to character
-        num /= 10;  //   Remove the processed digit
-        index++;
-    }
-    str[index] = '\0';  //  Null-terminate the string
-
-    //  Reverse the string to get the correct order
-    for (int i = negFlag; i < index / 2; i++) {
-        char temp = str[i];
-        str[i] = str[index - i - 1];
-        str[index - i - 1] = temp;
-    }
-}

@@ -17,11 +17,7 @@ namespace stm32 {
 namespace dev {
 namespace hal {
 namespace esp {
-namespace helpers {
 
-void Helper_IntToString(int num, char *str);
-
-}
 enum class EspMode {
     kSTA = 1,    //  Station Mode
     kAP,         //  Access point Mode

@@ -20,7 +20,41 @@
 
 namespace stm32 {
 namespace util {
-    
+namespace helpers {
+
+inline void IntToString(int num, char *str) {
+    int index = 0;
+    int  negFlag = 0;
+    // Handle the case when the number is 0
+    if (num == 0) {
+        str[index++] = '0';
+        str[index] = '\0';
+        return;
+    }   
+    // Handle the case when the number is negative
+    if (num < 0) {
+        num *= -1;
+        str[index++] = '-';
+        negFlag = 1;
+    }
+
+    // Process each digit of the number
+    while (num != 0) {
+        str[index] = (num % 10) + '0';  //  Convert digit to character
+        num /= 10;  //   Remove the processed digit
+        index++;
+    }
+    str[index] = '\0';  //  Null-terminate the string
+
+    //  Reverse the string to get the correct order
+    for (int i = negFlag; i < index / 2; i++) {
+        char temp = str[i];
+        str[i] = str[index - i - 1];
+        str[index - i - 1] = temp;
+    }
+}
+
+}  // namespace helpers
     using stm32::dev::mcal::rcc::Peripheral; 
     using stm32::dev::mcal::pin::Port; 
     using stm32::constant::TimeOut;
