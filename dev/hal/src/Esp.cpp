@@ -39,6 +39,7 @@ using namespace stm32::util;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::usart;
 using namespace stm32::dev::hal::esp;
+using namespace stm32::dev::hal::esp::helpers;
 
 Esp::Esp(const UsartNum &usartNum) 
 :usartConfig_ {
@@ -114,7 +115,7 @@ void Esp::ServerConnect(const char* protocol, const char* ip, uint16_t port) {
 }
 
 
-void Esp::Helper_IntToString(int num, char *str) {
+void helpers::Helper_IntToString(int num, char *str) {
     int index = 0;
     int  negFlag = 0;
     // Handle the case when the number is 0
