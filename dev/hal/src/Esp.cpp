@@ -11,7 +11,10 @@
 
 // #include <cstring>
 // #include <string>
+#include <stdint.h>
 #include "Assert.h"
+#include "Util.h"
+#include "Rcc.h"
 #include "Usart.h"
 #include "Esp.h"
 
@@ -32,7 +35,8 @@ static constexpr const char* commandStrings[] = {
 
 #define TCP "TCP"
 #define UDP "UDP"
-
+using namespace stm32::util;
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::usart;
 using namespace stm32::dev::hal::esp;
 
@@ -46,6 +50,17 @@ Esp::Esp(const UsartNum &usartNum)
         usartConfig_.flowControlState = kNone,
         usartConfig_.baudRate = ESP_BAUD_RATE },
     usart_(usartConfig_) {
+        switch (usartNum) { 
+        case kUsart1: 
+            Rcc::Enable(Peripheral::kUSART1); 
+            break; 
+        case kUsart2: 
+            Rcc::Enable(Peripheral::kUSART2); 
+            break; 
+        case kUsart3: 
+            Rcc::Enable(Peripheral::kUSART3); 
+            break;         
+        }
         usart_.Init();
     }
 
