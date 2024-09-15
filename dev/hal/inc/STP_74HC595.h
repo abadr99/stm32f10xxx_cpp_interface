@@ -33,10 +33,11 @@ class STP_74HC595 {
     struct Pins {
         Pin serialInputPin;
         Pin shiftClkPin;
-        Pin storageClk;
+        Pin storageClkPin;
     };
     Pins pins_;
     void Pulse();
+    void InitializePins();
 };
 
 }  // namespace shift_register
