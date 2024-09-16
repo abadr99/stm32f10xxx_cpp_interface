@@ -23,6 +23,7 @@ mcal {
     src/Wwdg.cpp
     src/Power.cpp
     src/Timer.cpp
+    src/Adc.cpp
 }
 
 // --- HAL PERIPHERALS  --------------------------------------------------------
@@ -41,5 +42,7 @@ hal {
     src/Lcd.cpp
     src/Dac.cpp
     src/Tft.cpp
+    src/LDR.cpp
+    src/LM35.cpp
 }
 

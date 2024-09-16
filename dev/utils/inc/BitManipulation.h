@@ -84,6 +84,13 @@ inline constexpr T  ClearBits(T container) {
     T mask = ~(ones << TStart);
     return container & mask;
 }
+template<typename T>
+inline constexpr T  ClearBits(T container, uint8_t startBit, uint8_t endBit) {
+    assert(startBit <= endBit);
+    T ones = GetOnes<T>(static_cast<T>(endBit - startBit) + 1);
+    T mask = ~(ones << startBit);
+    return container & mask;
+}
 
 template<typename T>
 inline constexpr T ClearBit(T container, T bit_number) {
