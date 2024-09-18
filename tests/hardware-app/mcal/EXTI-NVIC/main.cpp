@@ -11,7 +11,6 @@
 #include "mcal/inc/stm32f103xx.h"
 #include "utils/inc/Types.h"
 #include "utils/inc/BitManipulation.h"
-#include "utils/inc/Types.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
 #include "mcal/inc/Rcc.h"
