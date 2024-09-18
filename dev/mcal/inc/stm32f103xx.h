@@ -672,6 +672,149 @@ struct RtcRegDef {
 #define RTC (reinterpret_cast<volatile RtcRegDef*>(RTC_BASE_ADDRESS))
 }  // namespace rtc
 
+namespace adc {
+
+struct ADCRegDef {
+        union SR {
+        struct {
+            RegWidth_t AWD   : 1;
+            RegWidth_t EOC   : 1;
+            RegWidth_t JEOC  : 1;
+            RegWidth_t JSTRT : 1;
+            RegWidth_t STRT  : 1;
+            RegWidth_t       : 27;
+        };
+        RegWidth_t registerVal;
+    } SR;
+
+    union CR1 {
+        struct {
+            RegWidth_t AWDCH  : 5;
+            RegWidth_t EOCIE  : 1;
+            RegWidth_t AWDIE  : 1;
+            RegWidth_t JEOCIE : 1;
+            RegWidth_t SCAN   : 1;
+            RegWidth_t AWDSGL : 1;
+            RegWidth_t JAUTO  : 1;
+            RegWidth_t DISCEN : 1;
+            RegWidth_t JDISCEN: 1;
+            RegWidth_t DISCNUM: 3;
+            RegWidth_t DUALMOD: 4;
+            RegWidth_t        : 2;
+            RegWidth_t JAWDEN : 1;
+            RegWidth_t AWDEN  : 1;
+            RegWidth_t        : 8;
+        };
+        RegWidth_t registerVal;
+    }CR1;
+
+    union CR2 {
+        struct {
+            RegWidth_t ADON   : 1;
+            RegWidth_t CONT   : 1;
+            RegWidth_t CAL    : 1;
+            RegWidth_t RSTCAL : 1;
+            RegWidth_t        : 4;
+            RegWidth_t DMA    : 1;
+            RegWidth_t        : 2;
+            RegWidth_t ALIGN  : 1;
+            RegWidth_t JEXTSEL: 3;
+            RegWidth_t JEXTTRIG: 1;
+            RegWidth_t        : 1;
+            RegWidth_t EXTSEL : 3;
+            RegWidth_t EXTTRIG: 1;
+            RegWidth_t JSWSTART: 1;
+            RegWidth_t SWSTART: 1;
+            RegWidth_t TSVREFE: 1;
+            RegWidth_t        : 8;
+        };
+        RegWidth_t registerVal;
+    }CR2;
+    union SMPR1 {
+        struct {
+            RegWidth_t SMP10 : 3;
+            RegWidth_t SMP11 : 3;
+            RegWidth_t SMP12 : 3;
+            RegWidth_t SMP13 : 3;
+            RegWidth_t SMP14 : 3;
+            RegWidth_t SMP15 : 3;
+            RegWidth_t SMP16 : 3;
+            RegWidth_t SMP17 : 3;
+            RegWidth_t       : 8;
+        };
+        RegWidth_t registerVal;
+    }SMPR1;
+
+    union SMPR2 {
+        struct {
+            RegWidth_t SMP0  : 3;
+            RegWidth_t SMP1  : 3;
+            RegWidth_t SMP2  : 3;
+            RegWidth_t SMP3  : 3;
+            RegWidth_t SMP4  : 3;
+            RegWidth_t SMP5  : 3;
+            RegWidth_t SMP6  : 3;
+            RegWidth_t SMP7  : 3;
+            RegWidth_t SMP8  : 3;
+            RegWidth_t SMP9  : 3;
+            RegWidth_t       : 2;
+        };
+        RegWidth_t registerVal;
+    }SMPR2;
+    RegWidth_t JOFR1;   // Injected Channel Data Offset Register 1
+    RegWidth_t JOFR2;   // Injected Channel Data Offset Register 2
+    RegWidth_t JOFR3;   // Injected Channel Data Offset Register 3
+    RegWidth_t JOFR4;   // Injected Channel Data Offset Register 4
+    RegWidth_t HTR;     // Watchdog Higher Threshold Register
+    RegWidth_t LTR;     // Watchdog Lower Threshold Register
+    union SQR1 {
+        struct {
+            RegWidth_t SQ13 : 5;
+            RegWidth_t SQ14 : 5;
+            RegWidth_t SQ15 : 5;
+            RegWidth_t SQ16 : 5;
+            RegWidth_t L    : 4;
+            RegWidth_t      : 8;
+        };
+        RegWidth_t registerVal;
+    }SQR1;
+    RegWidth_t SQR2;    // Regular Sequence Register 2
+    RegWidth_t SQR3;    // Regular Sequence Register 3
+    union JSQR {
+        struct {
+            RegWidth_t JSQ1 : 5;
+            RegWidth_t JSQ2 : 5;
+            RegWidth_t JSQ3 : 5;
+            RegWidth_t JSQ4 : 5;
+            RegWidth_t JL   : 2;
+            RegWidth_t      : 10;
+        };
+        RegWidth_t registerVal;
+    }JSQR;
+    union JDR1 {
+        struct {
+            RegWidth_t JDATA : 16;
+            RegWidth_t       : 16;
+        };
+        RegWidth_t registerVal;
+    }JDR1;
+    RegWidth_t JDR2;    // Injected Data Register 2
+    RegWidth_t JDR3;    // Injected Data Register 3
+    RegWidth_t JDR4;    // Injected Data Register 4
+    union DR {
+        struct {
+            RegWidth_t DATA : 16;
+            RegWidth_t      : 16;
+        };
+        RegWidth_t registerVal;
+    }DR;
+};
+
+#define ADC1 (reinterpret_cast<volatile ADCRegDef*>(ADC1_BASE_ADDRESS))
+#define ADC2 (reinterpret_cast<volatile ADCRegDef*>(ADC2_BASE_ADDRESS))
+
+}  // namespace adc
+
 namespace i2c {
 struct I2CRegDef {
         union CR1 {

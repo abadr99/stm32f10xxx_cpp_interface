@@ -42,6 +42,8 @@
 #define IWDG_BASE_ADDRESS   (&IwdgReg[0])
 #define RTC_BASE_ADDRESS    (&RtcReg[0])
 #define WWDG_BASE_ADDRESS   (&WwdgReg[0])
+#define ADC1_BASE_ADDRESS   (&ADC1Reg[0])
+#define ADC2_BASE_ADDRESS   (&ADC2Reg[0])
 
 #define PWR_BASE_ADDRESS    (&PwrReg[0])
 
@@ -73,6 +75,12 @@ extern uint32_t USART3Reg[7];
 extern uint32_t I2c1Reg[9];
 extern uint32_t I2c2Reg[9];
 
+
+extern uint32_t WwdgReg[3]; 
+
+
+extern uint32_t ADC1Reg[20];
+extern uint32_t ADC2Reg[20];
 extern uint32_t WwdgReg[3];
 
 extern uint32_t DmaReg[30];
