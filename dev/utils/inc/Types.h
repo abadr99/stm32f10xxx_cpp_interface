@@ -19,6 +19,8 @@ namespace type {
 template<typename T>
 using RegWidth = T;
 
+using RegWidth_t = stm32::type::RegWidth<uint32_t>;
+
 using pFunction = void(*)();
 using bit = bool;
 

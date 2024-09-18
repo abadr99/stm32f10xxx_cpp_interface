@@ -11,13 +11,14 @@
 #ifndef DEV_MCAL_INC_RCC_H_
 #define DEV_MCAL_INC_RCC_H_
 
-#include "Rcc.def"
+#include "stm32f103xx.h"
 
-#define RCC_TIMEOUT    (400)
 namespace stm32 {
 namespace dev {
 namespace mcal {
 namespace rcc {
+
+using stm32::peripherals::Peripheral;
 
 enum ClkConfig {
     kHsi,
@@ -76,13 +77,6 @@ enum McoModes {
 enum HSE_Type {
     kHseCrystal,
     kHseRC,
-};
-
-enum class Peripheral {
-    #define P(name_, ignore_)       k##name_,
-    RCC_PERIPHERALS
-    #undef P
-    kUnknown,
 };
 
 class Rcc {

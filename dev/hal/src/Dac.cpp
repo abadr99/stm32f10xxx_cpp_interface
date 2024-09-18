@@ -8,6 +8,7 @@
  * 
  */
 
+#include "Util.h"
 #include "Pin.h"
 #include "Gpio.h"
 #include "Rcc.h"
@@ -27,12 +28,7 @@ Dac::Dac(Array<Pin, 8> dacPins, CLKSource clock) : dacPins_(dacPins), clock_(clo
     for (uint8_t i = 0; i < dacPins_.Size(); i++) {
         STM32_ASSERT(dacPins_[i].IsAnalog());
         STM32_ASSERT(dacPins_[i].IsInput());
-        switch (dacPins_[i].GetPort()) {
-            case kPortA: Rcc::Enable(Peripheral::kIOPA); break;
-            case kPortB: Rcc::Enable(Peripheral::kIOPB); break;
-            case kPortC: Rcc::Enable(Peripheral::kIOPC); break;
-            default:break;
-        }
+        Rcc::Enable(MapPortToPeripheral(dacPins_[i].GetPort()));
     }
     for (uint8_t i = 0; i < dacPins_.Size(); i++) {
         Gpio::Set(dacPins_[i]);

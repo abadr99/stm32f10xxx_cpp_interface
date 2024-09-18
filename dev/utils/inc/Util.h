@@ -21,7 +21,7 @@
 namespace stm32 {
 namespace util {
     
-    using stm32::dev::mcal::rcc::Peripheral; 
+    using stm32::peripherals::Peripheral; 
     using stm32::dev::mcal::pin::Port; 
     using stm32::constant::TimeOut;
     
