@@ -11,12 +11,14 @@
 
 
 #include "mcal/inc/stm32f103xx.h"
+#include "utils/inc/Types.h"
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
 #include "mcal/inc/Rcc.h"
 #include "mcal/inc/Systick.h"
 
+using namespace stm32::type;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
@@ -27,9 +29,11 @@ void STK_ISR(void);
 int main() {
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
-    Gpio::EnablePort(kPortC);
-    Pin pc13(kPortC, kPin13, PinMode::kOutput);
-    Gpio::SetOutputMode(pc13, OutputMode::kPushPull_10MHZ);
+    Rcc::Enable(Peripheral::kIOPC);
+
+    Pin pc13(kPortC, kPin13, PinMode::kOutputPushPull_10MHz);
+    Gpio::Set(pc13);
+    
     Systick::Enable(kAHB_Div_8);
     while (1) { 
         Gpio::SetPinValue(pc13, kHigh);

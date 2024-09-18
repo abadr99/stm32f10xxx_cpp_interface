@@ -9,6 +9,7 @@
  * 
  */
 #include "mcal/inc/stm32f103xx.h"
+#include "utils/inc/Types.h"
 #include "utils/inc/BitManipulation.h"
 #include "utils/inc/Types.h"
 #include "mcal/inc/Pin.h"
@@ -19,6 +20,7 @@
 #include "mcal/inc/Systick.h"
 
 
+using namespace stm32::type;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
@@ -34,17 +36,18 @@ int main(void) {
     // Initialize system clock and external clock source
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
+    Rcc::Enable(Peripheral::kIOPC);
 
-    // Enable GPIO port C and configure pin PC13 as an output
-    Gpio::EnablePort(kPortC);
-    Pin pc13(kPortC, kPin13, PinMode::kOutput);
-    Gpio::SetOutputMode(pc13, OutputMode::kPushPull_10MHZ);
+
+    Pin pc13(kPortC, kPin13, PinMode::kOutputPushPull_10MHz);
+    Gpio::Set(pc13);
+
     // Turn of the Led at pc13 pin
     Gpio::SetPinValue(pc13, kHigh);
 
     // Configure external interrupt on EXTI1, set callback function, and enable interrupt
-    EXTI_Config EXTI1_Config = {kPortA, Line::kEXTI1, Trigger::kBoth};
-    Exti::SetpCallBackFunction(Line::kEXTI1, EXTI1_ISR);
+    EXTI_Config EXTI1_Config = {kPortA, Line::kExti11, Trigger::kBoth};
+    Exti::SetpCallBackFunction(Line::kExti11, EXTI1_ISR);
     Exti::Enable(EXTI1_Config);
 
     Nvic::EnableInterrupt(kEXTI1_IRQn);

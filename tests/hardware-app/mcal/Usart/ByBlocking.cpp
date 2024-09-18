@@ -9,6 +9,7 @@
  * 
  */
 
+#include "utils/inc/Types.h"
 #include "mcal/inc/stm32f103xx.h"
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Pin.h"
@@ -16,6 +17,7 @@
 #include "mcal/inc/Rcc.h"
 #include "mcal/inc/Usart.h"
 
+using namespace stm32::type;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
