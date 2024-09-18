@@ -24,7 +24,6 @@ HW_MAINS=$(shell find $(HW_TEST_PATH) -name "*.cpp")
 # $3 - The base name for the ELF and HEX output files (e.g., 'stm').
 #
 # ---------------------------------------------------------------
-
 define compile 
 	$(CXX) $(CXX_FLAGS)  $(INC) $(OBJS) $(STARTUPOBJ_PATH) $1 $(LDFLAGS) -T build/$(MCU).ld -o $2/$3.elf
 	$(OBJ_COPY) $(OBJ_COPY_OPTS) $2/$3.elf $2/$3.hex
@@ -50,6 +49,12 @@ build: $(OBJS)
 # ------------------------------------------
 # Rule to build for HW Tests 
 # make build-hw
+#
+# Note:
+# The expression $(notdir $(patsubst %/,%,$(dir $(HW_FILTER)))) in the rule
+# 	is a combination of functions used to extract the base directory name from a file path.
+#  
+#
 # ------------------------------------------
 build-hw: $(OBJS)
 	@$(foreach FILE,$(HW_MAINS), $(call compile,$(FILE),$(dir $(FILE)),$(notdir $(patsubst %/,%,$(dir $(FILE))))) ;)
