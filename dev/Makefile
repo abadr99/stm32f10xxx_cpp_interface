@@ -12,10 +12,22 @@ HW_TEST_PATH='../tests/hardware-app'
 HW_MAINS=$(shell find $(HW_TEST_PATH) -name "*.cpp")
 
 
+# ---------------------------------------------------------------
+# compile
+# This function compiles a given source file into an ELF file 
+# and then converts that ELF file into a HEX file. 
+# It uses three arguments to perform the compilation and conversion.
+#
+# Parameters:
+# $1 - The source file to be compiled (e.g., ./main.cpp).
+# $2 - The output directory where the ELF and HEX files will be saved.
+# $3 - The base name for the ELF and HEX output files (e.g., 'stm').
+#
+# ---------------------------------------------------------------
 
 define compile 
-	$(CXX) $(CXX_FLAGS)  $(INC) $(OBJS) $(STARTUPOBJ_PATH) $1 $(LDFLAGS) -T build/$(MCU).ld -o $2/$(ELF_TARGET)
-	$(OBJ_COPY) $(OBJ_COPY_OPTS) $2/$(ELF_TARGET) $2/$(HEX_TARGET)
+	$(CXX) $(CXX_FLAGS)  $(INC) $(OBJS) $(STARTUPOBJ_PATH) $1 $(LDFLAGS) -T build/$(MCU).ld -o $2/$3.elf
+	$(OBJ_COPY) $(OBJ_COPY_OPTS) $2/$3.elf $2/$3.hex
 	@echo "\n[Makefile][build][$1] : Compiled successfully."
 endef
 
@@ -33,21 +45,21 @@ cpplint:
 # make build
 # ------------------------------------------
 build: $(OBJS) 
-	@$(call compile,./main.cpp,./)
+	@$(call compile,./main.cpp,./,$(TARGET))
 
 # ------------------------------------------
 # Rule to build for HW Tests 
 # make build-hw
 # ------------------------------------------
 build-hw: $(OBJS)
-	@$(foreach FILE,$(HW_MAINS), $(call compile,$(FILE),$(dir $(FILE))) ;)
+	@$(foreach FILE,$(HW_MAINS), $(call compile,$(FILE),$(dir $(FILE)),$(notdir $(patsubst %/,%,$(dir $(FILE))))) ;)
 
 # ------------------------------------------
 # Rule to build for a specific HW Test
 # make build HW_FILTER=
 # ------------------------------------------
 build-hw-filter: $(OBJS) 
-	@$(call compile,$(HW_FILTER),$(shell dirname $(HW_FILTER)))
+	@$(call compile,$(HW_FILTER),$(shell dirname $(HW_FILTER)),$(notdir $(patsubst %/,%,$(dir $(HW_FILTER)))))
 	
 # ------------------------------------------
 # Rule to build for real applications
@@ -70,6 +82,7 @@ clean:
 	@rm -rf *.exe
 	@rm -rf *.elf
 	@rm -rf *.hex
+	@rm -rf *.map
 	@rm -rf .build
 	@rm -rf build.map
 
@@ -78,8 +91,3 @@ clean-hw:
     	DIR=$$(dirname $$FILE);\
 		rm -f $$DIR/*.elf $$DIR/*.hex; \
 	done
-
-
-
-print:
-	$(foreach FILE,$(HW_MAINS),echo $(dir $(FILE)))
