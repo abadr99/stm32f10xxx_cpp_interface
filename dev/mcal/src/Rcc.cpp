@@ -83,17 +83,17 @@ void Rcc::InitSysClock(const ClkConfig& config,
 }
 
 void Rcc::SetAHBPrescaler(const AHP_ClockDivider& divFactor) {
-    STM32_ASSERT((divFactor >= kAhpNotDivided) && (divFactor <= kAhpDiv512), RCC_AHB_PRESCALER_ERROR);
+    STM32_ASSERT((divFactor >= kAhpNotDivided) && (divFactor <= kAhpDiv512), RCC_AHB_PRESCALER_ERROR);  // NOLINT
     RCC->CFGR.HPRE = divFactor;
 }
 
 void Rcc::SetAPB1Prescaler(const APB_ClockDivider& divFactor) {
-    STM32_ASSERT((divFactor >= kApbNotDivided) && (divFactor <= kApbDiv16), RCC_APB1_PRESCALER_ERROR);
+    STM32_ASSERT((divFactor >= kApbNotDivided) && (divFactor <= kApbDiv16), RCC_APB1_PRESCALER_ERROR);  // NOLINT
     RCC->CFGR.PPRE1 = divFactor;
 }
 
 void Rcc::SetAPB2Prescaler(const APB_ClockDivider& divFactor) {
-    STM32_ASSERT((divFactor >= kApbNotDivided) && (divFactor <= kApbDiv16), RCC_APB2_PRESCALER_ERROR);
+    STM32_ASSERT((divFactor >= kApbNotDivided) && (divFactor <= kApbDiv16), RCC_APB2_PRESCALER_ERROR);  // NOLINT
     RCC->CFGR.PPRE2 = divFactor;
 }
 

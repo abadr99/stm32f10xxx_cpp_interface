@@ -30,11 +30,16 @@ using namespace stm32::registers::spi;
 #define SPI__RX_TIME_OUT_ERROR  "Timeout while waiting receiving the data."
 
 #define CHECK_SPI_CONFIG() \
-    STM32_ASSERT((config_.br >= kF_DIV_2 && config_.br <= kF_DIV_256), SPI_CONFIG_ERROR(BaudRate)); \
-    STM32_ASSERT((config_.data == kSpi_8bit || config_.data == kSpi_16bit), SPI_CONFIG_ERROR(DataFrame)); \
-    STM32_ASSERT((config_.clk >= kMode0 && config_.clk <= kMode3), SPI_CONFIG_ERROR(ClockMode)); \
-    STM32_ASSERT((config_.frame == kLSB || config_.frame == kMSB), SPI_CONFIG_ERROR(FrameFormat)); \
-    STM32_ASSERT((config_.slave == kSW || config_.slave == kHW), SPI_CONFIG_ERROR(SlaveSelectMode));
+    STM32_ASSERT((config_.br >= kF_DIV_2 && config_.br <= kF_DIV_256), \
+    SPI_CONFIG_ERROR(BaudRate)); \
+    STM32_ASSERT((config_.data == kSpi_8bit || config_.data == kSpi_16bit), \
+    SPI_CONFIG_ERROR(DataFrame)); \
+    STM32_ASSERT((config_.clk >= kMode0 && config_.clk <= kMode3), \
+    SPI_CONFIG_ERROR(ClockMode)); \
+    STM32_ASSERT((config_.frame == kLSB || config_.frame == kMSB), \
+    SPI_CONFIG_ERROR(FrameFormat)); \
+    STM32_ASSERT((config_.slave == kSW || config_.slave == kHW), \
+    SPI_CONFIG_ERROR(SlaveSelectMode));
 
 Spi::Spi(const SpiConfig& config) :config_(config) {
     switch (config_.number) {
