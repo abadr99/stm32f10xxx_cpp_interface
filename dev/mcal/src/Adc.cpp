@@ -51,9 +51,12 @@ ASSERT_MEMBER_OFFSET(ADCRegDef, DR,        sizeof(RegWidth_t) * 19);
     TO_STRING(Invalid Adc error_)
 
 #define CHECK_ADC_CONFIG() \
-    STM32_ASSERT((config_.number >= kADC1) && (config_.number <= kADC2), ADC_CONFIG_ERROR(Number)); \
-    STM32_ASSERT((config_.alignment == kRight) || (config_.alignment == kLeft), ADC_CONFIG_ERROR(Alignment)); \
-    STM32_ASSERT((config_.channel >= kChannel0) && (config_.channel <= kChannel17), ADC_CONFIG_ERROR(Channel)); \
+    STM32_ASSERT((config_.number >= kADC1) && (config_.number <= kADC2), \
+                  ADC_CONFIG_ERROR(Number)); \
+    STM32_ASSERT((config_.alignment == kRight) || (config_.alignment == kLeft), \
+                  ADC_CONFIG_ERROR(Alignment)); \
+    STM32_ASSERT((config_.channel >= kChannel0) && (config_.channel <= kChannel17), \
+                  ADC_CONFIG_ERROR(Channel)); \
     STM32_ASSERT((config_.sampleTime >= kCycles_1_5) && (config_.sampleTime <=  kCycles_239_5), \
                   ADC_CONFIG_ERROR(Sample Time));
 
