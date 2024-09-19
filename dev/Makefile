@@ -8,7 +8,7 @@ SOURCES_CTR:=0
 INC:=  -I. -I./mcal/inc/ -I./hal/inc/ -I./utils/inc/
 LINT_PATH:= ../tools/cppliny.py
 
-HW_TEST_PATH= ../tests/hardware-app
+HW_TEST_PATH= ../tests/hardware
 HW_MAINS=$(shell find $(HW_TEST_PATH) -name "*.cpp")
 
 
