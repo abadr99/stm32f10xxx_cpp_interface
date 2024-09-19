@@ -19,6 +19,12 @@ jobs:
     - uses: actions/checkout@v3
     - name: Test-Style-Check
       run:  make -C tests cpplint
+  hardware-tests-style-checking:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Hardware-Test-Style-Check
+      run:  python3 tools/hwlint.py --dir tests/hardware/
   static-analysis:
     runs-on: ubuntu-latest
     steps:
