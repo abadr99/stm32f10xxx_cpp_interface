@@ -13,6 +13,7 @@ mcal {
     src/Gpio.cpp
     src/Usart.cpp
     src/Adc.cpp
+    src/Spi.cpp
 }
 
 // --- HAL PERIPHERALS  --------------------------------------------------------

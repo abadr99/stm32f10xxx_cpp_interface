@@ -9,6 +9,7 @@
  */
 
 #include "mcal/inc/stm32f103xx.h"
+#include "Constant.h"
 #include "Types.h"
 #include "Assert.h"
 #include "BitManipulation.h"
@@ -108,6 +109,5 @@ void Spi::SetFrameFormat() {
 }
 
 void Spi::MasterBaudRate() {
-    STM32_ASSERT(config_.br >= kF_DIV_2 && config_.br <= kF_DIV_256, SPI_CONFIG_ERROR(BaudRate));
     spi_reg->CR1.BR = static_cast<uint8_t>(config_.br);
 }
