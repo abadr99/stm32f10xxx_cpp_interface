@@ -18,11 +18,22 @@ using namespace stm32::dev::mcal::nvic;
 using namespace stm32::dev::mcal::wwdg;
 using namespace stm32::registers::wwdg;
 
+#define TO_STRING(str_)  #str_
+
+#define WWDG_CONFIG_ERROR(error_) \
+    TO_STRING(Invalid Wwdg error_)
+
+#define CHECK_WWDG_CONFIG() \
+    STM32_ASSERT((config_.windowValue < 0x80), WWDG_CONFIG_ERROR(Window Value)); \
+    STM32_ASSERT((config_.counterValue >= 0x40), WWDG_CONFIG_ERROR(Counter Value Lower Bound)); \
+    STM32_ASSERT((config_.counterValue < 0x80), WWDG_CONFIG_ERROR(Counter Value Upper Bound)); \
+    STM32_ASSERT((config_.counterValue > config_.windowValue), \
+                  WWDG_CONFIG_ERROR(Counter_and_Window Relationship)); \
+    STM32_ASSERT((config_.prescaler >= kDiv2) && (config_.prescaler <= kDiv8), \
+                  WWDG_CONFIG_ERROR(Prescaler));
+
 Wwdg::Wwdg(const Config& config) : config_(config) {
-    // Validate configuration
-    STM32_ASSERT(config_.windowValue < 0x80);
-    STM32_ASSERT(config_.counterValue >= 0x40);
-    STM32_ASSERT(config_.counterValue > config_.windowValue);
+    CHECK_WWDG_CONFIG();
     Init();
 }
 

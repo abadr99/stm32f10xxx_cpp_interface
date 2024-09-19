@@ -15,6 +15,7 @@ mcal {
     src/Adc.cpp
     src/Spi.cpp
     src/I2c.cpp
+    src/Wwdg.cpp
 }
 
 // --- HAL PERIPHERALS  --------------------------------------------------------
