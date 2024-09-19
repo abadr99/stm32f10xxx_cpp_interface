@@ -61,12 +61,14 @@ jobs:
     needs: [dev-style-checking, test-style-checking, static-analysis]
     steps:
     - uses: actions/checkout@v3
+    - name: Configure Building
+      run: sh tools/github/configure.sh
     - name: Building hardware tests
       run: make -C ./dev build-hw
 
   test:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking, static-analysis, build]
+    needs: [dev-style-checking, test-style-checking, static-analysis, build, build-unitests, build-hardware-tests]
     steps:
     - name: Download artifact 
       uses: actions/download-artifact@v4 
