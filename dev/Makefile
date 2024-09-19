@@ -8,7 +8,7 @@ SOURCES_CTR:=0
 INC:=  -I. -I./mcal/inc/ -I./hal/inc/ -I./utils/inc/
 LINT_PATH:= ../tools/cppliny.py
 
-HW_TEST_PATH='../tests/hardware-app'
+HW_TEST_PATH= ../tests/hardware-app
 HW_MAINS=$(shell find $(HW_TEST_PATH) -name "*.cpp")
 
 
@@ -27,12 +27,11 @@ HW_MAINS=$(shell find $(HW_TEST_PATH) -name "*.cpp")
 define compile 
 	$(CXX) $(CXX_FLAGS)  $(INC) $(OBJS) $(STARTUPOBJ_PATH) $1 $(LDFLAGS) -T build/$(MCU).ld -o $2/$3.elf
 	$(OBJ_COPY) $(OBJ_COPY_OPTS) $2/$3.elf $2/$3.hex
-	@echo "\n[Makefile][build][$1] : Compiled successfully."
 endef
 
 include build/stm32.mk
 
-.PHONY: all clean build build-opt 
+.PHONY: all clean build build-opt cpplint build-hw clean-hw
 
 all:build
 
@@ -45,26 +44,30 @@ cpplint:
 # ------------------------------------------
 build: $(OBJS) 
 	@$(call compile,./main.cpp,./,$(TARGET))
+	@echo "\n[Makefile][build] : Compiled successfully."
 
 # ------------------------------------------
 # Rule to build for HW Tests 
-# make build-hw
-#
+# make build-hw 					---> TO BUILD **ALL** 	   HARDWARE TESTS 
+# make build-hw FILTER=path/to/test ---> TO BUILD **SPECIFIC** HARDWARE TEST
+# e.g. make -C ./dev/ build-hw FILTER=../tests/hardware-app/mcal/gpio/main.cpp
 # Note:
 # The expression $(notdir $(patsubst %/,%,$(dir $(HW_FILTER)))) in the rule
 # 	is a combination of functions used to extract the base directory name from a file path.
-#  
-#
 # ------------------------------------------
 build-hw: $(OBJS)
-	@$(foreach FILE,$(HW_MAINS), $(call compile,$(FILE),$(dir $(FILE)),$(notdir $(patsubst %/,%,$(dir $(FILE))))) ;)
+ifneq ($(FILTER), )
+	@$(call compile,$(FILTER),$(shell dirname $(FILTER)),$(notdir $(patsubst %/,%,$(dir $(FILTER)))))
+	@echo "\n[Makefile]: note: Filter compilation $(FILTER)"
+	@echo "\n[Makefile]: Compiling $(dir $(FILTER)) successfully"
+else 
+	@$(foreach FILE,$(HW_MAINS), echo "[Makefile][HW-Test]: $(FILE)"; $(call compile,$(FILE),$(dir $(FILE)),$(notdir $(patsubst %/,%,$(dir $(FILE))))) ;)
+	@echo "\n[Makefile]: Compiled successfully."
+endif
 
-# ------------------------------------------
-# Rule to build for a specific HW Test
-# make build HW_FILTER=
-# ------------------------------------------
-build-hw-filter: $(OBJS) 
-	@$(call compile,$(HW_FILTER),$(shell dirname $(HW_FILTER)),$(notdir $(patsubst %/,%,$(dir $(HW_FILTER)))))
+clean-hw:
+	@$(shell find $(HW_TEST_PATH) -name '*.elf' -o -name '*.hex' -exec rm -f {} +)
+	@echo "\n[Makefile]: Cleaning successfully."
 	
 # ------------------------------------------
 # Rule to build for real applications
@@ -90,9 +93,3 @@ clean:
 	@rm -rf *.map
 	@rm -rf .build
 	@rm -rf build.map
-
-clean-hw:
-	@for FILE in $(HW_MAINS) ; do \
-    	DIR=$$(dirname $$FILE);\
-		rm -f $$DIR/*.elf $$DIR/*.hex; \
-	done
