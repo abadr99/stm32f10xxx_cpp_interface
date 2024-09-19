@@ -18,17 +18,29 @@ using namespace stm32::registers::dma;
 using namespace stm32::dev::mcal::dma;
 using namespace stm32::type;
 
+#define TO_STRING(str_)  #str_
+
+#define DMA_CONFIG_ERROR(error_) \
+    TO_STRING(Invalid Dma error_)
+
 // --- HELPER MACRO TO CHECK IF WE ARE USING CORRECT CONFIGURATIONS
 #define CHECK_CONFIG()\
-    STM32_ASSERT(config.channel >= kChannel1 && config.channel <= kChannel7);\
-    STM32_ASSERT(config.dir >= kMem2Mem && config.dir <= kPer2Mem);\
-    STM32_ASSERT(config.mode >= kNoCircular && config.mode <= kCircular);\
-    STM32_ASSERT(config.peripheralIncrementState >= kDisable\
-              && config.peripheralIncrementState <= kEnable);\
-    STM32_ASSERT(config.memIncrementState >= kDisable && config.memIncrementState <= kEnable);\
-    STM32_ASSERT(config.memoryDataSize >= k8bit && config.memoryDataSize <= k32bit);\
-    STM32_ASSERT(config.peripheralDataSize >= k8bit && config.peripheralDataSize <= k32bit);\
-    STM32_ASSERT(config.channelPriority >= kLow && config.channelPriority <= kVeryHigh);
+    STM32_ASSERT((config.channel >= kChannel1)\
+              && (config.channel <= kChannel7), DMA_CONFIG_ERROR(Channel));\
+    STM32_ASSERT((config.dir >= kMem2Mem)\
+              && (config.dir <= kPer2Mem), DMA_CONFIG_ERROR(Direction));\
+    STM32_ASSERT((config.mode >= kNoCircular)\
+              && (config.mode <= kCircular), DMA_CONFIG_ERROR(Mode));\
+    STM32_ASSERT((config.peripheralIncrementState >= kDisable)\
+              && (config.peripheralIncrementState <= kEnable), DMA_CONFIG_ERROR(State));\
+    STM32_ASSERT((config.memIncrementState >= kDisable)\
+              && (config.memIncrementState <= kEnable), DMA_CONFIG_ERROR(State));\
+    STM32_ASSERT((config.memoryDataSize >= k8bit)\
+              && (config.memoryDataSize <= k32bit), DMA_CONFIG_ERROR(State));\
+    STM32_ASSERT((config.peripheralDataSize >= k8bit)\
+              && (config.peripheralDataSize <= k32bit), DMA_CONFIG_ERROR(Size));\
+    STM32_ASSERT((config.channelPriority >= kLow)\
+              && (config.channelPriority <= kVeryHigh), DMA_CONFIG_ERROR(Priority));
 
 namespace helper {
     static inline void SetDirection(Channel dmaChannel, Direction dmaDirection) {
@@ -80,22 +92,22 @@ void Dma::Init(const DMAConfig& config) {
 }
 
 void Dma::Enable(Channel dmaChannel) {
-    STM32_ASSERT(dmaChannel >= kChannel1 && dmaChannel <= kChannel7);
+    STM32_ASSERT((dmaChannel >= kChannel1) && (dmaChannel <= kChannel7), DMA_CONFIG_ERROR(Channel));
     DMA->CHANNEL[dmaChannel].CCR.EN = 1;
 }
 
 void Dma::Disable(Channel dmaChannel) {
-    STM32_ASSERT(dmaChannel >= kChannel1 && dmaChannel <= kChannel7);
+    STM32_ASSERT((dmaChannel >= kChannel1) && (dmaChannel <= kChannel7), DMA_CONFIG_ERROR(Channel));
     DMA->CHANNEL[dmaChannel].CCR.EN = 0;
 }
 
 void Dma::SetPointerToTransferCompleteISR(Channel channel, pFunction func) {
-    STM32_ASSERT(channel >= kChannel1 && channel <= kChannel7);
+    STM32_ASSERT((channel >= kChannel1) && (channel <= kChannel7), DMA_CONFIG_ERROR(Channel));
     Dma::PointerToTransferCompleteISR[channel] = func;
 }
 
 void Dma::SetPointerToTransferErrorISR(Channel channel, pFunction func) {
-    STM32_ASSERT(channel >= kChannel1 && channel <= kChannel7);
+    STM32_ASSERT((channel >= kChannel1) && (channel <= kChannel7), DMA_CONFIG_ERROR(Channel));
     Dma::PointerToTransferErrorISR[channel] = func;
 }
 
