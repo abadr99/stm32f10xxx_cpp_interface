@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include "stm32f103xx.h"
 #include "BitSet.h"
+#include "Constant.h"
 #include "Assert.h"
 #include "BitManipulation.h"
 #include "Util.h"
@@ -19,6 +20,7 @@
 
 // --- IMPORT USED NAMESPACE
 using namespace stm32;
+using namespace stm32::type;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::i2c;
@@ -50,6 +52,18 @@ ASSERT_MEMBER_OFFSET(I2CRegDef, TRISE, sizeof(RegWidth_t) * 8);
 #else 
 #define READ(ref)
 #endif
+#define TO_STRING(str_)  #str_
+
+#define I2C_CONFIG_ERROR(error_) \
+    TO_STRING(Invalid I2c error_)
+#define CHECK_I2C_CONFIG() \
+    STM32_ASSERT((config_.i2cx == kI2C1) || (config_.i2cx == kI2C2), \
+                  I2C_CONFIG_ERROR(I2C peripheral)); \
+    STM32_ASSERT((config_.mode == kSm) || (config_.mode == kFm), I2C_CONFIG_ERROR(Mode)); \
+    STM32_ASSERT((config_.ClkSpeed >= kMin_Sm) || (config_.ClkSpeed <= kMin_Fm), \
+                  I2C_CONFIG_ERROR(ClkSpeed)); \
+    STM32_ASSERT((config_.addressLength ==  k7_bit) || (config_.addressLength ==  k10_bit), \
+                  I2C_CONFIG_ERROR(Address Length));
 
 I2c::I2c(const I2cConfig & I2c) {
     i2c_reg                   = (I2c.i2cx == kI2C1) ? I2C1 : I2C2;
@@ -113,26 +127,26 @@ void I2c::Send_7Bit_Add(uint8_t address, Direction direction) {
     address = direction != kTransmitter ? util::SetBit<uint16_t, 1>(address)
                                         : util::ClearBit<uint16_t, 1>(address);
     i2c_reg->DR = address;
-    util::BusyWait([&](){return i2c_reg->SR1.ADDR;});
+    util::BusyWait<constant::TimeOut::kI2C>([&](){ return i2c_reg->SR1.ADDR; });
     READ(i2c_reg->SR1);
     READ(i2c_reg->SR2);
 }
 
 void I2c::TransmitData(uint8_t data) {
-    util::BusyWait([&](){return i2c_reg->SR1.TxE == 0;});
+    util::BusyWait<constant::TimeOut::kI2C>([&](){ return i2c_reg->SR1.TxE == 0; });
     READ(i2c_reg->SR1);
     i2c_reg->DR = data;
 }
 
 void I2c::ReceiveData(uint8_t* data) {
-    util::BusyWait([&](){return i2c_reg->SR1.RxNE == 0;});
+    util::BusyWait<constant::TimeOut::kI2C>([&](){ return i2c_reg->SR1.RxNE == 0; });
     READ(i2c_reg->SR1);
     *data = static_cast<uint8_t>(i2c_reg->DR);
 }
 
 void I2c::StartCondition() {
     i2c_reg->CR1.START = 1;
-    util::BusyWait([&](){return i2c_reg->SR1.SB;});
+    util::BusyWait<constant::TimeOut::kI2C>([&](){ return i2c_reg->SR1.SB; });
     READ(i2c_reg->SR1);
 }
 
