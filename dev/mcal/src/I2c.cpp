@@ -56,16 +56,14 @@ ASSERT_MEMBER_OFFSET(I2CRegDef, TRISE, sizeof(RegWidth_t) * 8);
 
 #define I2C_CONFIG_ERROR(error_) \
     TO_STRING(Invalid I2c error_)
-#define CHECK_I2C_CONFIG() \
-    STM32_ASSERT((config_.i2cx == kI2C1) || (config_.i2cx == kI2C2), \
-                  I2C_CONFIG_ERROR(I2C peripheral)); \
-    STM32_ASSERT((config_.mode == kSm) || (config_.mode == kFm), I2C_CONFIG_ERROR(Mode)); \
-    STM32_ASSERT((config_.ClkSpeed >= kMin_Sm) || (config_.ClkSpeed <= kMin_Fm), \
-                  I2C_CONFIG_ERROR(ClkSpeed)); \
-    STM32_ASSERT((config_.addressLength ==  k7_bit) || (config_.addressLength ==  k10_bit), \
-                  I2C_CONFIG_ERROR(Address Length));
+
 
 I2c::I2c(const I2cConfig & I2c) {
+    STM32_ASSERT((I2c.i2cx == kI2C1) || (I2c.i2cx == kI2C2),
+                  I2C_CONFIG_ERROR(I2C peripheral));
+    STM32_ASSERT((I2c.mode == kSm) || (I2c.mode == kFm), I2C_CONFIG_ERROR(Mode));
+    STM32_ASSERT((I2c.addressLength ==  k7_bit) || (I2c.addressLength ==  k10_bit),
+                  I2C_CONFIG_ERROR(Address Length));
     i2c_reg                   = (I2c.i2cx == kI2C1) ? I2C1 : I2C2;
     i2c_reg->CR1.PE           = 0;
     i2c_reg->CR1.ACK          = I2c.ack;
