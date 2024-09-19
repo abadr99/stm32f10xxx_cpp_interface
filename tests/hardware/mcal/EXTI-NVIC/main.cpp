@@ -8,6 +8,9 @@
  * @copyright Copyright (c) 2024
  * 
  */
+
+// commit-id: a5020f63948e1e8a5aa0cf6949409dc7bf34a49e
+
 #include "mcal/inc/stm32f103xx.h"
 #include "utils/inc/Types.h"
 #include "utils/inc/BitManipulation.h"
