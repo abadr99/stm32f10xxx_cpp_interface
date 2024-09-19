@@ -29,7 +29,6 @@ using namespace stm32::registers::rcc;
 #define RCC_TIME_OUT_ERROR              "Timeout while waiting for a flag to be ready."
 #define RCC_EMPTY_MESSAGE               ""
 
-
 // Some asserts to make sure RCC struct members are in correct orders
 ASSERT_STRUCT_SIZE(RccRegDef, (sizeof(RegWidth_t) * 12));
 

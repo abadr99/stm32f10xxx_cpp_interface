@@ -27,7 +27,8 @@ using namespace stm32::type;
 #define USART_CONFIG_ERROR(error_) \
     TO_STRING(Invalid Usart error_)
 
-
+#define RCC__TX_TIME_OUT_ERROR  "Timeout while waiting transmitting the data."
+#define RCC__RX_TIME_OUT_ERROR  "Timeout while waiting receiving the data."
 
 pFunction  Usart::pTransmitCompleteFun_[3] = {nullptr};
 pFunction  Usart::pReceiveReadyFun_[3] = {nullptr};
