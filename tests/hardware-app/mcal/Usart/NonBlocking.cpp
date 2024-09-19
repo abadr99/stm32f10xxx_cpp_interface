@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2024
  * 
  */
-
+#include "utils/inc/Types.h"
 #include "mcal/inc/stm32f103xx.h"
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Pin.h"
@@ -17,6 +17,7 @@
 #include "mcal/inc/Gpio.h"
 #include "mcal/inc/Usart.h"
 
+using namespace stm32::type;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
@@ -49,7 +50,7 @@ int main() {
     usart1.Init();
     
 
-    Gpio::SetPinValue(pc13, Gpio::kHigh);
+    Gpio::SetPinValue(pc13, DigitalVoltage::kHigh);
     Usart::DataValType data = 0;
     usart1.Transmit(48, TransmitISR);
     usart1.Receive(&data, nullptr);
@@ -58,10 +59,10 @@ int main() {
         if (flag) {
         if (data == 'r') {
             // Turn on the Led
-            Gpio::SetPinValue(pc13, Gpio::kLow);
+            Gpio::SetPinValue(pc13, DigitalVoltage::kLow);
         } else if (data == 'n') {
             // Turn off the Led
-            Gpio::SetPinValue(pc13, Gpio::kHigh);
+            Gpio::SetPinValue(pc13, DigitalVoltage::kHigh);
         }
         }
     }

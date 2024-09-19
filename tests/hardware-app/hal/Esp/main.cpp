@@ -10,6 +10,7 @@
  */
 
 #include "mcal/inc/stm32f103xx.h"
+#include "utils/inc/Types.h"
 #include "utils/inc/BitManipulation.h"
 #include "mcal/inc/Pin.h"
 #include "mcal/inc/Gpio.h"
@@ -17,6 +18,7 @@
 #include "mcal/inc/Usart.h"
 #include "hal/inc/Esp.h"
 
+using namespace stm32::type;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
@@ -40,7 +42,7 @@ int main() {
 
     Esp esp(kUsart1);
 
-    Gpio::SetPinValue(pc13, Gpio::kHigh);
+    Gpio::SetPinValue(pc13, kHigh);
     esp.SetMode(EspMode::kAP);
     esp.SetEchoState(EchoState::kOn);
     esp.WiFiConnect("\"userName\"", "\"Password\"");
