@@ -25,8 +25,8 @@ HW_MAINS=$(shell find $(HW_TEST_PATH) -name "*.cpp")
 #
 # ---------------------------------------------------------------
 define compile 
-	$(CXX) $(CXX_FLAGS)  $(INC) $(OBJS) $(STARTUPOBJ_PATH) $1 $(LDFLAGS) -T build/$(MCU).ld -o $2/$3.elf
-	$(OBJ_COPY) $(OBJ_COPY_OPTS) $2/$3.elf $2/$3.hex
+	$(CXX) $(CXX_FLAGS)  $(INC) $(OBJS) $(STARTUPOBJ_PATH) $(1) $(LDFLAGS) -T build/$(MCU).ld -o $(2)/$(3).elf
+	$(OBJ_COPY) $(OBJ_COPY_OPTS) $(2)/$(3).elf $(2)/$(3).hex
 endef
 
 include build/stm32.mk
@@ -61,12 +61,12 @@ ifneq ($(FILTER), )
 	@echo "\n[Makefile]: note: Filter compilation $(FILTER)"
 	@echo "\n[Makefile]: Compiling $(dir $(FILTER)) successfully"
 else 
-	@$(foreach FILE,$(HW_MAINS), echo "[Makefile][HW-Test]: $(FILE)"; $(call compile,$(FILE),$(dir $(FILE)),$(notdir $(patsubst %/,%,$(dir $(FILE))))) ;)
+	@$(foreach FILE,$(HW_MAINS), echo "[Makefile][HW-Test]: $(FILE)"; $(call compile,$(FILE),$(dir $(FILE)),$(basename $(notdir $(FILE))));)
 	@echo "\n[Makefile]: Compiled successfully."
 endif
 
 clean-hw:
-	@$(shell find $(HW_TEST_PATH) -name '*.elf' -o -name '*.hex' -exec rm -f {} +)
+	@find $(HW_TEST_PATH) \( -name '*.elf' -o -name '*.hex' \) -exec rm -rf {} +
 	@echo "\n[Makefile]: Cleaning successfully."
 	
 # ------------------------------------------
