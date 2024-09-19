@@ -36,7 +36,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking, static-analysis]
+    needs: [dev-style-checking, test-style-checking, static-analysis, hardware-tests-style-checking]
     steps:
     - uses: actions/checkout@v3
     - name: Configure Building
@@ -50,7 +50,7 @@ jobs:
         path: dev/.build/
   build-unitests:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking, static-analysis]
+    needs: [dev-style-checking, test-style-checking, static-analysis, hardware-tests-style-checking]
     steps:
     - uses: actions/checkout@v3
     - name: Configure gtest
@@ -64,7 +64,7 @@ jobs:
         path: tests/unittests/
   test:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking, static-analysis, build]
+    needs: [dev-style-checking, test-style-checking, hardware-tests-style-checking, static-analysis, build]
     steps:
     - name: Download artifact 
       uses: actions/download-artifact@v4 
