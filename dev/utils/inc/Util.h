@@ -18,6 +18,7 @@
 #include "Constant.h"
 #include <functional>
 
+#define UTILS_EMPTY_MESSAGE  ""
 namespace stm32 {
 namespace util {
     
@@ -31,7 +32,7 @@ namespace util {
             case Port::kPortB:    return Peripheral::kIOPB;
             case Port::kPortC:    return Peripheral::kIOPC;
         }
-        STM32_ASSERT(0);
+        STM32_ASSERT(0, UTILS_EMPTY_MESSAGE);
         return Peripheral::kUnknown;
     }
     
@@ -41,7 +42,7 @@ namespace util {
         uint32_t i = 0;
         for (; cond() && i != timeout; ++i) {}
         if (i >= timeout) {
-            STM32_ASSERT(0);
+            STM32_ASSERT(0, UTILS_EMPTY_MESSAGE);
         }
     }
 

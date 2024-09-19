@@ -10,39 +10,12 @@ mcal {
     stm32f103_startup.cpp
     src/Rcc.cpp
     src/Pin.cpp
-    src/Nvic.cpp
-    src/Systick.cpp
     src/Gpio.cpp
-    src/Spi.cpp
     src/Usart.cpp
-    src/Exti.cpp
-    src/I2c.cpp
-    src/Dma.cpp
-    src/Iwdg.cpp
-    src/Rtc.cpp
-    src/Wwdg.cpp
-    src/Power.cpp
-    src/Timer.cpp
-    src/Adc.cpp
 }
 
 // --- HAL PERIPHERALS  --------------------------------------------------------
 // -----------------------------------------------------------------------------
 hal {
-    src/Led.cpp
-    src/Buzzer.cpp
-    src/SevenSegment.cpp
-    src/IR.cpp
-    src/HC05.cpp
-    src/STP_74HC595.cpp
-    src/DC_Motor.cpp
-    src/Relay.cpp
-    src/Keypad.cpp
-    src/Esp.cpp
-    src/Lcd.cpp
-    src/Dac.cpp
-    src/Tft.cpp
-    src/LDR.cpp
-    src/LM35.cpp
 }
 
