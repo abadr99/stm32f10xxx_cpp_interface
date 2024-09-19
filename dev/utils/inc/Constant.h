@@ -42,6 +42,7 @@ struct TimeOut {
     static constexpr uint32_t kRcc     = 400UL;
     static constexpr uint32_t kRtc     = 1000UL;
     static constexpr uint32_t kSpi     = 400UL;
+    static constexpr uint32_t kAdc     = 400UL;
 };
 
 }  // namespace constant
