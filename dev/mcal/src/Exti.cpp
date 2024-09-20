@@ -41,8 +41,8 @@ ASSERT_MEMBER_OFFSET(EXTIRegDef, PR,    sizeof(RegWidth_t) * 5);
 pFunction Exti::pGlobalCallBackFunctions[7] = {nullptr};
 
 void Exti::Enable(const EXTI_Config& config) {
-    STM32_ASSERT(((config.trigger == kRising) || (config.trigger == kFalling)
-                   || (config.trigger == kBoth)), EXTI_CONFIG_ERROR(Trigger));
+    STM32_ASSERT(((config.trigger >= kRising) 
+                && (config.trigger <= kBoth)), EXTI_CONFIG_ERROR(Trigger));
     STM32_ASSERT(((config.line >= kExti0) && (config.line <= kExti19)),
                   EXTI_CONFIG_ERROR(line));
     Exti::InitAFIOReg(config.line, config.port);
@@ -74,6 +74,7 @@ bool Exti::GetPendingFlag(const EXTI_Config& config) {
 }
 
 void Exti::SetpCallBackFunction(Line line, void (*pCallBackFun)(void)) {
+    STM32_ASSERT((line >= kExti0) && (line <= kExti19), EXTI_CONFIG_ERROR(Line));
     if (line >= Line::kExti5 && line <= Line::kExti9) {
         pGlobalCallBackFunctions[5] = pCallBackFun;
     } else if (line >= Line::kExti10 && line <= Line::kExti15) {
@@ -82,7 +83,9 @@ void Exti::SetpCallBackFunction(Line line, void (*pCallBackFun)(void)) {
         pGlobalCallBackFunctions[static_cast<uint8_t>(line)] = pCallBackFun;
     }
 }
-pFunction Exti::GetpCallBackFunction(Line line) {   
+pFunction Exti::GetpCallBackFunction(Line line) {  
+    STM32_ASSERT(((line >= kExti5) && (line <= kExti9)) 
+                || ((line >= kExti10) && (line <= kExti15)), EXTI_CONFIG_ERROR(Line)); 
     pFunction pRetFunction = nullptr;
     if (line >= Line::kExti5 && line <= Line::kExti9) {
         return pGlobalCallBackFunctions[5];
@@ -99,6 +102,8 @@ void Exti::InitAFIOReg(Line line, Port port) {
 }
 
 void Exti::SetTrigger(Line line, Trigger trigger) {
+    STM32_ASSERT(((trigger >= kRising) && (trigger <= kBoth)), EXTI_CONFIG_ERROR(Trigger));
+    STM32_ASSERT((line >= kExti0) && (line <= kExti19), EXTI_CONFIG_ERROR(Line));
     if (trigger == Trigger::kRising || trigger == Trigger::kBoth) {
         EXTI->RTSR = util::SetBit<uint32_t>(EXTI->RTSR, line);
     }
@@ -108,6 +113,8 @@ void Exti::SetTrigger(Line line, Trigger trigger) {
 }
 
 void Exti::ClrTrigger(Line line, Trigger trigger) {
+    STM32_ASSERT(((trigger >= kRising) && (trigger <= kBoth)), EXTI_CONFIG_ERROR(Trigger));
+    STM32_ASSERT((line >= kExti0) && (line <= kExti19), EXTI_CONFIG_ERROR(Line));
     if (trigger == Trigger::kRising || trigger == Trigger::kBoth) {
         EXTI->RTSR = util::ClearBit<uint32_t>(EXTI->RTSR, line);
     }
