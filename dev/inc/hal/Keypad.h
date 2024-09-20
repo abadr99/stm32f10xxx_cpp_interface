@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_HAL_INC_KEYPAD_H_
-#define DEV_HAL_INC_KEYPAD_H_
+#ifndef DEV_INC_HAL_KEYPAD_H_
+#define DEV_INC_HAL_KEYPAD_H_
 using namespace stm32::dev::mcal::pin; 
 using namespace stm32::dev::mcal::gpio;
 namespace stm32 {
@@ -35,4 +35,4 @@ class Keypad {
 }  // namespace hal
 }  // namespace dev
 }  // namespace stm32
-#endif  //  DEV_HAL_INC_KEYPAD_H_
+#endif  //  DEV_INC_HAL_KEYPAD_H_

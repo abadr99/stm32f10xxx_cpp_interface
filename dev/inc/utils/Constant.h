@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef DEV_UTILS_INC_CONSTANT_H_
-#define DEV_UTILS_INC_CONSTANT_H_
+#ifndef DEV_INC_UTILS_CONSTANT_H_
+#define DEV_INC_UTILS_CONSTANT_H_
 
 #include "Types.h"
 using namespace stm32::type;
@@ -48,5 +48,5 @@ struct TimeOut {
 }  // namespace stm32
 
 
-#endif  // DEV_UTILS_INC_CONSTANT_H_
+#endif  // DEV_INC_UTILS_CONSTANT_H_
 

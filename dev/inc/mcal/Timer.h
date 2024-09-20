@@ -6,8 +6,8 @@
  * @date 2024-08-05
  * @copyright Copyright (c) 2024
  */
-#ifndef DEV_MCAL_INC_TIMER_H_
-#define DEV_MCAL_INC_TIMER_H_
+#ifndef DEV_INC_MCAL_TIMER_H_
+#define DEV_INC_MCAL_TIMER_H_
 
 #include "stm32f103xx.h"
 #include "Types.h"
@@ -52,4 +52,4 @@ class Timer {
 }  // namespace dev
 }  // namespace stm32
 
-#endif  // DEV_MCAL_INC_TIMER_H_
+#endif  // DEV_INC_MCAL_TIMER_H_

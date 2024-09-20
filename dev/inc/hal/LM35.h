@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_HAL_INC_LM35_H_
-#define DEV_HAL_INC_LM35_H_
+#ifndef DEV_INC_HAL_LM35_H_
+#define DEV_INC_HAL_LM35_H_
 namespace stm32 {
 namespace dev {
 namespace hal {
@@ -30,4 +30,4 @@ class LM35 {
 }   //  namespace hal
 }   //  namespace dev
 }   //  namespace stm32
-#endif  //   DEV_HAL_INC_LM35_H_
+#endif  //   DEV_INC_HAL_LM35_H_

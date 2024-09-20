@@ -8,8 +8,8 @@
  * @todo: This file should be in common directory 
  */
 
-#ifndef DEV_UTILS_INC_TYPES_H_
-#define DEV_UTILS_INC_TYPES_H_
+#ifndef DEV_INC_UTILS_TYPES_H_
+#define DEV_INC_UTILS_TYPES_H_
 
 #include <stdint.h>
 
@@ -35,4 +35,4 @@ enum class ConnectionType {
 }  // namespace type
 }  // namespace stm32
 
-#endif  //  DEV_UTILS_INC_TYPES_H_
+#endif  //  DEV_INC_UTILS_TYPES_H_

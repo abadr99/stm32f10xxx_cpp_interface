@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef DEV_UTILS_INC_ARRAY_H_
-#define DEV_UTILS_INC_ARRAY_H_
+#ifndef DEV_INC_UTILS_ARRAY_H_
+#define DEV_INC_UTILS_ARRAY_H_
 
 #include <cstddef>
 
@@ -59,4 +59,4 @@ class Array {
 }  // namespace util
 }  // namespace stm32
 
-#endif  // DEV_UTILS_INC_ARRAY_H_
+#endif  // DEV_INC_UTILS_ARRAY_H_

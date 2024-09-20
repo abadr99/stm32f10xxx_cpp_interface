@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef DEV_MCAL_INC_NVIC_H_
-#define DEV_MCAL_INC_NVIC_H_
+#ifndef DEV_INC_MCAL_NVIC_H_
+#define DEV_INC_MCAL_NVIC_H_
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -109,4 +109,4 @@ class Nvic {
 }   // namespace mcal
 }   // namespace dev
 }   // namespace stm32
-#endif   // DEV_MCAL_INC_NVIC_H_
+#endif   // DEV_INC_MCAL_NVIC_H_

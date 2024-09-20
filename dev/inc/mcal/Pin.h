@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef DEV_MCAL_INC_PIN_H_
-#define DEV_MCAL_INC_PIN_H_
+#ifndef DEV_INC_MCAL_PIN_H_
+#define DEV_INC_MCAL_PIN_H_
 #include "BitSet.h"
 namespace stm32 {
 namespace dev   {
@@ -99,4 +99,4 @@ class Pin {
 }   // namespace dev
 }   // namespace stm32
 
-#endif   // DEV_MCAL_INC_PIN_H_
+#endif   // DEV_INC_MCAL_PIN_H_

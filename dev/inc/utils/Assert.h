@@ -8,8 +8,8 @@
  * 
  */
 
-#ifndef DEV_UTILS_INC_ASSERT_H_
-#define DEV_UTILS_INC_ASSERT_H_
+#ifndef DEV_INC_UTILS_ASSERT_H_
+#define DEV_INC_UTILS_ASSERT_H_
 
 #include <assert.h>
 #include <cstddef>
@@ -26,4 +26,4 @@
         "Member offset mismatch. The member order may have been modified.");
 
 #define ERROR(msg_)
-#endif  // DEV_UTILS_INC_ASSERT_H_
+#endif  // DEV_INC_UTILS_ASSERT_H_

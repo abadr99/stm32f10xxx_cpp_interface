@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef DEV_UTILS_INC_BITMANIPULATION_H_
-#define DEV_UTILS_INC_BITMANIPULATION_H_
+#ifndef DEV_INC_UTILS_BITMANIPULATION_H_
+#define DEV_INC_UTILS_BITMANIPULATION_H_
 
 #include <stdint.h>
 #include <assert.h>
@@ -115,4 +115,4 @@ inline constexpr T ClearBit(const T container) {
 }  // namespace util
 }  // namespace stm32
 
-#endif  // DEV_UTILS_INC_BITMANIPULATION_H_
+#endif  // DEV_INC_UTILS_BITMANIPULATION_H_

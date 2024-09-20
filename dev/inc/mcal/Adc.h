@@ -7,8 +7,8 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#ifndef DEV_MCAL_INC_ADC_H_
-#define DEV_MCAL_INC_ADC_H_
+#ifndef DEV_INC_MCAL_ADC_H_
+#define DEV_INC_MCAL_ADC_H_
 #include "stm32f103xx.h"
 #define ADC_TIMEOUT (400)
 using namespace stm32::registers::adc;
@@ -101,4 +101,4 @@ class ADC {
 }   // namespace dev
 }   // namespace stm32
 
-#endif  // DEV_MCAL_INC_ADC_H_ 
+#endif  // DEV_INC_MCAL_ADC_H_ 

@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_HAL_INC_LED_H_
-#define DEV_HAL_INC_LED_H_
+#ifndef DEV_INC_HAL_LED_H_
+#define DEV_INC_HAL_LED_H_
 
 using namespace stm32::dev::mcal::pin; 
 using namespace stm32::dev::mcal::gpio;
@@ -36,4 +36,4 @@ class Led {
 }  // namespace hal
 }  // namespace dev
 }  // namespace stm32
-#endif  // DEV_HAL_INC_LED_H_
+#endif  // DEV_INC_HAL_LED_H_

@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_HAL_INC_LCD_H_
-#define DEV_HAL_INC_LCD_H_
+#ifndef DEV_INC_HAL_LCD_H_
+#define DEV_INC_HAL_LCD_H_
 
 #include <string>
 
@@ -97,4 +97,4 @@ class Lcd {
 }   //  namespace hal
 }   //  namespace dev
 }   //  namespace stm32
-#endif  //  DEV_HAL_INC_LCD_H_
+#endif  //  DEV_INC_HAL_LCD_H_

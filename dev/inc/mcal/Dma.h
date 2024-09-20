@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#ifndef DEV_MCAL_INC_DMA_H_
-#define DEV_MCAL_INC_DMA_H_
+#ifndef DEV_INC_MCAL_DMA_H_
+#define DEV_INC_MCAL_DMA_H_
 
 namespace stm32 {
 namespace dev   {
@@ -86,4 +86,4 @@ class Dma {
 }   // namespace mcal
 }   // namespace dev
 }   // namespace stm32
-#endif  // DEV_MCAL_INC_DMA_H_
+#endif  // DEV_INC_MCAL_DMA_H_

@@ -9,12 +9,12 @@
  *
  */
 
-#ifndef DEV_UTILS_INC_MATH_H_
-#define DEV_UTILS_INC_MATH_H_
+#ifndef DEV_INC_UTILS_MATH_H_
+#define DEV_INC_UTILS_MATH_H_
 
 namespace stm32 {
 namespace util {
 namespace math {
 }}}
 
-#endif  // DEV_UTILS_INC_MATH_H_
+#endif  // DEV_INC_UTILS_MATH_H_

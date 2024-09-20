@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef DEV_HAL_INC_STP_74HC595_H_
-#define DEV_HAL_INC_STP_74HC595_H_
+#ifndef DEV_INC_HAL_STP_74HC595_H_
+#define DEV_INC_HAL_STP_74HC595_H_
 
 namespace stm32 {
 namespace dev {
@@ -44,5 +44,5 @@ class STP_74HC595 {
 }  // namespace dev
 }  // namespace stm32
 
-#endif  // DEV_HAL_INC_STP_74HC595_H_
+#endif  // DEV_INC_HAL_STP_74HC595_H_
 

@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_MCAL_INC_GPIO_H_
-#define DEV_MCAL_INC_GPIO_H_
+#ifndef DEV_INC_MCAL_GPIO_H_
+#define DEV_INC_MCAL_GPIO_H_
 
 #include "Types.h"
 
@@ -39,4 +39,4 @@ class Gpio {
 }  // namespace dev
 }  // namespace stm32
 
-#endif  // DEV_MCAL_INC_GPIO_H_
+#endif  // DEV_INC_MCAL_GPIO_H_

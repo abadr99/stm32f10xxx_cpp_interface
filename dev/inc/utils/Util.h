@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef DEV_UTILS_INC_UTIL_H_
-#define DEV_UTILS_INC_UTIL_H_
+#ifndef DEV_INC_UTILS_UTIL_H_
+#define DEV_INC_UTILS_UTIL_H_
 
 #include "Assert.h"
 #include "Rcc.h"
@@ -48,4 +48,4 @@ namespace util {
 }   // namespace util
 }   // namespace stm32
 
-#endif  // DEV_UTILS_INC_UTIL_H_
+#endif  // DEV_INC_UTILS_UTIL_H_

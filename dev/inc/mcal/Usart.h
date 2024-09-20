@@ -7,8 +7,8 @@
  * @copyright Copyright (c) 2024
  *  
  */
-#ifndef DEV_MCAL_INC_USART_H_
-#define DEV_MCAL_INC_USART_H_
+#ifndef DEV_INC_MCAL_USART_H_
+#define DEV_INC_MCAL_USART_H_
 
 #include "stm32f103xx.h"
 
@@ -103,4 +103,4 @@ class Usart {
 }  // namespace dev
 }  // namespace stm32 // namespace stm32
 
-#endif  //  DEV_MCAL_INC_USART_H_
+#endif  //  DEV_INC_MCAL_USART_H_

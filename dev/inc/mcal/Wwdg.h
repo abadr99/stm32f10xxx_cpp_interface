@@ -7,8 +7,8 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#ifndef DEV_MCAL_INC_WWDG_H_
-#define DEV_MCAL_INC_WWDG_H_
+#ifndef DEV_INC_MCAL_WWDG_H_
+#define DEV_INC_MCAL_WWDG_H_
 
 namespace stm32 {
 namespace dev   {
@@ -41,4 +41,4 @@ class Wwdg {
 }   // namespace dev
 }   // namespace stm32
 
-#endif  // DEV_MCAL_INC_WWDG_H_ 
+#endif  // DEV_INC_MCAL_WWDG_H_ 

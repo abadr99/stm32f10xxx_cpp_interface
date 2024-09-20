@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_HAL_INC_IR_H_
-#define DEV_HAL_INC_IR_H_
+#ifndef DEV_INC_HAL_IR_H_
+#define DEV_INC_HAL_IR_H_
 using namespace stm32::dev::mcal::pin;
 namespace stm32 {
 namespace dev {
@@ -27,4 +27,4 @@ class IR {
 }  // namespace hal
 }  // namespace dev
 }  // namespace stm32  
-#endif  // DEV_HAL_INC_IR_H_
+#endif  // DEV_INC_HAL_IR_H_

@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_HAL_INC_DAC_H_
-#define DEV_HAL_INC_DAC_H_
+#ifndef DEV_INC_HAL_DAC_H_
+#define DEV_INC_HAL_DAC_H_
 
 using namespace stm32::dev::mcal::pin; 
 using namespace stm32::util;
@@ -32,4 +32,4 @@ class Dac {
 }   // namespace hal
 }   // namespace dev
 }   // namespace stm32
-#endif  // DEV_HAL_INC_DAC_H_
+#endif  // DEV_INC_HAL_DAC_H_

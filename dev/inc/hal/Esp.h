@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef DEV_HAL_INC_ESP_H_
-#define DEV_HAL_INC_ESP_H_
+#ifndef DEV_INC_HAL_ESP_H_
+#define DEV_INC_HAL_ESP_H_
 
 using namespace stm32::dev::mcal::usart;
 namespace stm32 {
@@ -64,4 +64,4 @@ class Esp {
 }   //  namespace hal
 }   //  namespace dev
 }   //  namespace stm32
-#endif  //  DEV_HAL_INC_ESP_H_
+#endif  //  DEV_INC_HAL_ESP_H_

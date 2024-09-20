@@ -6,8 +6,8 @@
  * @date 2024-07-13
  * @copyright Copyright (c) 2024
  */
-#ifndef DEV_MCAL_INC_I2C_H_
-#define DEV_MCAL_INC_I2C_H_
+#ifndef DEV_INC_MCAL_I2C_H_
+#define DEV_INC_MCAL_I2C_H_
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -98,4 +98,4 @@ class I2c {
 }   // namespace mcal
 }   // namespace dev
 }   // namespace stm32
-#endif  // DEV_MCAL_INC_I2C_H_
+#endif  // DEV_INC_MCAL_I2C_H_

@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef DEV_MCAL_INC_STM32F103XX_H_
-#define DEV_MCAL_INC_STM32F103XX_H_
+#ifndef DEV_INC_MCAL_STM32F103XX_H_
+#define DEV_INC_MCAL_STM32F103XX_H_
 
 #ifdef UNIT_TEST
 #include "../../../tests/unittests/mcal/BaseAddress-test.h"
@@ -1262,4 +1262,4 @@ struct IWDGRegDef {
 }  // namespace registers
 }  // namespace stm32
 
-#endif  // DEV_MCAL_INC_STM32F103XX_H_
+#endif  // DEV_INC_MCAL_STM32F103XX_H_

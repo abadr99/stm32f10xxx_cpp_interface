@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef DEV_MCAL_INC_BASEADDRESS_H_
-#define DEV_MCAL_INC_BASEADDRESS_H_
+#ifndef DEV_INC_MCAL_BASEADDRESS_H_
+#define DEV_INC_MCAL_BASEADDRESS_H_
 
 
 #define RCC_BASE_ADDRESS      (0x40021000)
@@ -65,4 +65,4 @@ namespace rcc {
 }  // namespace rcc
 }  // namespace registers
 }  // namespace stm32
-#endif  // DEV_MCAL_INC_BASEADDRESS_H_
+#endif  // DEV_INC_MCAL_BASEADDRESS_H_
