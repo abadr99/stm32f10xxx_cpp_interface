@@ -8,16 +8,22 @@ if (-not (Test-Path $destinationFolder)) {
     New-Item -Path $destinationFolder -ItemType Directory
 }
 
-# Download the file
+# Download the file with progress
 Write-Host "Downloading GCC ARM toolchain..."
-Invoke-WebRequest -Uri $downloadUrl -OutFile $destinationFile
+Invoke-WebRequest -Uri $downloadUrl -OutFile $destinationFile -UseBasicParsing -Verbose
 
-# Wait for 30 seconds
+# Wait for 30 seconds to ensure download is completed
 Start-Sleep -Seconds 30
 
 # Extract the tar.bz2 file
 Write-Host "Extracting the toolchain..."
-# Use tar command to extract (assumes you have tar installed, either via WSL or Git Bash)
+# Check if tar is available
+if (-not (Get-Command "tar" -ErrorAction SilentlyContinue)) {
+    Write-Host "Error: 'tar' is not installed. Please install tar (through WSL or Git Bash) and try again."
+    exit
+}
+
+# Use tar command to extract (Git Bash or WSL is required)
 tar -xvjf $destinationFile -C $destinationFolder
 
 # Optionally, update the PATH (adding the bin folder to the system PATH environment variable)
