@@ -30,13 +30,13 @@ using namespace stm32::utils::logger;
 #define WARNING_MESSAGE  "[Warning]: "
 
 UsartConfig Logger::usartConfig_ = {
-        usartConfig_.number = LOGGER_USART,
-        usartConfig_.mode = kRxTx,
-        usartConfig_.numOfSB = kSb_1_,
-        usartConfig_.dataBits = kDataBits_8_,
-        usartConfig_.parityMode = kNo_Parity,
-        usartConfig_.flowControlState = kNone,
-        usartConfig_.baudRate = LOGGER_BAUD_RATE };
+    .number = LOGGER_USART,
+    .mode = kRxTx,
+    .numOfSB = kSb_1_,
+    .dataBits = kDataBits_8_,
+    .parityMode = kNo_Parity,
+    .flowControlState = kNone,
+    .baudRate = LOGGER_BAUD_RATE };
 
 Usart Logger::usart_(Logger::usartConfig_);
 
