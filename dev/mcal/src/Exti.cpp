@@ -9,11 +9,12 @@
  * 
  */
 // --- INCLUDES
-#include "mcal/inc/stm32f103xx.h"
-#include "mcal/inc/Pin.h"
-#include "utils/inc/BitManipulation.h"
-#include "utils/inc/Assert.h"
-#include "mcal/inc/Exti.h"
+#include "stm32f103xx.h"
+#include "Pin.h"
+#include "BitManipulation.h"
+#include "Assert.h"
+#include "Util.h"
+#include "Exti.h"
 
 // --- IMPORT USED NAMESPACES
 using namespace stm32;
@@ -31,11 +32,19 @@ ASSERT_MEMBER_OFFSET(EXTIRegDef, RTSR,  sizeof(RegWidth_t) * 2);
 ASSERT_MEMBER_OFFSET(EXTIRegDef, FTSR,  sizeof(RegWidth_t) * 3);
 ASSERT_MEMBER_OFFSET(EXTIRegDef, SWIER, sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(EXTIRegDef, PR,    sizeof(RegWidth_t) * 5);
+#define TO_STRING(str_)  #str_
+
+#define EXTI_CONFIG_ERROR(error_) \
+    TO_STRING(Invalid Exti error_)
 
 // --- INITIALIZE 'Exti' STATIC MEMBER VARIABLE
 pFunction Exti::pGlobalCallBackFunctions[7] = {nullptr};
 
 void Exti::Enable(const EXTI_Config& config) {
+    STM32_ASSERT(((config.trigger == kRising) || (config.trigger == kFalling)
+                   || (config.trigger == kBoth)), EXTI_CONFIG_ERROR(Trigger));
+    STM32_ASSERT(((config.line >= kExti0) && (config.line <= kExti19)),
+                  EXTI_CONFIG_ERROR(line));
     Exti::InitAFIOReg(config.line, config.port);
     EXTI->IMR = util::SetBit<uint32_t>(EXTI->IMR, config.line);
     Exti::SetTrigger(config.line, config.trigger);
