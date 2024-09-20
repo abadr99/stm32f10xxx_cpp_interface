@@ -17,7 +17,7 @@
 #include "mcal/Pin.h"
 #include "mcal/Gpio.h"
 #include "mcal/Rcc.h"
-#include "Usart.h"
+#include "mcal/Usart.h"
 
 using namespace stm32::type;
 using namespace stm32::registers::rcc;

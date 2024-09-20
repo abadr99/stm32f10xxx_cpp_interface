@@ -16,9 +16,9 @@
 #include "utils/BitManipulation.h"
 #include "mcal/Pin.h"
 #include "mcal/Rcc.h"
-#include "Nvic.h"
+#include "mcal/Nvic.h"
 #include "mcal/Gpio.h"
-#include "Usart.h"
+#include "mcal/Usart.h"
 
 using namespace stm32::type;
 using namespace stm32::registers::rcc;

@@ -17,8 +17,8 @@
 #include "mcal/Pin.h"
 #include "mcal/Gpio.h"
 #include "mcal/Rcc.h"
-#include "Usart.h"
-#include "Esp.h"
+#include "mcal/Usart.h"
+#include "hal/Esp.h"
 
 using namespace stm32::type;
 using namespace stm32::registers::rcc;
@@ -27,6 +27,7 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::usart;
 using namespace stm32::dev::hal::esp;
+
 int main() {
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);

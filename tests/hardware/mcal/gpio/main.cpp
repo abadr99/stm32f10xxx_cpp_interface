@@ -17,7 +17,7 @@
 #include "mcal/Pin.h"
 #include "mcal/Gpio.h"
 #include "mcal/Rcc.h"
-#include "Systick.h"
+#include "mcal/Systick.h"
 
 using namespace stm32::type;
 using namespace stm32::registers::rcc;

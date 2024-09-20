@@ -26,7 +26,7 @@ build-unittests: $(U_OBJ)
 # Rule for creating object files
 %.o: %.cpp
 	@$(U_CXX) $(U_CXX_OPT) $(U_INC) -c $< -o $@
-	@echo "[Makefile-Unittest]: Done compiling $<"
+	@echo "[Makefile][Unittest]: Done compiling $<"
 
 # Run the unit tests
 run-unittests:
