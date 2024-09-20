@@ -13,9 +13,29 @@
 
 #include <assert.h>
 #include <cstddef>
+#include "Logger.h"
 
-#define STM32_ASSERT(cond_)\
-    assert(cond_)
+using namespace stm32::utils::logger;
+
+#define TO_STRING(str_)     #str_
+#ifdef LOGGER 
+#define STM32_ASSERT(cond_, msg_) \
+    do {  \
+        if ( !cond_) { \
+            Logger::Print(TO_STRING(__FILE__:__LINE__ :)); \
+            Logger::Error(msg_); \
+            assert(cond_);\
+        }\
+    } while (0)
+
+#else
+#define STM32_ASSERT(cond_, msg_) \
+    do {  \
+        assert(cond_);  \
+    } while (0)
+#endif
+
+
 
 #define ASSERT_STRUCT_SIZE(struct_type, expected_size) \
     static_assert(sizeof(struct_type) == expected_size, \

@@ -96,9 +96,9 @@ template<LcdMode M>
 void Lcd<M>::Init() {
     //  DIRECTION OF CONTROL PINS SHOULD BE OUTPUT
     // -- FIRST CHECK DIRECTION OF GIVEN PINS
-    STM32_ASSERT(config_.RSpin.IsOutput());
-    STM32_ASSERT(config_.RWpin.IsOutput());
-    STM32_ASSERT(config_.ENpin.IsOutput());
+    STM32_ASSERT(config_.RSpin.IsOutput(), CONFIG_ERROR(_LCD, _CONFIG));
+    STM32_ASSERT(config_.RWpin.IsOutput(), CONFIG_ERROR(_LCD, _CONFIG));
+    STM32_ASSERT(config_.ENpin.IsOutput(), CONFIG_ERROR(_LCD, _CONFIG));
     
     Gpio::Set(config_.RSpin);
     Gpio::Set(config_.RWpin);

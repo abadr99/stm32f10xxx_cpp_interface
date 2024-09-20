@@ -20,6 +20,8 @@ using namespace stm32::dev::mcal::pwr;
 #define __WFI() __asm volatile ("wfi")
 #define __WFE() __asm volatile ("wfe")
 
+#define Pwr_EMPTY_MESSAGE               ""
+
 void Pwr::EnterSleepMode(PwrEntry sleepEntry, SleepType type) {
     //  Set sleep on exit behavior
     SCB->SCR.SLEEPONEXIT = static_cast<uint8_t>(type);
@@ -52,7 +54,7 @@ void Pwr::ClearFlag(PwrFlag flag) {
     switch (flag) {
         case PwrFlag::kWU : PWR->CR.CWUF = 1; break;
         case PwrFlag::kSB : PWR->CR.CSBF = 1; break;
-        default: STM32_ASSERT(1); 
+        default: STM32_ASSERT(0, Pwr_EMPTY_MESSAGE); 
     }
 }
 #ifndef UNIT_TEST

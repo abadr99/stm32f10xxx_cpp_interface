@@ -20,6 +20,8 @@ using  namespace stm32::registers::gpio;
 using  namespace stm32::util;
 using  namespace stm32::util;
 
+#define PIN_PIN_NUMBER_ERROR  "[Pin.cpp]: Invalid Pin Number"
+
 Pin::Pin(Port port, PinNumber pinNumber, PinMode pinMode):data_(0) {
     data_.SetValue<0, 1>(port);
     data_.SetValue<2, 5>(pinNumber);
@@ -31,7 +33,7 @@ void Pin::SetPort(Port port) {
 }
 
 void Pin::SetPinNumber(PinNumber pinNumber) {
-    STM32_ASSERT(pinNumber >= kPin0 && pinNumber <= kPin15);
+    STM32_ASSERT((pinNumber >= kPin0) && (pinNumber <= kPin15), PIN_PIN_NUMBER_ERROR);
     data_.SetValue<2, 5>(pinNumber);
 }
 

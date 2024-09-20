@@ -16,6 +16,7 @@
 #include "mcal/Adc.h"
 
 using namespace stm32::util;
+using namespace stm32::type;
 using namespace stm32::registers::rcc; 
 using namespace stm32::dev::mcal::adc;
 using namespace stm32::registers::adc;
@@ -42,6 +43,21 @@ ASSERT_MEMBER_OFFSET(ADCRegDef, JDR2,        sizeof(RegWidth_t) * 16);
 ASSERT_MEMBER_OFFSET(ADCRegDef, JDR3,        sizeof(RegWidth_t) * 17);
 ASSERT_MEMBER_OFFSET(ADCRegDef, JDR4,        sizeof(RegWidth_t) * 18);
 ASSERT_MEMBER_OFFSET(ADCRegDef, DR,        sizeof(RegWidth_t) * 19);
+
+#define TO_STRING(str_)  #str_
+
+#define ADC_CONFIG_ERROR(error_) \
+    TO_STRING(Invalid Adc error_)
+
+#define CHECK_ADC_CONFIG() \
+    STM32_ASSERT((config_.number >= kADC1) && (config_.number <= kADC2), \
+                  ADC_CONFIG_ERROR(Number)); \
+    STM32_ASSERT((config_.alignment == kRight) || (config_.alignment == kLeft), \
+                  ADC_CONFIG_ERROR(Alignment)); \
+    STM32_ASSERT((config_.channel >= kChannel0) && (config_.channel <= kChannel17), \
+                  ADC_CONFIG_ERROR(Channel)); \
+    STM32_ASSERT((config_.sampleTime >= kCycles_1_5) && (config_.sampleTime <=  kCycles_239_5), \
+                  ADC_CONFIG_ERROR(Sample Time));
 
 ADC::ADC(const AdcConfig& config) : config_(config) {
     switch (config_.number) {
@@ -71,11 +87,7 @@ void ADC::Init() {
 
 uint16_t ADC:: StartSingleConversion() {
     // Ensure ADC is not busy
-    uint32_t ctr = 0;
-    while ((ADC_reg->SR.STRT) && (ctr != ADC_TIMEOUT) && (++ctr)) {
-    }
-    STM32_ASSERT(ctr != ADC_TIMEOUT);
-    ctr = 0;
+    util::BusyWait<constant::TimeOut::kAdc>([&](){ return !ADC_reg->SR.STRT; });
     // Set up for single conversion
     ADC_reg->CR2.CONT = 0;  // Disable continuous mode
     ADC_reg->SQR1.L = 0;    // Set sequence length to 1
@@ -84,19 +96,14 @@ uint16_t ADC:: StartSingleConversion() {
     // Start conversion
     ADC_reg->CR2.SWSTART = 1;
     // Wait for conversion to complete
-    while (!ADC_reg->SR.EOC && (ctr != ADC_TIMEOUT) && (++ctr)) {
-    }
-    STM32_ASSERT(ctr != ADC_TIMEOUT);
+    util::BusyWait<constant::TimeOut::kAdc>([&](){ return ADC_reg->SR.EOC; });
     // Read and return the result
     return ADC_reg->DR.DATA;
     }
 
 void ADC::StartContinuousConversion() {
     // Ensure ADC is not busy
-    uint32_t ctr = 0;
-    while (ADC_reg->SR.STRT  && (ctr != ADC_TIMEOUT) && (++ctr)) {
-    }
-    STM32_ASSERT(ctr != ADC_TIMEOUT);
+    util::BusyWait<constant::TimeOut::kAdc>([&](){ return !ADC_reg->SR.STRT; });
     // Set up for continuous conversion
     ADC_reg->CR2.CONT = 1;  // Enable continuous mode
     ADC_reg->SQR1.L = 0;    // Set sequence length to 1
@@ -107,11 +114,8 @@ void ADC::StartContinuousConversion() {
 }
 
 uint16_t ADC::ReadContinuousConversion() {
-    uint32_t ctr = 0;
     // Wait for conversion to complete
-    while (!ADC_reg->SR.EOC && (ctr != ADC_TIMEOUT) && (++ctr)) {
-    }
-    STM32_ASSERT(ctr != ADC_TIMEOUT);
+    util::BusyWait<constant::TimeOut::kAdc>([&](){ return ADC_reg->SR.EOC; });
     // Read and return the result
     return ADC_reg->DR.DATA;
 }
@@ -128,10 +132,7 @@ uint16_t ADC::StartInjectedConversion() {
     ConfigureChannelSample();
     // Start injected conversion
     ADC_reg->CR2.JSWSTART = 1;
-    uint32_t ctr = 0;
-    while ((!ADC_reg->SR.JEOC)&& (ctr != ADC_TIMEOUT) && (++ctr)) {
-    }
-    STM32_ASSERT(ctr != ADC_TIMEOUT);
+    util::BusyWait<constant::TimeOut::kAdc>([&](){ return ADC_reg->SR.JEOC; });
     return ADC_reg->JDR1.registerVal;
 }
 

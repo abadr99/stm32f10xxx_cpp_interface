@@ -1,6 +1,6 @@
 /**
  * @file SPi.cpp
- * @author Noura & Nooran
+ * @author Noura & Noran
  * @version 0.1
  * @date 2024-05-1
  * 
@@ -21,12 +21,31 @@ using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::spi;
 using namespace stm32::registers::spi;
 
+#define TO_STRING(str_)  #str_
+
+#define SPI_CONFIG_ERROR(error_) \
+    TO_STRING(Invalid Spi error_)
+
+#define SPI__TX_TIME_OUT_ERROR  "Timeout while waiting transmitting the data."
+#define SPI__RX_TIME_OUT_ERROR  "Timeout while waiting receiving the data."
+
+#define CHECK_SPI_CONFIG() \
+    STM32_ASSERT((config_.br >= kF_DIV_2 && config_.br <= kF_DIV_256), \
+    SPI_CONFIG_ERROR(BaudRate)); \
+    STM32_ASSERT((config_.data == kSpi_8bit || config_.data == kSpi_16bit), \
+    SPI_CONFIG_ERROR(DataFrame)); \
+    STM32_ASSERT((config_.clk >= kMode0 && config_.clk <= kMode3), \
+    SPI_CONFIG_ERROR(ClockMode)); \
+    STM32_ASSERT((config_.frame == kLSB || config_.frame == kMSB), \
+    SPI_CONFIG_ERROR(FrameFormat)); \
+    STM32_ASSERT((config_.slave == kSW || config_.slave == kHW), \
+    SPI_CONFIG_ERROR(SlaveSelectMode));
 
 Spi::Spi(const SpiConfig& config) :config_(config) {
     switch (config_.number) {
         case kSPI1 : spi_reg = (reinterpret_cast<volatile SpiRegDef*>(SPI1)); break;
         case kSPI2 : spi_reg = (reinterpret_cast<volatile SpiRegDef*>(SPI2)); break;
-        default: break;
+        default    : STM32_ASSERT(false, SPI_CONFIG_ERROR(SpiNumber)); break;
     }
 }
 
@@ -77,7 +96,7 @@ Spinum Spi::GetSpiNum() {
 }
 
 void Spi::SetDataFrame() {
-    spi_reg->CR1.DFF = (config_.data == kSpi_16bt);
+    spi_reg->CR1.DFF = (config_.data == kSpi_16bit);
 }
 
 void Spi::SetClockMode() {
@@ -89,6 +108,5 @@ void Spi::SetFrameFormat() {
 }
 
 void Spi::MasterBaudRate() {
-    STM32_ASSERT(config_.br >= kF_DIV_2 && config_.br <= kF_DIV_256);
     spi_reg->CR1.BR = static_cast<uint8_t>(config_.br);
 }

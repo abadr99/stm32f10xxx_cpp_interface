@@ -39,7 +39,7 @@ void Systick::Enable(CLKSource clksource) {
 }
 
 void Systick::SetCounterValue(uint32_t value) {
-    STM32_ASSERT(value <= kSystickMaxVal);
+// STM32_ASSERT(value <= kSystickMaxVal);
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->LOAD = value;
     util::BusyWait([&](){ return SYSTICK->CTRL.COUNTFLAG == 0; });
@@ -69,7 +69,7 @@ void Systick::Delay_us(uint32_t time_us) {
 }
 
 void Systick::Delay_By_Exception(uint32_t value, pFunction func) {
-    STM32_ASSERT(func != NULL && value <= kSystickMaxVal);
+// STM32_ASSERT(func != NULL && value <= kSystickMaxVal);
     SYSTICK->LOAD = value;
     SetPointerToISR(func);
     SYSTICK->CTRL.TICKINT = 1;

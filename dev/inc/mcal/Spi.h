@@ -17,7 +17,7 @@ namespace spi   {
 
 enum DataFrame {
     kSpi_8bit,
-    kSpi_16bt,
+    kSpi_16bit,
 };
 enum FrameFormat {
     kMSB,
