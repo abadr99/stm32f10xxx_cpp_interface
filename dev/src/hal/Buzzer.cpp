@@ -8,13 +8,13 @@
  * @copyright Copyright (c) 2024
  *
  */
-#include "stm32f103xx.h"
-#include "Types.h"
-#include "Define.h"
-#include "Constant.h"
-#include "Pin.h"
-#include "Gpio.h"
-#include "Buzzer.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
+#include "utils/Define.h"
+#include "utils/Constant.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "hal/Buzzer.h"
 
 using namespace stm32;
 using namespace stm32::dev::mcal::pin;

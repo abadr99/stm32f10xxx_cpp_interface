@@ -11,8 +11,8 @@
 #ifndef DEV_INC_HAL_SEVENSEGMENT_H_
 #define DEV_INC_HAL_SEVENSEGMENT_H_
 
-#include "Pin.h"
-#include "Array.h"
+#include "mcal/Pin.h"
+#include "utils/Array.h"
 
 using namespace stm32::dev::mcal::pin;
 

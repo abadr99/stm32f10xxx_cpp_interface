@@ -8,12 +8,12 @@
  * 
  */
 #include <stdint.h>
-#include "stm32f103xx.h"
-#include "Types.h"
-#include "BitSet.h"
-#include "Assert.h"
-#include "BitManipulation.h"
-#include "Nvic.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
+#include "utils/BitSet.h"
+#include "utils/Assert.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Nvic.h"
 
 using namespace stm32;
 using namespace stm32::type;

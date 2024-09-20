@@ -7,9 +7,9 @@
  */
 
 #include <gtest/gtest.h>
-#include "BitManipulation.h"
-#include "stm32f103xx.h"
-#include "Nvic.h"
+#include "utils/BitManipulation.h"
+#include "mcal/stm32f103xx.h"
+#include "mcal/Nvic.h"
 
 
 uint32_t NvicReg[905] = {};

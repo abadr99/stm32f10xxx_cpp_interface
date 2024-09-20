@@ -4,7 +4,7 @@ SOURCES += $(wildcard ./src/utils/*.cpp) # ALl utils should be added with all mo
 SRC_NAMES:= $(notdir $(SOURCES))
 SOURCES_COUNT:= $(words $(SOURCES))
 SOURCES_CTR:=0
-INC:=  -I. -I./inc/mcal/ -I./inc/hal/ -I./inc/utils/
+INC:=  -I. -I./inc/
 LINT_PATH:= ../tools/cppliny.py
 
 HW_TEST_PATH= ../tests/hardware

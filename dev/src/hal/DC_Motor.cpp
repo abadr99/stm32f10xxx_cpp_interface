@@ -8,12 +8,12 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include "BitManipulation.h"
-#include "Types.h"
-#include "Assert.h"
-#include "Pin.h"
-#include "Gpio.h"
-#include "DC_Motor.h"
+#include "utils/BitManipulation.h"
+#include "utils/Types.h"
+#include "utils/Assert.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "hal/DC_Motor.h"
 
 using namespace stm32::type;
 using namespace stm32::dev::mcal::pin;

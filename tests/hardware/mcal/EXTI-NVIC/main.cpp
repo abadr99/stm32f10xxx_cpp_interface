@@ -11,14 +11,14 @@
 
 // commit-id: a5020f63948e1e8a5aa0cf6949409dc7bf34a49e
 
-#include "stm32f103xx.h"
-#include "Types.h"
-#include "BitManipulation.h"
-#include "Pin.h"
-#include "Gpio.h"
-#include "Rcc.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "mcal/Rcc.h"
 #include "Nvic.h"
-#include "Exti.h"
+#include "mcal/Exti.h"
 #include "Systick.h"
 
 

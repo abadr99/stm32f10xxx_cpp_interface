@@ -7,13 +7,13 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include "stm32f103xx.h"
-#include "Types.h"
-#include "Util.h"
-#include "Constant.h"
-#include "BitManipulation.h"
-#include "Systick.h"
-#include "Assert.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
+#include "utils/Util.h"
+#include "utils/Constant.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Systick.h"
+#include "utils/Assert.h"
 
 using namespace stm32;
 using namespace stm32::type;

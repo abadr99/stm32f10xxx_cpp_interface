@@ -12,10 +12,10 @@
 #ifndef DEV_INC_UTILS_UTIL_H_
 #define DEV_INC_UTILS_UTIL_H_
 
-#include "Assert.h"
-#include "Rcc.h"
-#include "Pin.h"
-#include "Constant.h"
+#include "utils/Assert.h"
+#include "mcal/Rcc.h"
+#include "mcal/Pin.h"
+#include "utils/Constant.h"
 #include <functional>
 
 namespace stm32 {

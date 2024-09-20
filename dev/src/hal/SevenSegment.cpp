@@ -9,18 +9,18 @@
  */
 #include <stdlib.h>
 
-#include "stm32f103xx.h"
+#include "mcal/stm32f103xx.h"
 
-#include "Types.h"
-#include "Define.h"
-#include "Constant.h"
-#include "Assert.h"
-#include "BitManipulation.h"
-#include "Pin.h"
+#include "utils/Types.h"
+#include "utils/Define.h"
+#include "utils/Constant.h"
+#include "utils/Assert.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Pin.h"
 
-#include "Rcc.h"
-#include "Gpio.h"
-#include "SevenSegment.h"
+#include "mcal/Rcc.h"
+#include "mcal/Gpio.h"
+#include "hal/SevenSegment.h"
 
 using namespace stm32;
 using namespace stm32::type;

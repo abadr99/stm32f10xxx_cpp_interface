@@ -10,7 +10,7 @@
 #ifndef DEV_INC_MCAL_USART_H_
 #define DEV_INC_MCAL_USART_H_
 
-#include "stm32f103xx.h"
+#include "mcal/stm32f103xx.h"
 
 namespace stm32 {
 namespace dev {

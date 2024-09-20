@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2024
  */
 #include <gtest/gtest.h>
-#include "BitManipulation.h"
-#include "stm32f103xx.h"
-#include "Timer.h"
+#include "utils/BitManipulation.h"
+#include "mcal/stm32f103xx.h"
+#include "mcal/Timer.h"
 
 uint32_t TIMER1Reg[22] = {0x0};
 uint32_t TIMER2Reg[22] = {0x0};

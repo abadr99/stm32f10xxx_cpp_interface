@@ -9,8 +9,8 @@
 #ifndef DEV_INC_MCAL_TIMER_H_
 #define DEV_INC_MCAL_TIMER_H_
 
-#include "stm32f103xx.h"
-#include "Types.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
 
 namespace stm32 {
 namespace dev {

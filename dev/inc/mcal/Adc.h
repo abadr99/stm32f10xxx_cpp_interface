@@ -9,7 +9,7 @@
  */
 #ifndef DEV_INC_MCAL_ADC_H_
 #define DEV_INC_MCAL_ADC_H_
-#include "stm32f103xx.h"
+#include "mcal/stm32f103xx.h"
 #define ADC_TIMEOUT (400)
 using namespace stm32::registers::adc;
 namespace stm32 {

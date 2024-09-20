@@ -7,13 +7,13 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include "stm32f103xx.h"
-#include "Types.h"
-#include "Assert.h"
-#include "Util.h"
-#include "BitManipulation.h"
-#include "Rcc.h"
-#include "Adc.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
+#include "utils/Assert.h"
+#include "utils/Util.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Rcc.h"
+#include "mcal/Adc.h"
 
 using namespace stm32::util;
 using namespace stm32::registers::rcc; 

@@ -8,10 +8,10 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include "stm32f103xx.h"
-#include "Assert.h"
-#include "Types.h"
-#include "Power.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Assert.h"
+#include "utils/Types.h"
+#include "mcal/Power.h"
 
 using namespace stm32::registers::nvic;
 using namespace stm32::registers::pwr;

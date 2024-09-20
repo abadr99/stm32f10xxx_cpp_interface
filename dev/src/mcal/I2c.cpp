@@ -9,13 +9,13 @@
 
 // --- INCLUDES
 #include <stdint.h>
-#include "stm32f103xx.h"
-#include "BitSet.h"
-#include "Assert.h"
-#include "BitManipulation.h"
-#include "Util.h"
-#include "Rcc.h"
-#include "I2c.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/BitSet.h"
+#include "utils/Assert.h"
+#include "utils/BitManipulation.h"
+#include "utils/Util.h"
+#include "mcal/Rcc.h"
+#include "mcal/I2c.h"
 
 // --- IMPORT USED NAMESPACE
 using namespace stm32;

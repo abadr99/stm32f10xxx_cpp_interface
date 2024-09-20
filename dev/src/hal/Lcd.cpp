@@ -11,16 +11,16 @@
 #include <cmath>
 #include <string>
 
-#include "Assert.h"
-#include "BitManipulation.h"
-#include "Util.h"
+#include "utils/Assert.h"
+#include "utils/BitManipulation.h"
+#include "utils/Util.h"
 
-#include "Pin.h"
-#include "Rcc.h"
-#include "Gpio.h"
-#include "Systick.h"
-#include "Array.h"
-#include "Lcd.h"
+#include "mcal/Pin.h"
+#include "mcal/Rcc.h"
+#include "mcal/Gpio.h"
+#include "mcal/Systick.h"
+#include "utils/Array.h"
+#include "hal/Lcd.h"
 
 using namespace stm32;
 using namespace stm32::type;

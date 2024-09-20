@@ -8,16 +8,16 @@
  * @copyright Copyright (c) 2024
  *
  */
-#include "stm32f103xx.h"
-#include "BitManipulation.h"
-#include "Rcc.h"
-#include "Pin.h"
-#include "Gpio.h"
-#include "Spi.h"
-#include "Systick.h"
-#include "Array.h"
-#include "Assert.h"
-#include "Tft.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Rcc.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "mcal/Spi.h"
+#include "mcal/Systick.h"
+#include "utils/Array.h"
+#include "utils/Assert.h"
+#include "hal/Tft.h"
 
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::pin;

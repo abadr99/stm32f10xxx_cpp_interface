@@ -12,7 +12,7 @@ U_OBJ := $(U_SRC:.cpp=.o)
 
 U_TARGET := unittests/unittests.elf
 U_LD := -lgtest -lpthread
-U_INC := -I../dev -I../dev/inc/mcal -I../dev/inc/hal -I../dev/inc/utils
+U_INC := -I../dev -I../dev/inc/
 
 # Linting
 cpplint:
@@ -20,12 +20,13 @@ cpplint:
 
 # Build target
 build-unittests: $(U_OBJ)
-	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
+	@$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
 	@echo "[MAKEFILE]: Build Successfully ..."
 
 # Rule for creating object files
 %.o: %.cpp
 	@$(U_CXX) $(U_CXX_OPT) $(U_INC) -c $< -o $@
+	@echo "[Makefile-Unittest]: Done compiling $<"
 
 # Run the unit tests
 run-unittests:

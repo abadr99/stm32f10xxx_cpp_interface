@@ -9,9 +9,9 @@
  * 
  */
 #include <gtest/gtest.h>
-#include "BitManipulation.h"
-#include "stm32f103xx.h"
-#include "Power.h"
+#include "utils/BitManipulation.h"
+#include "mcal/stm32f103xx.h"
+#include "mcal/Power.h"
 
 using namespace stm32::registers::nvic;
 using namespace stm32::registers::pwr;

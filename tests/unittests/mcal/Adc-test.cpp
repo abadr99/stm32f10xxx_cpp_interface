@@ -9,9 +9,9 @@
  * 
  */
 #include <gtest/gtest.h>
-#include "BitManipulation.h"
-#include "stm32f103xx.h"
-#include "Adc.h"
+#include "utils/BitManipulation.h"
+#include "mcal/stm32f103xx.h"
+#include "mcal/Adc.h"
 
 uint32_t ADC1Reg[20] = {0x0};
 uint32_t ADC2Reg[20] = {0x0};

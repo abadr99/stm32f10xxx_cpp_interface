@@ -9,11 +9,11 @@
  */
 
 #include <stdint.h>
-#include "stm32f103xx.h"
-#include "BitSet.h"
-#include "Assert.h"
-#include "BitManipulation.h"
-#include "Pin.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/BitSet.h"
+#include "utils/Assert.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Pin.h"
 
 using  namespace stm32::dev::mcal::pin;
 using  namespace stm32::registers::gpio;

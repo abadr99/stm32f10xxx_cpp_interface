@@ -9,12 +9,12 @@
  * 
  */
 #include <stdint.h>
-#include "stm32f103xx.h"
-#include "BitSet.h"
-#include "Assert.h"
-#include "BitManipulation.h"
-#include "Util.h"
-#include "Iwdg.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/BitSet.h"
+#include "utils/Assert.h"
+#include "utils/BitManipulation.h"
+#include "utils/Util.h"
+#include "mcal/Iwdg.h"
 
 using namespace stm32::dev::mcal::iwdg; // NOLINT[build/namespaces]
 using namespace stm32::registers::iwdg; 

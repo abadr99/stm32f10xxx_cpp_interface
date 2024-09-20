@@ -11,7 +11,7 @@
 #ifndef DEV_INC_HAL_BUZZER_H_
 #define DEV_INC_HAL_BUZZER_H_
 
-#include "Pin.h"
+#include "mcal/Pin.h"
 
 using namespace stm32::dev::mcal::pin;
 namespace stm32 {

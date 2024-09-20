@@ -9,14 +9,14 @@
  */
 
 #include <stdint.h>
-#include "stm32f103xx.h"
-#include "BitManipulation.h"
-#include "Rcc.h"
-#include "Assert.h"
-#include "Pin.h"
-#include "Gpio.h"
-#include "Spi.h"
-#include "SdCard.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Rcc.h"
+#include "utils/Assert.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "mcal/Spi.h"
+#include "hal/SdCard.h"
 
 using namespace stm32;
 using namespace stm32::type;

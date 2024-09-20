@@ -8,10 +8,10 @@
  * @copyright Copyright (c) 2024
  *
  */
-#include "stm32f103xx.h"
-#include "Rcc.h"
-#include "Adc.h"
-#include "LDR.h"
+#include "mcal/stm32f103xx.h"
+#include "mcal/Rcc.h"
+#include "mcal/Adc.h"
+#include "hal/LDR.h"
 
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::adc;

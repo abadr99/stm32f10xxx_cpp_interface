@@ -11,7 +11,7 @@
 #ifndef DEV_INC_UTILS_BITSET_H_
 #define DEV_INC_UTILS_BITSET_H_
 
-#include "BitManipulation.h"
+#include "utils/BitManipulation.h"
 
 namespace stm32 {
 namespace util {

@@ -8,14 +8,14 @@
  * 
  */
 
-#include "Pin.h"
-#include "Gpio.h"
-#include "Rcc.h"
-#include "Systick.h"
-#include "Array.h"
-#include "Assert.h"
-#include "BitManipulation.h"
-#include "Dac.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "mcal/Rcc.h"
+#include "mcal/Systick.h"
+#include "utils/Array.h"
+#include "utils/Assert.h"
+#include "utils/BitManipulation.h"
+#include "hal/Dac.h"
 
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;

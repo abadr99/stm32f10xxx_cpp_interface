@@ -9,11 +9,11 @@
  * 
  */
 // --- INCLUDES
-#include "stm32f103xx.h"
-#include "Pin.h"
-#include "BitManipulation.h"
-#include "Assert.h"
-#include "Exti.h"
+#include "mcal/stm32f103xx.h"
+#include "mcal/Pin.h"
+#include "utils/BitManipulation.h"
+#include "utils/Assert.h"
+#include "mcal/Exti.h"
 
 // --- IMPORT USED NAMESPACES
 using namespace stm32;

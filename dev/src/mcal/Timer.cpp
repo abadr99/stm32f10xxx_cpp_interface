@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include "stm32f103xx.h"
-#include "Assert.h"
-#include "Timer.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Assert.h"
+#include "mcal/Timer.h"
 
 using namespace stm32::dev::mcal::timer;
 using namespace stm32::registers::timer;

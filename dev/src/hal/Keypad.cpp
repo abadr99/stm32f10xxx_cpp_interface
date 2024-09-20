@@ -10,11 +10,11 @@
 
 #include <stdint.h>
 #include <cstdlib>
-#include "stm32f103xx.h"
-#include "Assert.h"
-#include "Pin.h"
-#include "Gpio.h"
-#include "Keypad.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Assert.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "hal/Keypad.h"
 
 using namespace stm32::type;
 using namespace stm32::dev::mcal::pin;

@@ -8,12 +8,12 @@
  * 
  */
 
-#include "stm32f103xx.h"
-#include "Types.h"
-#include "Assert.h"
-#include "BitManipulation.h"
-#include "Util.h"
-#include "Spi.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
+#include "utils/Assert.h"
+#include "utils/BitManipulation.h"
+#include "utils/Util.h"
+#include "mcal/Spi.h"
 
 using namespace stm32;
 using namespace stm32::type;

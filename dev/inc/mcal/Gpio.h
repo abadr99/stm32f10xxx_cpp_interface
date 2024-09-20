@@ -11,7 +11,7 @@
 #ifndef DEV_INC_MCAL_GPIO_H_
 #define DEV_INC_MCAL_GPIO_H_
 
-#include "Types.h"
+#include "utils/Types.h"
 
 namespace stm32 {
 namespace dev {

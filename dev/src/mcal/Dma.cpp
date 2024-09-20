@@ -8,10 +8,10 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include "stm32f103xx.h"
-#include "Types.h"
-#include "Assert.h"
-#include "Dma.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
+#include "utils/Assert.h"
+#include "mcal/Dma.h"
 
 // --- IMPORT USED NAMESPACES
 using namespace stm32::registers::dma;

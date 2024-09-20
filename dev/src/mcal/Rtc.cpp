@@ -9,11 +9,11 @@
  * 
  */
 
-#include "stm32f103xx.h"
-#include "Assert.h"
-#include "Types.h"
-#include "Util.h"
-#include "Rtc.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Assert.h"
+#include "utils/Types.h"
+#include "utils/Util.h"
+#include "mcal/Rtc.h"
 
 using namespace stm32::dev::mcal::rtc;
 using namespace stm32::registers::rtc;

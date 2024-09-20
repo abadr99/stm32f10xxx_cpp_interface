@@ -11,12 +11,12 @@
 
 #include <stdint.h>
 
-#include "BitManipulation.h"
-#include "Assert.h"
-#include "Pin.h"
-#include "Gpio.h"
-#include "Systick.h"
-#include "STP_74HC595.h"
+#include "utils/BitManipulation.h"
+#include "utils/Assert.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "mcal/Systick.h"
+#include "hal/STP_74HC595.h"
 
 #define SR_CLK_PERIOD_US   (10)
 

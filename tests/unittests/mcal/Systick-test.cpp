@@ -9,9 +9,9 @@
  * 
  */
 #include <gtest/gtest.h>
-#include "BitManipulation.h"
-#include "stm32f103xx.h"
-#include "Systick.h"
+#include "utils/BitManipulation.h"
+#include "mcal/stm32f103xx.h"
+#include "mcal/Systick.h"
 
 uint32_t SYSTICKReg[3] = {0x0};
 

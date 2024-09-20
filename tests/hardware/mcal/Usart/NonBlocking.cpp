@@ -11,13 +11,13 @@
 
 // commit-id: a5020f63948e1e8a5aa0cf6949409dc7bf34a49e
 
-#include "Types.h"
-#include "stm32f103xx.h"
-#include "BitManipulation.h"
-#include "Pin.h"
-#include "Rcc.h"
+#include "utils/Types.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Pin.h"
+#include "mcal/Rcc.h"
 #include "Nvic.h"
-#include "Gpio.h"
+#include "mcal/Gpio.h"
 #include "Usart.h"
 
 using namespace stm32::type;

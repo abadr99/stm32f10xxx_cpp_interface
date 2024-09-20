@@ -9,12 +9,12 @@
  *
  */
 
-#include "stm32f103xx.h"
-#include "Types.h"
-#include "Assert.h"
-#include "BitManipulation.h"
-#include "Pin.h"
-#include "Gpio.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
+#include "utils/Assert.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
 
 using namespace stm32;
 using namespace stm32::type;

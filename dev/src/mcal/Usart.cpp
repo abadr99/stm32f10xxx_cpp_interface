@@ -9,13 +9,13 @@
  *
  */
 
-#include "stm32f103xx.h"
-#include "Constant.h"
-#include "BitManipulation.h"
-#include "Util.h"
-#include "Types.h"
-#include "Assert.h"
-#include "Usart.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Constant.h"
+#include "utils/BitManipulation.h"
+#include "utils/Util.h"
+#include "utils/Types.h"
+#include "utils/Assert.h"
+#include "mcal/Usart.h"
 
 using namespace stm32::registers::rcc;
 using namespace stm32::registers::usart;

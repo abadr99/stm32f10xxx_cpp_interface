@@ -9,11 +9,11 @@
  */
 
 #include <stdint.h>
-#include "stm32f103xx.h"
-#include "Assert.h"
-#include "Pin.h"
-#include "Gpio.h"
-#include "IR.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Assert.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "hal/IR.h"
 
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
