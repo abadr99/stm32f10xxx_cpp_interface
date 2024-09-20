@@ -38,8 +38,9 @@ if (-not (Get-Command "7z" -ErrorAction SilentlyContinue)) {
 }
 
 # Use 7zip to extract the file
-7z x $destinationFile -o$destinationFolder
-tar -xvjf $destinationFile -C $destinationFolder
+$output = & "7z" x $destinationFile -o$destinationFolder -bb3
+Write-Host "Extraction Output: $output"
+#tar -xvjf $destinationFile -C $destinationFolder
 
 # Optionally, update the PATH (adding the bin folder to the system PATH environment variable)
 $binPath = "${destinationFolder}\gcc-arm-none-eabi-10.3-2021.10\bin"
