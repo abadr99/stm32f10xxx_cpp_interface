@@ -50,4 +50,4 @@ Write-Host "GCC ARM toolchain installation complete. The bin directory has been 
 # ADD to enviroment path 
 echo "C:\opt\gcc-arm-none-eabi-10.3-2021.10\bin" >> $env:GITHUB_PATH
 ls C:\opt\
-ls C:\opt\gcc-arm-none-eabi-10.3-2021.10
+
