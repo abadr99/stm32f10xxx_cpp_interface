@@ -21,8 +21,8 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::dc_motor;
 
 DC_Motor::DC_Motor(Pin pin1, Pin pin2) : pin1(pin1) , pin2(pin2) {
-    STM32_ASSERT(pin1.IsOutput());
-    STM32_ASSERT(pin2.IsOutput());
+    STM32_ASSERT(pin1.IsOutput(), CONFIG_ERROR(_MOTOR, _CONFIG));
+    STM32_ASSERT(pin2.IsOutput(), CONFIG_ERROR(_MOTOR, _CONFIG));
     Gpio::Set(pin1);
     Gpio::Set(pin2);
 }

@@ -25,7 +25,7 @@ using namespace stm32::dev::hal::led;
 
 template<ConnectionType CT>
 Led<CT>::Led(Pin LedPin) : LedPin(LedPin) {
-    STM32_ASSERT(LedPin.IsOutput());
+    STM32_ASSERT(LedPin.IsOutput(), CONFIG_ERROR(_LED, _CONFIG));
     Gpio::Set(LedPin);
 }
 

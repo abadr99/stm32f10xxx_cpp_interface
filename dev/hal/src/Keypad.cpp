@@ -21,6 +21,7 @@ using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::keypad;
 
+
 Keypad::Keypad(uint8_t numRows, uint8_t numCols) {
     rowsNum = numRows;
     colNum = numCols;
@@ -45,7 +46,7 @@ void Keypad::KeypadInit() {
         Gpio::SetPinMode(KeypadRow[numRow], PinMode::kInputPullUp);
     }
     for (uint8_t numCol = 0; numCol <colNum; numCol++) {
-        STM32_ASSERT(KeypadCol[numCol].IsOutput());
+        STM32_ASSERT(KeypadCol[numCol].IsOutput(), CONFIG_ERROR(_KYBD, _CONFIG));
         Gpio::Set(KeypadCol[numCol]);
         Gpio::SetPinValue(KeypadCol[numCol], DigitalVoltage::kHigh);
     }

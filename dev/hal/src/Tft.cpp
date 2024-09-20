@@ -25,12 +25,12 @@ using namespace stm32::dev::mcal::spi;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::type;
-using namespace stm32::type;
 using namespace stm32::dev::hal::tft;
 
+
 Tft::Tft(const TftConfig& config) : config_(config) {
-    STM32_ASSERT(config_.A0.IsOutput());
-    STM32_ASSERT(config_.rst.IsOutput());
+    STM32_ASSERT(config_.A0.IsOutput(), CONFIG_ERROR(_TFT, _CONFIG));
+    STM32_ASSERT(config_.rst.IsOutput(), CONFIG_ERROR(_TFT, _CONFIG));
     switch (config_.TFtSpi.GetSpiNum()) {
         case kSPI1: Rcc::Enable(Peripheral::kSPI1); break;
         case kSPI2: Rcc::Enable(Peripheral::kSPI2); break;

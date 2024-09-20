@@ -51,7 +51,7 @@ void SevenSegment<connectionType>::Init() {
             case kPortB:    return Peripheral::kIOPB;
             case kPortC:    return Peripheral::kIOPC;
         }
-        STM32_ASSERT(1);
+        // STM32_ASSERT(1);
         return Peripheral::kUnknown;
     };
     // 1] -- ENABLE CLK PORT
@@ -90,7 +90,7 @@ void SevenSegment<connectionType>::Disable() {
 
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::SendNumber(SSdDisplay num) {
-    STM32_ASSERT(num >= kZero && num <= kNine);
+    STM32_ASSERT((num >= kZero && num <= kNine), CONFIG_ERROR(_SSD, _PARAM));
     auto ConvertSSDtoInt = [&](uint8_t idx) -> DigitalVoltage {
         return (num & (1 << (6 - idx))) == false ? constant::DigitalState<connectionType>::kInActiveVoltage  // NOLINT [whitespace/line_length] 
                                                  : constant::DigitalState<connectionType>::kActiveVoltage;   // NOLINT [whitespace/line_length] 

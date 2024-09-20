@@ -15,7 +15,10 @@
 
 namespace stm32 {
 namespace type {
+#define CONV_TO_STRING(str_)  #str_
 
+#define CONFIG_ERROR(peripheral_, error_) \
+    CONV_TO_STRING(Invalid ## peripheral_ ## error_)
 template<typename T>
 using RegWidth = T;
 

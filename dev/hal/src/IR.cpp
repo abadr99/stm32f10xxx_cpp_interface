@@ -19,8 +19,9 @@ using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::ir;
 
+
 IR::IR(const Pin& IrPin) : IrPin_(IrPin) {
-    STM32_ASSERT(IrPin.IsInput());
+    STM32_ASSERT(IrPin.IsInput(), CONFIG_ERROR(_IR, _CONFIG));
     Gpio::Set(IrPin);
 }
 

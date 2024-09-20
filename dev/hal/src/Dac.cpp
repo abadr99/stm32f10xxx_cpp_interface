@@ -25,8 +25,8 @@ using namespace stm32::dev::hal::dac;
 
 Dac::Dac(Array<Pin, 8> dacPins, CLKSource clock) : dacPins_(dacPins), clock_(clock) { 
     for (uint8_t i = 0; i < dacPins_.Size(); i++) {
-        STM32_ASSERT(dacPins_[i].IsAnalog());
-        STM32_ASSERT(dacPins_[i].IsInput());
+        STM32_ASSERT(dacPins_[i].IsAnalog(), CONFIG_ERROR(_DAC, _CONFIG));
+        STM32_ASSERT(dacPins_[i].IsInput(), CONFIG_ERROR(_DAC, _CONFIG));
         switch (dacPins_[i].GetPort()) {
             case kPortA: Rcc::Enable(Peripheral::kIOPA); break;
             case kPortB: Rcc::Enable(Peripheral::kIOPB); break;

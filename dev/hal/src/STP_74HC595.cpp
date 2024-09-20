@@ -34,9 +34,9 @@ STP_74HC595::STP_74HC595(const Pin& serialInputPin, const Pin& shiftClkPin, cons
          .storageClk = storageClk } 
     { 
         // Set shift register pins as output pins
-        STM32_ASSERT(pins_.serialInputPin.IsOutput());
-        STM32_ASSERT(pins_.shiftClkPin.IsOutput());
-        STM32_ASSERT(pins_.storageClk.IsOutput());
+        STM32_ASSERT(pins_.serialInputPin.IsOutput(), CONFIG_ERROR(_STP, _CONFIG));
+        STM32_ASSERT(pins_.shiftClkPin.IsOutput(), CONFIG_ERROR(_STP, _CONFIG));
+        STM32_ASSERT(pins_.storageClk.IsOutput(), CONFIG_ERROR(_STP, _CONFIG));
 
         Gpio::Set(pins_.serialInputPin);
         Gpio::Set(pins_.shiftClkPin);
