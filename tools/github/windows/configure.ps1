@@ -38,8 +38,7 @@ if (-not (Get-Command "7z" -ErrorAction SilentlyContinue)) {
 }
 
 # Use 7zip to extract the file
-$output = & "7z" x $destinationFile -o$destinationFolder -bb3
-Write-Host "Extraction Output: $output"
+7z x $destinationFile -o$destinationFolder
 #tar -xvjf $destinationFile -C $destinationFolder
 
 # Optionally, update the PATH (adding the bin folder to the system PATH environment variable)
@@ -52,4 +51,6 @@ Write-Host "GCC ARM toolchain installation complete. The bin directory has been 
 # ADD to enviroment path 
 echo "C:\opt\gcc-arm-none-eabi-10.3-2021.10\bin" >> $env:GITHUB_PATH
 ls C:\opt\
+ls C:\
+
 
