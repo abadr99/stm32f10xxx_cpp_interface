@@ -11,15 +11,15 @@
 
 // commit-id: a5020f63948e1e8a5aa0cf6949409dc7bf34a49e
 
-#include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/Types.h"
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/Pin.h"
-#include "mcal/inc/Gpio.h"
-#include "mcal/inc/Rcc.h"
-#include "mcal/inc/Nvic.h"
-#include "mcal/inc/Exti.h"
-#include "mcal/inc/Systick.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "mcal/Rcc.h"
+#include "mcal/Nvic.h"
+#include "mcal/Exti.h"
+#include "mcal/Systick.h"
 
 
 using namespace stm32::type;

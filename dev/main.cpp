@@ -8,7 +8,7 @@
 //  * @copyright Copyright (c) 2024
 //  * 
 //  */
-// #include "mcal/inc/stm32f103xx.h"
+// #include "mcal/stm32f103xx.h"
 
 // int main() {
 //     while (1) {}
@@ -26,13 +26,13 @@
  */
 
 
-#include "utils/inc/Types.h"
-#include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/Pin.h"
-#include "mcal/inc/Gpio.h"
-#include "mcal/inc/Rcc.h"
-#include "utils/inc/Logger.h"
+#include "utils/Types.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "mcal/Rcc.h"
+#include "utils/Logger.h"
 
 
 using namespace stm32::registers::rcc;
