@@ -60,8 +60,8 @@ ifneq ($(FILTER), )
 	@echo "\n[Makefile]: note: Filter compilation $(FILTER)"
 	@echo "\n[Makefile]: Compiling $(dir $(FILTER)) successfully"
 else 
-	@$(foreach FILE,$(HW_MAINS), echo "[Makefile][HW-Test]: $(FILE)"; $(call compile,$(FILE),$(dir $(FILE)),$(basename $(notdir $(FILE))));)
-	@echo "\n[Makefile]: Compiled successfully."
+	@$(foreach FILE,$(HW_MAINS), echo "[Makefile][HW-Test]: Done compiling $(FILE)"; $(call compile,$(FILE),$(dir $(FILE)),$(basename $(notdir $(FILE))));)
+	@echo "\n[Makefile][HW-Test]: Compiled successfully."
 endif
 
 clean-hw:
