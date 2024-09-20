@@ -11,14 +11,14 @@
 
 // commit-id: a5020f63948e1e8a5aa0cf6949409dc7bf34a49e
 
-#include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/Types.h"
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/Pin.h"
-#include "mcal/inc/Gpio.h"
-#include "mcal/inc/Rcc.h"
-#include "mcal/inc/Usart.h"
-#include "hal/inc/Esp.h"
+#include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
+#include "utils/BitManipulation.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "mcal/Rcc.h"
+#include "mcal/Usart.h"
+#include "hal/Esp.h"
 
 using namespace stm32::type;
 using namespace stm32::registers::rcc;
@@ -27,6 +27,7 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::usart;
 using namespace stm32::dev::hal::esp;
+
 int main() {
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);

@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include "mcal/inc/stm32f103xx.h"
+#include "mcal/stm32f103xx.h"
 
 int main() {
     while (1) {}
