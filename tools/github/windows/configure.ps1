@@ -42,6 +42,7 @@ if (-not (Get-Command "7z" -ErrorAction SilentlyContinue)) {
 
 # Optionally, update the PATH (adding the bin folder to the system PATH environment variable)
 $binPath = "${destinationFolder}\gcc-arm-none-eabi-10.3-2021.10\bin"
-[System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";${binPath}", [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable("Path", $env:$GITHUB_PATH + ";${binPath}", [System.EnvironmentVariableTarget]::Machine)
 
 Write-Host "GCC ARM toolchain installation complete. The bin directory has been added to the PATH."
+
