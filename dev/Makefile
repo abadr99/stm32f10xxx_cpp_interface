@@ -1,11 +1,10 @@
 INPUT_FILE ?= ./build/modules.in
-DIRS := ./mcal ./hal ./utils
 SOURCES := $(shell python3 ./build/Parser.py --file "$(INPUT_FILE)")
-SOURCES += $(wildcard ./utils/src/*.cpp) # ALl utils should be added with all modules
+SOURCES += $(wildcard ./src/utils/*.cpp) # ALl utils should be added with all modules
 SRC_NAMES:= $(notdir $(SOURCES))
 SOURCES_COUNT:= $(words $(SOURCES))
 SOURCES_CTR:=0
-INC:=  -I. -I./mcal/inc/ -I./hal/inc/ -I./utils/inc/
+INC:=  -I. -I./inc/mcal/ -I./inc/hal/ -I./inc/utils/
 LINT_PATH:= ../tools/cppliny.py
 
 HW_TEST_PATH= ../tests/hardware

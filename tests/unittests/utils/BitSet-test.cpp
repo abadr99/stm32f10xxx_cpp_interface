@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <gtest/gtest.h>
 
-#include "utils/inc/BitSet.h"
+#include "BitSet.h"
 
 using stm32::util::BitSet;
 

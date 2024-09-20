@@ -9,9 +9,9 @@
  * 
  */
 #include <gtest/gtest.h>
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/stm32f103xx.h"
-#include "mcal/inc/I2c.h"
+#include "BitManipulation.h"
+#include "stm32f103xx.h"
+#include "I2c.h"
 
 uint32_t I2c1Reg[9] = {0x0};
 uint32_t I2c2Reg[9] = {0x0};

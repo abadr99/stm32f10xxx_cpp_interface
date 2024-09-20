@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <gtest/gtest.h>
 
-#include "utils/inc/BitManipulation.h"
+#include "BitManipulation.h"
 
 using namespace stm32::util;
 

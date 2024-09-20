@@ -11,13 +11,13 @@
 
 // commit-id: a5020f63948e1e8a5aa0cf6949409dc7bf34a49e
 
-#include "utils/inc/Types.h"
-#include "mcal/inc/stm32f103xx.h"
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/Pin.h"
-#include "mcal/inc/Gpio.h"
-#include "mcal/inc/Rcc.h"
-#include "mcal/inc/Usart.h"
+#include "Types.h"
+#include "stm32f103xx.h"
+#include "BitManipulation.h"
+#include "Pin.h"
+#include "Gpio.h"
+#include "Rcc.h"
+#include "Usart.h"
 
 using namespace stm32::type;
 using namespace stm32::registers::rcc;

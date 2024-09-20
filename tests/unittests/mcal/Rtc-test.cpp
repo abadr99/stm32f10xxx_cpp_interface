@@ -9,9 +9,9 @@
  * 
  */
 #include <gtest/gtest.h>
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/stm32f103xx.h"
-#include "mcal/inc/Rtc.h"
+#include "BitManipulation.h"
+#include "stm32f103xx.h"
+#include "Rtc.h"
 
 using namespace stm32::util;
 using namespace stm32::dev::mcal::rtc;

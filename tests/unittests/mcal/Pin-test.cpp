@@ -7,9 +7,9 @@
  * @copyright Copyright (c) 2024
  */
 #include <gtest/gtest.h>
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/stm32f103xx.h"
-#include "mcal/inc/Pin.h"
+#include "BitManipulation.h"
+#include "stm32f103xx.h"
+#include "Pin.h"
 
 uint32_t GPIOAReg[7] = {};
 uint32_t GPIOBReg[7] = {};

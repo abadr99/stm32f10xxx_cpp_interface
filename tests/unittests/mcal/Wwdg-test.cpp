@@ -9,9 +9,9 @@
  *  
  */ 
 #include <gtest/gtest.h> 
-#include "utils/inc/BitManipulation.h" 
-#include "mcal/inc/stm32f103xx.h" 
-#include "mcal/inc/Wwdg.h" 
+#include "BitManipulation.h" 
+#include "stm32f103xx.h" 
+#include "Wwdg.h" 
  
 uint32_t WwdgReg[3] = {0x0}; 
 using namespace stm32::util; 
