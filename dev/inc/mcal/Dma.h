@@ -58,7 +58,7 @@ struct DMAConfig {
     Mode mode;
     uint32_t sourceBaseAddr;
     uint32_t destinationBaseAddr;
-    Size bufferSize;
+    uint16_t bufferSize;
     State peripheralIncrementState;
     State memIncrementState;
     Size peripheralDataSize;
