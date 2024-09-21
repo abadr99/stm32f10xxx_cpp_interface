@@ -45,13 +45,16 @@ using namespace stm32::type;
 namespace helper {
     static inline void SetDirection(Channel dmaChannel, Direction dmaDirection) {
         switch (dmaDirection) {
-            case kMem2Mem : DMA->CHANNEL[dmaChannel].CCR.MEM2MEM = 1; break;
+            case kMem2Mem : 
+                DMA->CHANNEL[dmaChannel].CCR.MEM2MEM = 1;
+                DMA->CHANNEL[dmaChannel].CCR.DIR = 1;
+            break;
             case kMem2Per : DMA->CHANNEL[dmaChannel].CCR.DIR = 1;     break;
             case kPer2Mem : DMA->CHANNEL[dmaChannel].CCR.DIR = 0;     break;
             default       : return;
         }
     }
-}
+}  // namespace helper
 
 // --- INITIATE DMA STATIC DATA
 pFunction Dma::PointerToTransferCompleteISR[7] = {nullptr};
@@ -84,11 +87,14 @@ void Dma::Init(const DMAConfig& config) {
     DMA->CHANNEL[config.channel].CCR.TCIE = config.transCompleteInterrupt;
     DMA->CHANNEL[config.channel].CCR.TEIE = config.transErrorInterrupt;
 
-    // --- 8] CONFIGURE SRC AND DST BASE ADDRESSES 
-    DMA->CHANNEL[config.channel].CPAR = config.dir == kMem2Per ? config.destinationBaseAddr
-                                                               : config.sourceBaseAddr;
-    DMA->CHANNEL[config.channel].CMAR = config.dir == kMem2Per ? config.sourceBaseAddr 
+    // --- 8] CONFIGURE SRC AND DST BASE ADDRESSES
+    DMA->CHANNEL[config.channel].CPAR = config.dir == kMem2Per ? config.sourceBaseAddr
                                                                : config.destinationBaseAddr;
+    DMA->CHANNEL[config.channel].CMAR = config.dir == kMem2Mem ? config.sourceBaseAddr
+                                                               : config.destinationBaseAddr;
+
+    // --- 9] SET SOURCE BUFFER ADDRESS
+    DMA->CHANNEL[config.channel].CNDTR = config.bufferSize;
 }
 
 void Dma::Enable(Channel dmaChannel) {
@@ -121,7 +127,7 @@ pFunction Dma::GetPointerToTransferErrorISR(Channel channel) {
 
 // TODO(@abadr99, @MRefat13): Check if this implementation will make debugging harder
 #define DMA_CHANNEL_HANDLER(N)\
-    extern "C" void DMA_Channel##N##Handler(void) {\
+    extern "C" void DMA1_Channel##N##_IRQHandler(void) {\
         if (DMA->ISR.TEIF##N == 1) {\
             pFunction fun = Dma::GetPointerToTransferErrorISR(kChannel##N);\
             if (fun != NULL) {\
@@ -135,7 +141,7 @@ pFunction Dma::GetPointerToTransferErrorISR(Channel channel) {
                 DMA->IFCR.CTCIF##N = 1;\
             }\
         }\
-    }    
+    }
 
 DMA_CHANNEL_HANDLER(1)
 DMA_CHANNEL_HANDLER(2)
