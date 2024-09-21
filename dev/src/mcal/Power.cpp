@@ -17,12 +17,21 @@ using namespace stm32::registers::nvic;
 using namespace stm32::registers::pwr;
 using namespace stm32::dev::mcal::pwr;
 
+#define TO_STRING(str_)  #str_
+
+#define PWR_CONFIG_ERROR(error_) \
+    TO_STRING(Invalid Pwr error_)
+
 #define __WFI() __asm volatile ("wfi")
 #define __WFE() __asm volatile ("wfe")
 
 #define Pwr_EMPTY_MESSAGE               ""
 
 void Pwr::EnterSleepMode(PwrEntry sleepEntry, SleepType type) {
+    STM32_ASSERT((sleepEntry == PwrEntry::kWFI) ||
+                 (sleepEntry == PwrEntry::kWFE), PWR_CONFIG_ERROR(PwrEntry));
+    STM32_ASSERT((type == SleepType::kSleepNow) ||
+                 (type == SleepType::kSleepOnExit), PWR_CONFIG_ERROR(SleepType));
     //  Set sleep on exit behavior
     SCB->SCR.SLEEPONEXIT = static_cast<uint8_t>(type);
     //  Ensure standard sleep mode
@@ -30,6 +39,10 @@ void Pwr::EnterSleepMode(PwrEntry sleepEntry, SleepType type) {
     EnterLowPowerMode(sleepEntry);
 }
 void Pwr::EnterStopMode(PwrEntry stopEntry, PwrRegulator regulator) {
+    STM32_ASSERT((stopEntry == PwrEntry::kWFI) ||
+                 (stopEntry == PwrEntry::kWFE), PWR_CONFIG_ERROR(PwrEntry));
+    STM32_ASSERT((regulator == PwrRegulator::kOn) ||
+                 (regulator == PwrRegulator::kLowPower), PWR_CONFIG_ERROR(PwrRegulator));
     //  Select the voltage regulator mode
     PWR->CR.LPDS = regulator == PwrRegulator::kLowPower ? 1 : 0;
     //  Ensure entering stop mode, not standby
@@ -39,6 +52,8 @@ void Pwr::EnterStopMode(PwrEntry stopEntry, PwrRegulator regulator) {
     EnterLowPowerMode(stopEntry);
 }
 void Pwr::EnterStandbyMode(PwrEntry standbyEntry) {
+    STM32_ASSERT((standbyEntry == PwrEntry::kWFI) ||
+                 (standbyEntry == PwrEntry::kWFE), PWR_CONFIG_ERROR(PwrEntry));
     // Select standby mode
     PWR->CR.PDDS = 1;
     // Enable deep sleep mode
@@ -59,6 +74,8 @@ void Pwr::ClearFlag(PwrFlag flag) {
 }
 #ifndef UNIT_TEST
 void Pwr::EnterLowPowerMode(PwrEntry entry) {
+    STM32_ASSERT((entry == PwrEntry::kWFI) ||
+                 (entry == PwrEntry::kWFE), PWR_CONFIG_ERROR(PwrEntry));
     if (entry == PwrEntry::kWFI) {
         __WFI();  // Wait for interrupt
     } else if (entry == PwrEntry::kWFE) {
