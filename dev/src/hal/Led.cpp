@@ -13,6 +13,7 @@
 #include "utils/Constant.h"
 #include "utils/Define.h"
 #include "utils/Assert.h"
+#include "utils/Util.h"
 #include "mcal/Pin.h"
 #include "mcal/Rcc.h"
 #include "mcal/Gpio.h"
