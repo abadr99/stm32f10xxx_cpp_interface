@@ -1,11 +1,10 @@
 INPUT_FILE ?= ./build/modules.in
-DIRS := ./mcal ./hal ./utils
 SOURCES := $(shell python3 ./build/Parser.py --file "$(INPUT_FILE)")
-SOURCES += $(wildcard ./utils/src/*.cpp) # ALl utils should be added with all modules
+SOURCES += $(wildcard ./src/utils/*.cpp) # ALl utils should be added with all modules
 SRC_NAMES:= $(notdir $(SOURCES))
 SOURCES_COUNT:= $(words $(SOURCES))
 SOURCES_CTR:=0
-INC:=  -I. -I./mcal/inc/ -I./hal/inc/ -I./utils/inc/
+INC:=  -I. -I./inc/
 LINT_PATH:= ../tools/cppliny.py
 
 HW_TEST_PATH= ../tests/hardware
@@ -61,8 +60,8 @@ ifneq ($(FILTER), )
 	@echo "\n[Makefile]: note: Filter compilation $(FILTER)"
 	@echo "\n[Makefile]: Compiling $(dir $(FILTER)) successfully"
 else 
-	@$(foreach FILE,$(HW_MAINS), echo "[Makefile][HW-Test]: $(FILE)"; $(call compile,$(FILE),$(dir $(FILE)),$(basename $(notdir $(FILE))));)
-	@echo "\n[Makefile]: Compiled successfully."
+	@$(foreach FILE,$(HW_MAINS), echo "[Makefile][HW-Test]: Done compiling $(FILE)"; $(call compile,$(FILE),$(dir $(FILE)),$(basename $(notdir $(FILE))));)
+	@echo "\n[Makefile][HW-Test]: Compiled successfully."
 endif
 
 clean-hw:

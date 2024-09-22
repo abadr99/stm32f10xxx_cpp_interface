@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include <gtest/gtest.h>
 
-#include "Array.h"
+#include "utils/Array.h"
 
 using namespace stm32::util;
 
