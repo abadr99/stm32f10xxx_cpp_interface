@@ -29,6 +29,7 @@ using namespace stm32::dev::mcal::spi;
 using namespace stm32::dev::hal::sdcard;
 
 SD::SD(const Pin& Sdpin, Spi SdSpi) : Sdpin(Sdpin) , SdSpi(SdSpi) {
+    STM32_ASSERT(Sdpin.IsOutput(), CONFIG_ERROR(_SDCARD, _CONFIG));
     switch (SdSpi.GetSpiNum()) {
     case kSPI1: Rcc::Enable(Peripheral::kSPI1); break;
     case kSPI2: Rcc::Enable(Peripheral::kSPI2); break;

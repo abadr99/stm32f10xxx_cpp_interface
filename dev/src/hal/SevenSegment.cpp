@@ -52,6 +52,7 @@ void SevenSegment<connectionType>::Init() {
 
     // 2] -- SET DATA PINS AS OUTPUT (PUSHPULL)
     for (uint8_t pin = 0; pin < 7; pin++) {
+        STM32_ASSERT(dataPins_[pin].IsOutput(), CONFIG_ERROR(_7SEGMENT, _CONFIG));
         Gpio::Set(dataPins_[pin]);
     }
 

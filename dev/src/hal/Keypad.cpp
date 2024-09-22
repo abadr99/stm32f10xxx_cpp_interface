@@ -46,6 +46,7 @@ void Keypad::setColArr(const Pin* cols) {
 
 void Keypad::Init() {
     for (uint8_t numRow = 0 ; numRow <rowsNum; numRow++) {
+        STM32_ASSERT(KeypadRow[numRow].IsInput(), CONFIG_ERROR(_KYBD, _CONFIG));
         Gpio::Set(KeypadRow[numRow]);
     }
     for (uint8_t numCol = 0; numCol <colNum; numCol++) {
