@@ -39,9 +39,6 @@ void Spi::MasterInit() {
     SetDataFrame();
     // LSBFIRST
     SetFrameFormat();
-    // HW or SW slave manage
-    spi_reg->CR1.SSM = (config_.slave == kSW);
-    spi_reg->CR1.SSI = (config_.slave == kHW);
     // set master
     spi_reg->CR1.MSTR = 1;
     spi_reg->CR1.SPE = 1;
