@@ -6,6 +6,9 @@
  * @date 2024-09-22
  * @copyright Copyright (c) 2024
  */
+
+// commit-id: b025a5114c20fc64fc02151659abf0d0a810e5a1
+
 #include <stdint.h>
 #include "utils/Types.h"
 #include "mcal/stm32f103xx.h"
