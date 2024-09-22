@@ -4,12 +4,8 @@
  * @brief 
  * @version 0.1
  * @date 2024-07-08
- * 
  * @copyright Copyright (c) 2024
- * 
  */
-
-
 #include "utils/Types.h"
 #include "mcal/stm32f103xx.h"
 #include "utils/BitManipulation.h"
