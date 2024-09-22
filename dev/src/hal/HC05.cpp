@@ -14,6 +14,7 @@
 
 #include "utils/Assert.h"
 
+#include "mcal/Rcc.h"
 #include "mcal/Usart.h"
 #include "hal/HC05.h"
 
@@ -36,9 +37,22 @@ static constexpr const char* commandStrings[] = {
 
 
 using namespace stm32::dev::mcal::usart;
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::hal::bluetooth;
 
-HC05::HC05(const Usart& usart) : usart_(usart) {}
+HC05::HC05(const Usart& usart) : usart_(usart) {
+    switch (usart_.GetUsartNum()) {
+        case kUsart1: 
+            Rcc::Enable(Peripheral::kUSART1); 
+            break; 
+        case kUsart2: 
+            Rcc::Enable(Peripheral::kUSART2); 
+            break; 
+        case kUsart3: 
+            Rcc::Enable(Peripheral::kUSART3); 
+            break;
+    }
+}
 
 void HC05::Send(typename Usart::DataValType n) {
     usart_.Transmit(n);
