@@ -16,7 +16,9 @@ namespace stm32 {
 namespace dev {
 namespace mcal {
 namespace timer {
-
+enum TimerMode {
+    kTimeBase,
+};
 enum TimerID {
     kTimer1,
     kTimer2,
@@ -30,6 +32,7 @@ enum TimerDirection {
   kDown
 };
 struct TimerConfig {
+    TimerMode mode;
     TimerID Timerid;
     TimerDirection Direction;
     uint32_t Prescaler;  // if bus clk = 4MHz , psc = 4000 --> time base = 1ms

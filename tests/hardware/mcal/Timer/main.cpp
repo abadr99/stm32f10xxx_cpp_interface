@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include "utils/Types.h"
 #include "mcal/stm32f103xx.h"
-#include "BitManipulation.h"
+#include "utils/BitManipulation.h"
 #include "mcal/Pin.h"
 #include "mcal/Gpio.h"
 #include "mcal/Rcc.h"
@@ -38,6 +38,7 @@ int main(void) {
     Nvic::EnableInterrupt(id_config);
 
     TimerConfig tim2_config = {
+            .mode = kTimeBase,
             .Timerid = kTimer2,
             .Direction = kDown,
             .Prescaler = 4000,  // 4000/4000=1
