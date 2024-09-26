@@ -44,19 +44,19 @@ void Timer::Init() {
                  (config_.Direction == kDown), TIMER_CONFIG_ERROR(TimerDirection));
     // Disable Timer at first
     timerReg->CR1.CEN = 0;
-    // Set Reload value
-    timerReg->ARR = config_.ReloadValue;
+    // Set prescaler value
+    timerReg->PSC = config_.Prescaler-1;
     // Set counter Direction
     timerReg->CR1.DIR = config_.Direction;
-    // Set prescaler value
-    timerReg->PSC = config_.Prescaler;
     // Set Interrupt update
     timerReg->DIER.UIE = 1;
     pGlobalCallBackFunction[config_.Timerid] = config_.pfunction;
+}
+void Timer::Delay_ms(uint16_t value) {
+    timerReg->ARR = value-1;
     // Enable Timer at first
     timerReg->CR1.CEN = 1;
 }
-
 pFunction Timer::GetFunToISR(TimerID id) {
     STM32_ASSERT((id >= kTimer1) &&
                  (id <= kTimer5), TIMER_CONFIG_ERROR(TimerID));

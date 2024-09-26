@@ -32,14 +32,14 @@ enum TimerDirection {
 struct TimerConfig {
     TimerID Timerid;
     TimerDirection Direction;
-    uint16_t ReloadValue;
-    uint16_t Prescaler = 44999;  // if bus clk = 45MHz , psc = 44999+1 --> time base = 1ms
+    uint32_t Prescaler;  // if bus clk = 4MHz , psc = 4000 --> time base = 1ms
     stm32::type::pFunction pfunction;
 };
 class Timer {
  public:
     using pFunction = stm32::type::pFunction;
     explicit Timer(const TimerConfig & config);
+    void Delay_ms(uint16_t value);
     static pFunction GetFunToISR(TimerID id);
  private:
     void Init();
