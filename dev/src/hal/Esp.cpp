@@ -9,8 +9,8 @@
  * 
  */
 
-// #include <cstring>
-// #include <string>
+#include <cstring>
+#include <string>
 #include "utils/Util.h"
 #include "mcal/Rcc.h"
 #include "utils/Assert.h"
@@ -34,7 +34,7 @@ static constexpr const char* commandStrings[] = {
 
 #define TCP "TCP"
 #define UDP "UDP"
-using namespace stm32::util::helpers;
+
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::usart;
 using namespace stm32::dev::hal::esp;
@@ -107,9 +107,8 @@ void Esp::ServerConnect(const char* protocol, const char* ip, uint16_t port) {
     this->Send(commandStrings[Commands::kCOMMA]);
     this->Send(ip);
     this->Send(commandStrings[Commands::kCOMMA]);
-    char strPort[6] = {0};
-    IntToString(port, strPort);
-    Send(strPort);
+    std::string strPort = std::to_string(port);
+    Send(strPort.c_str());
     this->Send(commandStrings[Commands::kAT_END]);
 }
 
