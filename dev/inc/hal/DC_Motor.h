@@ -20,7 +20,7 @@ namespace hal {
 namespace dc_motor {
 class DC_Motor {
  public:
-    DC_Motor(Pin pin1, Pin pin2);
+    DC_Motor(const Pin& pin1, const Pin& pin2);
     void ClockWise();
     void AntiClockWise();
     void Stop();

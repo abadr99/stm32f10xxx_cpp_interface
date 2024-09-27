@@ -57,7 +57,6 @@ class Esp {
     };
     UsartConfig usartConfig_;
     Usart usart_;
-    void Helper_IntToString(int num, char *str);
 };
 
 }   //  namespace esp

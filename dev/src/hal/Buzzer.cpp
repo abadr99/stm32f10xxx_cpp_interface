@@ -15,17 +15,23 @@
 #include "mcal/Pin.h"
 #include "mcal/Gpio.h"
 #include "hal/Buzzer.h"
+#include "utils/Assert.h"
+#include "utils/Util.h"
+#include "mcal/Rcc.h"
 
 using namespace stm32;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::hal::buzzer;
-
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::type;
 
 template<ConnectionType CT>
 Buzzer<CT>::Buzzer(const Pin& buzzerPin)
-: buzzerPin_(buzzerPin) {
+: buzzerState_(kOff), buzzerPin_(buzzerPin) {
+    STM32_ASSERT(buzzerPin.IsOutput(), CONFIG_ERROR(_BUZZER, _CONFIG));
+    Rcc::Enable(MapPortToPeripheral(buzzerPin_.GetPort()));
     Gpio::Set(buzzerPin_);
 }
 

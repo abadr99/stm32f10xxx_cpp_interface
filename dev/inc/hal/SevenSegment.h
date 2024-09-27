@@ -40,8 +40,8 @@ template<stm32::type::ConnectionType connectionType>
 class SevenSegment {
  public:
     using Array_t = stm32::util::Array<Pin, 7>;
-    SevenSegment(const Array_t dataPins, const Pin enablePin);  
-    explicit SevenSegment(const Array_t dataPins);  
+    SevenSegment(const Array_t& dataPins, const Pin& enablePin);  
+    explicit SevenSegment(const Array_t& dataPins);  
     void Init();
     void Enable();
     void Disable();

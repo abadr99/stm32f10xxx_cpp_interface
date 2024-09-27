@@ -17,8 +17,10 @@
 #include "mcal/Gpio.h"
 #include "mcal/Spi.h"
 #include "hal/SdCard.h"
+#include "utils/Util.h"
 
 using namespace stm32;
+using namespace stm32::util;
 using namespace stm32::type;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
@@ -27,11 +29,13 @@ using namespace stm32::dev::mcal::spi;
 using namespace stm32::dev::hal::sdcard;
 
 SD::SD(const Pin& Sdpin, Spi SdSpi) : Sdpin(Sdpin) , SdSpi(SdSpi) {
+    STM32_ASSERT(Sdpin.IsOutput(), CONFIG_ERROR(_SDCARD, _CONFIG));
     switch (SdSpi.GetSpiNum()) {
     case kSPI1: Rcc::Enable(Peripheral::kSPI1); break;
     case kSPI2: Rcc::Enable(Peripheral::kSPI2); break;
     default: break;
     }
+    Rcc::Enable(MapPortToPeripheral(Sdpin.GetPort()));
 }
 void SD::ToggleClock(int cycles) {
     for (int i = 0; i < cycles; i++) {

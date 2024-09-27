@@ -21,50 +21,44 @@
 #include "mcal/Rcc.h"
 #include "mcal/Gpio.h"
 #include "hal/SevenSegment.h"
+#include "utils/Util.h"
 
 using namespace stm32;
 using namespace stm32::type;
+using namespace stm32::util;
 using namespace stm32::dev::mcal::pin;
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::gpio;           
 using namespace stm32::dev::hal::ssd;
 
 
 template<ConnectionType connectionType>
-SevenSegment<connectionType>::SevenSegment(const Array_t dataPins, const Pin enablePin)   
+SevenSegment<connectionType>::SevenSegment(const Array_t& dataPins, const Pin& enablePin)   
     : dataPins_(dataPins)
     , enablePin_(enablePin)
     , isEnablePinUsed_(true)
     { /* EMPTY */ }
 
 template<ConnectionType connectionType>
-SevenSegment<connectionType>::SevenSegment(const Array_t dataPins)   
+SevenSegment<connectionType>::SevenSegment(const Array_t& dataPins)   
     : dataPins_(dataPins)
     , isEnablePinUsed_(false)
     { /* EMPTY */ }
 
 template<ConnectionType connectionType>
 void SevenSegment<connectionType>::Init() {
-    using namespace stm32::dev::mcal::rcc;
-    auto MapToPeripheral = [](Port port) -> Peripheral {
-        switch (port) {
-            case kPortA:    return Peripheral::kIOPA;
-            case kPortB:    return Peripheral::kIOPB;
-            case kPortC:    return Peripheral::kIOPC;
-        }
-        // STM32_ASSERT(1);
-        return Peripheral::kUnknown;
-    };
     // 1] -- ENABLE CLK PORT
-    Rcc::Enable(MapToPeripheral(dataPins_[0].GetPort()));
+    Rcc::Enable(MapPortToPeripheral(dataPins_[0].GetPort()));
 
     // 2] -- SET DATA PINS AS OUTPUT (PUSHPULL)
     for (uint8_t pin = 0; pin < 7; pin++) {
+        STM32_ASSERT(dataPins_[pin].IsOutput(), CONFIG_ERROR(_7SEGMENT, _CONFIG));
         Gpio::Set(dataPins_[pin]);
     }
 
     // 3] -- HANDLE ENABLE PIN IF USED
     if (isEnablePinUsed_) {
-        Rcc::Enable(MapToPeripheral(enablePin_.GetPort()));
+        Rcc::Enable(MapPortToPeripheral(enablePin_.GetPort()));
         Gpio::Set(enablePin_);  
     }
     
