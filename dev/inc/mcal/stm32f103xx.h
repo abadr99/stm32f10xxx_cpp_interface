@@ -17,8 +17,8 @@
 #else
 #include "mcal/BaseAddress.h"
 #endif
-#include "Peripherals.h"
-#include "Types.h"
+#include "mcal/Peripherals.h"
+#include "utils/Types.h"
 
 template<stm32::peripherals::Peripheral peripheralT>
 using Addr = stm32::constant::Address<peripheralT>;

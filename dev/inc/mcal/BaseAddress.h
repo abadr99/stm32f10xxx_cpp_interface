@@ -12,9 +12,9 @@
 #ifndef DEV_INC_MCAL_BASEADDRESS_H_
 #define DEV_INC_MCAL_BASEADDRESS_H_
 
-#include "Types.h"
-#include "Peripherals.h"
-#include "stm32f103xx.h"
+#include "utils/Types.h"
+#include "mcal/Peripherals.h"
+#include "mcal/stm32f103xx.h"
 
 using stm32::type::RegWidth_t;
 
@@ -169,4 +169,4 @@ struct Address<Peripheral::kTIM5> {
 }  // namespace constant
 }  // namespace stm32
 
-#endif  // DEV_MCAL_INC_BASEADDRESS_H_
+#endif  // DEV_INC_MCAL_BASEADDRESS_H_
