@@ -1,0 +1,6 @@
+<map id="stm32::registers::afio::AfioRegDef" name="stm32::registers::afio::AfioRegDef">
+<area shape="rect" id="node1" title="Structure defining AFIO (Alternate Function I/O) Register Definitions." alt="" coords="264,71,424,112"/>
+<area shape="rect" id="node2" href="$unionstm32_1_1registers_1_1afio_1_1AfioRegDef_1_1MAPR2.html" title=" " alt="" coords="5,5,165,47"/>
+<area shape="rect" id="node3" href="$unionstm32_1_1registers_1_1afio_1_1AfioRegDef_1_1EVCR.html" title=" " alt="" coords="5,71,165,112"/>
+<area shape="rect" id="node4" href="$unionstm32_1_1registers_1_1afio_1_1AfioRegDef_1_1MAPR.html" title=" " alt="" coords="5,136,165,177"/>
+</map>

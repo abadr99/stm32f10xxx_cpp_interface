@@ -25,6 +25,10 @@
 var NAVTREE =
 [
   [ "stm32f10xxx_cpp_interface", "index.html", [
+    [ "Todo List", "todo.html", null ],
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -34,14 +38,27 @@ var NAVTREE =
       ] ]
     ] ],
     [ "Files", "files.html", [
-      [ "File List", "files.html", "files_dup" ]
+      [ "File List", "files.html", "files_dup" ],
+      [ "File Members", "globals.html", [
+        [ "All", "globals.html", null ],
+        [ "Macros", "globals_defs.html", null ]
+      ] ]
     ] ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"Buzzer_8h.html"
+"Adc_8h.html",
+"Exti_8h_source.html",
+"Pin_8h.html#ab048ecffa7e29d3d4178493b34c453f7a46acc1d8221a6f51e4485293e775cb14",
+"Tft_8h.html#a4d8e8101672b335303c53aadb5601e91a3705fc1a240e64711f05aed9063865bd",
+"classstm32_1_1dev_1_1hal_1_1led_1_1Led.html",
+"structstm32_1_1dev_1_1mcal_1_1nvic_1_1Id.html#af0f178cbf7c4dacda8f163cf953f19f8",
+"unionstm32_1_1registers_1_1adc_1_1ADCRegDef_1_1JSQR.html#a784654692de2d3cd2eecf56280a3986d",
+"unionstm32_1_1registers_1_1pwr_1_1PwrRegDef_1_1CR.html",
+"unionstm32_1_1registers_1_1spi_1_1SpiRegDef_1_1SR.html#a86609ad2641d5acfb86556c865def398",
+""
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

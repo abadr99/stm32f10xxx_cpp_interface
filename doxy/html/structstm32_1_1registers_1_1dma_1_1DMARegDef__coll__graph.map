@@ -1,0 +1,7 @@
+<map id="stm32::registers::dma::DMARegDef" name="stm32::registers::dma::DMARegDef">
+<area shape="rect" id="node1" title=" " alt="" coords="532,71,697,112"/>
+<area shape="rect" id="node2" href="$unionstm32_1_1registers_1_1dma_1_1DMARegDef_1_1ISR.html" title=" " alt="" coords="251,5,416,47"/>
+<area shape="rect" id="node3" href="$structstm32_1_1registers_1_1dma_1_1DmaChannel.html" title=" " alt="" coords="251,71,416,112"/>
+<area shape="rect" id="node4" href="$unionstm32_1_1registers_1_1dma_1_1DmaChannel_1_1CCR.html" title=" " alt="" coords="5,71,171,112"/>
+<area shape="rect" id="node5" href="$unionstm32_1_1registers_1_1dma_1_1DMARegDef_1_1IFCR.html" title=" " alt="" coords="251,136,416,177"/>
+</map>
