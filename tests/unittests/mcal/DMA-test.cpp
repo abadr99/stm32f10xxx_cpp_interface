@@ -9,10 +9,10 @@
  * 
  */
 #include <gtest/gtest.h>
-#include "utils/inc/BitManipulation.h"
-#include "mcal/inc/stm32f103xx.h"
-#include "mcal/inc/Pin.h"
-#include "mcal/inc/Dma.h"
+#include "utils/BitManipulation.h"
+#include "mcal/stm32f103xx.h"
+#include "mcal/Pin.h"
+#include "mcal/Dma.h"
 
 using namespace stm32::util;
 using namespace stm32::dev::mcal::pin;
