@@ -34,3 +34,6 @@
 # vscode stuff
 ./vscode/**
 *.elf
+
+# doxygen files
+./doxy/html/
