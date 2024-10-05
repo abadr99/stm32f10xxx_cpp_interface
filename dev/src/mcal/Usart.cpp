@@ -147,6 +147,10 @@ ErrorType Usart::RetErrorDetection() {
     return kSuccess;
 }
 
+UsartNum Usart::GetUsartNum() {
+    return config_.number;
+}
+
 void Usart::SetTransmitCompleteISR(UsartNum number, pFunction pISR) {
     pTransmitCompleteFun_[static_cast<uint8_t>(number)] = pISR;
 }

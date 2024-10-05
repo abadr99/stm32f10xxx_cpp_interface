@@ -21,10 +21,10 @@ class Keypad {
  public:
       Keypad(uint8_t numRows, uint8_t numCols);
       ~Keypad();
-      void SetRowArr(Pin* rows);
-      void setColArr(Pin* cols);
-      void KeypadInit();
-      uint8_t GetPressed(uint8_t** keypadButtons);
+      void SetRowArr(const Pin* rows);
+      void setColArr(const Pin* cols);
+      void Init();
+      uint8_t GetPressed(const uint8_t* const* keypadButtons);
  private:
       uint8_t rowsNum;
       uint8_t colNum;

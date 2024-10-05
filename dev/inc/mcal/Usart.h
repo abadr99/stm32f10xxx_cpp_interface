@@ -83,9 +83,11 @@ class Usart {
     DataValType Receive();
     void Receive(DataValType *pData, pFunction pISR);
     ErrorType RetErrorDetection();
+    UsartNum GetUsartNum();
     static pFunction Helper_GetTransmitCompleteISR(UsartNum number);
     static pFunction Helper_GetReceiveReadyISR(UsartNum number);
     static void Helper_SetReceivedData(UsartNum number, DataValType data);
+
  private:
     enum Flag : uint8_t {kDisabled, kEnabled};
     const UsartConfig& config_;

@@ -411,7 +411,7 @@ struct SpiRegDef {
             RegWidth_t ERRIE      :1;   //  Error interrupt enable
             RegWidth_t RXNEIE     :1;   //  RX buffer not empty interrupt enable
             RegWidth_t TXEIE      :1;   //  TX buffer empty interrupt enable
-            RegWidth_t            :8;   //  Reserved bits 15:8
+            RegWidth_t            :24;   //  Reserved bits 15:8
         };
         RegWidth_t registerVal;  //  CR2
     }CR2;
@@ -425,7 +425,7 @@ struct SpiRegDef {
             RegWidth_t MODF       :1;   //  Mode fault
             RegWidth_t OVR        :1;   //  Overrun flag
             RegWidth_t BSY        :1;   //  Busy flag
-            RegWidth_t            :8;   //  Reserved bits 15:8
+            RegWidth_t            :24;   //  Reserved bits 15:8
         };
         RegWidth_t registerVal;  // SR
     }SR;

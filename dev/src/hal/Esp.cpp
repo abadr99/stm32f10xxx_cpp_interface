@@ -9,8 +9,10 @@
  * 
  */
 
-// #include <cstring>
-// #include <string>
+#include <cstring>
+#include <string>
+#include "utils/Util.h"
+#include "mcal/Rcc.h"
 #include "utils/Assert.h"
 #include "mcal/Usart.h"
 #include "hal/Esp.h"
@@ -33,8 +35,10 @@ static constexpr const char* commandStrings[] = {
 #define TCP "TCP"
 #define UDP "UDP"
 
+using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::usart;
 using namespace stm32::dev::hal::esp;
+
 
 Esp::Esp(const UsartNum &usartNum) 
 :usartConfig_ {
@@ -46,6 +50,17 @@ Esp::Esp(const UsartNum &usartNum)
         usartConfig_.flowControlState = kNone,
         usartConfig_.baudRate = ESP_BAUD_RATE },
     usart_(usartConfig_) {
+        switch (usartNum) { 
+        case kUsart1: 
+            Rcc::Enable(Peripheral::kUSART1); 
+            break; 
+        case kUsart2: 
+            Rcc::Enable(Peripheral::kUSART2); 
+            break; 
+        case kUsart3: 
+            Rcc::Enable(Peripheral::kUSART3); 
+            break;         
+        }
         usart_.Init();
     }
 
@@ -92,41 +107,9 @@ void Esp::ServerConnect(const char* protocol, const char* ip, uint16_t port) {
     this->Send(commandStrings[Commands::kCOMMA]);
     this->Send(ip);
     this->Send(commandStrings[Commands::kCOMMA]);
-    char strPort[6] = {0};
-    Helper_IntToString(port, strPort);
-    Send(strPort);
+    std::string strPort = std::to_string(port);
+    Send(strPort.c_str());
     this->Send(commandStrings[Commands::kAT_END]);
 }
 
 
-void Esp::Helper_IntToString(int num, char *str) {
-    int index = 0;
-    int  negFlag = 0;
-    // Handle the case when the number is 0
-    if (num == 0) {
-        str[index++] = '0';
-        str[index] = '\0';
-        return;
-    }   
-    // Handle the case when the number is negative
-    if (num < 0) {
-        num *= -1;
-        str[index++] = '-';
-        negFlag = 1;
-    }
-
-    // Process each digit of the number
-    while (num != 0) {
-        str[index] = (num % 10) + '0';  //  Convert digit to character
-        num /= 10;  //   Remove the processed digit
-        index++;
-    }
-    str[index] = '\0';  //  Null-terminate the string
-
-    //  Reverse the string to get the correct order
-    for (int i = negFlag; i < index / 2; i++) {
-        char temp = str[i];
-        str[i] = str[index - i - 1];
-        str[index - i - 1] = temp;
-    }
-}

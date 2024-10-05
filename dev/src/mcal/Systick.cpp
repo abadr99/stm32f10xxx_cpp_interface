@@ -20,6 +20,11 @@ using namespace stm32::type;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::registers::systick;
 
+#define TO_STRING(str_)  #str_
+
+#define SYSTICK_CONFIG_ERROR(error_) \
+    TO_STRING(Invalid Systick error_)
+
 // ------- ASSERTS TO ENSURE SYSTICK LAYOUT
 ASSERT_STRUCT_SIZE(SystickRegDef, (sizeof(RegWidth_t) * 3));
 ASSERT_MEMBER_OFFSET(SystickRegDef, CTRL, 0);
@@ -32,6 +37,8 @@ static constexpr uint32_t kSystickMaxVal = util::GetOnes<uint32_t>(24);
 typename Systick::pFunction Systick::PointerToISR = nullptr;
 
 void Systick::Enable(CLKSource clksource) {
+    STM32_ASSERT((clksource == kAHB_Div_8) || 
+                 (clksource == kAHB), SYSTICK_CONFIG_ERROR(CLKSource));
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->CTRL.TICKINT = 0;
     SYSTICK->CTRL.CLKSOURCE = clksource;
