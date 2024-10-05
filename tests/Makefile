@@ -15,7 +15,8 @@ U_LD := -lgtest -lpthread
 
 U_INC := -I../dev -I../dev/inc/
 ifeq ($(OS),Windows_NT)
-U_INC += -I"$env:USERPROFILE\vcpkg\installed\x64-windows\include" -L"$env:USERPROFILE\vcpkg\installed\x64-windows\lib"
+USERPROFILE := $(shell echo $$USERPROFILE)
+U_INC += -I"$(USERPROFILE):USERPROFILE\vcpkg\installed\x64-windows\include" -L"$(USERPROFILE):USERPROFILE\vcpkg\installed\x64-windows\lib"
 endif
 
 # ---- TEST COVERAGE
