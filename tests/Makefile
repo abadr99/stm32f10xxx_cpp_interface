@@ -11,11 +11,19 @@ U_SRC := $(shell find $(U_SRCS_DIRS) -type f -name "*.cpp")
 U_OBJ := $(U_SRC:.cpp=.o)
 
 U_TARGET := unittests/unittests.elf
+
+ifeq ($(OS),Windows_NT)
+USERPROFILE := $(shell echo $$USERPROFILE)
+endif 
+
+ifeq ($(OS),Windows_NT)
+U_LD := "$(USERPROFILE)\vcpkg\installed\x64-windows\lib\libgtest.a" "$(USERPROFILE)\vcpkg\installed\x64-windows\lib\libgtest_main.a"
+else
 U_LD := -lgtest -lpthread 
+endif 
 
 U_INC := -I../dev -I../dev/inc/
 ifeq ($(OS),Windows_NT)
-USERPROFILE := $(shell echo $$USERPROFILE)
 U_INC += -I"$(USERPROFILE)\vcpkg\installed\x64-windows\include" -L"$(USERPROFILE)\vcpkg\installed\x64-windows\lib"
 endif
 
