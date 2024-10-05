@@ -65,11 +65,16 @@ jobs:
     needs: [dev-style-checking, test-style-checking, static-analysis, hardware-tests-style-checking]
     steps:
     - uses: actions/checkout@v3
-    - name: Configure Building
+    - name: Install Chocolatey
       run: |
-        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-        ./tools/github/windows/configure.ps1
-      shell: pwsh
+        Set-ExecutionPolicy Bypass -Scope Process -Force; `
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
+        iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    - name: Install ARM GCC Toolchain
+      run: choco install -y gcc-arm-embedded
+    - name: Add ARM GCC to PATH
+      run: |
+        $Env:Path += ';C:\Program Files (x86)\GNU Arm Embedded Toolchain\10 2021.10\bin'
     - name: Building For STM32f103 Target
       run: make -C dev build
     - name: Upload objects artifact
