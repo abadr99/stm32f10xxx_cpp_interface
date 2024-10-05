@@ -16,7 +16,7 @@ U_LD := -lgtest -lpthread
 U_INC := -I../dev -I../dev/inc/
 ifeq ($(OS),Windows_NT)
 USERPROFILE := $(shell echo $$USERPROFILE)
-U_INC += -I"$(USERPROFILE):\vcpkg\installed\x64-windows\include" -L"$(USERPROFILE):\vcpkg\installed\x64-windows\lib"
+U_INC += -I"$(USERPROFILE)\vcpkg\installed\x64-windows\include" -L"$(USERPROFILE)\vcpkg\installed\x64-windows\lib"
 endif
 
 # Linting
