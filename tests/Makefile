@@ -25,7 +25,7 @@ endif
 
 
 ifeq ($(OS),Windows_NT)
-U_LD :=  -L$(VCPKG_LIB) -lgtest 
+U_LD :=  -L$(VCPKG_LIB) -lgtest -lpthread
 else
 U_LD := -lgtest -lpthread 
 endif 
@@ -51,7 +51,7 @@ cpplint:
 
 # Build target
 build-unittests: $(U_OBJ)
-	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
+	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_INC) $(U_LD) -o $(U_TARGET)
 	@echo "[MAKEFILE]: Build Successfully ..."
 
 # Rule for creating object files
