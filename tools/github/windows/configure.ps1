@@ -1,54 +1,9 @@
-# Define download URL and destination
-$downloadUrl = "https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2?rev=78196d3461ba4c9089a67b5f33edf82a&hash=5631ACEF1F8F237389F14B41566964EC"
-$destinationFolder = "C:\opt"
-$destinationFile = "${destinationFolder}\gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2"
 
-# Create destination folder if it doesn't exist
-if (-not (Test-Path $destinationFolder)) {
-    Write-Host "Creating directory: ${destinationFolder}"
-    New-Item -Path $destinationFolder -ItemType Directory
-}
+echo "--- Install Chocolatey"
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-# Download the file with retries
-$retryCount = 3
-for ($i = 1; $i -le $retryCount; $i++) {
-    try {
-        Write-Host "Attempt ${i}: Downloading GCC ARM toolchain..."
-        Invoke-WebRequest -Uri $downloadUrl -OutFile $destinationFile -UseBasicParsing -Verbose
-        if (Test-Path $destinationFile) {
-            Write-Host "Download successful!"
-            break
-        }
-    } catch {
-        Write-Host "Download failed on attempt ${i}. Retrying..."
-        Start-Sleep -Seconds 10
-    }
-}
+echo "--- Install ARM GCC Toolchain"
+choco install -y gcc-arm-embedded
 
-if (-not (Test-Path $destinationFile)) {
-    Write-Host "Error: Failed to download the file after ${retryCount} attempts."
-    exit 1
-}
-
-# Extract the tar.bz2 file using 7zip (which is available on GitHub runners)
-Write-Host "Extracting the toolchain using 7zip..."
-if (-not (Get-Command "7z" -ErrorAction SilentlyContinue)) {
-    Write-Host "Error: '7z' is not available. Please ensure 7zip is installed."
-    exit 1
-}
-
-# Use 7zip to extract the file
-Write-Host "configure.ps1: Extracting $destinationFile to $destinationFolder using 7z"
-7z x $destinationFile -o$destinationFolder
-#tar -xvjf $destinationFile -C $destinationFolder
-
-# Optionally, update the PATH (adding the bin folder to the system PATH environment variable)
-$binPath = "${destinationFolder}\gcc-arm-none-eabi-10.3-2021.10\bin"
-[System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";${binPath}", [System.EnvironmentVariableTarget]::Machine)
-
-Write-Host "GCC ARM toolchain installation complete. The bin directory has been added to the PATH."
-
-
-# ADD to enviroment path 
-Write-Host "C:\opt\gcc-arm-none-eabi-10.3-2021.10\bin" >> $env:GITHUB_PATH
-ls C:\opt\
+echo "--- Add ARM GCC to PATH"
+$Env:Path += ';C:\Program Files (x86)\GNU Arm Embedded Toolchain\10 2021.10\bin'
