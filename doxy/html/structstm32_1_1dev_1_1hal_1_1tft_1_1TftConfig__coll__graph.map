@@ -1,0 +1,5 @@
+<map id="stm32::dev::hal::tft::TftConfig" name="stm32::dev::hal::tft::TftConfig">
+<area shape="rect" id="node1" title=" " alt="" coords="135,109,279,151"/>
+<area shape="rect" id="node2" href="$classstm32_1_1dev_1_1mcal_1_1spi_1_1Spi.html" title=" " alt="" coords="5,5,195,32"/>
+<area shape="rect" id="node3" href="$classstm32_1_1dev_1_1mcal_1_1pin_1_1Pin.html" title=" " alt="" coords="219,5,410,32"/>
+</map>

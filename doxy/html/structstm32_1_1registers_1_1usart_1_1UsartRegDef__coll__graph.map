@@ -1,0 +1,8 @@
+<map id="stm32::registers::usart::UsartRegDef" name="stm32::registers::usart::UsartRegDef">
+<area shape="rect" id="node1" title=" " alt="" coords="255,136,424,177"/>
+<area shape="rect" id="node2" href="$unionstm32_1_1registers_1_1usart_1_1UsartRegDef_1_1BRR.html" title=" " alt="" coords="5,5,175,47"/>
+<area shape="rect" id="node3" href="$unionstm32_1_1registers_1_1usart_1_1UsartRegDef_1_1CR1.html" title=" " alt="" coords="5,71,175,112"/>
+<area shape="rect" id="node4" href="$unionstm32_1_1registers_1_1usart_1_1UsartRegDef_1_1CR2.html" title=" " alt="" coords="5,136,175,177"/>
+<area shape="rect" id="node5" href="$unionstm32_1_1registers_1_1usart_1_1UsartRegDef_1_1CR3.html" title=" " alt="" coords="5,201,175,243"/>
+<area shape="rect" id="node6" href="$unionstm32_1_1registers_1_1usart_1_1UsartRegDef_1_1SR.html" title=" " alt="" coords="5,267,175,308"/>
+</map>

@@ -1,0 +1,11 @@
+<map id="stm32::registers::rcc::RccRegDef" name="stm32::registers::rcc::RccRegDef">
+<area shape="rect" id="node1" title=" " alt="" coords="303,235,457,276"/>
+<area shape="rect" id="node2" href="$unionstm32_1_1registers_1_1rcc_1_1RccRegDef_1_1CFGR.html" title=" " alt="" coords="16,5,171,47"/>
+<area shape="rect" id="node3" href="$unionstm32_1_1registers_1_1rcc_1_1RccRegDef_1_1AHBRSTR.html" title=" " alt="" coords="8,71,179,112"/>
+<area shape="rect" id="node4" href="$unionstm32_1_1registers_1_1rcc_1_1RccRegDef_1_1APB1ENR.html" title=" " alt="" coords="9,136,178,177"/>
+<area shape="rect" id="node5" href="$unionstm32_1_1registers_1_1rcc_1_1RccRegDef_1_1AHBENR.html" title=" " alt="" coords="12,201,175,243"/>
+<area shape="rect" id="node6" href="$unionstm32_1_1registers_1_1rcc_1_1RccRegDef_1_1APB2ENR.html" title=" " alt="" coords="9,267,178,308"/>
+<area shape="rect" id="node7" href="$unionstm32_1_1registers_1_1rcc_1_1RccRegDef_1_1APB2RSTR.html" title=" " alt="" coords="5,332,181,373"/>
+<area shape="rect" id="node8" href="$unionstm32_1_1registers_1_1rcc_1_1RccRegDef_1_1CR.html" title=" " alt="" coords="16,397,171,439"/>
+<area shape="rect" id="node9" href="$unionstm32_1_1registers_1_1rcc_1_1RccRegDef_1_1APB1RSTR.html" title=" " alt="" coords="5,463,181,504"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="stm32::registers::spi::SpiRegDef" name="stm32::registers::spi::SpiRegDef">
+<area shape="rect" id="node1" title=" " alt="" coords="239,71,393,112"/>
+<area shape="rect" id="node2" href="$unionstm32_1_1registers_1_1spi_1_1SpiRegDef_1_1CR1.html" title=" " alt="" coords="5,5,160,47"/>
+<area shape="rect" id="node3" href="$unionstm32_1_1registers_1_1spi_1_1SpiRegDef_1_1CR2.html" title=" " alt="" coords="5,71,160,112"/>
+<area shape="rect" id="node4" href="$unionstm32_1_1registers_1_1spi_1_1SpiRegDef_1_1SR.html" title=" " alt="" coords="5,136,160,177"/>
+</map>
