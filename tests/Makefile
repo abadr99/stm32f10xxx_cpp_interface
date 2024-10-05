@@ -12,10 +12,11 @@ U_OBJ := $(U_SRC:.cpp=.o)
 
 U_TARGET := unittests/unittests.elf
 U_LD := -lgtest -lpthread 
-ifeq ($(OS),Windows_NT)
-U_LD += -I"$env:USERPROFILE\vcpkg\installed\x64-windows\include" -L"$env:USERPROFILE\vcpkg\installed\x64-windows\lib"
-endif
+
 U_INC := -I../dev -I../dev/inc/
+ifeq ($(OS),Windows_NT)
+U_INC += -I"$env:USERPROFILE\vcpkg\installed\x64-windows\include" -L"$env:USERPROFILE\vcpkg\installed\x64-windows\lib"
+endif
 
 # Linting
 cpplint:
