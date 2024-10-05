@@ -36,4 +36,4 @@
 *.elf
 
 # doxygen files
-./doxy/html/
+doxy/html
