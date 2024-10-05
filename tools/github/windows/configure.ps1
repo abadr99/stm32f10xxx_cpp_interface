@@ -38,6 +38,7 @@ if (-not (Get-Command "7z" -ErrorAction SilentlyContinue)) {
 }
 
 # Use 7zip to extract the file
+Write-Host "configure.ps1: Extracting $destinationFile to $destinationFolder using 7z"
 7z x $destinationFile -o$destinationFolder
 #tar -xvjf $destinationFile -C $destinationFolder
 
@@ -49,5 +50,5 @@ Write-Host "GCC ARM toolchain installation complete. The bin directory has been 
 
 
 # ADD to enviroment path 
-echo "C:\opt\gcc-arm-none-eabi-10.3-2021.10\bin" >> $env:GITHUB_PATH
+Write-Host "C:\opt\gcc-arm-none-eabi-10.3-2021.10\bin" >> $env:GITHUB_PATH
 ls C:\opt\
