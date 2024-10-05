@@ -43,6 +43,7 @@ cpplint:
 
 # Build target
 build-unittests: $(U_OBJ)
+	ls C:\Users\runneradmin\vcpkg\installed\x64-windows\
 	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
 	@echo "[MAKEFILE]: Build Successfully ..."
 
