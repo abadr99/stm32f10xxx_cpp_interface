@@ -19,7 +19,7 @@ Write-Host "Installing Google Test (gtest)..."
 Write-Host "Checking if vcpkg package is installed successfully"
 vcpkg list
 ls C:\Users\runneradmin\vcpkg\installed\
-
+ls C:\Users\runneradmin\vcpkg\installed\x64-windows
 
 # Optionally, integrate vcpkg with MSBuild to simplify project setup
 Write-Host "Integrating vcpkg with MSBuild..."
