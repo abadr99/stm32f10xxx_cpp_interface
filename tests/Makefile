@@ -25,7 +25,7 @@ endif
 
 U_INC := -I../dev -I../dev/inc/
 ifeq ($(OS),Windows_NT)
-U_INC += -I$(USERPROFILE)\vcpkg\installed\x64-windows\include -L$(USERPROFILE)\vcpkg\installed\x64-windows\lib
+U_INC += -I$(USERPROFILE)/vcpkg/installed/x64-windows/include -L$(USERPROFILE)/vcpkg/installed/x64-windows/lib
 endif
 
 # Linting
