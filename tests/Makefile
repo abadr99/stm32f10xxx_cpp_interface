@@ -17,7 +17,7 @@ USERPROFILE := $(shell echo $$USERPROFILE)
 endif 
 
 ifeq ($(OS),Windows_NT)
-U_LD := $(USERPROFILE)\vcpkg\installed\x64-windows\lib\libgtest.a $(USERPROFILE)\vcpkg\installed\x64-windows\lib\libgtest_main.a
+U_LD := $(USERPROFILE)/vcpkg/packages/gtest_x64-windows/lib/pkgconfig/gtest.pc $(USERPROFILE)/vcpkg/packages/gtest_x64-windows/lib/pkgconfig/gtest_main.pc
 else
 U_LD := -lgtest -lpthread 
 endif 
