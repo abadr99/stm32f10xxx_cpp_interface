@@ -17,7 +17,7 @@ USERPROFILE := $(shell echo $$USERPROFILE)
 endif 
 
 ifeq ($(OS),Windows_NT)
-U_LD := "$(USERPROFILE)\vcpkg\installed\x64-windows\lib\libgtest.a" "$(USERPROFILE)\vcpkg\installed\x64-windows\lib\libgtest_main.a"
+U_LD := $(USERPROFILE)\vcpkg\installed\x64-windows\lib\libgtest.a $(USERPROFILE)\vcpkg\installed\x64-windows\lib\libgtest_main.a
 else
 U_LD := -lgtest -lpthread 
 endif 
@@ -43,7 +43,6 @@ cpplint:
 
 # Build target
 build-unittests: $(U_OBJ)
-	ls C:\Users\runneradmin\vcpkg\installed\x64-windows\
 	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
 	@echo "[MAKEFILE]: Build Successfully ..."
 
