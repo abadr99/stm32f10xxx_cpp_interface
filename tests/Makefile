@@ -18,14 +18,14 @@ endif
 
 
 ifeq ($(OS),Windows_NT)
-U_LD :=  -L$(USERPROFILE)/vcpkg/installed/x64-windows/lib # -lgtest -lgtest_main -lpthread
+U_LD :=  -L$(USERPROFILE)/vcpkg/installed/x64-windows/lib -lgtest -lgtest_main -lpthread
 else
 U_LD := -lgtest -lpthread 
 endif 
 
 U_INC := -I../dev -I../dev/inc/
 ifeq ($(OS),Windows_NT)
-U_INC += -I$(USERPROFILE)/vcpkg/installed/x64-windows/include
+U_INC += -I$(USERPROFILE)/vcpkg/installed/x64-windows/include 
 endif
 
 # ---- TEST COVERAGE
