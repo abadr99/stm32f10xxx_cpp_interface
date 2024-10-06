@@ -16,8 +16,9 @@ ifeq ($(OS),Windows_NT)
 USERPROFILE := $(shell echo $$USERPROFILE)
 endif 
 
+
 ifeq ($(OS),Windows_NT)
-U_LD := $(USERPROFILE)/vcpkg/packages/gtest_x64-windows/lib/pkgconfig/gtest.pc $(USERPROFILE)/vcpkg/packages/gtest_x64-windows/lib/pkgconfig/gtest_main.pc
+U_LD := -lgtest -lgtest_main -lpthread
 else
 U_LD := -lgtest -lpthread 
 endif 
