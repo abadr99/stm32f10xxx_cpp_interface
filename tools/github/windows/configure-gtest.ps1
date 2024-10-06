@@ -12,16 +12,14 @@ if (-not (Test-Path $vcpkgPath)) {
     cd $vcpkgPath
 }
 
-# Install Google Test for MinGW: The line .\vcpkg install gtest:x64-mingw ensures 
-# that Google Test is installed for the x64-mingw triplet, which is compatible with MinGW
+
 Write-Host "Installing Google Test (gtest)..."
-.\vcpkg install gtest:x64-mingw
+.\vcpkg install gtest:x64-windows
 
 Write-Host "Checking if vcpkg package is installed successfully"
 vcpkg list
 ls C:\Users\runneradmin\vcpkg\installed\
-ls C:\Users\runneradmin\vcpkg\installed\\x64-mingw\include\
-ls C:\Users\runneradmin\vcpkg\installed\x64-mingw\lib
+
 
 # Optionally, integrate vcpkg with MSBuild to simplify project setup
 Write-Host "Integrating vcpkg with MSBuild..."
