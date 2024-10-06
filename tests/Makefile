@@ -18,14 +18,14 @@ endif
 
 
 ifeq ($(OS),Windows_NT)
-U_LD :=  -L$(USERPROFILE)/vcpkg/installed/x64-mingw/lib -lgtest -lgtest_main -lpthread
+U_LD :=  -L$(USERPROFILE)/vcpkg/installed/x86-mingw/lib -lgtest -lgtest_main -lpthread
 else
 U_LD := -lgtest -lpthread 
 endif 
 
 U_INC := -I../dev -I../dev/inc/
 ifeq ($(OS),Windows_NT)
-U_INC += -I$(USERPROFILE)/vcpkg/installed/x64-mingw/include 
+U_INC += -I$(USERPROFILE)/vcpkg/installed/x86-mingw/include 
 endif
 
 # Linting
