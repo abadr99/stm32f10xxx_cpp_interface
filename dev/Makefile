@@ -10,6 +10,8 @@ LINT_PATH:= ../tools/cppliny.py
 HW_TEST_PATH= ../tests/hardware
 HW_MAINS=$(shell find $(HW_TEST_PATH) -name "*.cpp")
 
+DOXYFILE := ../doxy/conf
+DOXYGEN_OUTPUT := ../doxy/html
 
 # ---------------------------------------------------------------
 # compile
@@ -82,6 +84,22 @@ build-opt: $(OBJS)
 # ------------------------------------------
 upload:
 	$(FLASH) write $(HEX_TARGET) 0x08000000 
+
+# ------------------------------------------
+# Rule to generate Doxygen documentation
+# make doxygen
+# ------------------------------------------
+doxygen:
+	@echo "Generating Doxygen documentation..."
+	@doxygen $(DOXYFILE)
+
+# ------------------------------------------
+# Rule to clean up Doxygen output
+# make clean-doxygen
+# ------------------------------------------
+clean-doxygen:
+	@echo "Cleaning Doxygen output..."
+	@rm -rf $(DOXYGEN_OUTPUT)
 
 clean:
 	@rm -rf *.o

@@ -15,16 +15,32 @@ namespace dev {
 namespace hal {
 namespace lm35 {
 /**
- * @note: Config ADC before using LM35
+ * @brief Class for interfacing with an LM35 temperature sensor.
+ * 
+ * This class allows reading the temperature value from the LM35 sensor using an ADC.
+ * 
+ * @note The ADC must be configured before using this class.
  */
 class LM35 {
  public:
     using adc_t = stm32::dev::mcal::adc::ADC;
+
+    /**
+     * @brief Constructs an LM35 sensor object.
+     * 
+     * @param adc The ADC peripheral instance used for reading the sensor value.
+     */
     explicit LM35(const adc_t& adc);
+
+    /**
+     * @brief Retrieves the current temperature value from the LM35 sensor.
+     * 
+     * @return The raw temperature value (in ADC units).
+     */
     uint16_t GetTempVal();
 
  private:
-    adc_t adc_;
+    adc_t adc_;   /**< The ADC instance used for sensor readings. */
 };
 }   //  namespace lm35
 }   //  namespace hal

@@ -20,64 +20,164 @@ namespace mcal { namespace usart { enum UsartNum; }}
 namespace hal {
 namespace bluetooth {
 
+/**
+ * @class HC05
+ * @brief Class to interface with the HC-05 Bluetooth module.
+ * 
+ * This class provides methods for Bluetooth communication using USART, 
+ * including functions to send and receive data, as well as to execute AT commands 
+ * for configuring the HC-05 module.
+ */
 class HC05 {
  public:
-    enum DeviceRole  {kSlave, kMaster};
-    enum InquiryMode {kStandard, kRssi};
+    /**
+     * @enum DeviceRole
+     * @brief Specifies the role of the Bluetooth device (Master or Slave).
+     */
+    enum DeviceRole { 
+        kSlave,   /**< Device operates as a slave. */
+        kMaster   /**< Device operates as a master. */
+    };
 
-    using Usart = stm32::dev::mcal::usart::Usart; 
+    /**
+     * @enum InquiryMode
+     * @brief Specifies the inquiry mode for discovering Bluetooth devices.
+     */
+    enum InquiryMode { 
+        kStandard,   /**< Standard inquiry mode. */
+        kRssi        /**< Inquiry mode with RSSI (signal strength). */
+    };
+
+    using Usart = stm32::dev::mcal::usart::Usart;
+
+    /**
+     * @brief Constructs an HC05 object.
+     * 
+     * @param usart The USART instance used for Bluetooth communication.
+     */
     explicit HC05(const Usart& usart);
   
+    /**
+     * @brief Sends a string via Bluetooth.
+     * 
+     * @param str A null-terminated C-string to be sent.
+     */
     void Send(const char* str);
+
+    /**
+     * @brief Sends a numeric value via Bluetooth.
+     * 
+     * @param n The numeric data to be sent.
+     */
     void Send(typename Usart::DataValType n);
+
+    /**
+     * @brief Sends a C++ string via Bluetooth.
+     * 
+     * @param str The string to be sent.
+     */
     void Send(const std::string& str);
+
+    /**
+     * @brief Receives data via Bluetooth.
+     * 
+     * @return Received data as Usart::DataValType.
+     */
     typename Usart::DataValType Receive();
-    
+
     // ====================== Handle AT Commands ===============================
-    // See: https://components101.com/sites/default/files/component_datasheet/HC-05%20Datasheet.pdf
-    /*
-    | Command                        | Description                         | Response           |
-    |--------------------------------|-------------------------------------|------------------- |
-    | AT                             | Check connection                    | OK                 |
-    | AT+RESET                       | Restart the module                  | OK                 |
-    | AT+VERSION?                    | Check firmware version              | +VERSION:<version> |
-    | AT+NAME=<name>                 | Set device name                     | OK                 |
-    | AT+PSWD=<pin>                  | Set pairing PIN code                | OK                 |
-    | AT+ROLE=<role>                 | Set device role (0=slave, 1=master) | OK                 |
-    | AT+UART=<baud>,<stop>,<parity> | Set UART baud rate                  | OK                 |
-    | AT+INQM=<parm1>,<parm2>,<parm3>| Set inquiry mode                    | OK                 |
-    | AT+BIND=<address>              | Bind to specific address            | OK                 |
-    | AT+INQ                         | Inquiry to available devices        | List of devices    |
-    */
+
+    /**
+     * @brief Checks if the HC-05 module is connected.
+     * Sends the "AT" command and expects an "OK" response.
+     */
     void Test();
+
+    /**
+     * @brief Resets the HC-05 module.
+     * Sends the "AT+RESET" command.
+     */
     void Reset();
+
+    /**
+     * @brief Retrieves the firmware version of the HC-05 module.
+     * Sends the "AT+VERSION?" command.
+     */
     void GetFirmWareVersion();
+
+    /**
+     * @brief Sets the name of the HC-05 Bluetooth device.
+     * 
+     * @param name The desired device name.
+     */
     void SetDeviceName(const std::string& name);
+
+    /**
+     * @brief Sets the pairing PIN code for the HC-05 module.
+     * 
+     * @param pin The desired PIN code for pairing.
+     */
     void SetParingPin(const std::string& pin);
+
+    /**
+     * @brief Sets the role of the HC-05 device (Master or Slave).
+     * 
+     * @param role The device role (kMaster or kSlave).
+     */
     void SetDeviceRole(DeviceRole role);
-    // TODO(@abadr99): Check if this function should be private
+
+    /**
+     * @brief Configures the UART settings (baud rate, stop bits, and parity).
+     * 
+     * @param baudRate The UART baud rate.
+     * @param stopBits The number of stop bits.
+     * @param parity The UART parity mode.
+     */
     void SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity);
+
+    /**
+     * @brief Configures the inquiry mode for discovering Bluetooth devices.
+     * 
+     * @param im The inquiry mode (kStandard or kRssi).
+     * @param maxNumberOfBluetoothDevices The maximum number of devices to discover.
+     * @param timeout The inquiry timeout period.
+     */
     void SetInquiryMode(InquiryMode im, uint32_t maxNumberOfBluetoothDevices, uint32_t timeout);
+
+    /**
+     * @brief Binds the HC-05 module to a specific Bluetooth device by address.
+     * 
+     * @param address The Bluetooth address to bind to.
+     */
     void SetBindToAddress(const std::string& address);
+
+    /**
+     * @brief Initiates an inquiry to discover nearby Bluetooth devices.
+     */
     void InquiryBluetoothDevices();
-    // TODO(@abadr99): Support more AT commands
+
  private:
-    Usart usart_;
+    Usart usart_;  /**< USART instance for communication. */
+
+    /**
+     * @enum Commands
+     * @brief Enumeration of AT commands for the HC-05 module.
+     */
     enum Commands {
-      kAT,
-      kAT_RESET,
-      kAT_VERSION,
-      kAT_NAME,
-      kAT_PSWD,
-      kAT_ROLE,
-      kAT_UART,
-      kAT_INQM,
-      kAT_BIND,
-      kAT_INQ,
-      kSET_POSTFIX,
-      kGET_POSTFIX,
-      kAT_END,
-      kCOMMA,
+        kAT,            /**< Basic AT command */
+        kAT_RESET,      /**< Reset the module */
+        kAT_VERSION,    /**< Query firmware version */
+        kAT_NAME,       /**< Set device name */
+        kAT_PSWD,       /**< Set pairing password */
+        kAT_ROLE,       /**< Set device role (master/slave) */
+        kAT_UART,       /**< Set UART parameters */
+        kAT_INQM,       /**< Set inquiry mode */
+        kAT_BIND,       /**< Bind to a specific address */
+        kAT_INQ,        /**< Inquiry command to search for devices */
+        kSET_POSTFIX,   /**< Set command postfix */
+        kGET_POSTFIX,   /**< Get command postfix */
+        kAT_END,        /**< End of command */
+        kCOMMA          /**< Command separator */
     };
 };
 

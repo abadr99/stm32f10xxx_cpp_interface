@@ -18,19 +18,45 @@ namespace dev {
 namespace mcal {
 namespace gpio {
 
+/**
+ * @brief Class to handle General-Purpose Input/Output (GPIO) operations.
+ */
 class Gpio {
  public:
-  using Pin = stm32::dev::mcal::pin::Pin;
-  using Port = stm32::dev::mcal::pin::Port;
-  using PinMode = stm32::dev::mcal::pin::PinMode;
-  using PinVal_t = uint8_t;
+  using Pin = stm32::dev::mcal::pin::Pin;             /**< Type alias for Pin class. */
+  using Port = stm32::dev::mcal::pin::Port;           /**< Type alias for Port class. */
+  using PinMode = stm32::dev::mcal::pin::PinMode;     /**< Type alias for PinMode enum. */
+  using PinVal_t = uint8_t;                           /**< Type alias for pin value type. */
 
-    // As Gpio class is used to deal with general purpose IO and all pin's 
-  // configurations are abstracted in Pin class so we can use Set() method 
-  // to set all gpio configurations
+  /**
+   * @brief Configures the given GPIO pin with all settings defined in the Pin class.
+   * 
+   * @param pin The Pin object containing the configuration details.
+   */
   static void Set(const Pin& pin);
+
+  /**
+   * @brief Sets the mode (input, output, etc.) for the given GPIO pin.
+   * 
+   * @param pin The Pin object for which the mode needs to be set.
+   * @param mode The desired PinMode for the pin.
+   */
   static void SetPinMode(const Pin& pin, PinMode mode);
+
+  /**
+   * @brief Sets the voltage level (high/low) for the specified GPIO pin.
+   * 
+   * @param pin The Pin object for which the value needs to be set.
+   * @param pinState The digital voltage level (high/low).
+   */
   static void SetPinValue(const Pin& pin, stm32::type::DigitalVoltage pinState);
+
+  /**
+   * @brief Gets the current voltage level (high/low) of the specified GPIO pin.
+   * 
+   * @param pin The Pin object to read the value from.
+   * @return PinVal_t The current voltage level of the pin (0 for low, 1 for high).
+   */
   static PinVal_t GetPinValue(Pin pin);
 };
 
