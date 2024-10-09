@@ -13,6 +13,7 @@
 #define DEV_INC_MCAL_BASEADDRESS_H_
 
 #include "utils/Types.h"
+#include "utils/Array.h"
 #include "mcal/Peripherals.h"
 #include "mcal/stm32f103xx.h"
 
@@ -22,7 +23,24 @@ namespace stm32 {
 namespace constant {
 
 using stm32::peripherals::Peripheral;
+class Register {
+ public:
+    void setVal(RegWidth_t value) {val = value;}
+    const RegWidth_t& getVal() const {return val;}
 
+ private:
+    RegWidth_t val;
+};
+class RegisterFile {
+ public:
+    RegisterFile() : registers{} {}
+    Register& operator[](uint32_t index) {
+        return registers[index];
+    }
+ private:
+    static constexpr uint32_t RegistersNum = 32;
+    stm32::util::Array<Register, RegistersNum> registers;
+};
 template <Peripheral peripheralT>
 struct Address {};
 
@@ -165,7 +183,6 @@ template <>
 struct Address<Peripheral::kTIM5> {
     static constexpr RegWidth_t kBaseAddr = 0x40000C00;
 };
-
 }  // namespace constant
 }  // namespace stm32
 

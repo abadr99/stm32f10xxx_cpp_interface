@@ -8,15 +8,15 @@
  * 
  */
 
-#include "Util.h"
-#include "Pin.h"
-#include "Gpio.h"
-#include "Rcc.h"
-#include "Systick.h"
-#include "Array.h"
-#include "Assert.h"
-#include "BitManipulation.h"
-#include "Dac.h"
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+#include "mcal/Rcc.h"
+#include "mcal/Systick.h"
+#include "utils/Array.h"
+#include "utils/Assert.h"
+#include "utils/Util.h"
+#include "utils/BitManipulation.h"
+#include "hal/Dac.h"
 
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
@@ -24,15 +24,8 @@ using namespace stm32::dev::mcal::rcc;
 using namespace stm32::util;
 using namespace stm32::dev::hal::dac;
 
-Dac::Dac(Array<Pin, 8> dacPins, CLKSource clock) : dacPins_(dacPins), clock_(clock) { 
-    for (uint8_t i = 0; i < dacPins_.Size(); i++) {
-        STM32_ASSERT(dacPins_[i].IsAnalog());
-        STM32_ASSERT(dacPins_[i].IsInput());
-        Rcc::Enable(MapPortToPeripheral(dacPins_[i].GetPort()));
-    }
-    for (uint8_t i = 0; i < dacPins_.Size(); i++) {
-        Gpio::Set(dacPins_[i]);
-    }
+Dac::Dac(const Array<Pin, 8>& dacPins, CLKSource clock) : dacPins_(dacPins), clock_(clock) { 
+    InitializePins();
     Systick::Enable(clock_);
 }
 
