@@ -170,7 +170,7 @@ void Rcc::Enable(Peripheral p) {
     switch (p) {
         #define P(name_, bridge_)\
             case Peripheral::k##name_: RCC->bridge_##ENR.name_##EN = 1; break;
-        RCC_PERIPHERALS
+        PERIPHERALS
         #undef P
         default: STM32_ASSERT(0, RCC_EMPTY_MESSAGE); break;
     }
@@ -180,7 +180,7 @@ void Rcc::Disable(Peripheral p) {
     switch (p) {
         #define P(name_, bridge_)\
             case Peripheral::k##name_: RCC->bridge_##RSTR.name_##RST = 1; break;
-        RCC_PERIPHERALS
+        PERIPHERALS
         #undef P
         default: STM32_ASSERT(0, RCC_EMPTY_MESSAGE); break;
     }
