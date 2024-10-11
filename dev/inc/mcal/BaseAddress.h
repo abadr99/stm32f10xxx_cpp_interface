@@ -41,146 +41,158 @@ class RegisterFile {
     static constexpr uint32_t RegistersNum = 32;
     stm32::util::Array<Register, RegistersNum> registers;
 };
-template <Peripheral peripheralT>
-struct Address {};
-
+template <Peripheral peripheralT, bool test>
+struct Address {
+    static  RegWidth_t kBaseAddr;
+    static RegWidth_t kTestAddr;
+    static RegWidth_t getBaseAddr() {
+        return test ? kTestAddr : kBaseAddr;
+    }
+    static void setTestAddr(RegWidth_t testAddr) {
+        kTestAddr=testAddr;
+    }
+};
+template <Peripheral peripheralT, bool test>
+RegWidth_t Address<peripheralT, test>::kBaseAddr=0;
+template <Peripheral peripheralT, bool test>
+RegWidth_t Address<peripheralT, test>::kTestAddr=0;
 template <>
-struct Address<Peripheral::kRCC> {
+struct Address<Peripheral::kRCC,false> {
     static constexpr RegWidth_t kBaseAddr = 0x40021000;
 };
 
 template <>
-struct Address<Peripheral::kIOPA> {
+struct Address<Peripheral::kIOPA, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40010800;
 };
 
 template <>
-struct Address<Peripheral::kIOPB> {
+struct Address<Peripheral::kIOPB, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40010C00;
 };
 
 template <>
-struct Address<Peripheral::kIOPC> {
+struct Address<Peripheral::kIOPC, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40011000;
 };
 
 template <>
-struct Address<Peripheral::kEXTI> {
+struct Address<Peripheral::kEXTI, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40010400;
 };
 
 template <>
-struct Address<Peripheral::kAFIO> {
+struct Address<Peripheral::kAFIO, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40010000;
 };
 
 template <>
-struct Address<Peripheral::kNVIC> {
+struct Address<Peripheral::kNVIC, false> {
     static constexpr RegWidth_t kBaseAddr = 0xE000E100;
 };
 
 template <>
-struct Address<Peripheral::kSCB> {
+struct Address<Peripheral::kSCB, false> {
     static constexpr RegWidth_t kBaseAddr = 0xE000ED00;
 };
 
 template <>
-struct Address<Peripheral::kSYSTICK> {
+struct Address<Peripheral::kSYSTICK, false> {
     static constexpr RegWidth_t kBaseAddr = 0xE000E010;
 };
 
 template <>
-struct Address<Peripheral::kSPI1> {
+struct Address<Peripheral::kSPI1, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40013000;
 };
 
 template <>
-struct Address<Peripheral::kSPI2> {
+struct Address<Peripheral::kSPI2, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40003800;
 };
 
 template <>
-struct Address<Peripheral::kUSART1> {
+struct Address<Peripheral::kUSART1, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40013800;
 };
 
 template <>
-struct Address<Peripheral::kUSART2> {
+struct Address<Peripheral::kUSART2, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40004400;
 };
 
 template <>
-struct Address<Peripheral::kUSART3> {
+struct Address<Peripheral::kUSART3, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40004800;
 };
 
 template <>
-struct Address<Peripheral::kDMA1> {
+struct Address<Peripheral::kDMA1, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40020000;
 };
 
 template <>
-struct Address<Peripheral::kRTC> {
+struct Address<Peripheral::kRTC, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40002800;
 };
 
 template <>
-struct Address<Peripheral::kADC1> {
+struct Address<Peripheral::kADC1, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40012400;
 };
 
 template <>
-struct Address<Peripheral::kADC2> {
+struct Address<Peripheral::kADC2,  false> {
     static constexpr RegWidth_t kBaseAddr = 0x40012800;
 };
 
 template <>
-struct Address<Peripheral::kI2C1> {
+struct Address<Peripheral::kI2C1, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40005400;
 };
 
 template <>
-struct Address<Peripheral::kI2C2> {
+struct Address<Peripheral::kI2C2, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40005800;
 };
 
 template <>
-struct Address<Peripheral::kWWDG> {
+struct Address<Peripheral::kWWDG, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40003000;
 };
 
 template <>
-struct Address<Peripheral::kIWDG> {
+struct Address<Peripheral::kIWDG, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40002C00;
 };
 
 template <>
-struct Address<Peripheral::kPWR> {
+struct Address<Peripheral::kPWR, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40007000;
 };
 
 template <>
-struct Address<Peripheral::kTIM1> {
+struct Address<Peripheral::kTIM1, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40012C00;
 };
 
 template <>
-struct Address<Peripheral::kTIM2> {
+struct Address<Peripheral::kTIM2, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40000000;
 };
 
 template <>
-struct Address<Peripheral::kTIM3> {
+struct Address<Peripheral::kTIM3, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40000400;
 };
 
 template <>
-struct Address<Peripheral::kTIM4> {
+struct Address<Peripheral::kTIM4, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40000800;
 };
 
 template <>
-struct Address<Peripheral::kTIM5> {
+struct Address<Peripheral::kTIM5, false> {
     static constexpr RegWidth_t kBaseAddr = 0x40000C00;
 };
 }  // namespace constant
