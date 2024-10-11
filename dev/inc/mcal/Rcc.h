@@ -11,13 +11,14 @@
 #ifndef DEV_INC_MCAL_RCC_H_
 #define DEV_INC_MCAL_RCC_H_
 
-#include "Rcc.def"
+#include "mcal/stm32f103xx.h"
 
-#define RCC_TIMEOUT    (400)
 namespace stm32 {
 namespace dev {
 namespace mcal {
 namespace rcc {
+
+using stm32::peripherals::Peripheral;
 
 enum ClkConfig {
     kHsi,
@@ -78,15 +79,9 @@ enum HSE_Type {
     kHseRC,
 };
 
-enum class Peripheral {
-    #define P(name_, ignore_)       k##name_,
-    RCC_PERIPHERALS
-    #undef P
-    kUnknown,
-};
-
 class Rcc {
  public:
+    static void Init(bool test);
     static void SetExternalClock(const HSE_Type HseType);
     static void InitSysClock(const ClkConfig& config = kHse, const PLL_MulFactor& mulFactor = kClock_1x);   // NOLINT
     static void SetAHBPrescaler(const AHP_ClockDivider& divFactor);
@@ -104,6 +99,7 @@ class Rcc {
         kPllSource_Hse     = ClkConfig::kHse ,
         kPllSource_HseDiv2 = ClkConfig::kHseDivBy2,
     };
+    static volatile stm32::registers::rcc:: RccRegDef* RCC;
     static void WaitToReady(Flags flag);
     static void SetInternalHighSpeedClk();
     static void SetExternalHighSpeedClk();

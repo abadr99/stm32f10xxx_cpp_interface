@@ -16,6 +16,7 @@
 #include "mcal/Rcc.h"
 
 using namespace stm32;
+using namespace stm32::constant;
 using namespace stm32::dev::mcal::rcc; 
 using namespace stm32::registers::rcc; 
 
@@ -48,6 +49,17 @@ ASSERT_MEMBER_OFFSET(RccRegDef, CSR,        sizeof(RegWidth_t) * 9);
 // 2) Using External High Speed Clock i.e. HSE
 // 3) Using PLL with certain multiplication factor and source where PLL sources:
 //    3.a) HSI   3.b) HSE   3.c) HSE/2
+
+volatile RccRegDef* Rcc::RCC = nullptr;
+
+void Rcc::Init(bool test) {
+    if (test) {
+        RCC = reinterpret_cast<volatile stm32::registers::rcc::RccRegDef*>(
+            stm32::constant::Address<stm32::peripherals::Peripheral::kRCC, true>::kBaseAddr);
+    } else {
+        RCC = reinterpret_cast<volatile RccRegDef*>(Address<Peripheral::kRCC, false>::kBaseAddr);
+    }
+}
 void Rcc::InitSysClock(const ClkConfig& config,
                        const PLL_MulFactor& mulFactor) {
     if (config == kHsi  && mulFactor == kClock_1x) {    // 1) -- HSI
@@ -170,7 +182,7 @@ void Rcc::Enable(Peripheral p) {
     switch (p) {
         #define P(name_, bridge_)\
             case Peripheral::k##name_: RCC->bridge_##ENR.name_##EN = 1; break;
-        RCC_PERIPHERALS
+        PERIPHERALS
         #undef P
         default: STM32_ASSERT(0, RCC_EMPTY_MESSAGE); break;
     }
@@ -180,7 +192,7 @@ void Rcc::Disable(Peripheral p) {
     switch (p) {
         #define P(name_, bridge_)\
             case Peripheral::k##name_: RCC->bridge_##RSTR.name_##RST = 1; break;
-        RCC_PERIPHERALS
+        PERIPHERALS
         #undef P
         default: STM32_ASSERT(0, RCC_EMPTY_MESSAGE); break;
     }
