@@ -52,13 +52,8 @@ ASSERT_MEMBER_OFFSET(RccRegDef, CSR,        sizeof(RegWidth_t) * 9);
 
 volatile RccRegDef* Rcc::RCC = nullptr;
 
-void Rcc::Init(bool test) {
-    if (test) {
-        RCC = reinterpret_cast<volatile stm32::registers::rcc::RccRegDef*>(
-            stm32::constant::Address<stm32::peripherals::Peripheral::kRCC, true>::kBaseAddr);
-    } else {
-        RCC = reinterpret_cast<volatile RccRegDef*>(Address<Peripheral::kRCC, false>::kBaseAddr);
-    }
+void Rcc::Init() {
+        RCC = reinterpret_cast<volatile RccRegDef*>(Addr<Peripheral::kRCC >::getBaseAddr());
 }
 void Rcc::InitSysClock(const ClkConfig& config,
                        const PLL_MulFactor& mulFactor) {
