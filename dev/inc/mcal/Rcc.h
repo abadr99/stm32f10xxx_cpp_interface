@@ -91,6 +91,7 @@ class Rcc {
     static void AdjustInternalClock(uint8_t CalibrationValue);
     static void Enable(Peripheral p);
     static void Disable(Peripheral p);
+    
  private:
     enum Flags { kHSIRDY, kHSERDY, kPLLRDY, };
     enum PllSource {
