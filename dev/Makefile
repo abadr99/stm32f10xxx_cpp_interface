@@ -1,5 +1,8 @@
+include ../common.mk
+
+PYTHON = python
 INPUT_FILE ?= ./build/modules.in
-SOURCES := $(shell python3 ./build/Parser.py --file "$(INPUT_FILE)")
+SOURCES := $(shell $(PYTHON) ./build/Parser.py --file "$(INPUT_FILE)")
 SOURCES += $(wildcard ./src/utils/*.cpp) # ALl utils should be added with all modules
 SRC_NAMES:= $(notdir $(SOURCES))
 SOURCES_COUNT:= $(words $(SOURCES))
@@ -37,7 +40,7 @@ include build/stm32.mk
 all:build
 
 cpplint:
-	@python3 $(LINT_PATH)  --recursive .
+	@$(PYTHON) $(LINT_PATH)  --recursive .
 
 # ------------------------------------------
 # Rule to build for debug and test mode 

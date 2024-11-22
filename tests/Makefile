@@ -11,8 +11,22 @@ U_SRC := $(shell find $(U_SRCS_DIRS) -type f -name "*.cpp")
 U_OBJ := $(U_SRC:.cpp=.o)
 
 U_TARGET := unittests/unittests.elf
-U_LD := -lgtest -lpthread
+
+ifeq ($(OS),Windows_NT)
+USERPROFILE := $(shell echo $$USERPROFILE)
+endif 
+
+
+ifeq ($(OS),Windows_NT)
+U_LD :=  -L$(USERPROFILE)/vcpkg/installed/x86-mingw/lib -lgtest -lgtest_main -lpthread
+else
+U_LD := -lgtest -lpthread 
+endif 
+
 U_INC := -I../dev -I../dev/inc/
+ifeq ($(OS),Windows_NT)
+U_INC += -I$(USERPROFILE)/vcpkg/installed/x86-mingw/include 
+endif
 
 # Linting
 cpplint:
@@ -20,12 +34,12 @@ cpplint:
 
 # Build target
 build-unittests: $(U_OBJ)
-	@$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
+	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
 	@echo "[MAKEFILE]: Build Successfully ..."
 
 # Rule for creating object files
 %.o: %.cpp
-	@$(U_CXX) $(U_CXX_OPT) $(U_INC) -c $< -o $@
+	$(U_CXX) $(U_CXX_OPT) $(U_INC) -c $< -o $@
 	@echo "[Makefile][Unittest]: Done compiling $<"
 
 # Run the unit tests
