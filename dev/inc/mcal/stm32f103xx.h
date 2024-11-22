@@ -675,7 +675,7 @@ struct RtcRegDef {
         RegWidth_t registerVal;
     } ALRL;
 };
-#define RTC (reinterpret_cast<volatile RtcRegDef*>(Addr<Peripheral::kRTC >::kBaseAddr))
+//#define RTC (reinterpret_cast<volatile RtcRegDef*>(Addr<Peripheral::kRTC >::kBaseAddr))
 }  // namespace rtc
 
 namespace adc {

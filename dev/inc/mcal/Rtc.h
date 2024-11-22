@@ -35,6 +35,7 @@ struct RtcConfig {
 class Rtc {
  public:
     using pFunction = stm32::type::pFunction;
+    static volatile stm32::registers::rtc::RtcRegDef* GetRtcRegister();
     // Initialization and control
     static void Init(const RtcConfig &config);
     static void GetCurrentTime(Time *pCurrent_time);
@@ -55,6 +56,7 @@ class Rtc {
     static pFunction GetSecondISR(void);
     
  private:
+    static volatile stm32::registers::rtc:: RtcRegDef* RTC;
     static pFunction pRtcCallBackFunctions[3];
 
     // Configuration

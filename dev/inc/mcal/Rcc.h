@@ -82,6 +82,7 @@ enum HSE_Type {
 class Rcc {
  public:
     static void Init();
+    static volatile stm32::registers::rcc::RccRegDef* GetRccRegisters();
     static void SetExternalClock(const HSE_Type HseType);
     static void InitSysClock(const ClkConfig& config = kHse, const PLL_MulFactor& mulFactor = kClock_1x);   // NOLINT
     static void SetAHBPrescaler(const AHP_ClockDivider& divFactor);

@@ -55,6 +55,12 @@ volatile RccRegDef* Rcc::RCC = nullptr;
 void Rcc::Init() {
         RCC = reinterpret_cast<volatile RccRegDef*>(Addr<Peripheral::kRCC >::getBaseAddr());
 }
+volatile stm32::registers::rcc::RccRegDef* Rcc::GetRccRegisters() {
+        if (RCC == nullptr) {
+            Init();
+        }
+        return RCC;
+}
 void Rcc::InitSysClock(const ClkConfig& config,
                        const PLL_MulFactor& mulFactor) {
     if (config == kHsi  && mulFactor == kClock_1x) {    // 1) -- HSI

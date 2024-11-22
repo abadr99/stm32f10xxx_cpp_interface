@@ -152,7 +152,8 @@ void I2c::StopCondition() {
 }
 
 void I2c::SetClk(const I2cConfig & I2c) {
-    uint32_t Apb1_freq = RCC->CFGR.PPRE1;
+    auto rcc_register = Rcc::GetRccRegisters();
+    uint32_t Apb1_freq = rcc_register->CFGR.PPRE1;
     uint32_t i2c_freq  = static_cast<uint16_t>(Apb1_freq / 1000000);
     uint16_t cr2 = i2c_reg->CR2.registerVal;
 
