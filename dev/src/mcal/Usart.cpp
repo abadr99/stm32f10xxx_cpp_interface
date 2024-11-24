@@ -61,9 +61,9 @@ ASSERT_MEMBER_OFFSET(UsartRegDef, GTPR,        sizeof(RegWidth_t) * 6);
 Usart::Usart(const UsartConfig& config)
 : config_(config) {
     switch (config_.number) {
-        case kUsart1 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART1)); break;
-        case kUsart2 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART2)); break;
-        case kUsart3 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(USART3)); break;
+        case kUsart1 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART1 >::getBaseAddr())); break;
+        case kUsart2 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART2 >::getBaseAddr())); break;
+        case kUsart3 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART3 >::getBaseAddr())); break;
         default: break;
     }
 }

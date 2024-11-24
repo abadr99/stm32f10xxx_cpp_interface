@@ -530,9 +530,9 @@ struct UsartRegDef {
     RegWidth_t GTPR;
 };
 
-#define USART1 (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART1 >::kBaseAddr))
-#define USART2 (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART2 >::kBaseAddr))
-#define USART3 (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART3 >::kBaseAddr))
+// #define USART1 (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART1 >::kBaseAddr))
+// #define USART2 (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART2 >::kBaseAddr))
+// #define USART3 (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART3 >::kBaseAddr))
 
 }  // namespace usart
 /**
