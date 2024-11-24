@@ -1263,7 +1263,7 @@ struct IWDGRegDef {
         RegWidth_t registerVal;
     }SR;
 };
-#define IWDG (reinterpret_cast<volatile IWDGRegDef*>(Addr<Peripheral::kIWDG >::kBaseAddr))
+// #define IWDG (reinterpret_cast<volatile IWDGRegDef*>(Addr<Peripheral::kIWDG >::kBaseAddr))
 }  // namespace iwdg
 }  // namespace registers
 }  // namespace stm32

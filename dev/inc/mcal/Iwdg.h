@@ -28,6 +28,8 @@ class Iwdg {
  public: 
     Iwdg(Prescaler prescaler, uint16_t reloadVal);
     void Refresh();
+ private:
+    static volatile stm32::registers::iwdg:: IWDGRegDef* IWDG;
 }; 
 }   //  namespace iwdg
 }   //  namespace mcal
