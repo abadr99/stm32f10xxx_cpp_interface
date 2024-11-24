@@ -33,6 +33,8 @@ class Wwdg {
     bool IsEarlyWakeupFlagSet();
     void ClearEarlyWakeupFlag();
  private:
+  private:
+    static volatile stm32::registers::wwdg:: WWDGRegDef* WWDG;
     Config config_;
     void Init();
 };

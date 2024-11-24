@@ -32,8 +32,11 @@ using namespace stm32::registers::wwdg;
     STM32_ASSERT((config_.prescaler >= kDiv2) && (config_.prescaler <= kDiv8), \
                   WWDG_CONFIG_ERROR(Prescaler));
 
+volatile WWDGRegDef* Wwdg::WWDG = nullptr;
+
 Wwdg::Wwdg(const Config& config) : config_(config) {
     CHECK_WWDG_CONFIG();
+    WWDG = reinterpret_cast<volatile WWDGRegDef*>(Addr<Peripheral::kWWDG >::getBaseAddr());
     Init();
 }
 

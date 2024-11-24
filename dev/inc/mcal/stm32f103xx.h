@@ -582,7 +582,7 @@ struct WWDGRegDef {
     } SR;
 };
 
-#define WWDG (reinterpret_cast<volatile WWDGRegDef*>(Addr<Peripheral::kWWDG >::kBaseAddr))
+// #define WWDG (reinterpret_cast<volatile WWDGRegDef*>(Addr<Peripheral::kWWDG >::kBaseAddr))
 }  // namespace wwdg
 
 namespace rtc {
