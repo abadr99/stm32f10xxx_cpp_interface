@@ -440,8 +440,8 @@ struct SpiRegDef {
     RegWidth_t RXCRCR;
     RegWidth_t TXCRCR;
 };
-#define SPI1 (reinterpret_cast<volatile SpiRegDef*>(Addr<Peripheral::kSPI1>::kBaseAddr))
-#define SPI2 (reinterpret_cast<volatile SpiRegDef*>(Addr<Peripheral::kSPI2>::kBaseAddr))
+// #define SPI1 (reinterpret_cast<volatile SpiRegDef*>(Addr<Peripheral::kSPI1>::kBaseAddr))
+// #define SPI2 (reinterpret_cast<volatile SpiRegDef*>(Addr<Peripheral::kSPI2>::kBaseAddr))
 }  // namespace spi
 namespace usart {
 
