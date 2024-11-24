@@ -298,8 +298,8 @@ struct  SCBRegDef {
 };
 
 
-#define NVIC   (reinterpret_cast<volatile NvicRegDef*>(Addr<Peripheral::kNVIC >::kBaseAddr))
-#define SCB    (reinterpret_cast<volatile SCBRegDef*>(Addr<Peripheral::kSCB >::kBaseAddr))
+// #define NVIC   (reinterpret_cast<volatile NvicRegDef*>(Addr<Peripheral::kNVIC >::kBaseAddr))
+// #define SCB    (reinterpret_cast<volatile SCBRegDef*>(Addr<Peripheral::kSCB >::kBaseAddr))
 
 }  // namespace nvic
 namespace afio {
