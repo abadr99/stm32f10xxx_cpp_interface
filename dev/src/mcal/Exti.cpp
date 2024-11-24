@@ -39,11 +39,14 @@ ASSERT_MEMBER_OFFSET(EXTIRegDef, PR,    sizeof(RegWidth_t) * 5);
 // --- INITIALIZE 'Exti' STATIC MEMBER VARIABLE
 pFunction Exti::pGlobalCallBackFunctions[7] = {nullptr};
 
+volatile EXTIRegDef* Exti::EXTI = nullptr;
+
 void Exti::Enable(const EXTI_Config& config) {
     STM32_ASSERT(((config.trigger >= kRising) 
                 && (config.trigger <= kBoth)), EXTI_CONFIG_ERROR(Trigger));
     STM32_ASSERT(((config.line >= kExti0) && (config.line <= kExti19)),
                   EXTI_CONFIG_ERROR(line));
+    EXTI = reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::getBaseAddr());
     Exti::InitAFIOReg(config.line, config.port);
     EXTI->IMR = util::SetBit<uint32_t>(EXTI->IMR, config.line);
     Exti::SetTrigger(config.line, config.trigger);
@@ -132,7 +135,8 @@ bool Exti::GetPendingBit(Line line) {
 #define EXTI_ISR(N)\
     extern "C" void EXTI##N##_IRQHandler(void) {\
         /* Clear pending flag to ensure that the same ISR won't execute again */\
-        EXTI->PR |= (1 << static_cast<uint8_t>(Line::kExti##N));\
+        auto exti_reg = reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::getBaseAddr());\
+        exti_reg->PR |= (1 << static_cast<uint8_t>(Line::kExti##N));\
         pFunction fun = Exti::GetpCallBackFunction(Line::kExti##N);\
         if (fun != nullptr) {\
             fun();\

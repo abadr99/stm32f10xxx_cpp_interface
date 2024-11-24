@@ -549,7 +549,7 @@ struct EXTIRegDef {
     RegWidth_t PR;     // Pending register
 };
 
-#define EXTI (reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::kBaseAddr))
+// #define EXTI (reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::kBaseAddr))
 
 }  // namespace exti
 namespace wwdg {

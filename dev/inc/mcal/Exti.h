@@ -68,6 +68,7 @@ class Exti {
     static pFunction GetpCallBackFunction(Line line);
  private:
     using Port = stm32::dev::mcal::pin::Port;
+    static volatile stm32::registers::exti::EXTIRegDef* EXTI;
     static pFunction pGlobalCallBackFunctions[7];
     static void InitAFIOReg(Line line, Port port);
     static void SetTrigger(Line line, Trigger trigger);
