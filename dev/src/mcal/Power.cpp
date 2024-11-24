@@ -26,7 +26,11 @@ using namespace stm32::dev::mcal::pwr;
 #define __WFE() __asm volatile ("wfe")
 
 #define Pwr_EMPTY_MESSAGE               ""
+volatile PwrRegDef* Pwr::PWR = nullptr;
 
+void Pwr::Init() {
+        PWR = reinterpret_cast<volatile PwrRegDef*>(Addr<Peripheral::kPWR >::getBaseAddr());
+} 
 void Pwr::EnterSleepMode(PwrEntry sleepEntry, SleepType type) {
     STM32_ASSERT((sleepEntry == PwrEntry::kWFI) ||
                  (sleepEntry == PwrEntry::kWFE), PWR_CONFIG_ERROR(PwrEntry));

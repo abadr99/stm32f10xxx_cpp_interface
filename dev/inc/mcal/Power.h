@@ -39,6 +39,7 @@ enum class PwrFlag {
 
 class Pwr {
  public:
+    static void Init();
     static void EnterSleepMode(PwrEntry sleepEntry, SleepType type);
     static void EnterStopMode(PwrEntry stopEntry, PwrRegulator regulator);
     static void EnterStandbyMode(PwrEntry standbyEntry);
@@ -49,6 +50,7 @@ class Pwr {
     static void WakeupPinState(State state);
     static void ClearFlag(PwrFlag flag);
  private:
+    static volatile stm32::registers::pwr::PwrRegDef* PWR;
     static void EnterLowPowerMode(PwrEntry entry);
 };
 }   // namespace pwr

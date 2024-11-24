@@ -1036,7 +1036,7 @@ struct DMARegDef {
     DmaChannel CHANNEL[7];  // DMA channels 1-7
 };
 
-#define DMA (reinterpret_cast<volatile DMARegDef*>(Addr<Peripheral::kDMA1 >::kBaseAddr))
+// #define DMA (reinterpret_cast<volatile DMARegDef*>(Addr<Peripheral::kDMA1 >::kBaseAddr))
 
 }  // namespace dma
 namespace timer {
@@ -1246,7 +1246,7 @@ struct PwrRegDef {
         RegWidth_t registerVal;
     }CSR;   //  Power control/status register
 };
-#define PWR (reinterpret_cast<volatile PwrRegDef*>(Addr<Peripheral::kPWR >::kBaseAddr))
+// #define PWR (reinterpret_cast<volatile PwrRegDef*>(Addr<Peripheral::kPWR >::kBaseAddr))
 }   // namespace pwr
 
 namespace iwdg {
