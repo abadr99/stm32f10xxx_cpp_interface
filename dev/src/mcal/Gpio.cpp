@@ -33,8 +33,12 @@ ASSERT_MEMBER_OFFSET(GpioRegDef, BSRR, sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(GpioRegDef, BRR,  sizeof(RegWidth_t) * 5);
 ASSERT_MEMBER_OFFSET(GpioRegDef, LCKR, sizeof(RegWidth_t) * 6);
 
-static volatile GpioRegDef *GPIOx[3] = {GPIOA, GPIOB, GPIOC};
-
+static volatile GpioRegDef* const GPIOx[3] = {
+    reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPA>::getBaseAddr()),
+    reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPB>::getBaseAddr()),
+    reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPC>::getBaseAddr())
+};
+ 
 void Gpio::Set(const Pin& pin) {
     SetPinMode(pin, pin.GetPinMode());
 }
