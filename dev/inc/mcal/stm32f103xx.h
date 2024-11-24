@@ -816,8 +816,8 @@ struct ADCRegDef {
     }DR;
 };
 
-#define ADC1 (reinterpret_cast<volatile ADCRegDef*>(Addr<Peripheral::kADC1 >::kBaseAddr))
-#define ADC2 (reinterpret_cast<volatile ADCRegDef*>(Addr<Peripheral::kADC2 >::kBaseAddr))
+// #define ADC1 (reinterpret_cast<volatile ADCRegDef*>(Addr<Peripheral::kADC1 >::kBaseAddr))
+// #define ADC2 (reinterpret_cast<volatile ADCRegDef*>(Addr<Peripheral::kADC2 >::kBaseAddr))
 
 }  // namespace adc
 
@@ -1036,7 +1036,7 @@ struct DMARegDef {
     DmaChannel CHANNEL[7];  // DMA channels 1-7
 };
 
-// #define DMA (reinterpret_cast<volatile DMARegDef*>(Addr<Peripheral::kDMA1 >::kBaseAddr))
+ #define DMA (reinterpret_cast<volatile DMARegDef*>(Addr<Peripheral::kDMA1 >::kBaseAddr))
 
 }  // namespace dma
 namespace timer {
