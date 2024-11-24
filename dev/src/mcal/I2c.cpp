@@ -63,6 +63,8 @@ I2c::I2c(const I2cConfig & I2c) {
     STM32_ASSERT((I2c.mode == kSm) || (I2c.mode == kFm), I2C_CONFIG_ERROR(Mode));
     STM32_ASSERT((I2c.addressLength ==  k7_bit) || (I2c.addressLength ==  k10_bit),
                   I2C_CONFIG_ERROR(Address Length));
+    auto I2C1 = reinterpret_cast<volatile I2CRegDef*>(Addr<Peripheral::kI2C1 >::getBaseAddr());
+    auto I2C2 = reinterpret_cast<volatile I2CRegDef*>(Addr<Peripheral::kI2C2 >::getBaseAddr());
     i2c_reg                   = (I2c.i2cx == kI2C1) ? I2C1 : I2C2;
     i2c_reg->CR1.PE           = 0;
     i2c_reg->CR1.ACK          = I2c.ack;

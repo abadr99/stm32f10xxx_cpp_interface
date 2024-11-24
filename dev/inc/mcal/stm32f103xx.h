@@ -929,8 +929,8 @@ struct I2CRegDef {
         
         RegWidth_t TRISE;
 };
-#define I2C1 (reinterpret_cast<volatile I2CRegDef*>(Addr<Peripheral::kI2C1 >::kBaseAddr))
-#define I2C2 (reinterpret_cast<volatile I2CRegDef*>(Addr<Peripheral::kI2C2 >::kBaseAddr))
+// #define I2C1 (reinterpret_cast<volatile I2CRegDef*>(Addr<Peripheral::kI2C1 >::kBaseAddr))
+// #define I2C2 (reinterpret_cast<volatile I2CRegDef*>(Addr<Peripheral::kI2C2 >::kBaseAddr))
 }  // namespace i2c
 
 /**
