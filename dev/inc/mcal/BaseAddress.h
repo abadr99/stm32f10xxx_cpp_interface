@@ -31,16 +31,7 @@ class Register {
  private:
     RegWidth_t val;
 };
-class RegisterFile {
- public:
-    RegisterFile() : registers{} {}
-    Register& operator[](uint32_t index) {
-        return registers[index];
-    }
- private:
-    static constexpr uint32_t RegistersNum = 32;
-    stm32::util::Array<Register, RegistersNum> registers;
-};
+
 template <Peripheral peripheralT, RegWidth_t  BaseAddr>
 struct AddressBase {
     static constexpr RegWidth_t  kBaseAddr = BaseAddr;
