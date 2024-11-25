@@ -27,6 +27,7 @@ using namespace stm32::dev::mcal::pwr;
 
 #define Pwr_EMPTY_MESSAGE               ""
 volatile PwrRegDef* Pwr::PWR = nullptr;
+static volatile SCBRegDef*  SCB_reg = reinterpret_cast<volatile SCBRegDef*>(Addr<Peripheral::kSCB>::getBaseAddr());
 
 void Pwr::Init() {
         PWR = reinterpret_cast<volatile PwrRegDef*>(Addr<Peripheral::kPWR >::getBaseAddr());
@@ -37,9 +38,9 @@ void Pwr::EnterSleepMode(PwrEntry sleepEntry, SleepType type) {
     STM32_ASSERT((type == SleepType::kSleepNow) ||
                  (type == SleepType::kSleepOnExit), PWR_CONFIG_ERROR(SleepType));
     //  Set sleep on exit behavior
-    SCB->SCR.SLEEPONEXIT = static_cast<uint8_t>(type);
+    SCB_reg ->SCR.SLEEPONEXIT = static_cast<uint8_t>(type);
     //  Ensure standard sleep mode
-    SCB->SCR.SLEEPDEEP = 0;
+    SCB_reg ->SCR.SLEEPDEEP = 0;
     EnterLowPowerMode(sleepEntry);
 }
 void Pwr::EnterStopMode(PwrEntry stopEntry, PwrRegulator regulator) {
@@ -52,7 +53,7 @@ void Pwr::EnterStopMode(PwrEntry stopEntry, PwrRegulator regulator) {
     //  Ensure entering stop mode, not standby
     PWR->CR.PDDS = 0;
     //  Enable deep sleep mode
-    SCB->SCR.SLEEPDEEP = 1;
+    SCB_reg ->SCR.SLEEPDEEP = 1;
     EnterLowPowerMode(stopEntry);
 }
 void Pwr::EnterStandbyMode(PwrEntry standbyEntry) {
@@ -61,7 +62,7 @@ void Pwr::EnterStandbyMode(PwrEntry standbyEntry) {
     // Select standby mode
     PWR->CR.PDDS = 1;
     // Enable deep sleep mode
-    SCB->SCR.SLEEPDEEP = 1;
+    SCB_reg ->SCR.SLEEPDEEP = 1;
     PWR->CSR.WUF = 0;
     EnterLowPowerMode(standbyEntry);
 }
