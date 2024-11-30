@@ -50,16 +50,14 @@ ASSERT_MEMBER_OFFSET(RccRegDef, CSR,        sizeof(RegWidth_t) * 9);
 // 3) Using PLL with certain multiplication factor and source where PLL sources:
 //    3.a) HSI   3.b) HSE   3.c) HSE/2
 
-volatile RccRegDef* Rcc::RCC = nullptr;
+
+Register<RccRegDef> Rcc::RCC(0);
 
 void Rcc::Init() {
-        RCC = reinterpret_cast<volatile RccRegDef*>(Addr<Peripheral::kRCC >::getBaseAddr());
+        RCC.SetAddr(Address<Peripheral::kRCC>::GetBaseAddr());
 }
-volatile stm32::registers::rcc::RccRegDef* Rcc::GetRccRegisters() {
-        if (RCC == nullptr) {
-            Init();
-        }
-        return RCC;
+void Rcc::Init(uint32_t testAddr) {
+    RCC.SetAddr(testAddr);
 }
 void Rcc::InitSysClock(const ClkConfig& config,
                        const PLL_MulFactor& mulFactor) {
@@ -83,31 +81,31 @@ void Rcc::InitSysClock(const ClkConfig& config,
     };
 
     // --- DISABLE PLL BEFORE CONFIGURE
-    RCC->CR.PLLON = 0;
+    RCC.GetAddr()->CR.PLLON = 0;
 
     SetPllFactor(mulFactor);
 
     SetPllSource(GetPllSrc());
 
     // --- ENABLE PLL AFTER CONFIGURATION
-    RCC->CR.PLLON = 1;
+    RCC.GetAddr()->CR.PLLON = 1;
     WaitToReady(kPLLRDY);
-    RCC->CFGR.SW = 2;    // Switch to PLL
+    RCC.GetAddr()->CFGR.SW = 2;    // Switch to PLL
 }
 
 void Rcc::SetAHBPrescaler(const AHP_ClockDivider& divFactor) {
     STM32_ASSERT((divFactor >= kAhpNotDivided) && (divFactor <= kAhpDiv512), RCC_AHB_PRESCALER_ERROR);  // NOLINT
-    RCC->CFGR.HPRE = divFactor;
+    RCC.GetAddr()->CFGR.HPRE = divFactor;
 }
 
 void Rcc::SetAPB1Prescaler(const APB_ClockDivider& divFactor) {
     STM32_ASSERT((divFactor >= kApbNotDivided) && (divFactor <= kApbDiv16), RCC_APB1_PRESCALER_ERROR);  // NOLINT
-    RCC->CFGR.PPRE1 = divFactor;
+    RCC.GetAddr()->CFGR.PPRE1 = divFactor;
 }
 
 void Rcc::SetAPB2Prescaler(const APB_ClockDivider& divFactor) {
     STM32_ASSERT((divFactor >= kApbNotDivided) && (divFactor <= kApbDiv16), RCC_APB2_PRESCALER_ERROR);  // NOLINT
-    RCC->CFGR.PPRE2 = divFactor;
+    RCC.GetAddr()->CFGR.PPRE2 = divFactor;
 }
 
 void Rcc::SetMCOPinClk(const McoModes& mode) {
@@ -117,40 +115,40 @@ void Rcc::SetMCOPinClk(const McoModes& mode) {
                  mode == kMcoHse ||
                  mode == kMcoPll,
                  RCC_MCO_PIN_MODE_ERROR);
-    RCC->CFGR.MCO = mode;
+    RCC.GetAddr()->CFGR.MCO = mode;
 }
 
 void Rcc::AdjustInternalClock(uint8_t CalibrationValue) {
-    RCC->CR.HSITRIM = CalibrationValue;
+    RCC.GetAddr()->CR.HSITRIM = CalibrationValue;
 }
 
 void Rcc::WaitToReady(Flags flag) {
     switch (flag) {
-        case kHSIRDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return !RCC->CR.HSIRDY; });  break;    // NOLINT [whitespace/line_length]
-        case kHSERDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return !RCC->CR.HSERDY; });  break;    // NOLINT [whitespace/line_length]
-        case kPLLRDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return !RCC->CR.PLLRDY; });  break;    // NOLINT [whitespace/line_length]
+        case kHSIRDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return !RCC.GetAddr()->CR.HSIRDY; });  break;    // NOLINT [whitespace/line_length]
+        case kHSERDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return !RCC.GetAddr()->CR.HSERDY; });  break;    // NOLINT [whitespace/line_length]
+        case kPLLRDY: util::BusyWait<constant::TimeOut::kRcc>([&](){ return !RCC.GetAddr()->CR.PLLRDY; });  break;    // NOLINT [whitespace/line_length]
         default: STM32_ASSERT(1, RCC_EMPTY_MESSAGE);
     }
 }
 
 void Rcc::SetInternalHighSpeedClk() {
-    RCC->CR.HSION = 1;
+    RCC.GetAddr()->CR.HSION = 1;
     WaitToReady(kHSIRDY);
-    RCC->CFGR.SW = 0;
+    RCC.GetAddr()->CFGR.SW = 0;
 }
 
 void Rcc::SetExternalHighSpeedClk() {
-    RCC->CR.HSEON = 1;
+    RCC.GetAddr()->CR.HSEON = 1;
     WaitToReady(kHSERDY);
-    RCC->CFGR.SW = 1;
-    RCC->CR.CSSON = 1;
+    RCC.GetAddr()->CFGR.SW = 1;
+    RCC.GetAddr()->CR.CSSON = 1;
 }
 
 void Rcc::SetPllFactor(PLL_MulFactor factor) {
     if (factor == PLL_MulFactor::kClock_1x) {
         return;
     }
-    RCC->CFGR.PLLMUL = factor;
+    RCC.GetAddr()->CFGR.PLLMUL = factor;
 }
 
 void Rcc::SetPllSource(PllSource src) {
@@ -160,29 +158,29 @@ void Rcc::SetPllSource(PllSource src) {
                  RCC_PLL_SOURCE_ERROR);
     switch (src) {
         case kPllSource_Hsi:
-            RCC->CR.HSION = 1;
+            RCC.GetAddr()->CR.HSION = 1;
             WaitToReady(kPLLRDY);
-            RCC->CFGR.PLLSRC = 0;
+            RCC.GetAddr()->CFGR.PLLSRC = 0;
             return;
         case kPllSource_Hse:
         case kPllSource_HseDiv2:
-            RCC->CR.HSEON = 1;
+            RCC.GetAddr()->CR.HSEON = 1;
             WaitToReady(kPLLRDY);
-            RCC->CFGR.PLLSRC = 1;
-            RCC->CFGR.PLLXTPRE = src == kPllSource_Hse ? 0 : 1;
+            RCC.GetAddr()->CFGR.PLLSRC = 1;
+            RCC.GetAddr()->CFGR.PLLXTPRE = src == kPllSource_Hse ? 0 : 1;
             return;
     }
 }
 void Rcc::SetExternalClock(const HSE_Type HseType ) {
     STM32_ASSERT((HseType == kHseCrystal) || (HseType == kHseRC), RCC_EXTERNAL_CLOCK_SOURCE_ERROR);
-    RCC->CR.HSEON = 0;
-    RCC->CR.HSEBYP = HseType == kHseCrystal ? 0 : 1;
+    RCC.GetAddr()->CR.HSEON = 0;
+    RCC.GetAddr()->CR.HSEBYP = HseType == kHseCrystal ? 0 : 1;
 }
 
 void Rcc::Enable(Peripheral p) {
     switch (p) {
         #define P(name_, bridge_)\
-            case Peripheral::k##name_: RCC->bridge_##ENR.name_##EN = 1; break;
+            case Peripheral::k##name_: RCC.GetAddr()->bridge_##ENR.name_##EN = 1; break;
         PERIPHERALS
         #undef P
         default: STM32_ASSERT(0, RCC_EMPTY_MESSAGE); break;
@@ -192,7 +190,7 @@ void Rcc::Enable(Peripheral p) {
 void Rcc::Disable(Peripheral p) {
     switch (p) {
         #define P(name_, bridge_)\
-            case Peripheral::k##name_: RCC->bridge_##RSTR.name_##RST = 1; break;
+            case Peripheral::k##name_: RCC.GetAddr()->bridge_##RSTR.name_##RST = 1; break;
         PERIPHERALS
         #undef P
         default: STM32_ASSERT(0, RCC_EMPTY_MESSAGE); break;

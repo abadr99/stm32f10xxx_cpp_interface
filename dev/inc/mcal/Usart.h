@@ -91,7 +91,7 @@ class Usart {
  private:
     enum Flag : uint8_t {kDisabled, kEnabled};
     const UsartConfig& config_;
-    volatile stm32::registers::usart::UsartRegDef* usartReg;
+    static stm32::constant::Register<stm32::registers::usart::UsartRegDef> usartReg;
     static volatile DataValType *pReceivedData_[3];
     static pFunction pTransmitCompleteFun_[3];
     static pFunction pReceiveReadyFun_[3];
