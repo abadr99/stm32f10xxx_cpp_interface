@@ -26,6 +26,9 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::systick;
 int main() {
+    Rcc::Init();
+    Gpio::Init();
+    
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
     Rcc::Enable(Peripheral::kIOPC);
@@ -38,7 +41,7 @@ int main() {
         for (Local_u16Counter = 0; Local_u16Counter < 50000; Local_u16Counter++) {
             __asm("NOP");
         }
-        Gpio::SetPinValue(pc13, kLow);
+        Gpio::SetPinValue(pc13, kHigh);
         for (Local_u16Counter = 0; Local_u16Counter < 50000; Local_u16Counter++) {
              __asm("NOP");
         }

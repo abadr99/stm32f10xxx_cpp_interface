@@ -33,19 +33,20 @@ ASSERT_MEMBER_OFFSET(GpioRegDef, BSRR, sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(GpioRegDef, BRR,  sizeof(RegWidth_t) * 5);
 ASSERT_MEMBER_OFFSET(GpioRegDef, LCKR, sizeof(RegWidth_t) * 6);
 
-static volatile GpioRegDef* const GPIOx[3] = {
-    reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPA>::getBaseAddr()),
-    reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPB>::getBaseAddr()),
-    reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPC>::getBaseAddr())
-};
- 
+
+volatile  GpioRegDef * Gpio::GPIOx[3] = {0};
+void Gpio:: Init() {
+    GPIOx[0] = reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPA>::getBaseAddr());
+    GPIOx[1] = reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPB>::getBaseAddr());
+    GPIOx[2] = reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPC>::getBaseAddr());
+}
 void Gpio::Set(const Pin& pin) {
     SetPinMode(pin, pin.GetPinMode());
 }
 
 void Gpio::SetPinValue(const Pin& pin, DigitalVoltage pinState) {
     const PinNumber pin_num   = pin.GetPinNumber();
-    volatile GpioRegDef* gpio = GPIOx[pin.GetPort()];
+    volatile GpioRegDef * gpio = GPIOx[pin.GetPort()];
 
     switch (pinState) {
         case kLow  : gpio->ODR = util::ClearBit<RegWidth_t>(gpio->ODR, pin_num); break;
@@ -64,7 +65,7 @@ void Gpio::SetPinMode(const Pin& pin, PinMode mode) {
         return mode >= PinMode::kInputFloat && mode <= PinMode::kInputPullDown;
     };
 
-    volatile GpioRegDef* gpio = GPIOx[pin.GetPort()];
+    volatile GpioRegDef* gpio = GPIOx[2];
     PinNumber pinNum = pin.GetPinNumber();
     uint8_t startBit = 0;
     
