@@ -19,6 +19,9 @@ namespace dev {
 namespace mcal {
 namespace gpio {
 
+/**
+ * @brief Class to handle General-Purpose Input/Output (GPIO) operations.
+ */
 class Gpio {
  public:
   using Pin = stm32::dev::mcal::pin::Pin;
@@ -31,8 +34,29 @@ class Gpio {
   // to set all gpio configurations
   static void Init();
   static void Set(const Pin& pin);
+
+  /**
+   * @brief Sets the mode (input, output, etc.) for the given GPIO pin.
+   * 
+   * @param pin The Pin object for which the mode needs to be set.
+   * @param mode The desired PinMode for the pin.
+   */
   static void SetPinMode(const Pin& pin, PinMode mode);
+
+  /**
+   * @brief Sets the voltage level (high/low) for the specified GPIO pin.
+   * 
+   * @param pin The Pin object for which the value needs to be set.
+   * @param pinState The digital voltage level (high/low).
+   */
   static void SetPinValue(const Pin& pin, stm32::type::DigitalVoltage pinState);
+
+  /**
+   * @brief Gets the current voltage level (high/low) of the specified GPIO pin.
+   * 
+   * @param pin The Pin object to read the value from.
+   * @return PinVal_t The current voltage level of the pin (0 for low, 1 for high).
+   */
   static PinVal_t GetPinValue(Pin pin);
  private:
   static volatile  GpioRegDef * GPIOx[3];
