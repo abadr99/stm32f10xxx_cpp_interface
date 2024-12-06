@@ -110,6 +110,7 @@ class Systick {
     static pFunction GetPointerToISR();
 
  private:
+    static volatile stm32::registers::systick:: SystickRegDef* SYSTICK;
     /**
      * @brief Sets the pointer to the interrupt service routine (ISR).
      * 

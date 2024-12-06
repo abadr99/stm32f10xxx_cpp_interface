@@ -12,11 +12,9 @@
 #ifndef DEV_INC_MCAL_STM32F103XX_H_
 #define DEV_INC_MCAL_STM32F103XX_H_
 
-#ifdef UNIT_TEST
-#include "../../../tests/unittests/mcal/BaseAddress-test.h"
-#else
+
 #include "mcal/BaseAddress.h"
-#endif
+
 #include "mcal/Peripherals.h"
 #include "utils/Types.h"
 
@@ -383,7 +381,7 @@ struct SystickRegDef {
     RegWidth_t VAL;   // Current value
 };
 
-#define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(Addr<Peripheral::kSYSTICK >::kBaseAddr))  // NOLINT
+// #define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(Addr<Peripheral::kSYSTICK >::kBaseAddr))  // NOLINT
 
 }  // namespace systick
 namespace spi {
