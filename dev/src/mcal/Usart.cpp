@@ -18,7 +18,6 @@
 #include "mcal/Usart.h"
 
 using namespace stm32::registers::rcc;
-using namespace stm32::constant;
 using namespace stm32::registers::usart;
 using namespace stm32::dev::mcal::usart;
 using namespace stm32::type;
@@ -58,14 +57,13 @@ ASSERT_MEMBER_OFFSET(UsartRegDef, CR2,         sizeof(RegWidth_t) * 4);
 ASSERT_MEMBER_OFFSET(UsartRegDef, CR3,         sizeof(RegWidth_t) * 5);
 ASSERT_MEMBER_OFFSET(UsartRegDef, GTPR,        sizeof(RegWidth_t) * 6);
 
-Register<UsartRegDef> Usart::usartReg(0);
 
 Usart::Usart(const UsartConfig& config)
 : config_(config) {
     switch (config_.number) {
-        case kUsart1 : usartReg.SetAddr (Addr<Peripheral::kUSART1 >::GetBaseAddr()); break;
-        case kUsart2 : usartReg.SetAddr (Addr<Peripheral::kUSART2 >::GetBaseAddr()); break;
-        case kUsart3 : usartReg.SetAddr (Addr<Peripheral::kUSART3 >::GetBaseAddr()); break;
+        case kUsart1 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART1 >::getBaseAddr())); break;
+        case kUsart2 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART2 >::getBaseAddr())); break;
+        case kUsart3 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART3 >::getBaseAddr())); break;
         default: break;
     }
 }
@@ -73,17 +71,17 @@ Usart::Usart(const UsartConfig& config)
 void Usart::Init() {
     CHECK_CONFIG();
     /* Enable usart peripheral */
-    usartReg.GetAddr()->CR1.UE = kEnabled;
+    usartReg->CR1.UE = kEnabled;
     /* Set mode */
-    usartReg.GetAddr()->CR1.RE_TE = config_.mode;
+    usartReg->CR1.RE_TE = config_.mode;
     /* Set stop bits*/
-    usartReg.GetAddr()->CR2.STOP = config_.numOfSB;
+    usartReg->CR2.STOP = config_.numOfSB;
     /* Set data bits */
-    usartReg.GetAddr()->CR1.M = config_.dataBits;  
+    usartReg->CR1.M = config_.dataBits;  
     /* Set parity mode */
-    usartReg.GetAddr()->CR1.PS_PCE = config_.parityMode;
+    usartReg->CR1.PS_PCE = config_.parityMode;
     /* Set hardware flow control */
-    usartReg.GetAddr()->CR3.RTSE_CTSE = config_.flowControlState;
+    usartReg->CR3.RTSE_CTSE = config_.flowControlState;
     
     _SetBaudRate();
 }
@@ -103,47 +101,47 @@ void Usart::_SetBaudRate() {
     uint8_t divFraction = (uint16_t)(fractionPart * scale);
     
     // Assign the calculated values to the BRR register
-    usartReg.GetAddr()->BRR.DIV_Mantissa = divMantissa;
-    usartReg.GetAddr()->BRR.DIV_Fraction = divFraction;
+    usartReg->BRR.DIV_Mantissa = divMantissa;
+    usartReg->BRR.DIV_Fraction = divFraction;
 }
 
 void Usart::Transmit(DataValType dataValue) {
-    util::BusyWait<constant::TimeOut::kUsart>([&](){return usartReg.GetAddr()->SR.TXE;});
-    usartReg.GetAddr()->DR = dataValue;
-    util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg.GetAddr()->SR.TC);});
-    usartReg.GetAddr()->SR.registerVal = 0;
+    util::BusyWait<constant::TimeOut::kUsart>([&](){return usartReg->SR.TXE;});
+    usartReg->DR = dataValue;
+    util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg->SR.TC);});
+    usartReg->SR.registerVal = 0;
 }
 
 void  Usart::Transmit(DataValType dataValue, pFunction pISR) {
     // Helper_SetTransmittedData(this->config_.number, dataValue);
     SetTransmitCompleteISR(this->config_.number, pISR);
-    this->usartReg.GetAddr()->DR = dataValue;
+    this->usartReg->DR = dataValue;
     //  Enable Transmit complete interrupt 
-    this->usartReg.GetAddr()->CR1.TCIE = 1;
+    this->usartReg->CR1.TCIE = 1;
 }
 typename Usart::DataValType Usart::Receive() {
-    util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg.GetAddr()->SR.RXNE);});
-    return static_cast<DataValType>(usartReg.GetAddr()->DR);
+    util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg->SR.RXNE);});
+    return static_cast<DataValType>(usartReg->DR);
 }
 
 void Usart::Receive(DataValType* pData, pFunction pISR) {
     SetReceiveReadyISR(this->config_.number, pISR);
     pReceivedData_[static_cast<uint8_t>(this->config_.number)] = pData;
     //  Enable Receive interrupt 
-    usartReg.GetAddr()->CR1.RXNEIE = 1;
+    usartReg->CR1.RXNEIE = 1;
 }
 
 ErrorType Usart::RetErrorDetection() {
-    if (usartReg.GetAddr()->SR.PE == Flag::kEnabled) {
+    if (usartReg->SR.PE == Flag::kEnabled) {
         return kParityError;
     } 
-    if (usartReg.GetAddr()->SR.FE == Flag::kEnabled) {
+    if (usartReg->SR.FE == Flag::kEnabled) {
         return kFrameError;
     } 
-    if (usartReg.GetAddr()->SR.NE == Flag::kEnabled) {
+    if (usartReg->SR.NE == Flag::kEnabled) {
         return kNoiseError;
     } 
-    if (usartReg.GetAddr()->SR.ORE == Flag::kEnabled) {
+    if (usartReg->SR.ORE == Flag::kEnabled) {
         return kOverRunError;
     }
     return kSuccess;
@@ -175,7 +173,7 @@ void Usart::Helper_SetReceivedData(UsartNum number, DataValType data)  {
 
 extern "C" void USART1_IRQHandler(void) {
     pFunction func = nullptr;
-    auto USART1= (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART1 >::GetBaseAddr()));
+    auto USART1= (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART1 >::getBaseAddr()));
     // Check if the transmission is complete
     if (USART1->SR.TC == 1) {
         func = Usart::Helper_GetTransmitCompleteISR(kUsart1);
@@ -200,7 +198,7 @@ extern "C" void USART1_IRQHandler(void) {
 
 extern "C" void USART2_IRQHandler(void) {
     pFunction func = nullptr;
-    auto USART2= (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART2 >::GetBaseAddr()));
+    auto USART2= (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART2 >::getBaseAddr()));
     if (USART2->SR.TC == 1) {
         func = Usart::Helper_GetTransmitCompleteISR(kUsart2);
         if (func != NULL) {
@@ -220,7 +218,7 @@ extern "C" void USART2_IRQHandler(void) {
 
 extern "C" void USART3_IRQHandler(void) {
     pFunction func = nullptr;
-    auto USART3= (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART3 >::GetBaseAddr()));
+    auto USART3= (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART3 >::getBaseAddr()));
     if (USART3->SR.TC == 1) {
         func = Usart::Helper_GetTransmitCompleteISR(kUsart3);
         if (func != NULL) {
