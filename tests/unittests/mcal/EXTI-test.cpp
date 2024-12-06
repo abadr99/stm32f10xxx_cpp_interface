@@ -14,6 +14,7 @@
 #include "mcal/Pin.h"
 #include "mcal/Exti.h"
 
+using namespace stm32::constant;
 using namespace stm32::util;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::exti;
@@ -23,6 +24,9 @@ using namespace stm32::registers::gpio;
 
 uint32_t AFIOReg[7] = {0x0};
 uint32_t EXTIReg[6] = {0x0};
+
+static volatile EXTIRegDef* EXTI;
+
 
 TEST(EXTItest, Enable) {
     EXTI_Config exti;

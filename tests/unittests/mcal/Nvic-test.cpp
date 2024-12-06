@@ -19,6 +19,9 @@ using namespace stm32::util;
 using namespace stm32::dev::mcal::nvic;
 using namespace stm32::registers::nvic;
 
+static volatile NvicRegDef*  NVIC;
+static volatile SCBRegDef*  SCB;
+
 TEST(NvicTest, EnableInterrupt) {
     Nvic::Reset();
     Nvic::EnableInterrupt(kEXTI0_IRQn);

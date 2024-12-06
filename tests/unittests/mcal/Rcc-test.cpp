@@ -18,6 +18,7 @@ using namespace stm32::util;   // NOLINT [build/namespaces]
 using namespace stm32::dev::mcal::rcc;            // NOLINT [build/namespaces]
 using namespace stm32::registers::rcc;            // NOLINT [build/namespaces]
 using ExpectedVal = uint32_t;
+static volatile RccRegDef* RCC; 
 
 static void TestMultiplicationFactor(PLL_MulFactor M, ExpectedVal E) {
     Rcc::InitSysClock(kHse, M);
