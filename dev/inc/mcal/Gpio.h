@@ -58,6 +58,7 @@ class Gpio {
    * @return PinVal_t The current voltage level of the pin (0 for low, 1 for high).
    */
   static PinVal_t GetPinValue(Pin pin);
+  
  private:
   static volatile  GpioRegDef * GPIOx[3];
 };

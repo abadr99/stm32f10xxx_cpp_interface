@@ -675,7 +675,7 @@ struct RtcRegDef {
         RegWidth_t registerVal;
     } ALRL;
 };
-//#define RTC (reinterpret_cast<volatile RtcRegDef*>(Addr<Peripheral::kRTC >::kBaseAddr))
+
 }  // namespace rtc
 
 namespace adc {
@@ -1036,7 +1036,7 @@ struct DMARegDef {
     DmaChannel CHANNEL[7];  // DMA channels 1-7
 };
 
- #define DMA (reinterpret_cast<volatile DMARegDef*>(Addr<Peripheral::kDMA1 >::kBaseAddr))
+#define DMA (reinterpret_cast<volatile DMARegDef*>(Addr<Peripheral::kDMA1 >::kBaseAddr))
 
 }  // namespace dma
 namespace timer {

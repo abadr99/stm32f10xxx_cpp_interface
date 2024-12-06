@@ -61,9 +61,12 @@ ASSERT_MEMBER_OFFSET(UsartRegDef, GTPR,        sizeof(RegWidth_t) * 6);
 Usart::Usart(const UsartConfig& config)
 : config_(config) {
     switch (config_.number) {
-        case kUsart1 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART1 >::getBaseAddr())); break;
-        case kUsart2 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART2 >::getBaseAddr())); break;
-        case kUsart3 : usartReg = (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART3 >::getBaseAddr())); break;
+        case kUsart1 : usartReg = (reinterpret_cast<volatile UsartRegDef*>
+                                   (Addr<Peripheral::kUSART1 >::getBaseAddr())); break;
+        case kUsart2 : usartReg = (reinterpret_cast<volatile UsartRegDef*>
+                                   (Addr<Peripheral::kUSART2 >::getBaseAddr())); break;
+        case kUsart3 : usartReg = (reinterpret_cast<volatile UsartRegDef*>
+                                   (Addr<Peripheral::kUSART3 >::getBaseAddr())); break;
         default: break;
     }
 }
@@ -173,7 +176,8 @@ void Usart::Helper_SetReceivedData(UsartNum number, DataValType data)  {
 
 extern "C" void USART1_IRQHandler(void) {
     pFunction func = nullptr;
-    auto USART1= (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART1 >::getBaseAddr()));
+    auto USART1 = (reinterpret_cast<volatile UsartRegDef*>
+                  (Addr<Peripheral::kUSART1 >::getBaseAddr()));
     // Check if the transmission is complete
     if (USART1->SR.TC == 1) {
         func = Usart::Helper_GetTransmitCompleteISR(kUsart1);
@@ -198,7 +202,8 @@ extern "C" void USART1_IRQHandler(void) {
 
 extern "C" void USART2_IRQHandler(void) {
     pFunction func = nullptr;
-    auto USART2= (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART2 >::getBaseAddr()));
+    auto USART2 = (reinterpret_cast<volatile UsartRegDef*>
+                  (Addr<Peripheral::kUSART2 >::getBaseAddr()));
     if (USART2->SR.TC == 1) {
         func = Usart::Helper_GetTransmitCompleteISR(kUsart2);
         if (func != NULL) {
@@ -218,7 +223,8 @@ extern "C" void USART2_IRQHandler(void) {
 
 extern "C" void USART3_IRQHandler(void) {
     pFunction func = nullptr;
-    auto USART3= (reinterpret_cast<volatile UsartRegDef*>(Addr<Peripheral::kUSART3 >::getBaseAddr()));
+    auto USART3 = (reinterpret_cast<volatile UsartRegDef*>
+                  (Addr<Peripheral::kUSART3 >::getBaseAddr()));
     if (USART3->SR.TC == 1) {
         func = Usart::Helper_GetTransmitCompleteISR(kUsart3);
         if (func != NULL) {

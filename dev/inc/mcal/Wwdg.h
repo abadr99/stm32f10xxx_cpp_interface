@@ -78,7 +78,7 @@ class Wwdg {
      */
     void ClearEarlyWakeupFlag();
 
-  private:
+ private:
     static volatile stm32::registers::wwdg:: WWDGRegDef* WWDG;
     Config config_;  /**< Configuration settings for the WWDG peripheral */
 

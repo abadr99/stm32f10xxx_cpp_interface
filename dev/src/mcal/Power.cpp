@@ -27,7 +27,8 @@ using namespace stm32::dev::mcal::pwr;
 
 #define Pwr_EMPTY_MESSAGE               ""
 volatile PwrRegDef* Pwr::PWR = nullptr;
-static volatile SCBRegDef*  SCB_reg = reinterpret_cast<volatile SCBRegDef*>(Addr<Peripheral::kSCB>::getBaseAddr());
+static volatile SCBRegDef*  SCB_reg = reinterpret_cast<volatile SCBRegDef*>
+                                      (Addr<Peripheral::kSCB>::getBaseAddr());
 
 void Pwr::Init() {
         PWR = reinterpret_cast<volatile PwrRegDef*>(Addr<Peripheral::kPWR >::getBaseAddr());

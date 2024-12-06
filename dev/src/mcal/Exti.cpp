@@ -135,7 +135,8 @@ bool Exti::GetPendingBit(Line line) {
 #define EXTI_ISR(N)\
     extern "C" void EXTI##N##_IRQHandler(void) {\
         /* Clear pending flag to ensure that the same ISR won't execute again */\
-        auto exti_reg = reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::getBaseAddr());\
+        auto exti_reg = reinterpret_cast<volatile EXTIRegDef*>\
+        (Addr<Peripheral::kEXTI >::getBaseAddr());\
         exti_reg->PR |= (1 << static_cast<uint8_t>(Line::kExti##N));\
         pFunction fun = Exti::GetpCallBackFunction(Line::kExti##N);\
         if (fun != nullptr) {\

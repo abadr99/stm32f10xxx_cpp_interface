@@ -61,9 +61,11 @@ ASSERT_MEMBER_OFFSET(ADCRegDef, DR,        sizeof(RegWidth_t) * 19);
 
 ADC::ADC(const AdcConfig& config) : config_(config) {
     switch (config_.number) {
-        case kADC1 : ADC_reg = (reinterpret_cast<volatile ADCRegDef*>(Addr<Peripheral::kADC1 >::getBaseAddr()));
+        case kADC1 : ADC_reg = (reinterpret_cast<volatile ADCRegDef*>
+                                (Addr<Peripheral::kADC1 >::getBaseAddr()));
                      break;
-        case kADC2 : ADC_reg = (reinterpret_cast<volatile ADCRegDef*>(Addr<Peripheral::kADC2 >::getBaseAddr()));
+        case kADC2 : ADC_reg = (reinterpret_cast<volatile ADCRegDef*>
+                                (Addr<Peripheral::kADC2 >::getBaseAddr()));
                      break;
         default    : break;
     }

@@ -112,15 +112,7 @@ class Rcc {
  public:
     static void Init();
     static volatile stm32::registers::rcc::RccRegDef* GetRccRegisters();
-/**
- * @brief Enumeration for RCC peripheral clocks.
- */
-enum class Peripheral {
-    #define P(name_, ignore_) k##name_,
-    RCC_PERIPHERALS
-    #undef P
-    kUnknown,   /**< Unknown peripheral */
-};
+
 
 
 
