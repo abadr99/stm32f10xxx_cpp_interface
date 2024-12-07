@@ -20,7 +20,7 @@ using namespace stm32::util;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::registers::systick;
 
-//AddressBase<Peripheral::kSYSTICK, 0xE000E010>::setTestAddr(&SYSTICKReg[0]);
+static volatile SystickRegDef* SYSTICK;
 
 TEST(SystickTest, Delay_ms) {
     Systick::Enable(kAHB_Div_8);
