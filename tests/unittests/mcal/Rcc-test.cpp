@@ -8,13 +8,14 @@
  *
  */
 #include <gtest/gtest.h>
+
 #include "utils/BitManipulation.h"
 #include "mcal/stm32f103xx.h"
 #include "mcal/Rcc.h"
 
-uint32_t RccReg[10] = {};
+RegWidth_t RccReg[10] = {};
 
-using namespace stm32::util;   // NOLINT [build/namespaces]
+using namespace stm32::util;                      // NOLINT [build/namespaces]
 using namespace stm32::dev::mcal::rcc;            // NOLINT [build/namespaces]
 using namespace stm32::registers::rcc;            // NOLINT [build/namespaces]
 using ExpectedVal = uint32_t;
@@ -38,6 +39,10 @@ static void TestMCO(McoModes M,  ExpectedVal E) {
 
 TEST(RccTest, InitSysClock) {
     // Testing HSI clock source with kClock_1x
+    using Rcc_addr = stm32::constant::Address<Peripheral::kRCC>;
+    Rcc_addr::setTestAddr( &RccReg[0]);
+
+    Rcc::Init();
     RCC->CR.HSIRDY = 1;
     Rcc::InitSysClock(kHsi, kClock_1x);
     EXPECT_EQ(1,    (ExtractBits<uint32_t, 0>(RCC->CR.registerVal)));
