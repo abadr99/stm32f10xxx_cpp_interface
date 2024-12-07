@@ -13,7 +13,7 @@
 #define DEV_INC_UTILS_ARRAY_H_
 
 #include <cstddef>
-
+#include<cassert>
 namespace stm32 {
 namespace util {
 template<typename T, std::size_t kSize>
