@@ -360,7 +360,7 @@ struct AfioRegDef {
     } MAPR2;  // AF remap and debug I/O configuration register 2
 };
 
-#define AFIO (reinterpret_cast<volatile AfioRegDef*>(Addr<Peripheral::kAFIO >::kBaseAddr))
+// define AFIO (reinterpret_cast<volatile AfioRegDef*>(Addr<Peripheral::kAFIO >::kBaseAddr))
 
 }  // namespace afio
 namespace systick {

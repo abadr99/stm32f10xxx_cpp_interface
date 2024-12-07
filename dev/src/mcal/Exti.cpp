@@ -100,6 +100,7 @@ pFunction Exti::GetpCallBackFunction(Line line) {
 void Exti::InitAFIOReg(Line line, Port port) {
     uint8_t startBit = (static_cast<uint8_t>(line) % 4) << 2;
     uint8_t CRx = static_cast<uint8_t>(line) >> 2;
+    auto AFIO = reinterpret_cast<volatile AfioRegDef*>(Addr<Peripheral::kAFIO >::getBaseAddr());
     AFIO->EXTICRx[CRx] = util::WriteBits<uint32_t>(startBit, startBit + 3, AFIO->EXTICRx[CRx], port);       // NOLINT
 }
 
