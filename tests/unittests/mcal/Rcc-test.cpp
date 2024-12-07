@@ -19,7 +19,7 @@ using namespace stm32::registers::rcc;            // NOLINT [build/namespaces]
 using ExpectedVal = uint32_t;                     // NOLINT [build/namespaces]
 
 class RccTest : public testing::Test {
-  protected:
+ protected:
     void SetUp() override {
         using Rcc_addr = stm32::constant::Address<Peripheral::kRCC>;
         Rcc_addr::SetTestAddr(&RccReg[0]);

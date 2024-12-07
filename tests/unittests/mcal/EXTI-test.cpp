@@ -34,7 +34,7 @@ TEST(EXTItest, Enable) {
     exti.line = Line::kExti0;
     exti.trigger = Trigger::kRising;
     Exti::Enable(exti);
-    //EXPECT_EQ(0x0,    AFIO->EXTICRx[0]);
+    // EXPECT_EQ(0x0,    AFIO->EXTICRx[0]);
     EXPECT_EQ(0x1,       EXTI->IMR);
     EXPECT_EQ(0x1,       EXTI->RTSR);
 }
