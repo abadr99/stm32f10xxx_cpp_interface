@@ -22,7 +22,7 @@ class RccTest : public testing::Test {
  protected:
     void SetUp() override {
         using Rcc_addr = stm32::constant::Address<Peripheral::kRCC>;
-        Rcc_addr::SetTestAddr(&RccReg[0]);
+        Rcc_addr::setTestAddr(&RccReg[0]);
         RCC = stm32::dev::mcal::rcc::Rcc::GetRccRegisters(); 
         Rcc::Init(); 
     }
