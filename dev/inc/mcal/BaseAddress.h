@@ -23,32 +23,23 @@ namespace stm32 {
 namespace constant {
 
 using stm32::peripherals::Peripheral;
-class Register {
- public:
-    void setVal(RegWidth_t value) {val = value;}
-    const RegWidth_t& getVal() const {return val;}
-
- private:
-    RegWidth_t val;
-};
-
 template <Peripheral peripheralT, RegWidth_t  BaseAddr>
 struct AddressBase {
     static constexpr RegWidth_t  kBaseAddr = BaseAddr;
-    static RegWidth_t testAddr;
+    static RegWidth_t* testAddr;
     static bool test;
 
-    static RegWidth_t getBaseAddr() {
-        return test ? testAddr :  kBaseAddr;
+    static RegWidth_t* getBaseAddr() {
+        return test ? testAddr : reinterpret_cast<RegWidth_t*> (kBaseAddr);
     }
 
-    static void setTestAddr(RegWidth_t tAddr) {
+    static void setTestAddr(RegWidth_t* tAddr) {
         testAddr = tAddr;
         test = true;
     }
 };
 template <Peripheral peripheralT, RegWidth_t  BaseAddr>
-RegWidth_t AddressBase<peripheralT, BaseAddr>:: testAddr = 0;
+RegWidth_t* AddressBase<peripheralT, BaseAddr>:: testAddr = nullptr;
 template <Peripheral peripheralT, RegWidth_t  BaseAddr>
 bool AddressBase<peripheralT, BaseAddr>::test = false;
 
