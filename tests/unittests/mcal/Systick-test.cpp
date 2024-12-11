@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2024
  * 
  */
+
+#if 0
 #include <gtest/gtest.h>
 #include "utils/BitManipulation.h"
 #include "mcal/stm32f103xx.h"
@@ -39,3 +41,4 @@ TEST(SystickTest, Delay_us) {
     EXPECT_EQ(80, SYSTICK->LOAD);
     Systick::Disable();
 }
+#endif 

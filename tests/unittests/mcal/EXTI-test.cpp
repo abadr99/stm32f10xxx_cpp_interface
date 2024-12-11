@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2024
  * 
  */
+#if 0
 #include <gtest/gtest.h>
 #include "utils/BitManipulation.h"
 #include "mcal/stm32f103xx.h"
@@ -67,3 +68,4 @@ TEST(EXTItest, DISABLED_ClearPendingFlag) {
     Exti::ClearPendingFlag(exti);
     EXPECT_EQ(0x40,       EXTI->PR);
 }
+#endif

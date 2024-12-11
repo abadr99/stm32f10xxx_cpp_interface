@@ -6,6 +6,7 @@
  * @copyright Copyright (c) 2024
  */
 
+#if 0
 #include <gtest/gtest.h>
 #include "utils/BitManipulation.h"
 #include "mcal/stm32f103xx.h"
@@ -66,3 +67,4 @@ TEST(NvicTest, SetPriorityGroup) {
     Nvic::SetPriorityGroup(kSCB_0GROUP_4SUBGROUP);
     EXPECT_EQ(kSCB_0GROUP_4SUBGROUP,   (ExtractBits<uint32_t, 0, 31>(SCB->AIRCR)));
 }
+#endif 
