@@ -77,7 +77,7 @@ enum MailBoxType : uint8_t {
 /**
  * @brief FIFO types for received messages.
  */
-enum FifoType : uint8_t {
+enum FifoNumber : uint8_t {
     kFIFO0,     /**< FIFO 0 */
     kFIFO1      /**< FIFO 1 */
 };
@@ -104,6 +104,31 @@ enum ReceivedFifo : uint8_t {
 enum Retransmission : uint8_t {
     kAuto,      /**< Automatic retransmission enabled */
     kNoAuto     /**< Automatic retransmission disabled */
+};
+enum FilterMode : uint8_t {
+    kMask,
+    kList
+};
+enum FilterScale : uint8_t {
+    k16it,
+    k32bit
+};
+struct CanMsg {
+    uint32_t stdId;
+    uint32_t extId;
+    IdType id;
+    RTRType rtr;
+    uint8_t dlc;
+    uint8_t data[8];
+};
+class Can {
+ public:
+    static void Init(void);
+    static void SetOperatingMode(OperatingMode mode);
+    static void SetTestMode(TestMode mode);
+    static void Transmit(CanMsg message);
+    static void CancelTransmit(MailBoxType mailbox);
+    static void Receive(CanMsg message, uint8_t FMI, FifoNumber fifo);
 };
 }   // namespace can
 }   // namespace mcal
