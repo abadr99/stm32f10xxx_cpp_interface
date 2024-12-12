@@ -110,7 +110,7 @@ void Usart::_SetBaudRate() {
 }
 
 void Usart::Transmit(DataValType dataValue) {
-    util::BusyWait<constant::TimeOut::kUsart>([&](){return usartReg->SR.TXE;});
+    util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg->SR.TXE);});
     usartReg->DR = dataValue;
     util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg->SR.TC);});
     usartReg->SR.registerVal = 0;
@@ -124,7 +124,7 @@ void  Usart::Transmit(DataValType dataValue, pFunction pISR) {
     this->usartReg->CR1.TCIE = 1;
 }
 typename Usart::DataValType Usart::Receive() {
-    util::BusyWait<constant::TimeOut::kUsart>([&](){return !(usartReg->SR.RXNE);});
+    while (!(usartReg->SR.RXNE)){}
     return static_cast<DataValType>(usartReg->DR);
 }
 

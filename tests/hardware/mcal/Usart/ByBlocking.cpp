@@ -9,7 +9,7 @@
  * 
  */
 
-// commit-id: a5020f63948e1e8a5aa0cf6949409dc7bf34a49e
+// commit-id:
 
 #include "utils/Types.h"
 #include "mcal/stm32f103xx.h"
@@ -26,6 +26,9 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::usart;
 int main() {
+    Rcc::Init();
+    Gpio::Init();
+    
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
     Rcc::Enable(Peripheral::kIOPA);
@@ -45,7 +48,6 @@ int main() {
     Usart usart1(usart1_conf);
     usart1.Init();
     
-
     Gpio::SetPinValue(pc13, kHigh);
     uint32_t msg_idx = 0;
     const char msg[] = "Hello \r\n";

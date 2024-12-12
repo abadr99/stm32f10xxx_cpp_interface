@@ -65,7 +65,7 @@ void Gpio::SetPinMode(const Pin& pin, PinMode mode) {
         return mode >= PinMode::kInputFloat && mode <= PinMode::kInputPullDown;
     };
 
-    volatile GpioRegDef* gpio = GPIOx[2];
+    volatile GpioRegDef* gpio = GPIOx[pin.GetPort()];
     PinNumber pinNum = pin.GetPinNumber();
     uint8_t startBit = 0;
     
