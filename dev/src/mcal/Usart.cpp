@@ -124,7 +124,7 @@ void  Usart::Transmit(DataValType dataValue, pFunction pISR) {
     this->usartReg->CR1.TCIE = 1;
 }
 typename Usart::DataValType Usart::Receive() {
-    while (!(usartReg->SR.RXNE)){}
+    while (!(usartReg->SR.RXNE)) {}
     return static_cast<DataValType>(usartReg->DR);
 }
 
