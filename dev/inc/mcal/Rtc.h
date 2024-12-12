@@ -57,7 +57,7 @@ class Rtc {
      * @brief Pointer to a function for RTC interrupt service routines.
      */
     using pFunction = stm32::type::pFunction;
-
+    static volatile stm32::registers::rtc::RtcRegDef* GetRtcRegister();
     /**
      * @brief Initializes the RTC with the provided configuration.
      * 
@@ -137,6 +137,7 @@ class Rtc {
     static pFunction GetSecondISR(void);
     
  private:
+    static volatile stm32::registers::rtc:: RtcRegDef* RTC;
     /**
      * @brief Array of callback functions for RTC interrupts (Alarm, Overflow, Second).
      */

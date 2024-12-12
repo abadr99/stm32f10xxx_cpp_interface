@@ -19,7 +19,10 @@
 using namespace stm32::dev::mcal::iwdg; // NOLINT[build/namespaces]
 using namespace stm32::registers::iwdg; 
 
+volatile IWDGRegDef* Iwdg::IWDG = nullptr;
+
 Iwdg::Iwdg(Prescaler prescaler, uint16_t reloadVal) {
+    IWDG = reinterpret_cast<volatile IWDGRegDef*>(Addr<Peripheral::kIWDG >::Get());
     IWDG->KR = 0x5555;
     util::BusyWait([&](){return IWDG->SR.PVU;});
     IWDG->PR = prescaler;

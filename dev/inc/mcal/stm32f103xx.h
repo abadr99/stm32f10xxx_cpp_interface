@@ -12,17 +12,21 @@
 #ifndef DEV_INC_MCAL_STM32F103XX_H_
 #define DEV_INC_MCAL_STM32F103XX_H_
 
-#ifdef UNIT_TEST
-#include "../../../tests/unittests/mcal/BaseAddress-test.h"
-#else
-#include "mcal/BaseAddress.h"
-#endif
 
+#include "mcal/BaseAddress.h"
+
+#include "mcal/Peripherals.h"
 #include "utils/Types.h"
 
-using RegWidth_t = stm32::type::RegWidth<uint32_t>;
+template<stm32::peripherals::Peripheral peripheralT>
+using Addr = stm32::constant::Address<peripheralT>;
+
+using Peripheral = stm32::peripherals::Peripheral;
+using stm32::type::RegWidth_t;
+
 namespace stm32 {
 namespace registers {
+
 namespace rcc {
 
 /********************** RCC Register Definition  **********************/
@@ -219,7 +223,7 @@ struct RccRegDef {
 /**
  * @brief Clock configuration register
  */
-#define RCC  (reinterpret_cast<volatile RccRegDef*>(RCC_BASE_ADDRESS))
+
 
 }  // namespace rcc
 
@@ -239,12 +243,8 @@ struct GpioRegDef {
     RegWidth_t BRR;     // Bit reset register
     RegWidth_t LCKR;    // Lock register
 };
-
-#define GPIOA  (reinterpret_cast<volatile GpioRegDef*>(GPIOA_BASE_ADDRESS))
-#define GPIOB  (reinterpret_cast<volatile GpioRegDef*>(GPIOB_BASE_ADDRESS))
-#define GPIOC  (reinterpret_cast<volatile GpioRegDef*>(GPIOC_BASE_ADDRESS))
-
 }  // namespace gpio
+
 namespace nvic {
 /**
  * @brief Structure defining NVIC Register Definitions
@@ -290,12 +290,8 @@ struct  SCBRegDef {
     RegWidth_t MMFAR;      // MemManage Fault Address Register
     RegWidth_t BFAR;       // BusFault Address Register
 };
-
-
-#define NVIC   (reinterpret_cast<volatile NvicRegDef*>(NVIC_BASE_ADDRESS))
-#define SCB    (reinterpret_cast<volatile SCBRegDef*>(SCB_BASE_ADDRESS))
-
 }  // namespace nvic
+
 namespace afio {
 /**
  * @brief Structure defining AFIO (Alternate Function I/O) Register Definitions
@@ -356,7 +352,7 @@ struct AfioRegDef {
     } MAPR2;  // AF remap and debug I/O configuration register 2
 };
 
-#define AFIO (reinterpret_cast<volatile AfioRegDef*>(AFIO_BASE_ADDRESS))
+// define AFIO (reinterpret_cast<volatile AfioRegDef*>(Addr<Peripheral::kAFIO >::kBaseAddr))
 
 }  // namespace afio
 namespace systick {
@@ -376,8 +372,6 @@ struct SystickRegDef {
     RegWidth_t LOAD;  // Reload value
     RegWidth_t VAL;   // Current value
 };
-
-#define SYSTICK (reinterpret_cast<volatile SystickRegDef*>(SYSTICK_BASE_ADDRESS))  // NOLINT
 
 }  // namespace systick
 namespace spi {
@@ -434,8 +428,6 @@ struct SpiRegDef {
     RegWidth_t RXCRCR;
     RegWidth_t TXCRCR;
 };
-#define SPI1 (reinterpret_cast<volatile SpiRegDef*>(SPI1_BASE_ADDRESS))
-#define SPI2 (reinterpret_cast<volatile SpiRegDef*>(SPI2_BASE_ADDRESS))
 }  // namespace spi
 namespace usart {
 
@@ -523,12 +515,8 @@ struct UsartRegDef {
     }CR3;
     RegWidth_t GTPR;
 };
-
-#define USART1 (reinterpret_cast<volatile UsartRegDef*>(USART1_BASE_ADDRESS))
-#define USART2 (reinterpret_cast<volatile UsartRegDef*>(USART2_BASE_ADDRESS))
-#define USART3 (reinterpret_cast<volatile UsartRegDef*>(USART3_BASE_ADDRESS))
-
 }  // namespace usart
+
 /**
  * @brief Structure defining EXTI Register Definitions
  * 
@@ -542,9 +530,6 @@ struct EXTIRegDef {
     RegWidth_t SWIER;  // Software interrupt event register
     RegWidth_t PR;     // Pending register
 };
-
-#define EXTI (reinterpret_cast<volatile EXTIRegDef*>(EXTI_BASE_ADDRESS))
-
 }  // namespace exti
 namespace wwdg {
 struct WWDGRegDef {
@@ -575,8 +560,6 @@ struct WWDGRegDef {
         RegWidth_t registerVal;
     } SR;
 };
-
-#define WWDG (reinterpret_cast<volatile WWDGRegDef*>(WWDG_BASE_ADDRESS))
 }  // namespace wwdg
 
 namespace rtc {
@@ -669,7 +652,7 @@ struct RtcRegDef {
         RegWidth_t registerVal;
     } ALRL;
 };
-#define RTC (reinterpret_cast<volatile RtcRegDef*>(RTC_BASE_ADDRESS))
+
 }  // namespace rtc
 
 namespace adc {
@@ -809,10 +792,6 @@ struct ADCRegDef {
         RegWidth_t registerVal;
     }DR;
 };
-
-#define ADC1 (reinterpret_cast<volatile ADCRegDef*>(ADC1_BASE_ADDRESS))
-#define ADC2 (reinterpret_cast<volatile ADCRegDef*>(ADC2_BASE_ADDRESS))
-
 }  // namespace adc
 
 namespace i2c {
@@ -923,8 +902,6 @@ struct I2CRegDef {
         
         RegWidth_t TRISE;
 };
-    #define I2C1 (reinterpret_cast<volatile I2CRegDef*>(I2C1_BASE_ADDRESS))
-    #define I2C2 (reinterpret_cast<volatile I2CRegDef*>(I2C2_BASE_ADDRESS))
 }  // namespace i2c
 
 /**
@@ -1029,10 +1006,8 @@ struct DMARegDef {
     }IFCR;  // DMA interrupt flag clear register
     DmaChannel CHANNEL[7];  // DMA channels 1-7
 };
-
-#define DMA (reinterpret_cast<volatile DMARegDef*>(DMA_BASE_ADDRESS))
-
 }  // namespace dma
+
 namespace timer {
 struct timerRegDef {
     union CR1 {
@@ -1206,11 +1181,6 @@ struct timerRegDef {
     } DCR;
     RegWidth_t DMAR;
 };
-#define TIMER1 (reinterpret_cast<volatile timerRegDef*>(TIMER1_BASE_ADDRESS))
-#define TIMER2 (reinterpret_cast<volatile timerRegDef*>(TIMER2_BASE_ADDRESS))
-#define TIMER3 (reinterpret_cast<volatile timerRegDef*>(TIMER3_BASE_ADDRESS))
-#define TIMER4 (reinterpret_cast<volatile timerRegDef*>(TIMER4_BASE_ADDRESS))
-#define TIMER5 (reinterpret_cast<volatile timerRegDef*>(TIMER5_BASE_ADDRESS))
 }  // namespace timer
 
 namespace pwr {
@@ -1240,7 +1210,6 @@ struct PwrRegDef {
         RegWidth_t registerVal;
     }CSR;   //  Power control/status register
 };
-#define PWR (reinterpret_cast<volatile PwrRegDef*>(PWR_BASE_ADDRESS))
 }   // namespace pwr
 
 namespace iwdg {
@@ -1257,7 +1226,6 @@ struct IWDGRegDef {
         RegWidth_t registerVal;
     }SR;
 };
-#define IWDG (reinterpret_cast<volatile IWDGRegDef*>(IWDG_BASE_ADDRESS))
 }  // namespace iwdg
 }  // namespace registers
 }  // namespace stm32

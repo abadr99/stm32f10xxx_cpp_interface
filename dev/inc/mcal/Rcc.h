@@ -11,13 +11,17 @@
 #ifndef DEV_INC_MCAL_RCC_H_
 #define DEV_INC_MCAL_RCC_H_
 
-#include "Rcc.def"
+#include "mcal/stm32f103xx.h"
+
 
 #define RCC_TIMEOUT    (400)    ///< Timeout value for RCC operations
+
 namespace stm32 {
 namespace dev {
 namespace mcal {
 namespace rcc {
+
+using stm32::peripherals::Peripheral;
 
 /**
  * @enum ClkConfig
@@ -102,20 +106,14 @@ enum HSE_Type {
 };
 
 /**
- * @brief Enumeration for RCC peripheral clocks.
- */
-enum class Peripheral {
-    #define P(name_, ignore_) k##name_,
-    RCC_PERIPHERALS
-    #undef P
-    kUnknown,   /**< Unknown peripheral */
-};
-
-/**
  * @brief Class providing functions to configure and manage the RCC.
  */
 class Rcc {
  public:
+    using RccRegDef = stm32::registers::rcc::RccRegDef;
+    using rcc_ptr   = stm32::type::RegType<RccRegDef>::ptr;
+    static void Init();
+    static rcc_ptr GetPtr();
     /**
      * @brief Set the external clock source (HSE).
      * @param HseType Type of HSE (crystal or RC).
@@ -172,6 +170,7 @@ class Rcc {
     static void Disable(Peripheral p);
 
  private:
+    static rcc_ptr RCC;
     /**
      * @brief Enumeration for clock readiness flags.
      */

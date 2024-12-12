@@ -43,8 +43,10 @@ using namespace stm32::registers::spi;
 
 Spi::Spi(const SpiConfig& config) :config_(config) {
     switch (config_.number) {
-        case kSPI1 : spi_reg = (reinterpret_cast<volatile SpiRegDef*>(SPI1)); break;
-        case kSPI2 : spi_reg = (reinterpret_cast<volatile SpiRegDef*>(SPI2)); break;
+        case kSPI1 : spi_reg = (reinterpret_cast<volatile SpiRegDef*>
+                                (Addr<Peripheral::kSPI1 >::Get())); break;
+        case kSPI2 : spi_reg = (reinterpret_cast<volatile SpiRegDef*>
+                                (Addr<Peripheral::kSPI2 >::Get())); break;
         default    : STM32_ASSERT(false, SPI_CONFIG_ERROR(SpiNumber)); break;
     }
 }

@@ -9,7 +9,7 @@
  * 
  */
 
-// commit-id: a5020f63948e1e8a5aa0cf6949409dc7bf34a49e
+// commit-id: 96aab242ce10ad9b52c3d79600127a23d6ae8a0a
 
 #include "utils/Types.h"
 #include "mcal/stm32f103xx.h"
@@ -26,6 +26,9 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::systick;
 int main() {
+    Rcc::Init();
+    Gpio::Init();
+    
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
     Rcc::Enable(Peripheral::kIOPC);
@@ -38,7 +41,7 @@ int main() {
         for (Local_u16Counter = 0; Local_u16Counter < 50000; Local_u16Counter++) {
             __asm("NOP");
         }
-        Gpio::SetPinValue(pc13, kLow);
+        Gpio::SetPinValue(pc13, kHigh);
         for (Local_u16Counter = 0; Local_u16Counter < 50000; Local_u16Counter++) {
              __asm("NOP");
         }

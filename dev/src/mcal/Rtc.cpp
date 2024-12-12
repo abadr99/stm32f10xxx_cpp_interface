@@ -15,13 +15,16 @@
 #include "utils/Util.h"
 #include "mcal/Rtc.h"
 
+
 using namespace stm32::dev::mcal::rtc;
 using namespace stm32::registers::rtc;
 using namespace stm32::type;          
 
 pFunction Rtc::pRtcCallBackFunctions[3] = {nullptr, nullptr, nullptr};
+volatile stm32::registers::rtc::RtcRegDef* Rtc::RTC = nullptr;
 
 void Rtc::Init(const RtcConfig &config) {
+    RTC = reinterpret_cast<volatile RtcRegDef*>(Addr<Peripheral::kRTC >::Get());
     // wait for the last operation to be done
     WaitForLastTask();
 
@@ -51,7 +54,9 @@ void Rtc::Init(const RtcConfig &config) {
     // wait for the Synchronization between the RTC Registers
     WaitForSync();
 }
-
+volatile stm32::registers::rtc::RtcRegDef* Rtc::GetRtcRegister() {
+        return RTC;
+}
 void Rtc::AlarmInterruptEnable(void) {
     RTC->CRH.ALRIE = 1;
 }
@@ -159,27 +164,28 @@ extern "C" void RTCAlarm_IRQHandler(void) {
 
 extern "C" void RTC_IRQHandler(void) {
     pFunction fun = nullptr;
-    if ((RTC->CRL.ALRF == 1) && (RTC->CRH.ALRIE == 1)) {
+    auto rtc_register = Rtc::GetRtcRegister();
+    if ((rtc_register ->CRL.ALRF == 1) && (rtc_register ->CRH.ALRIE == 1)) {
         fun = Rtc::GetAlarmISR();
         if (fun != nullptr) {
             fun();
         }
-        RTC->CRL.ALRF = 0;
+        rtc_register ->CRL.ALRF = 0;
     }
 
-    if ((RTC->CRL.SECF == 1) && (RTC->CRH.SECIE == 1)) {
+    if ((rtc_register ->CRL.SECF == 1) && (rtc_register ->CRH.SECIE == 1)) {
         fun = Rtc::GetSecondISR();
         if (fun != nullptr) {
             fun();
         }
-        RTC->CRL.SECF = 0;
+        rtc_register ->CRL.SECF = 0;
     }
 
-    if ((RTC->CRL.OWF == 1) && (RTC->CRH.OWIE == 1)) {
+    if ((rtc_register ->CRL.OWF == 1) && (rtc_register ->CRH.OWIE == 1)) {
         fun = Rtc::GetAlarmISR();
         if (fun != nullptr) {
             fun();
         }
-        RTC->CRL.OWF = 0;
+        rtc_register ->CRL.OWF = 0;
     }
 }

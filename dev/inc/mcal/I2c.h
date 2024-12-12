@@ -6,8 +6,10 @@
  * @date 2024-07-13
  * @copyright Copyright (c) 2024
  */
+
 #ifndef DEV_INC_MCAL_I2C_H_
 #define DEV_INC_MCAL_I2C_H_
+
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -190,7 +192,8 @@ class I2c {
     void SetClk(const I2cConfig& I2c);
 
     /**< I2C register structure pointer */
-    volatile stm32::registers::i2c::I2CRegDef* i2c_reg;
+    using I2CRegDef = stm32::registers::i2c::I2CRegDef;
+    stm32::type::RegType<I2CRegDef>::ptr i2c_reg;
 };
 
 }   // namespace i2c

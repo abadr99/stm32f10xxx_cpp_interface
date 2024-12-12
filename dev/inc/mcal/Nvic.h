@@ -10,6 +10,7 @@
 
 #ifndef DEV_INC_MCAL_NVIC_H_
 #define DEV_INC_MCAL_NVIC_H_
+
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
