@@ -36,7 +36,7 @@ volatile WWDGRegDef* Wwdg::WWDG = nullptr;
 
 Wwdg::Wwdg(const Config& config) : config_(config) {
     CHECK_WWDG_CONFIG();
-    WWDG = reinterpret_cast<volatile WWDGRegDef*>(Addr<Peripheral::kWWDG >::getBaseAddr());
+    WWDG = reinterpret_cast<volatile WWDGRegDef*>(Addr<Peripheral::kWWDG >::Get());
     Init();
 }
 

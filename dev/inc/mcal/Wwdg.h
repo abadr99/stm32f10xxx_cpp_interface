@@ -10,6 +10,8 @@
 #ifndef DEV_INC_MCAL_WWDG_H_
 #define DEV_INC_MCAL_WWDG_H_
 
+#include "mcal/stm32f103xx.h"
+
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
@@ -79,7 +81,8 @@ class Wwdg {
     void ClearEarlyWakeupFlag();
 
  private:
-    static volatile stm32::registers::wwdg:: WWDGRegDef* WWDG;
+    using WWDGRegDef = stm32::registers::wwdg::WWDGRegDef;
+    static stm32::type::RegType<WWDGRegDef>::ptr WWDG;
     Config config_;  /**< Configuration settings for the WWDG peripheral */
 
     /**

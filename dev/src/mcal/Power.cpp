@@ -28,10 +28,10 @@ using namespace stm32::dev::mcal::pwr;
 #define Pwr_EMPTY_MESSAGE               ""
 volatile PwrRegDef* Pwr::PWR = nullptr;
 static volatile SCBRegDef*  SCB_reg = reinterpret_cast<volatile SCBRegDef*>
-                                      (Addr<Peripheral::kSCB>::getBaseAddr());
+                                      (Addr<Peripheral::kSCB>::Get());
 
 void Pwr::Init() {
-        PWR = reinterpret_cast<volatile PwrRegDef*>(Addr<Peripheral::kPWR >::getBaseAddr());
+        PWR = reinterpret_cast<volatile PwrRegDef*>(Addr<Peripheral::kPWR >::Get());
 } 
 void Pwr::EnterSleepMode(PwrEntry sleepEntry, SleepType type) {
     STM32_ASSERT((sleepEntry == PwrEntry::kWFI) ||

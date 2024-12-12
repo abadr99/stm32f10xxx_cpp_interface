@@ -24,12 +24,13 @@ namespace gpio {
  */
 class Gpio {
  public:
-  using Pin = stm32::dev::mcal::pin::Pin;
-  using Port = stm32::dev::mcal::pin::Port;
-  using PinMode = stm32::dev::mcal::pin::PinMode;
+  using Pin        = stm32::dev::mcal::pin::Pin;
+  using Port       = stm32::dev::mcal::pin::Port;
+  using PinMode    = stm32::dev::mcal::pin::PinMode;
   using GpioRegDef = stm32::registers::gpio::GpioRegDef;
-  using PinVal_t = uint8_t;
-    // As Gpio class is used to deal with general purpose IO and all pin's 
+  using PinVal_t   = uint8_t;
+  
+  // As Gpio class is used to deal with general purpose IO and all pin's 
   // configurations are abstracted in Pin class so we can use Set() method 
   // to set all gpio configurations
   static void Init();
@@ -60,7 +61,8 @@ class Gpio {
   static PinVal_t GetPinValue(Pin pin);
   
  private:
-  static volatile  GpioRegDef * GPIOx[3];
+  static constexpr uint32_t kGpioSiz = 3;
+  static stm32::type::RegType<GpioRegDef>::ptr GPIOx[kGpioSiz];
 };
 
 }  // namespace gpio

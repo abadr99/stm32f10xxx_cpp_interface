@@ -54,8 +54,10 @@ class Iwdg {
      * and avoid a system reset.
      */
     void Refresh();
+ 
  private:
-    static volatile stm32::registers::iwdg:: IWDGRegDef* IWDG;
+    using IWDGRegDef = stm32::registers::iwdg::IWDGRegDef;
+    static stm32::type::RegType<IWDGRegDef>::ptr IWDG;
 }; 
 
 }   //  namespace iwdg

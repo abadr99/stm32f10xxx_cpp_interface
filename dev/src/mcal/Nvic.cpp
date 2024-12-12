@@ -21,9 +21,9 @@ using namespace stm32::dev::mcal::nvic;
 using namespace stm32::registers::nvic;
 
 static volatile NvicRegDef*  NVIC = reinterpret_cast<volatile NvicRegDef*>
-                                    (Addr<Peripheral::kNVIC>::getBaseAddr());
+                                    (Addr<Peripheral::kNVIC>::Get());
 static volatile SCBRegDef*  SCB = reinterpret_cast<volatile SCBRegDef*>
-                                  (Addr<Peripheral::kSCB>::getBaseAddr());
+                                  (Addr<Peripheral::kSCB>::Get());
 
 Id::Id(InterruptID id) : id_(id) {}
 uint8_t Id::Pos() {return util::ExtractBits<int8_t, 0, 4>(id_);}

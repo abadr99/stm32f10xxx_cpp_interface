@@ -37,6 +37,11 @@ enum class ConnectionType {
     kReverse_Bias,
 };
 
+template <typename T>
+struct RegType {
+    using reg = volatile T;
+    using ptr = reg*;
+};
 }  // namespace type
 }  // namespace stm32
 

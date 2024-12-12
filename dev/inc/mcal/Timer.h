@@ -70,6 +70,7 @@ struct TimerConfig {
 class Timer {
  public:
     using pFunction = stm32::type::pFunction;
+    using timerRegDefPtr = stm32::type::RegType<stm32::registers::timer::timerRegDef>::ptr;
 
     /**
      * @brief Constructs a Timer object.
@@ -77,7 +78,7 @@ class Timer {
      * @param config A reference to a TimerConfig structure with the timer settings.
      */
     explicit Timer(const TimerConfig & config);
-
+    static timerRegDefPtr GetPtr(TimerID idx);
     /**
      * @brief Creates a delay in milliseconds.
      * 
@@ -98,11 +99,11 @@ class Timer {
      * @brief Initializes the timer with the given configuration settings.
      */
     void Init();
-
     const TimerConfig& config_;  /**< Reference to the timer configuration structure */
     /**< Pointer to the timer register definition */
-    volatile stm32::registers::timer::timerRegDef* timerReg;
-    static pFunction pGlobalCallBackFunction[5];  /**< Global callback functions array for ISRs */
+    timerRegDefPtr timerReg;
+    static constexpr uint32_t kCallBackSiz = 5;
+    static pFunction pGlobalCallBackFunction[kCallBackSiz];  /**< Global callback functions array for ISRs */
 };
 }  // namespace timer
 }  // namespace mcal

@@ -127,9 +127,11 @@ class Exti {
     static pFunction GetpCallBackFunction(Line line);
 
  private:
-    using Port = stm32::dev::mcal::pin::Port;
-    static volatile stm32::registers::exti::EXTIRegDef* EXTI;
-    static pFunction pGlobalCallBackFunctions[7];
+    static constexpr uint32_t kCallBackSiz = 7;
+    using Port       = stm32::dev::mcal::pin::Port;
+    using EXTIRegDef = stm32::registers::exti::EXTIRegDef;
+    static stm32::type::RegType<EXTIRegDef>::ptr EXTI;
+    static pFunction pGlobalCallBackFunctions[kCallBackSiz];
 
     /**
      * @brief Initializes the AFIO register for the specified EXTI line and port.

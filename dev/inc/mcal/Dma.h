@@ -102,14 +102,15 @@ class Dma {
      * @brief Typedef for a pointer to a function.
      */
     using pFunction = stm32::type::pFunction;
-
+    using DmaRegDef = stm32::registers::dma::DMARegDef;
+    using RegType   = stm32::type::RegType<DmaRegDef>::ptr;
     /**
      * @brief Initializes the DMA with the given configuration.
      * 
      * @param config The configuration settings for the DMA.
      */
     static void Init(const DMAConfig& config);
-
+    static RegType GetPtr();
     /**
      * @brief Enables the specified DMA channel.
      * 
@@ -157,10 +158,12 @@ class Dma {
     static pFunction GetPointerToTransferErrorISR(Channel channel);
 
  private:
+    static constexpr uint32_t kCallBackSiz = 7;
     /**< Pointers to transfer complete ISRs for each DMA channel. */
-    static pFunction PointerToTransferCompleteISR[7];
+    static pFunction PointerToTransferCompleteISR[kCallBackSiz];
     /**< Pointers to transfer error ISRs for each DMA channel. */
-    static pFunction PointerToTransferErrorISR[7];
+    static pFunction PointerToTransferErrorISR[kCallBackSiz];
+    static RegType DMA;
 };
 
 }   // namespace dma

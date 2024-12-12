@@ -110,12 +110,10 @@ enum HSE_Type {
  */
 class Rcc {
  public:
+    using RccRegDef = stm32::registers::rcc::RccRegDef;
+    using rcc_ptr   = stm32::type::RegType<RccRegDef>::ptr;
     static void Init();
-    static volatile stm32::registers::rcc::RccRegDef* GetRccRegisters();
-
-
-
-
+    static rcc_ptr GetPtr();
     /**
      * @brief Set the external clock source (HSE).
      * @param HseType Type of HSE (crystal or RC).
@@ -172,6 +170,7 @@ class Rcc {
     static void Disable(Peripheral p);
 
  private:
+    static rcc_ptr RCC;
     /**
      * @brief Enumeration for clock readiness flags.
      */
@@ -186,8 +185,6 @@ class Rcc {
         kPllSource_Hse     = ClkConfig::kHse,       /**< HSE as PLL source */
         kPllSource_HseDiv2 = ClkConfig::kHseDivBy2  /**< HSE divided by 2 as PLL source */
     };
-
-    static volatile stm32::registers::rcc:: RccRegDef* RCC;
 
 
     /**

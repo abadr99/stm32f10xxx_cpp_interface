@@ -24,7 +24,7 @@ pFunction Rtc::pRtcCallBackFunctions[3] = {nullptr, nullptr, nullptr};
 volatile stm32::registers::rtc::RtcRegDef* Rtc::RTC = nullptr;
 
 void Rtc::Init(const RtcConfig &config) {
-    RTC = reinterpret_cast<volatile RtcRegDef*>(Addr<Peripheral::kRTC >::getBaseAddr());
+    RTC = reinterpret_cast<volatile RtcRegDef*>(Addr<Peripheral::kRTC >::Get());
     // wait for the last operation to be done
     WaitForLastTask();
 

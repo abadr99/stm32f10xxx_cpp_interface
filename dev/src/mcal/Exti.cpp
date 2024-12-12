@@ -46,7 +46,7 @@ void Exti::Enable(const EXTI_Config& config) {
                 && (config.trigger <= kBoth)), EXTI_CONFIG_ERROR(Trigger));
     STM32_ASSERT(((config.line >= kExti0) && (config.line <= kExti19)),
                   EXTI_CONFIG_ERROR(line));
-    EXTI = reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::getBaseAddr());
+    EXTI = reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::Get());
     Exti::InitAFIOReg(config.line, config.port);
     EXTI->IMR = util::SetBit<uint32_t>(EXTI->IMR, config.line);
     Exti::SetTrigger(config.line, config.trigger);
@@ -100,7 +100,7 @@ pFunction Exti::GetpCallBackFunction(Line line) {
 void Exti::InitAFIOReg(Line line, Port port) {
     uint8_t startBit = (static_cast<uint8_t>(line) % 4) << 2;
     uint8_t CRx = static_cast<uint8_t>(line) >> 2;
-    auto AFIO = reinterpret_cast<volatile AfioRegDef*>(Addr<Peripheral::kAFIO >::getBaseAddr());
+    auto AFIO = reinterpret_cast<volatile AfioRegDef*>(Addr<Peripheral::kAFIO >::Get());
     AFIO->EXTICRx[CRx] = util::WriteBits<uint32_t>(startBit, startBit + 3, AFIO->EXTICRx[CRx], port);       // NOLINT
 }
 
@@ -137,7 +137,7 @@ bool Exti::GetPendingBit(Line line) {
     extern "C" void EXTI##N##_IRQHandler(void) {\
         /* Clear pending flag to ensure that the same ISR won't execute again */\
         auto exti_reg = reinterpret_cast<volatile EXTIRegDef*>\
-        (Addr<Peripheral::kEXTI >::getBaseAddr());\
+        (Addr<Peripheral::kEXTI >::Get());\
         exti_reg->PR |= (1 << static_cast<uint8_t>(Line::kExti##N));\
         pFunction fun = Exti::GetpCallBackFunction(Line::kExti##N);\
         if (fun != nullptr) {\
