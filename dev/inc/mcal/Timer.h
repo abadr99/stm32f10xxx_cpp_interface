@@ -103,7 +103,8 @@ class Timer {
     /**< Pointer to the timer register definition */
     timerRegDefPtr timerReg;
     static constexpr uint32_t kCallBackSiz = 5;
-    static pFunction pGlobalCallBackFunction[kCallBackSiz];  /**< Global callback functions array for ISRs */
+    /**< Global callback functions array for ISRs */
+    static pFunction pGlobalCallBackFunction[kCallBackSiz];
 };
 }  // namespace timer
 }  // namespace mcal

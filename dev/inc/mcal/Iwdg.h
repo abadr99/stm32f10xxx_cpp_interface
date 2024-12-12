@@ -54,7 +54,7 @@ class Iwdg {
      * and avoid a system reset.
      */
     void Refresh();
- 
+    
  private:
     using IWDGRegDef = stm32::registers::iwdg::IWDGRegDef;
     static stm32::type::RegType<IWDGRegDef>::ptr IWDG;

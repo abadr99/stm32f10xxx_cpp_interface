@@ -18,7 +18,7 @@
 #include "mcal/stm32f103xx.h"
 
 // --- IMPORTS 
-// TODO: Check if using 'using ...' in headers 
+// TODO(@abadr99): Check if using 'using ...' in headers 
 // cause a problems
 using stm32::type::RegWidth_t;
 using stm32::peripherals::Peripheral;
