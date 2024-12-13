@@ -21,7 +21,7 @@ cpplint:
 # Build target
 build-unittests: $(U_OBJ)
 	@$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
-	@echo "[MAKEFILE]: Build Successfully ..."
+	@echo "[Makefile]: Build Successfully ..."
 
 # Rule for creating object files
 %.o: %.cpp

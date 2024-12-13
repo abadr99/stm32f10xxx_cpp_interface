@@ -181,7 +181,8 @@ class Spi {
 
     const SpiConfig& config_;  /**< Holds the SPI configuration */
     /**< Pointer to the SPI register definition */
-    volatile stm32::registers::spi::SpiRegDef* spi_reg;
+    using SpiRegDef = stm32::registers::spi::SpiRegDef;
+    stm32::type::RegType<SpiRegDef>::ptr spi_reg;    
 }; 
 }   // namespace spi
 }   // namespace mcal

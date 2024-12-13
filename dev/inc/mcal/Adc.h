@@ -7,15 +7,19 @@
  * @copyright Copyright (c) 2024
  * 
  */
+
 #ifndef DEV_INC_MCAL_ADC_H_
 #define DEV_INC_MCAL_ADC_H_
+
 #include "mcal/stm32f103xx.h"
-#define ADC_TIMEOUT (400)
+
 using namespace stm32::registers::adc;
+
 namespace stm32 {
 namespace dev   {
 namespace mcal  {
 namespace adc   {
+    
 /**
  * @brief Enumeration for ADC channels.
  */
@@ -176,9 +180,8 @@ class ADC {
     AdcNum GetAdcNum();
 
  private:
-    const AdcConfig& config_;        /**< ADC configuration settings. */
-    volatile ADCRegDef* ADC_reg;    /**< Pointer to the ADC register definition. */
-
+    const AdcConfig& config_;             /**< ADC configuration settings. */
+    stm32::type::RegType<ADCRegDef>::ptr ADC_reg;    /**< Pointer to the ADC register definition. */
     /**
      * @brief Configures the sample time for the selected ADC channel.
      */

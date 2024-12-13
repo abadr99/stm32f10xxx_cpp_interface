@@ -46,11 +46,11 @@ namespace helper {
     static inline void SetDirection(Channel dmaChannel, Direction dmaDirection) {
         switch (dmaDirection) {
             case kMem2Mem : 
-                DMA->CHANNEL[dmaChannel].CCR.MEM2MEM = 1;
-                DMA->CHANNEL[dmaChannel].CCR.DIR = 1;
+                Dma::GetPtr()->CHANNEL[dmaChannel].CCR.MEM2MEM = 1;
+                Dma::GetPtr()->CHANNEL[dmaChannel].CCR.DIR = 1;
             break;
-            case kMem2Per : DMA->CHANNEL[dmaChannel].CCR.DIR = 1;     break;
-            case kPer2Mem : DMA->CHANNEL[dmaChannel].CCR.DIR = 0;     break;
+            case kMem2Per : Dma::GetPtr()->CHANNEL[dmaChannel].CCR.DIR = 1;     break;
+            case kPer2Mem : Dma::GetPtr()->CHANNEL[dmaChannel].CCR.DIR = 0;     break;
             default       : return;
         }
     }
@@ -59,6 +59,7 @@ namespace helper {
 // --- INITIATE DMA STATIC DATA
 pFunction Dma::PointerToTransferCompleteISR[7] = {nullptr};
 pFunction Dma::PointerToTransferErrorISR[7] = {nullptr};
+typename  Dma::RegType Dma::DMA = nullptr;
 
 void Dma::Init(const DMAConfig& config) {
     CHECK_CONFIG();
@@ -97,6 +98,10 @@ void Dma::Init(const DMAConfig& config) {
     DMA->CHANNEL[config.channel].CNDTR = config.bufferSize;
 }
 
+typename Dma::RegType Dma::GetPtr() {
+    return DMA;
+}
+
 void Dma::Enable(Channel dmaChannel) {
     STM32_ASSERT((dmaChannel >= kChannel1) && (dmaChannel <= kChannel7), DMA_CONFIG_ERROR(Channel));
     DMA->CHANNEL[dmaChannel].CCR.EN = 1;
@@ -128,17 +133,17 @@ pFunction Dma::GetPointerToTransferErrorISR(Channel channel) {
 // TODO(@abadr99, @MRefat13): Check if this implementation will make debugging harder
 #define DMA_CHANNEL_HANDLER(N)\
     extern "C" void DMA1_Channel##N##_IRQHandler(void) {\
-        if (DMA->ISR.TEIF##N == 1) {\
+        if (Dma::GetPtr()->ISR.TEIF##N == 1) {\
             pFunction fun = Dma::GetPointerToTransferErrorISR(kChannel##N);\
             if (fun != NULL) {\
                 fun();\
-                DMA->IFCR.CTEIF##N = 1;\
+                Dma::GetPtr()->IFCR.CTEIF##N = 1;\
             }\
-        } else if (DMA->ISR.TCIF##N == 1) {\
+        } else if (Dma::GetPtr()->ISR.TCIF##N == 1) {\
             pFunction fun = Dma::GetPointerToTransferCompleteISR(kChannel##N);\
             if (fun != NULL) {\
                 fun();\
-                DMA->IFCR.CTCIF##N = 1;\
+                Dma::GetPtr()->IFCR.CTCIF##N = 1;\
             }\
         }\
     }

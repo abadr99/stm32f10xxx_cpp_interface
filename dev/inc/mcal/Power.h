@@ -85,6 +85,7 @@ enum class PwrFlag {
  */
 class Pwr {
  public:
+    static void Init();
     /**
      * @brief Enter sleep mode.
      * 
@@ -126,11 +127,7 @@ class Pwr {
     static void ClearFlag(PwrFlag flag);
 
  private:
-    /**
-     * @brief Enter low-power mode.
-     * 
-     * @param entry Specifies how the system enters the low-power mode (wait for interrupt/event).
-     */
+    static volatile stm32::registers::pwr::PwrRegDef* PWR;
     static void EnterLowPowerMode(PwrEntry entry);
 };
 

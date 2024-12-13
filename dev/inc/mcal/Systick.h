@@ -11,6 +11,7 @@
 #define DEV_INC_MCAL_SYSTICK_H_
 
 #include "utils/Types.h"
+
 namespace stm32 {
 namespace dev {
 namespace mcal {
@@ -110,6 +111,8 @@ class Systick {
     static pFunction GetPointerToISR();
 
  private:
+    using SystickRegDef = stm32::registers::systick::SystickRegDef;
+    static stm32::type::RegType<SystickRegDef>::ptr SYSTICK;
     /**
      * @brief Sets the pointer to the interrupt service routine (ISR).
      * 

@@ -12,6 +12,7 @@
 #define DEV_INC_MCAL_GPIO_H_
 
 #include "utils/Types.h"
+#include "mcal/stm32f103xx.h"
 
 namespace stm32 {
 namespace dev {
@@ -23,16 +24,16 @@ namespace gpio {
  */
 class Gpio {
  public:
-  using Pin = stm32::dev::mcal::pin::Pin;             /**< Type alias for Pin class. */
-  using Port = stm32::dev::mcal::pin::Port;           /**< Type alias for Port class. */
-  using PinMode = stm32::dev::mcal::pin::PinMode;     /**< Type alias for PinMode enum. */
-  using PinVal_t = uint8_t;                           /**< Type alias for pin value type. */
-
-  /**
-   * @brief Configures the given GPIO pin with all settings defined in the Pin class.
-   * 
-   * @param pin The Pin object containing the configuration details.
-   */
+  using Pin        = stm32::dev::mcal::pin::Pin;
+  using Port       = stm32::dev::mcal::pin::Port;
+  using PinMode    = stm32::dev::mcal::pin::PinMode;
+  using GpioRegDef = stm32::registers::gpio::GpioRegDef;
+  using PinVal_t   = uint8_t;
+  
+  // As Gpio class is used to deal with general purpose IO and all pin's 
+  // configurations are abstracted in Pin class so we can use Set() method 
+  // to set all gpio configurations
+  static void Init();
   static void Set(const Pin& pin);
 
   /**
@@ -58,6 +59,10 @@ class Gpio {
    * @return PinVal_t The current voltage level of the pin (0 for low, 1 for high).
    */
   static PinVal_t GetPinValue(Pin pin);
+  
+ private:
+  static constexpr uint32_t kGpioSiz = 3;
+  static stm32::type::RegType<GpioRegDef>::ptr GPIOx[kGpioSiz];
 };
 
 }  // namespace gpio

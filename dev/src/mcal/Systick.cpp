@@ -35,10 +35,11 @@ ASSERT_MEMBER_OFFSET(SystickRegDef, VAL,  sizeof(RegWidth_t) * 2);
 static constexpr uint32_t kSystickMaxVal = util::GetOnes<uint32_t>(24);
 
 typename Systick::pFunction Systick::PointerToISR = nullptr;
-
+volatile SystickRegDef* Systick::SYSTICK = nullptr;
 void Systick::Enable(CLKSource clksource) {
     STM32_ASSERT((clksource == kAHB_Div_8) || 
                  (clksource == kAHB), SYSTICK_CONFIG_ERROR(CLKSource));
+    SYSTICK = reinterpret_cast<volatile SystickRegDef*>(Addr<Peripheral::kSYSTICK >::Get());
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->CTRL.TICKINT = 0;
     SYSTICK->CTRL.CLKSOURCE = clksource;
@@ -103,8 +104,10 @@ extern "C" void SysTick_Handler(void) {
     typename Systick::pFunction fun = Systick::GetPointerToISR();
     if (fun != NULL) {
         fun();
-        SYSTICK->CTRL.ENABLE = 0;
-        SYSTICK->VAL = 1;
+        auto SysticReg = reinterpret_cast<volatile SystickRegDef*>
+                         (Addr<Peripheral::kSYSTICK >::Get());
+        SysticReg->CTRL.ENABLE = 0;
+        SysticReg->VAL = 1;
     }
 }
 

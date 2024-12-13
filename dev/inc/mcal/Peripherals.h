@@ -1,10 +1,23 @@
+/**
+ * @file Peripherals.h
+ * @author
+ * @brief 
+ * @version 0.1
+ * @date 2024-09-19
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
+#pragma once
+
 // Peripheral-name   Bridge     
-#define RCC_PERIPHERALS\
+#define PERIPHERALS\
     P(DMA1,        AHB)  /* AHB BEGINS --- */ \
     P(DMA2,        AHB) \
     P(SRAM,        AHB) \
     P(FLITF,       AHB) \
-    P(CRC,         AHB) /* AHB ENDS --- */ \
+    P(CRC,         AHB)   /* AHB ENDS --- */ \
     P(TIM2,        APB1)  /* APB1 BEGINS --- */\
     P(TIM3,        APB1) \
     P(TIM4,        APB1) \
@@ -35,4 +48,24 @@
     P(TIM1,        APB2) \
     P(SPI1,        APB2) \
     P(USART1,      APB2) /* APB2 ENDS --- */
-    
+
+namespace stm32 {
+namespace peripherals {
+    enum class Peripheral {
+        kRCC,
+        // -- CORE PERIPHERALS 
+        kNVIC,
+        kSCB,
+        kSYSTICK,
+        // -- MCU PERIPHERALS
+        kEXTI,
+        kRTC,
+        kIWDG,
+        #define P(name_, ignore_)       k##name_,
+        PERIPHERALS
+        #undef P
+        kUnknown,
+    };
+}  // namespace peripherals
+}  // namespace stm32
+

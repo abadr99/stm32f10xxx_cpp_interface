@@ -206,14 +206,16 @@ class Usart {
     enum Flag : uint8_t { kDisabled, kEnabled };
 
     const UsartConfig& config_;   /**< Reference to the USART configuration structure */
+    static constexpr uint32_t kCallBackSiz = 3;
+    using UsartRegDef = stm32::registers::usart::UsartRegDef;
     /**< Pointer to the USART register structure */
-    volatile stm32::registers::usart::UsartRegDef* usartReg;
+    static stm32::type::RegType<UsartRegDef>::ptr usartReg;
     /**< Array of pointers to received data for each USART */
-    static volatile DataValType *pReceivedData_[3];
+    static stm32::type::RegType<DataValType>::ptr pReceivedData_[kCallBackSiz];
     /**< Array of pointers to transmit complete ISR functions */
-    static pFunction pTransmitCompleteFun_[3];
+    static pFunction pTransmitCompleteFun_[kCallBackSiz];
     /**< Array of pointers to receive ready ISR functions */
-    static pFunction pReceiveReadyFun_[3];
+    static pFunction pReceiveReadyFun_[kCallBackSiz];
 
     /**
      * @brief Sets the baud rate for the USART peripheral based on the configuration.

@@ -22,6 +22,8 @@ namespace type {
 template<typename T>
 using RegWidth = T;
 
+using RegWidth_t = stm32::type::RegWidth<uint32_t>;
+
 using pFunction = void(*)();
 using bit = bool;
 
@@ -35,6 +37,11 @@ enum class ConnectionType {
     kReverse_Bias,
 };
 
+template <typename T>
+struct RegType {
+    using reg = volatile T;
+    using ptr = reg*;
+};
 }  // namespace type
 }  // namespace stm32
 
