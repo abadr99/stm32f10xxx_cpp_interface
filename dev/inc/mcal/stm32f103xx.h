@@ -1227,6 +1227,55 @@ struct IWDGRegDef {
     }SR;
 };
 }  // namespace iwdg
+namespace can {
+struct CANRegDef {
+    RegWidth_t MCR;         // Master Control Register
+    RegWidth_t MSR;         // Master Status Register
+    RegWidth_t TSR;         // Transmit Status Register
+    RegWidth_t RF0R;        // Receive FIFO 0 Register
+    RegWidth_t RF1R;        // Receive FIFO 1 Register
+    RegWidth_t IER;         // Interrupt Enable Register
+    RegWidth_t ESR;         // Error Status Register
+    RegWidth_t BTR;         // Bit Timing Register
+    RegWidth_t RESERVED0[88];   // Reserved memory space
+
+    // Transmit Mailboxes
+    struct TxMailBox_t {
+        RegWidth_t TIR;     // Transmit Identifier Register
+        RegWidth_t TDTR;    // Transmit Data Length Control and Time Register
+        RegWidth_t TDLR;    // Transmit Data Low Register
+        RegWidth_t TDHR;    // Transmit Data High Register
+    };
+    TxMailBox_t TxMailBox[3];   // 3 Transmit Mailboxes
+
+    // Receive FIFO Mailboxes
+    struct RxMailBox_t {
+        RegWidth_t RIR;     // Receive Identifier Register
+        RegWidth_t RDTR;    // Receive Data Length Control and Time Register
+        RegWidth_t RDLR;    // Receive Data Low Register
+        RegWidth_t RDHR;    // Receive Data High Register
+    };
+    RxMailBox_t RxFIFO[2];  // 2 Receive FIFOs (FIFO 0 and FIFO 1)
+
+    // Filter Registers
+    RegWidth_t FMR;             // Filter Master Register
+    RegWidth_t FM1R;            // Filter Mode Register
+    RegWidth_t RESERVED1;       // Reserved memory space
+    RegWidth_t FS1R;            // Filter Scale Register
+    RegWidth_t RESERVED2;       // Reserved memory space
+    RegWidth_t FFA1R;           // Filter FIFO Assignment Register
+    RegWidth_t RESERVED3;       // Reserved memory space
+    RegWidth_t FA1R;            // Filter Activation Register
+    RegWidth_t RESERVED4[8];    // Reserved memory space
+
+    // Filter Banks
+    struct FilterBank {
+        RegWidth_t FR1;         // Filter Bank Register 1
+        RegWidth_t FR2;         // Filter Bank Register 2
+    };
+    FilterBank sFilterRegister[14];     // STM32F103 has 14 filter banks
+};
+}  // namespace can
 }  // namespace registers
 }  // namespace stm32
 
