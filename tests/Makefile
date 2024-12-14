@@ -14,6 +14,10 @@ U_TARGET := unittests/unittests.elf
 U_LD := -lgtest -lpthread
 U_INC := -I../dev -I../dev/inc/
 
+gcov_files = $(shell find ./ -type f -name "*.gcov")
+gcda_files = $(shell find $(U_SRCS_DIRS) -type f -name "*.gcda")
+gcno_files = $(shell find $(U_SRCS_DIRS) -type f -name "*.gcno")
+
 # Linting
 cpplint:
 	@python3 $(LINT_PATH) --recursive .
@@ -36,3 +40,5 @@ run-unittests:
 clean:
 	@rm -rf $(U_OBJ)
 	@rm -rf $(U_TARGET)
+	@rm -rf $(gcov_files) $(gcno_files) $(gcda_files) "coverage.info" 
+	@rm -rf out 
