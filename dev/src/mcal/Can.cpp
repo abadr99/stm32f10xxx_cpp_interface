@@ -39,6 +39,33 @@ void Can::Init(const CanConfig &conf) {
 
     SetOperatingMode(conf, kNormal);
 }
+void Can::Transmit(CanMsg message) {
+    uint32_t txMailbox = 0;
+    if ((CAN->TSR.TME0 != 0) || 
+        (CAN->TSR.TME1 != 0) ||
+        (CAN->TSR.TME2 != 0)) {
+            txMailbox = CAN->TSR.CODE;
+            if (txMailbox <= 2) {
+                if (message.ide == kStd) {
+                    CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
+                    CAN->TxMailBox[txMailbox].TIR.RTR = message.rtr;
+                } else {
+                    CAN->TxMailBox[txMailbox].TIR.STID = message.extId;
+                    CAN->TxMailBox[txMailbox].TIR.RTR = message.rtr;
+                    CAN->TxMailBox[txMailbox].TIR.IDE = 1;
+                }
+                CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
+                for (uint8_t i = 0; i < message.dlc; ++i) {
+                    if (i < 4) {
+                        CAN->TxMailBox[txMailbox].TDLR |= (message.data[i] << (i * 8));
+                    } else {
+                        CAN->TxMailBox[txMailbox].TDHR |= (message.data[i] << ((i - 4) * 8));
+                    }
+                }
+                CAN->TxMailBox[txMailbox].TIR.TXRQ = 1;
+            }
+        }
+}
 void Can::SetOperatingMode(const CanConfig &conf, OperatingMode mode) {
     if (mode == kSleep) {
         if (conf.opMode == kInitialization) {

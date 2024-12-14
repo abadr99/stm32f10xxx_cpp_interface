@@ -1262,7 +1262,36 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;     // 32-bit register value (for direct access)
     }MSR;   // Master Status Register
-    RegWidth_t TSR;         // Transmit Status Register
+    union TSR {
+        struct {
+            RegWidth_t RQCP0    :1;   //   Request Completion for mailbox 0
+            RegWidth_t TXOK0    :1;   //   Transmit OK for mailbox 0
+            RegWidth_t ALST0    :1;   //   Alignment Status for mailbox 0
+            RegWidth_t TERR0    :1;   //   Transmit Error for mailbox 0
+            RegWidth_t          :3;   //   Reserved bits
+            RegWidth_t ABRQ0    :1;   //   Abort Request for mailbox 0
+            RegWidth_t RQCP1    :1;   //   Request Completion for mailbox 1
+            RegWidth_t TXOK1    :1;   //   Transmit OK for mailbox 1
+            RegWidth_t ALST1    :1;   //   Alignment Status for mailbox 1
+            RegWidth_t TERR1    :1;   //   Transmit Error for mailbox 1
+            RegWidth_t          :3;   //   Reserved bits
+            RegWidth_t ABRQ1    :1;   //   Abort Request for mailbox 1
+            RegWidth_t RQCP2    :1;   //   Request Completion for mailbox 2
+            RegWidth_t TXOK2    :1;   //   Transmit OK for mailbox 2
+            RegWidth_t ALST2    :1;   //   Alignment Status for mailbox 2
+            RegWidth_t TERR2    :1;   //   Transmit Error for mailbox 2
+            RegWidth_t          :3;   //   Reserved bits
+            RegWidth_t ABRQ2    :1;   //   Abort Request for mailbox 2
+            RegWidth_t CODE     :2;   //   Error Code
+            RegWidth_t TME0     :1;   //   Time-out Error for mailbox 0
+            RegWidth_t TME1     :1;   //   Time-out Error for mailbox 1
+            RegWidth_t TME2     :1;   //   Time-out Error for mailbox 2
+            RegWidth_t LOW0     :1;   //   Low Power Mode for mailbox 0
+            RegWidth_t LOW1     :1;   //   Low Power Mode for mailbox 1
+            RegWidth_t LOW2     :1;   //   Low Power Mode for mailbox 2
+        };
+        RegWidth_t registerVal;
+    }TSR;
     RegWidth_t RF0R;        // Receive FIFO 0 Register
     RegWidth_t RF1R;        // Receive FIFO 1 Register
     RegWidth_t IER;         // Interrupt Enable Register
@@ -1272,10 +1301,28 @@ struct CANRegDef {
 
     // Transmit Mailboxes
     struct TxMailBox_t {
-        RegWidth_t TIR;     // Transmit Identifier Register
-        RegWidth_t TDTR;    // Transmit Data Length Control and Time Register
-        RegWidth_t TDLR;    // Transmit Data Low Register
-        RegWidth_t TDHR;    // Transmit Data High Register
+    union TIR {
+        struct {
+            RegWidth_t TXRQ      : 1;    // Transmit Mailbox Request
+            RegWidth_t RTR       : 1;    // Remote Transmission Request
+            RegWidth_t IDE       : 1;    // Identifier Extension
+            RegWidth_t EXID      : 18;   // Extended Identifier
+            RegWidth_t STID      : 11;   // Standard Identifier
+        };
+        RegWidth_t registerVal;        // Complete register value
+    } TIR;                             // Transmit Identifier Register
+    union TDTR {
+        struct {
+            RegWidth_t DLC        : 4;   // Data Length Code
+            RegWidth_t            : 5;   // Reserved bits
+            RegWidth_t TGT        : 1;   // Transmit Global Time
+            RegWidth_t            : 7;   // Reserved bits
+            RegWidth_t TIME       : 16;  // Time Stamp
+        };
+        RegWidth_t registerVal;        // Complete register value
+    } TDTR;                           // Transmit Data Length Control and Time Register
+    RegWidth_t TDLR;
+    RegWidth_t TDHR;
     };
     TxMailBox_t TxMailBox[3];   // 3 Transmit Mailboxes
 

@@ -135,7 +135,7 @@ struct CanConfig {
 struct CanMsg {
     uint32_t stdId;
     uint32_t extId;
-    IdType id;
+    IdType ide;
     RTRType rtr;
     uint8_t dlc;
     uint8_t data[8];
@@ -144,7 +144,6 @@ class Can {
  public:
     static void Init(const CanConfig &conf);
     static void SetOperatingMode(const CanConfig &conf, OperatingMode mode);
-    static void SetTestMode(TestMode mode);
     static void Transmit(CanMsg message);
     static void CancelTransmit(MailBoxType mailbox);
     static void Receive(CanMsg message, uint8_t FMI, FifoNumber fifo);
