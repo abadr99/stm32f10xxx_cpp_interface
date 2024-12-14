@@ -20,16 +20,25 @@ using namespace stm32::type;
 using namespace stm32::dev::mcal::nvic;
 using namespace stm32::registers::nvic;
 
-static volatile NvicRegDef*  NVIC = reinterpret_cast<volatile NvicRegDef*>
-                                    (Addr<Peripheral::kNVIC>::Get());
-static volatile SCBRegDef*  SCB = reinterpret_cast<volatile SCBRegDef*>
-                                  (Addr<Peripheral::kSCB>::Get());
+volatile NvicRegDef* Nvic::NVIC = {0};
+volatile SCBRegDef*  Nvic::SCB  = {0};
+
+// static volatile NvicRegDef*  NVIC = reinterpret_cast<volatile NvicRegDef*>
+//                                     (Addr<Peripheral::kNVIC>::Get());
+// static volatile SCBRegDef*  SCB = reinterpret_cast<volatile SCBRegDef*>
+//                                   (Addr<Peripheral::kSCB>::Get());
 
 Id::Id(InterruptID id) : id_(id) {}
 uint8_t Id::Pos() {return util::ExtractBits<int8_t, 0, 4>(id_);}
 uint8_t Id::Idx() {return util::ExtractBits<int8_t, 5, 7>(id_);}
 InterruptID Id::Val() {return id_;}
 
+void Nvic::Init() {
+    NVIC = reinterpret_cast<volatile NvicRegDef*>
+                                        (Addr<Peripheral::kNVIC>::Get());
+    SCB = reinterpret_cast<volatile SCBRegDef*>
+                                      (Addr<Peripheral::kSCB>::Get());
+}
 void Nvic::EnableInterrupt(Id id) {
     NVIC->ISER[id.Idx()] = util::SetBit<RegWidth_t>(NVIC->ISER[id.Idx()], id.Pos());
 }

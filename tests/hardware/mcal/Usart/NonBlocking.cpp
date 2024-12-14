@@ -28,11 +28,20 @@ using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::nvic;
 using namespace stm32::dev::mcal::usart;
 volatile int  flag = 0;
+volatile int  flag2 = 0;
 void TransmitISR(void) {
     flag  = 1;
 }
+void ReceivedISR(void) {
+    flag2  = 1;
+}
 int main() {
     flag = 0;
+    flag2 = 0;
+    Rcc::Init();
+    Gpio::Init();
+    Nvic::Init();
+    
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
     Rcc::Enable(Peripheral::kIOPA);
@@ -54,19 +63,19 @@ int main() {
     
 
     Gpio::SetPinValue(pc13, DigitalVoltage::kHigh);
-    Usart::DataValType data = 0;
+    char data = 0;
     usart1.Transmit(48, TransmitISR);
-    usart1.Receive(&data, nullptr);
+    usart1.Receive(reinterpret_cast<Usart::DataValType*>(&data), ReceivedISR);
     Nvic::EnableInterrupt(kUSART1_IRQn);
     while (1) {
         if (flag) {
-        if (data == 'r') {
-            // Turn on the Led
-            Gpio::SetPinValue(pc13, DigitalVoltage::kLow);
-        } else if (data == 'n') {
-            // Turn off the Led
-            Gpio::SetPinValue(pc13, DigitalVoltage::kHigh);
-        }
+            if (data == 114) {
+                // Turn on the Led
+                Gpio::SetPinValue(pc13, DigitalVoltage::kLow);
+            } else if (data == 110) {
+                // Turn off the Led
+                Gpio::SetPinValue(pc13, DigitalVoltage::kHigh);
+            }
         }
     }
 }
