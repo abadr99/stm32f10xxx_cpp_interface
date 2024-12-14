@@ -85,7 +85,7 @@ enum FifoNumber : uint8_t {
 /**
  * @brief Priority determination for CAN message transmission.
  */
-enum PriorityBased : uint8_t {
+enum FifoPriority : uint8_t {
     kID,        /**< Priority based on message ID */
     kRequest    /**< Priority based on request type */
 };
@@ -119,7 +119,12 @@ enum State : uint8_t {
 };
 struct CanConfig {
     uint16_t prescaler;
-    OperatingMode mode;
+    OperatingMode opMode;
+    TestMode mode;
+    FifoPriority priority;
+    uint8_t SJW;
+    uint8_t BS1;
+    uint8_t BS2;
     State TTCM;
     State ABOM;
     State AWUM;
