@@ -1229,8 +1229,39 @@ struct IWDGRegDef {
 }  // namespace iwdg
 namespace can {
 struct CANRegDef {
-    RegWidth_t MCR;         // Master Control Register
-    RegWidth_t MSR;         // Master Status Register
+    union MCR {
+        struct {
+            RegWidth_t INRQ     : 1;        // Initialization request
+            RegWidth_t SLEEP    : 1;        // Sleep mode request
+            RegWidth_t TXFP     : 1;        // Transmit FIFO priority
+            RegWidth_t RFLM     : 1;        // Receive FIFO locked mode
+            RegWidth_t NART     : 1;        // No automatic retransmission
+            RegWidth_t AWUM     : 1;        // Automatic wakeup mode
+            RegWidth_t ABOM     : 1;        // Automatic bus-off management
+            RegWidth_t TTCM     : 1;        // Time triggered communication mode
+            RegWidth_t          : 7;        // Reserved (must be kept at reset value)
+            RegWidth_t RESET    : 1;        // bxCAN software master reset
+            RegWidth_t DBF      : 1;        // Debug freeze
+            RegWidth_t          : 15;       // Reserved
+        };
+        RegWidth_t registerVal;     // 32-bit register value (for direct access)
+    }MCR;   // Master Control Register
+    union MSR {
+        struct {
+            RegWidth_t INAK     : 1;        // Initialization acknowledge
+            RegWidth_t SLAK     : 1;        // Sleep acknowledge
+            RegWidth_t WKUI     : 1;        // Wakeup interrupt
+            RegWidth_t SLAKI    : 1;        // Sleep acknowledge interrupt
+            RegWidth_t TXM      : 1;        // Transmit mode
+            RegWidth_t RXM      : 1;        // Receive mode
+            RegWidth_t SAMP     : 1;        // Last sample point
+            RegWidth_t RX       : 1;        // CAN Rx signal
+            RegWidth_t          : 7;        // Reserved (must be kept at reset value)
+            RegWidth_t ERRI     : 1;        // Error interrupt
+            RegWidth_t          : 20;       // Reserved
+        };
+        RegWidth_t registerVal;     // 32-bit register value (for direct access)
+    }MSR;   // Master Status Register
     RegWidth_t TSR;         // Transmit Status Register
     RegWidth_t RF0R;        // Receive FIFO 0 Register
     RegWidth_t RF1R;        // Receive FIFO 1 Register

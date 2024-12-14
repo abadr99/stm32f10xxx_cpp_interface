@@ -113,6 +113,20 @@ enum FilterScale : uint8_t {
     k16it,
     k32bit
 };
+enum State : uint8_t {
+    kDisable,
+    kEnable
+};
+struct CanConfig {
+    uint16_t prescaler;
+    OperatingMode mode;
+    State TTCM;
+    State ABOM;
+    State AWUM;
+    State NART;
+    State RFLM;
+    State TXFP;
+};
 struct CanMsg {
     uint32_t stdId;
     uint32_t extId;
@@ -123,12 +137,15 @@ struct CanMsg {
 };
 class Can {
  public:
-    static void Init(void);
-    static void SetOperatingMode(OperatingMode mode);
+    static void Init(const CanConfig &conf);
+    static void SetOperatingMode(const CanConfig &conf, OperatingMode mode);
     static void SetTestMode(TestMode mode);
     static void Transmit(CanMsg message);
     static void CancelTransmit(MailBoxType mailbox);
     static void Receive(CanMsg message, uint8_t FMI, FifoNumber fifo);
+ private:
+    using CANRegDef = stm32::registers::can::CANRegDef;
+    static stm32::type::RegType<CANRegDef>::ptr CAN;
 };
 }   // namespace can
 }   // namespace mcal
