@@ -1292,8 +1292,28 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }TSR;
-    RegWidth_t RF0R;        // Receive FIFO 0 Register
-    RegWidth_t RF1R;        // Receive FIFO 1 Register
+    union RF0R {
+        struct {
+            RegWidth_t FMP0     :2;    // Indicates the number of messages pending in FIFO 0 (0-3).
+            RegWidth_t          :1;    // Reserved: Unused bit, should remain 0.
+            RegWidth_t FULL0    :1;    // FIFO 0 Full: Set when FIFO 0 is full.
+            RegWidth_t FOVR0    :1;    // FIFO 0 Overrun: Set when FIFO 0 is overrun (message lost).
+            RegWidth_t RFOM0    :1;    // Set to release the oldest message in FIFO 0.
+            RegWidth_t          :26;   // Reserved: Unused bits, should remain 0.    
+        };
+        RegWidth_t registerVal;
+    }RF0R;        // Receive FIFO 0 Register
+    union RF1R {
+        struct {
+            RegWidth_t FMP1     :2;   // Indicates the number of messages pending in FIFO 1 (0-3).
+            RegWidth_t          :1;   // Reserved: Unused bit, should remain 0.
+            RegWidth_t FULL1    :1;   // FIFO 1 Full: Set when FIFO 1 is full.
+            RegWidth_t FOVR1    :1;   // FIFO 1 Overrun: Set when FIFO 1 is overrun (message lost).
+            RegWidth_t RFOM1    :1;   // Set to release the oldest message in FIFO 1.
+            RegWidth_t          :26;  // Reserved: Unused bits, should remain 0   
+        };
+        RegWidth_t registerVal;
+    }RF1R;        // Receive FIFO 1 Register
     RegWidth_t IER;         // Interrupt Enable Register
     RegWidth_t ESR;         // Error Status Register
     RegWidth_t BTR;         // Bit Timing Register
@@ -1328,22 +1348,71 @@ struct CANRegDef {
 
     // Receive FIFO Mailboxes
     struct RxMailBox_t {
-        RegWidth_t RIR;     // Receive Identifier Register
-        RegWidth_t RDTR;    // Receive Data Length Control and Time Register
+        union RIR {
+            struct {
+                RegWidth_t      :1;   // Reserved: Unused bit, should remain 0.
+                RegWidth_t RTR  :1;   // Remote Transmission Request
+                RegWidth_t IDE  :1;   // Identifier Extension
+                RegWidth_t EXID :18;  // Extended Identifier
+                RegWidth_t STID :11;  // Standard Identifier
+            };
+            RegWidth_t registerVal;
+        }RIR;   // Receive Identifier Register
+        union RDTR {
+            struct {
+                RegWidth_t DLC  :4;   // Data Length Code
+                RegWidth_t      :4;   // Reserved: Unused bits, should remain 0.
+                RegWidth_t FMI  :8;   // Filter Match Index
+                RegWidth_t TIME :16;  // Time Stamp
+            };
+            RegWidth_t registerVal;
+        }RDTR;    // Receive Data Length Control and Time Register
         RegWidth_t RDLR;    // Receive Data Low Register
         RegWidth_t RDHR;    // Receive Data High Register
     };
-    RxMailBox_t RxFIFO[2];  // 2 Receive FIFOs (FIFO 0 and FIFO 1)
+    RxMailBox_t RxFIFOMailBox[2];  // 2 Receive FIFOs (FIFO 0 and FIFO 1)
 
     // Filter Registers
-    RegWidth_t FMR;             // Filter Master Register
-    RegWidth_t FM1R;            // Filter Mode Register
+    union FMR {
+        struct {
+            RegWidth_t FINIT     :1;   // Filter Initialization Mode
+            RegWidth_t           :7;   // Reserved: Must remain 0.
+            RegWidth_t CAN2SB    :6;   // CAN2 Start Bank
+            RegWidth_t           :18;  // Reserved: Must remain 0.
+        };
+        RegWidth_t registerVal;
+    }FMR;   //  Filter Master Register
+    union FM1R {
+        struct {
+            RegWidth_t FBM      :28;  // Filter Mode
+            RegWidth_t          :4;   // Reserved: Must remain 0.
+        };
+        RegWidth_t registerVal;
+    }FM1R;  //  Filter Mode Register
     RegWidth_t RESERVED1;       // Reserved memory space
-    RegWidth_t FS1R;            // Filter Scale Register
+    union FS1R {
+        struct {
+            RegWidth_t FSC      :28;  // Filter Scale
+            RegWidth_t          :4;   // Reserved: Must remain 0.
+        };
+        RegWidth_t registerVal;
+    }FS1R;  //  Filter Scale Register
     RegWidth_t RESERVED2;       // Reserved memory space
-    RegWidth_t FFA1R;           // Filter FIFO Assignment Register
+    union FFA1R {
+        struct {
+            RegWidth_t FFA      :28;  // Filter FIFO Assignment
+            RegWidth_t          :4;   // Reserved: Must remain 0.
+        };
+        RegWidth_t registerVal;
+    }FFA1R;     //  Filter FIFO Assignment Register
     RegWidth_t RESERVED3;       // Reserved memory space
-    RegWidth_t FA1R;            // Filter Activation Register
+    union FA1R {
+        struct {
+            RegWidth_t FACT     :28;  // Filter Activation
+            RegWidth_t          :4;   // Reserved: Must remain 0.
+        };
+        RegWidth_t registerVal;
+    }FA1R;      //  Filter Activation Register
     RegWidth_t RESERVED4[8];    // Reserved memory space
 
     // Filter Banks
@@ -1351,7 +1420,7 @@ struct CANRegDef {
         RegWidth_t FR1;         // Filter Bank Register 1
         RegWidth_t FR2;         // Filter Bank Register 2
     };
-    FilterBank sFilterRegister[14];     // STM32F103 has 14 filter banks
+    FilterBank FilterRegister[14];     // STM32F103 has 14 filter banks
 };
 }  // namespace can
 }  // namespace registers

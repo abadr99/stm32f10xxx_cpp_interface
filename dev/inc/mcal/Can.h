@@ -42,14 +42,6 @@ enum TestMode : uint8_t {
 };
 
 /**
- * @brief Status of CAN operations.
- */
-enum Status : uint8_t {
-    kFail,      /**< Operation failed */
-    kSuccess    /**< Operation succeeded */
-};
-
-/**
  * @brief CAN identifier types.
  */
 enum IdType : uint8_t {
@@ -132,7 +124,18 @@ struct CanConfig {
     State RFLM;
     State TXFP;
 };
-struct CanMsg {
+struct FilterConfig {
+    uint32_t idHigh;
+    uint32_t idLow;
+    uint32_t maskIdHigh;
+    uint32_t maskIdLow;
+    FifoNumber fifoAssign;
+    uint32_t bank;
+    FilterMode mode;
+    FilterScale scale;
+    State activation;
+};
+struct CanTxMsg {
     uint32_t stdId;
     uint32_t extId;
     IdType ide;
@@ -140,16 +143,27 @@ struct CanMsg {
     uint8_t dlc;
     uint8_t data[8];
 };
+struct CanRxMsg {
+    uint32_t stdId;
+    uint32_t extId;
+    IdType ide;
+    RTRType rtr;
+    uint8_t dlc;
+    uint8_t data[8];
+    uint8_t FMI;
+};
 class Can {
  public:
     static void Init(const CanConfig &conf);
-    static void SetOperatingMode(const CanConfig &conf, OperatingMode mode);
-    static void Transmit(CanMsg message);
+    static void FilterInit(const FilterConfig& conf);
+    static void Transmit(CanTxMsg message);
     static void CancelTransmit(MailBoxType mailbox);
-    static void Receive(CanMsg message, uint8_t FMI, FifoNumber fifo);
+    static void Receive(CanRxMsg message, FifoNumber fifo);
+    uint8_t GetPendingMessages(FifoNumber fifo);
  private:
     using CANRegDef = stm32::registers::can::CANRegDef;
     static stm32::type::RegType<CANRegDef>::ptr CAN;
+    static void SetOperatingMode(const CanConfig &conf, OperatingMode mode);
 };
 }   // namespace can
 }   // namespace mcal

@@ -39,7 +39,36 @@ void Can::Init(const CanConfig &conf) {
 
     SetOperatingMode(conf, kNormal);
 }
-void Can::Transmit(CanMsg message) {
+void Can::FilterInit(const FilterConfig& conf) {
+    CAN->FMR.FINIT = 1;
+    CAN->FA1R.registerVal &= ~(conf.bank);
+    if (conf.scale == k16it) {
+        CAN->FS1R.registerVal &= ~(conf.bank);
+        CAN->FilterRegister[conf.bank].FR1 = ((conf.maskIdLow & 0x0000FFFF)  << 16 | 
+                                              (conf.idLow & 0x0000FFFF));
+        CAN->FilterRegister[conf.bank].FR2 = ((conf.maskIdHigh & 0x0000FFFF) << 16 | 
+                                              (conf.idHigh & 0x0000FFFF));
+    } else {
+        CAN->FS1R.registerVal |= (conf.bank);
+        CAN->FilterRegister[conf.bank].FR1 = ((conf.idHigh & 0x0000FFFF)     << 16 | 
+                                              (conf.idLow & 0x0000FFFF));
+        CAN->FilterRegister[conf.bank].FR2 = ((conf.maskIdHigh & 0x0000FFFF) << 16 | 
+                                              (conf.maskIdLow & 0x0000FFFF));
+    }
+    switch (conf.mode) {
+        case kMask: CAN->FM1R.registerVal &= ~(conf.bank); break;
+        case kList: CAN->FM1R.registerVal |=  (conf.bank); break;
+    }
+    switch (conf.fifoAssign) {
+        case kFIFO0: CAN->FFA1R.registerVal &= ~(conf.bank); break;
+        case kFIFO1: CAN->FFA1R.registerVal |=  (conf.bank); break;
+    }
+    if (conf.activation == kEnable) {
+        CAN->FA1R.registerVal |= (conf.bank); 
+    }
+    CAN->FMR.FINIT = 0;
+}
+void Can::Transmit(CanTxMsg message) {
     uint32_t txMailbox = 0;
     if ((CAN->TSR.TME0 != 0) || 
         (CAN->TSR.TME1 != 0) ||
@@ -65,6 +94,45 @@ void Can::Transmit(CanMsg message) {
                 CAN->TxMailBox[txMailbox].TIR.TXRQ = 1;
             }
         }
+}
+void Can::CancelTransmit(MailBoxType mailbox) {
+    switch (mailbox) {
+        case kMailBox0 : CAN->TSR.ABRQ0; break;
+        case kMailBox1 : CAN->TSR.ABRQ1; break;
+        case kMailBox2 : CAN->TSR.ABRQ2; break;
+    }
+}
+void Can::Receive(CanRxMsg message, FifoNumber fifo) {
+    message.ide = (IdType)CAN->RxFIFOMailBox[fifo].RIR.IDE;
+    if (message.ide == kStd) {
+        message.stdId = CAN->RxFIFOMailBox[fifo].RIR.STID;
+    } else {
+        message.extId = CAN->RxFIFOMailBox[fifo].RIR.EXID;
+    }
+    message.rtr = (RTRType)CAN->RxFIFOMailBox[fifo].RIR.RTR;
+    message.dlc = (uint8_t)CAN->RxFIFOMailBox[fifo].RDTR.DLC;
+    message.FMI = CAN->RxFIFOMailBox[fifo].RDTR.FMI;
+    for (uint8_t i =0; i < message.dlc; ++i) {
+        if (i < 4) {
+            message.data[i] = (CAN->RxFIFOMailBox[fifo].RDLR >> (i * 8));
+        } else {
+            message.data[i] = (CAN->RxFIFOMailBox[fifo].RDHR >> ((i - 4) * 8));
+        }
+    }
+    if (fifo == kFIFO0) {
+        CAN->RF0R.RFOM0 = 1;
+    } else {
+        CAN->RF1R.RFOM1 = 1;
+    }
+}
+uint8_t Can::GetPendingMessages(FifoNumber fifo) {
+    uint8_t message = 0;
+    if (fifo == kFIFO0) {
+        message = CAN->RF0R.FMP0;
+    } else {
+        message = CAN->RF1R.FMP1;
+    }
+    return message;
 }
 void Can::SetOperatingMode(const CanConfig &conf, OperatingMode mode) {
     if (mode == kSleep) {
