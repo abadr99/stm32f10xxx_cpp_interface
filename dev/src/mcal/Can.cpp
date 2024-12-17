@@ -21,6 +21,8 @@ using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::can;
 using namespace stm32::registers::can;
 
+volatile CANRegDef* Can::CAN = nullptr;
+
 void Can::Init(const CanConfig &conf) {
     SetOperatingMode(conf, kInitialization);
 
