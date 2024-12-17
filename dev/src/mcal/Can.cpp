@@ -22,6 +22,10 @@ using namespace stm32::dev::mcal::can;
 using namespace stm32::registers::can;
 
 volatile CANRegDef* Can::CAN = nullptr;
+#define TO_STRING(str_)  #str_
+
+#define CAN_CONFIG_ERROR(error_) \
+    TO_STRING(Invalid Can error_)
 
 void Can::Init(const CanConfig &conf) {
     SetOperatingMode(conf, kInitialization);
@@ -37,7 +41,7 @@ void Can::Init(const CanConfig &conf) {
                ((uint32_t)conf.SJW << 24) | \
                ((uint32_t)conf.BS1 << 16) | \
                ((uint32_t)conf.BS2 << 20) | \
-               ((uint32_t)conf.prescaler - 1);
+               ((uint32_t)conf.buadRate - 1);
 
     SetOperatingMode(conf, kNormal);
 }

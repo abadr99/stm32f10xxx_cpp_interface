@@ -15,13 +15,6 @@ namespace stm32 {
 namespace dev   {
 namespace mcal  {
 namespace can   {
-/**
- * @brief CAN peripheral identifiers.
- */
-enum CanNum : uint8_t {
-    kCAN1,      /**< CAN1 peripheral */
-    kCAN2       /**< CAN2 peripheral */
-};
 
 /**
  * @brief Operating modes of the CAN peripheral.
@@ -97,73 +90,156 @@ enum Retransmission : uint8_t {
     kAuto,      /**< Automatic retransmission enabled */
     kNoAuto     /**< Automatic retransmission disabled */
 };
+
+/**
+ * @brief Filter modes for CAN.
+ */
 enum FilterMode : uint8_t {
-    kMask,
-    kList
+    kMask,      /**< Mask mode */
+    kList       /**< List mode */
 };
+
+/**
+ * @brief Filter scale configurations.
+ */
 enum FilterScale : uint8_t {
-    k16it,
-    k32bit
+    k16it,      /**< 16-bit scale */
+    k32bit      /**< 32-bit scale */
 };
+
+/**
+ * @brief Prescaler options for CAN communication speed.
+ */
+enum Prescaler : uint8_t {
+    k100KBPS,   /**< 100 kbps */
+    k125KBPS,   /**< 125 kbps */
+    k250KBPS,   /**< 250 kbps */
+    k500KBPS,   /**< 500 kbps */
+    k800KBPS,   /**< 800 kbps */
+    k1MBPS      /**< 1 Mbps */
+};
+
+/**
+ * @brief State for enabling or disabling features.
+ */
 enum State : uint8_t {
-    kDisable,
-    kEnable
+    kDisable,   /**< Disabled state */
+    kEnable     /**< Enabled state */
 };
+
+/**
+ * @brief CAN configuration structure.
+ */
 struct CanConfig {
-    uint16_t prescaler;
-    OperatingMode opMode;
-    TestMode mode;
-    FifoPriority priority;
-    uint8_t SJW;
-    uint8_t BS1;
-    uint8_t BS2;
-    State TTCM;
-    State ABOM;
-    State AWUM;
-    State NART;
-    State RFLM;
-    State TXFP;
+    Prescaler buadRate;        /**< CAN baud rate prescaler */
+    OperatingMode opMode;      /**< Operating mode */
+    TestMode mode;             /**< Test mode */
+    FifoPriority priority;     /**< FIFO priority */
+    uint8_t SJW;               /**< Resynchronization jump width */
+    uint8_t BS1;               /**< Time segment 1 */
+    uint8_t BS2;               /**< Time segment 2 */
+    State TTCM;                /**< Time-triggered communication mode */
+    State ABOM;                /**< Automatic bus-off management */
+    State AWUM;                /**< Automatic wake-up mode */
+    State NART;                /**< No automatic retransmission */
+    State RFLM;                /**< Receive FIFO locked mode */
+    State TXFP;                /**< Transmit FIFO priority */
 };
+
+/**
+ * @brief CAN filter configuration structure.
+ */
 struct FilterConfig {
-    uint32_t idHigh;
-    uint32_t idLow;
-    uint32_t maskIdHigh;
-    uint32_t maskIdLow;
-    FifoNumber fifoAssign;
-    uint32_t bank;
-    FilterMode mode;
-    FilterScale scale;
-    State activation;
+    uint32_t idHigh;           /**< Filter ID high */
+    uint32_t idLow;            /**< Filter ID low */
+    uint32_t maskIdHigh;       /**< Mask ID high */
+    uint32_t maskIdLow;        /**< Mask ID low */
+    FifoNumber fifoAssign;     /**< FIFO assignment */
+    uint32_t bank;             /**< Filter bank number */
+    FilterMode mode;           /**< Filter mode */
+    FilterScale scale;         /**< Filter scale */
+    State activation;          /**< Filter activation state */
 };
+
+/**
+ * @brief CAN transmit message structure.
+ */
 struct CanTxMsg {
-    uint32_t stdId;
-    uint32_t extId;
-    IdType ide;
-    RTRType rtr;
-    uint8_t dlc;
-    uint8_t data[8];
+    uint32_t stdId;            /**< Standard ID */
+    uint32_t extId;            /**< Extended ID */
+    IdType ide;                /**< Identifier type */
+    RTRType rtr;               /**< Remote transmission request */
+    uint8_t dlc;               /**< Data length code */
+    uint8_t data[8];           /**< Data field */
 };
+
+/**
+ * @brief CAN receive message structure.
+ */
 struct CanRxMsg {
-    uint32_t stdId;
-    uint32_t extId;
-    IdType ide;
-    RTRType rtr;
-    uint8_t dlc;
-    uint8_t data[8];
-    uint8_t FMI;
+    uint32_t stdId;            /**< Standard ID */
+    uint32_t extId;            /**< Extended ID */
+    IdType ide;                /**< Identifier type */
+    RTRType rtr;               /**< Remote transmission request */
+    uint8_t dlc;               /**< Data length code */
+    uint8_t data[8];           /**< Data field */
+    uint8_t FMI;               /**< Filter match index */
 };
+
+/**
+ * @brief CAN driver class.
+ */
 class Can {
  public:
     using CANRegDef = stm32::registers::can::CANRegDef;
     using can_ptr   = stm32::type::RegType<CANRegDef>::ptr;
+
+    /**
+     * @brief Initializes the CAN peripheral with the specified configuration.
+     * @param conf Configuration structure for CAN initialization.
+     */
     static void Init(const CanConfig &conf);
+
+    /**
+     * @brief Initializes the CAN filter with the specified configuration.
+     * @param conf Filter configuration structure.
+     */
     static void FilterInit(const FilterConfig& conf);
+
+    /**
+     * @brief Transmits a CAN message.
+     * @param message CAN transmit message structure.
+     */
     static void Transmit(CanTxMsg message);
+
+    /**
+     * @brief Cancels message transmission in the specified mailbox.
+     * @param mailbox Mailbox identifier.
+     */
     static void CancelTransmit(MailBoxType mailbox);
+
+    /**
+     * @brief Receives a CAN message from the specified FIFO.
+     * @param message CAN receive message structure.
+     * @param fifo FIFO number to receive from.
+     */
     static void Receive(CanRxMsg message, FifoNumber fifo);
+
+    /**
+     * @brief Retrieves the number of pending messages in the specified FIFO.
+     * @param fifo FIFO number.
+     * @return Number of pending messages.
+     */
     uint8_t GetPendingMessages(FifoNumber fifo);
+
  private:
-    static can_ptr CAN;
+    static can_ptr CAN;  /**< Pointer to CAN registers */
+
+    /**
+     * @brief Sets the operating mode for the CAN peripheral.
+     * @param conf CAN configuration structure.
+     * @param mode Operating mode.
+     */
     static void SetOperatingMode(const CanConfig &conf, OperatingMode mode);
 };
 }   // namespace can
