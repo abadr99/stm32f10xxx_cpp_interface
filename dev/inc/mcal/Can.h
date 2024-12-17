@@ -154,6 +154,8 @@ struct CanRxMsg {
 };
 class Can {
  public:
+    using CANRegDef = stm32::registers::can::CANRegDef;
+    using can_ptr   = stm32::type::RegType<CANRegDef>::ptr;
     static void Init(const CanConfig &conf);
     static void FilterInit(const FilterConfig& conf);
     static void Transmit(CanTxMsg message);
@@ -161,8 +163,7 @@ class Can {
     static void Receive(CanRxMsg message, FifoNumber fifo);
     uint8_t GetPendingMessages(FifoNumber fifo);
  private:
-    using CANRegDef = stm32::registers::can::CANRegDef;
-    static stm32::type::RegType<CANRegDef>::ptr CAN;
+    static can_ptr CAN;
     static void SetOperatingMode(const CanConfig &conf, OperatingMode mode);
 };
 }   // namespace can

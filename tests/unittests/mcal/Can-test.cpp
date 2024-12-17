@@ -14,6 +14,6 @@
 #include "mcal/Can.h"
 
 using namespace stm32::registers::can;
-using namespace stm32::dev::mcal::Can;
+using namespace stm32::dev::mcal::can;
 
-uint32_t CanReg[100] = {0x0};   // edit the size of array
+
