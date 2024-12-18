@@ -26,38 +26,94 @@ volatile CANRegDef* Can::CAN = nullptr;
 
 #define CAN_CONFIG_ERROR(error_) \
     TO_STRING(Invalid Can error_)
+// --- HELPER MACRO TO CHECK IF WE ARE USING CORRECT CAN CONFIGURATIONS
+#define CHECK_CAN_CONFIG()\
+    STM32_ASSERT((conf.buadRate >= k100KBPS)\
+              && (conf.buadRate <= k1MBPS), CAN_CONFIG_ERROR(Prescaler));\
+    STM32_ASSERT((conf.opMode >= kSleep)\
+              && (conf.opMode <= kNormal), CAN_CONFIG_ERROR(OperatingMode));\
+    STM32_ASSERT((conf.mode >= kSilent)\
+              && (conf.mode <= kCombined), CAN_CONFIG_ERROR(TestMode));\
+    STM32_ASSERT((conf.priority >= kID)\
+              && (conf.priority <= kRequest), CAN_CONFIG_ERROR(FifoPriority));\
+    STM32_ASSERT((conf.sjw >= k1tq)\
+              && (conf.sjw <= k4tq), CAN_CONFIG_ERROR(TimeQuanta));\
+    STM32_ASSERT((conf.bs1 >= k1tq)\
+              && (conf.bs1 <= k16tq), CAN_CONFIG_ERROR(TimeQuanta));\
+    STM32_ASSERT((conf.bs2 >= k1tq)\
+              && (conf.bs2 <= k8tq), CAN_CONFIG_ERROR(TimeQuanta));\
+    STM32_ASSERT((conf.TTCM >= kDisable)\
+              && (conf.TTCM <= kEnable), CAN_CONFIG_ERROR(State));\
+    STM32_ASSERT((conf.ABOM >= kDisable)\
+              && (conf.ABOM <= kEnable), CAN_CONFIG_ERROR(State));\
+    STM32_ASSERT((conf.AWUM >= kDisable)\
+              && (conf.AWUM <= kEnable), CAN_CONFIG_ERROR(State));\
+    STM32_ASSERT((conf.NART >= kDisable)\
+              && (conf.NART <= kEnable), CAN_CONFIG_ERROR(State));\
+    STM32_ASSERT((conf.RFLM >= kDisable)\
+              && (conf.RFLM <= kEnable), CAN_CONFIG_ERROR(State));
 
+#define CHECK_FILTER_CONFIG()\
+    STM32_ASSERT((conf.mode >= kMask)\
+          && (conf.mode <= kList), CAN_CONFIG_ERROR(FilterMode));\
+    STM32_ASSERT((conf.fifoAssign >= kFIFO0)\
+          && (conf.fifoAssign <= kFIFO1), CAN_CONFIG_ERROR(FifoNumber));\
+    STM32_ASSERT((conf.scale >= k16bit)\
+          && (conf.scale <= k32bit), CAN_CONFIG_ERROR(FilterScale));\
+    STM32_ASSERT((conf.activation >= kDisable)\
+          && (conf.activation <= kEnable), CAN_CONFIG_ERROR(State));
+
+#define CHECK_MESSAGE_CONFIG()\
+    STM32_ASSERT((message.ide >= kStd)\
+              && (message.ide <= kExt), CAN_CONFIG_ERROR(IdType));\
+    STM32_ASSERT((message.rtr >= kData)\
+              && (message.rtr <= kRemote), CAN_CONFIG_ERROR(RTRType));
+
+  
 void Can::Init(const CanConfig &conf) {
+    CHECK_CAN_CONFIG();
+    //  Exit from sleep mode
     SetOperatingMode(conf, kInitialization);
 
-    CAN->MCR.TTCM = conf.TTCM;
-    CAN->MCR.ABOM = conf.ABOM;
-    CAN->MCR.AWUM = conf.AWUM;
-    CAN->MCR.NART = conf.NART;
-    CAN->MCR.RFLM = conf.RFLM;
-    CAN->MCR.TXFP = conf.priority;
+    CAN->MCR.TTCM = conf.TTCM;      //  Set the time triggered communication mode
+    CAN->MCR.ABOM = conf.ABOM;      //  Set the automatic bus-off management
+    CAN->MCR.AWUM = conf.AWUM;      //  Set the automatic wake-up mode
+    CAN->MCR.NART = conf.NART;      //  Set the no automatic retransmission
+    CAN->MCR.RFLM = conf.RFLM;      //  Set the receive FIFO locked mode
+    CAN->MCR.TXFP = conf.priority;  //  Set the transmit FIFO priority
 
+    //  Set the bit timing register
     CAN->BTR = (uint32_t)((uint32_t)conf.mode << 30) | \
-               ((uint32_t)conf.SJW << 24) | \
-               ((uint32_t)conf.BS1 << 16) | \
-               ((uint32_t)conf.BS2 << 20) | \
+               ((uint32_t)conf.sjw << 24) | \
+               ((uint32_t)conf.bs1 << 16) | \
+               ((uint32_t)conf.bs2 << 20) | \
                ((uint32_t)conf.buadRate - 1);
 
+    //  Request leave initialisation
     SetOperatingMode(conf, kNormal);
 }
 void Can::FilterInit(const FilterConfig& conf) {
-    CAN->FMR.FINIT = 1;
-    CAN->FA1R.registerVal &= ~(conf.bank);
-    if (conf.scale == k16it) {
+    CHECK_FILTER_CONFIG();
+
+    CAN->FMR.FINIT = 1;  //  Initialisation mode for the filter
+    CAN->FA1R.registerVal &= ~(conf.bank);  //  Filter Deactivation
+
+    if (conf.scale == k16bit) {
         CAN->FS1R.registerVal &= ~(conf.bank);
+        /* First 16-bit identifier and First 16-bit mask
+	       Or First 16-bit identifier and Second 16-bit identifier */
         CAN->FilterRegister[conf.bank].FR1 = ((conf.maskIdLow & 0x0000FFFF)  << 16 | 
                                               (conf.idLow & 0x0000FFFF));
+        /* Second 16-bit identifier and Second 16-bit mask
+	       Or Third 16-bit identifier and Fourth 16-bit identifier */                                
         CAN->FilterRegister[conf.bank].FR2 = ((conf.maskIdHigh & 0x0000FFFF) << 16 | 
                                               (conf.idHigh & 0x0000FFFF));
     } else {
         CAN->FS1R.registerVal |= (conf.bank);
+        //  32-bit identifier or First 32-bit identifier
         CAN->FilterRegister[conf.bank].FR1 = ((conf.idHigh & 0x0000FFFF)     << 16 | 
                                               (conf.idLow & 0x0000FFFF));
+        //  32-bit mask or Second 32-bit identifier
         CAN->FilterRegister[conf.bank].FR2 = ((conf.maskIdHigh & 0x0000FFFF) << 16 | 
                                               (conf.maskIdLow & 0x0000FFFF));
     }
@@ -72,9 +128,11 @@ void Can::FilterInit(const FilterConfig& conf) {
     if (conf.activation == kEnable) {
         CAN->FA1R.registerVal |= (conf.bank); 
     }
+    //  Leave the initialisation mode for the filter
     CAN->FMR.FINIT = 0;
 }
 void Can::Transmit(CanTxMsg message) {
+    CHECK_MESSAGE_CONFIG();
     uint32_t txMailbox = 0;
     if ((CAN->TSR.TME0 != 0) || 
         (CAN->TSR.TME1 != 0) ||
@@ -102,6 +160,7 @@ void Can::Transmit(CanTxMsg message) {
         }
 }
 void Can::CancelTransmit(MailBoxType mailbox) {
+    STM32_ASSERT((mailbox >= kMailBox0) && (mailbox <= kMailBox2), CAN_CONFIG_ERROR(MailBoxType));
     switch (mailbox) {
         case kMailBox0 : CAN->TSR.ABRQ0; break;
         case kMailBox1 : CAN->TSR.ABRQ1; break;
@@ -109,6 +168,8 @@ void Can::CancelTransmit(MailBoxType mailbox) {
     }
 }
 void Can::Receive(CanRxMsg message, FifoNumber fifo) {
+    CHECK_MESSAGE_CONFIG();
+    STM32_ASSERT((fifo >= kFIFO0) && (fifo <= kFIFO1), CAN_CONFIG_ERROR(FifoNumber));
     message.ide = (IdType)CAN->RxFIFOMailBox[fifo].RIR.IDE;
     if (message.ide == kStd) {
         message.stdId = CAN->RxFIFOMailBox[fifo].RIR.STID;
@@ -132,6 +193,7 @@ void Can::Receive(CanRxMsg message, FifoNumber fifo) {
     }
 }
 uint8_t Can::GetPendingMessages(FifoNumber fifo) {
+    STM32_ASSERT((fifo >= kFIFO0) && (fifo <= kFIFO1), CAN_CONFIG_ERROR(FifoNumber));
     uint8_t message = 0;
     if (fifo == kFIFO0) {
         message = CAN->RF0R.FMP0;

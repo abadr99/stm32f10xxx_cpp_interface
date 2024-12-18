@@ -62,7 +62,7 @@ enum MailBoxType : uint8_t {
 /**
  * @brief FIFO types for received messages.
  */
-enum FifoNumber : uint8_t {
+enum FifoNumber : uint16_t {
     kFIFO0,     /**< FIFO 0 */
     kFIFO1      /**< FIFO 1 */
 };
@@ -103,20 +103,42 @@ enum FilterMode : uint8_t {
  * @brief Filter scale configurations.
  */
 enum FilterScale : uint8_t {
-    k16it,      /**< 16-bit scale */
+    k16bit,      /**< 16-bit scale */
     k32bit      /**< 32-bit scale */
 };
 
 /**
  * @brief Prescaler options for CAN communication speed.
  */
-enum Prescaler : uint8_t {
+enum Prescaler : uint16_t {
     k100KBPS,   /**< 100 kbps */
     k125KBPS,   /**< 125 kbps */
     k250KBPS,   /**< 250 kbps */
     k500KBPS,   /**< 500 kbps */
     k800KBPS,   /**< 800 kbps */
     k1MBPS      /**< 1 Mbps */
+};
+
+/**
+ * @brief Represents time quanta values for CAN bus timing configurations.
+ */
+enum TimeQuanta : uint8_t {
+    k1tq,   /**< 1 Time Quanta (TQ) */
+    k2tq,   /**< 2 Time Quanta (TQ) */
+    k3tq,   /**< 3 Time Quanta (TQ) */
+    k4tq,   /**< 4 Time Quanta (TQ) */
+    k5tq,   /**< 5 Time Quanta (TQ) */
+    k6tq,   /**< 6 Time Quanta (TQ) */
+    k7tq,   /**< 7 Time Quanta (TQ) */
+    k8tq,   /**< 8 Time Quanta (TQ) */
+    k9tq,   /**< 9 Time Quanta (TQ) */
+    k10tq,  /**< 10 Time Quanta (TQ) */
+    k11tq,  /**< 11 Time Quanta (TQ) */
+    k12tq,  /**< 12 Time Quanta (TQ) */
+    k13tq,  /**< 13 Time Quanta (TQ) */
+    k14tq,  /**< 14 Time Quanta (TQ) */
+    k15tq,  /**< 15 Time Quanta (TQ) */
+    k16tq   /**< 16 Time Quanta (TQ) */
 };
 
 /**
@@ -135,9 +157,9 @@ struct CanConfig {
     OperatingMode opMode;      /**< Operating mode */
     TestMode mode;             /**< Test mode */
     FifoPriority priority;     /**< FIFO priority */
-    uint8_t SJW;               /**< Resynchronization jump width */
-    uint8_t BS1;               /**< Time segment 1 */
-    uint8_t BS2;               /**< Time segment 2 */
+    TimeQuanta sjw;            /**< Resynchronization jump width between k1tq and k4tq */
+    TimeQuanta bs1;            /**< Time segment 1 between k1tq and k16tq */
+    TimeQuanta bs2;            /**< Time segment 2 between k1tq and k8tq */
     State TTCM;                /**< Time-triggered communication mode */
     State ABOM;                /**< Automatic bus-off management */
     State AWUM;                /**< Automatic wake-up mode */
@@ -150,12 +172,12 @@ struct CanConfig {
  * @brief CAN filter configuration structure.
  */
 struct FilterConfig {
-    uint32_t idHigh;           /**< Filter ID high */
-    uint32_t idLow;            /**< Filter ID low */
-    uint32_t maskIdHigh;       /**< Mask ID high */
-    uint32_t maskIdLow;        /**< Mask ID low */
+    uint16_t idHigh;           /**< Filter ID high between 0x0000 and 0xFFFF */
+    uint16_t idLow;            /**< Filter ID low between 0x0000 and 0xFFFF */
+    uint16_t maskIdHigh;       /**< Mask ID high between 0x0000 and 0xFFFF */
+    uint16_t maskIdLow;        /**< Mask ID low between 0x0000 and 0xFFFF */
     FifoNumber fifoAssign;     /**< FIFO assignment */
-    uint32_t bank;             /**< Filter bank number */
+    uint32_t bank;             /**< Filter bank number between 0 and 13*/
     FilterMode mode;           /**< Filter mode */
     FilterScale scale;         /**< Filter scale */
     State activation;          /**< Filter activation state */
@@ -165,25 +187,25 @@ struct FilterConfig {
  * @brief CAN transmit message structure.
  */
 struct CanTxMsg {
-    uint32_t stdId;            /**< Standard ID */
-    uint32_t extId;            /**< Extended ID */
+    uint32_t stdId;            /**< Standard ID between 0 to 0x7FF */
+    uint32_t extId;            /**< Extended ID between 0 to 0x1FFFFFFF */
     IdType ide;                /**< Identifier type */
     RTRType rtr;               /**< Remote transmission request */
-    uint8_t dlc;               /**< Data length code */
-    uint8_t data[8];           /**< Data field */
+    uint8_t dlc;               /**< Data length code between 0 to 8 */
+    uint8_t data[8];           /**< Data field between 0 to 0xFF */
 };
 
 /**
  * @brief CAN receive message structure.
  */
 struct CanRxMsg {
-    uint32_t stdId;            /**< Standard ID */
-    uint32_t extId;            /**< Extended ID */
+    uint32_t stdId;            /**< Standard ID between 0 to 0x7FF */
+    uint32_t extId;            /**< Extended ID between 0 to 0x1FFFFFFF */
     IdType ide;                /**< Identifier type */
     RTRType rtr;               /**< Remote transmission request */
-    uint8_t dlc;               /**< Data length code */
-    uint8_t data[8];           /**< Data field */
-    uint8_t FMI;               /**< Filter match index */
+    uint8_t dlc;               /**< Data length code between 0 to 8 */
+    uint8_t data[8];           /**< Data field between 0 to 0xFF */
+    uint8_t FMI;               /**< Filter match index between 0 to 0xFF */
 };
 
 /**
