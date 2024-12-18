@@ -136,6 +136,14 @@ struct Id {
 class Nvic {
  public:
     using bit = stm32::type::bit;
+    using NvicRegDef = stm32::registers::nvic::NvicRegDef;
+    using SCBRegDef = stm32::registers::nvic::SCBRegDef;
+    // using namespace stm32::registers::nvic;
+
+    /**
+     * @brief Initiate the NVIC
+     */
+    static void Init();
 
     /**
      * @brief Enable the specified interrupt.
@@ -192,6 +200,10 @@ class Nvic {
      * @brief Reset the NVIC configuration to default.
      */
     static void Reset();
+    
+ private:
+    static volatile NvicRegDef*  NVIC;
+    static volatile SCBRegDef*  SCB;
 };
 }   // namespace nvic
 }   // namespace mcal
