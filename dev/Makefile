@@ -13,6 +13,10 @@ HW_MAINS=$(shell find $(HW_TEST_PATH) -name "*.cpp")
 DOXYFILE := ../doxy/conf
 DOXYGEN_OUTPUT := ../doxy/html
 
+CXX_FLAGS += -MDD -MP
+OBJS := $(SOURCES:.cpp=.o)
+DEPS :=$(OBJS:.o=.d)
+-include $(DEPS)
 # ---------------------------------------------------------------
 # compile
 # This function compiles a given source file into an ELF file 
