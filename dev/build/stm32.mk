@@ -27,9 +27,13 @@ $(OBJDIR)/%.o : src/**/%.cpp
 	@$(CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
 	@$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
 	@echo "[Makefile][Dev]: [$(SOURCES_CTR)/$(words $(SOURCES))] $<"
+	@$(CXX) -MMD -MP -MF $(OBJDIR)/$*.d $(CXX_FLAGS) $(INC) -c $< -o $@
 
 $(OBJDIR)/%.o : ./%.cpp
 	@mkdir -p $(OBJDIR)
 	@$(CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
 	@$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
 	@echo "[Makefile][Dev]: [$(SOURCES_CTR)/$(words $(SOURCES))] $<"
+	@$(CXX) -MMD -MP -MF $(OBJDIR)/$*.d $(CXX_FLAGS) $(INC) -c $< -o $@
+
+-include $(OBJS:.o=.d)
