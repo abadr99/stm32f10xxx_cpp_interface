@@ -107,7 +107,9 @@ jobs:
         name: objects-artifact
         path: tests/unittests/
     - name: Run tests
-      run: make -C tests run-unittests
+      run: |
+        chmod -R 777 ./tests/ 
+        ./tests/unittests/unittests.elf
     - name: Configure
       run:  sudo apt-get install lcov
     - name: Run coverage tool
