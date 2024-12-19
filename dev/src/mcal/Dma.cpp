@@ -64,6 +64,9 @@ typename  Dma::RegType Dma::DMA = nullptr;
 void Dma::Init(const DMAConfig& config) {
     CHECK_CONFIG();
     
+    // --- 0] GET REG ADDRESS
+    DMA = reinterpret_cast<RegType>(Addr<Peripheral::kDMA1>::Get());
+    
     // --- 1] DISABLE DMA
     DMA->CHANNEL[config.channel].CCR.EN = 0;
     
