@@ -101,7 +101,7 @@ jobs:
         name: objects-artifact
         path: tests/unittests/ 
     - name: dbg
-      run: ls && pwd
+      run: ls tests && pwd
     - name: Configure
       run:  sudo apt-get install lcov
     - name: Run tests
