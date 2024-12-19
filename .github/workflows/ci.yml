@@ -93,7 +93,7 @@ jobs:
     - name: Upload gcda artifact
       uses: actions/upload-artifact@v4
       with:
-        name: objects-artifact
+        name: gcda-artifact
         path: dev/src/mcal 
 
   code-coverage:
@@ -109,7 +109,7 @@ jobs:
     - name: Download gcda files
       uses: actions/download-artifact@v4 
       with:
-        name: objects-artifact
+        name: gcda-artifact
         path: dev/src/mcal 
     - name: Configure
       run:  sudo apt-get install lcov
@@ -118,5 +118,5 @@ jobs:
     - name: Upload HTML files
       uses: actions/upload-artifact@v4
       with:
-        name: objects-artifact
+        name: html-artifact
         path: tests/coverage-out
