@@ -33,6 +33,7 @@
 
 # Test Converage 
 *.gcno
+*.gcda
 
 # vscode stuff
 ./vscode/**

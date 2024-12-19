@@ -90,29 +90,22 @@ jobs:
       run: |
        chmod -R 777 ./tests/ 
        ./tests/unittests/unittests.elf --gtest_shuffle
-    - name: Upload lcov files artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: lcov-files-artifact
-        path: tests/unittests/
-  
+
   code-coverage:
     runs-on: ubuntu-latest
     needs: [dev-style-checking, test-style-checking, static-analysis, build, build-unitests, test]
     steps:
-      - uses: actions/checkout@v3
-      - name: Download lcov artifact 
-        uses: actions/download-artifact@v4 
-        with:
-          name: lcov-files-artifact
-          path: tests/unittests/
-      - name: Configure lcov
-        run: sh tools/github/lcov-config.sh
-      - name: Run lcov
-        run: sh tools/github/lcov.sh
-      - name: Upload Coverage Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: coverage.info
-    
+    - name: Download test binary
+      uses: actions/download-artifact@v4 
+      with:
+        name: objects-artifact
+        path: tests/unittests/ 
+    - name: Configure
+      run: sh tools/github/lcov-config.sh
+    - name: Run tests
+      run: make -C tests run-unittests 
+    - name: Upload HTML files
+      uses: actions/upload-artifact@v4
+      with:
+        name: objects-artifact
+        path: tests/coverage-out

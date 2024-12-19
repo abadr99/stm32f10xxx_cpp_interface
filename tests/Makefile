@@ -43,9 +43,11 @@ run-unittests:
 	@./$(U_TARGET)
 
 test-coverage:
+	@echo "[Makefile][Unittest]: Running test coverage"
 	@$(COVERAGE_TOOL) $(COVERAGE_TOOL_OPT)
 	@$(COVERAGE_TOOL) --remove temp.info '/usr/*' --output-file $(COVERAGE_OUT)
 	@rm -rf temp.info
+	@echo "[Makefile][Unittest]: Generating html files"
 	@$(GENERATE_HTML) $(COVERAGE_OUT) --output-directory $(GENERATE_HTML_OUT)
 
 # Clean up
