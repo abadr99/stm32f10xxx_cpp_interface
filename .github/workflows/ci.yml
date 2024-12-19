@@ -101,7 +101,7 @@ jobs:
         name: objects-artifact
         path: tests/unittests/ 
     - name: Configure
-      run: sh tools/github/lcov-config.sh
+      run:  sh tools/github/lcov-config.sh
     - name: Run tests
       run: make -C tests run-unittests 
     - name: Upload HTML files
