@@ -14,6 +14,7 @@ U_TARGET := unittests/unittests.elf
 U_LD := -lgtest -lpthread
 U_INC := -I../dev -I../dev/inc/
 
+DEV_SRC := $(shell find ../dev/src -type f -name "*.cpp")
 gcov_files = $(shell find ./ -type f -name "*.gcov")
 gcda_files = $(shell find $(U_SRCS_DIRS) -type f -name "*.gcda")
 gcno_files = $(shell find $(U_SRCS_DIRS) -type f -name "*.gcno")
@@ -35,6 +36,11 @@ build-unittests: $(U_OBJ)
 # Run the unit tests
 run-unittests:
 	./$(U_TARGET)
+
+test-coverage:
+	lcov --capture --directory ../dev/ --output-file temp.info
+	lcov --remove temp.info '/usr/*' --output-file coverage.info
+	genhtml coverage.info --output-directory out
 
 # Clean up
 clean:
