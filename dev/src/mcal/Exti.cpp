@@ -41,12 +41,17 @@ pFunction Exti::pGlobalCallBackFunctions[7] = {nullptr};
 
 volatile EXTIRegDef* Exti::EXTI = nullptr;
 
+void Exti::Init() {
+    EXTI = reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::Get());
+    for (uint32_t i = 0; i < kCallBackSiz; i++) {
+        pGlobalCallBackFunctions[i] = nullptr;
+    }
+}
 void Exti::Enable(const EXTI_Config& config) {
     STM32_ASSERT(((config.trigger >= kRising) 
                 && (config.trigger <= kBoth)), EXTI_CONFIG_ERROR(Trigger));
     STM32_ASSERT(((config.line >= kExti0) && (config.line <= kExti19)),
                   EXTI_CONFIG_ERROR(line));
-    EXTI = reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::Get());
     Exti::InitAFIOReg(config.line, config.port);
     EXTI->IMR = util::SetBit<uint32_t>(EXTI->IMR, config.line);
     Exti::SetTrigger(config.line, config.trigger);
@@ -86,7 +91,7 @@ void Exti::SetpCallBackFunction(Line line, void (*pCallBackFun)(void)) {
     }
 }
 pFunction Exti::GetpCallBackFunction(Line line) {  
-    STM32_ASSERT(((line >= kExti5) && (line <= kExti9)) 
+    STM32_ASSERT(!((line >= kExti5) && (line <= kExti9)) 
                 || ((line >= kExti10) && (line <= kExti15)), EXTI_CONFIG_ERROR(Line)); 
     pFunction pRetFunction = nullptr;
     if (line >= Line::kExti5 && line <= Line::kExti9) {
