@@ -36,10 +36,13 @@ static constexpr uint32_t kSystickMaxVal = util::GetOnes<uint32_t>(24);
 
 typename Systick::pFunction Systick::PointerToISR = nullptr;
 volatile SystickRegDef* Systick::SYSTICK = nullptr;
+
+void Systick::Init() {
+    SYSTICK = reinterpret_cast<volatile SystickRegDef*>(Addr<Peripheral::kSYSTICK >::Get());
+}
 void Systick::Enable(CLKSource clksource) {
     STM32_ASSERT((clksource == kAHB_Div_8) || 
                  (clksource == kAHB), SYSTICK_CONFIG_ERROR(CLKSource));
-    SYSTICK = reinterpret_cast<volatile SystickRegDef*>(Addr<Peripheral::kSYSTICK >::Get());
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->CTRL.TICKINT = 0;
     SYSTICK->CTRL.CLKSOURCE = clksource;
@@ -47,10 +50,11 @@ void Systick::Enable(CLKSource clksource) {
 }
 
 void Systick::SetCounterValue(uint32_t value) {
-// STM32_ASSERT(value <= kSystickMaxVal);
+    STM32_ASSERT((value <= kSystickMaxVal), SYSTICK_CONFIG_ERROR(kSystickMaxVal));
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->LOAD = value;
-    util::BusyWait([&](){ return SYSTICK->CTRL.COUNTFLAG == 0; });
+    // Busy wait is required here to wait until the the counter reach to Zero  
+    while (SYSTICK->CTRL.COUNTFLAG == 0) {}
     SYSTICK->CTRL.COUNTFLAG = 0;
     SYSTICK->CTRL.ENABLE = 0;
 }
