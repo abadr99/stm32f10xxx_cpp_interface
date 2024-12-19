@@ -17,14 +17,6 @@ namespace dev {
 namespace mcal {
 namespace timer {
 /**
- * @enum TimerMode
- * @brief Enumeration representing the mode of the timer.
- */
-enum TimerMode {
-    kTimeBase,  /**< Time base mode */
-};
-
-/**
  * @enum TimerID
  * @brief Enumeration representing the ID of the timer.
  */
@@ -44,7 +36,40 @@ enum TimerDirection {
     kUP,    /**< Count up */
     kDown   /**< Count down */
 };
-
+enum TimerClkDivision {
+    kDIV1 = 0x0000,
+    kDIV2 = 0x0100,
+    kDIV4 = 0x0200
+};
+enum TimerPolarity {
+    kRisingEdge,
+    kFallingEdge
+};
+enum TimerChannels {
+    kChannel1,
+    kChannel2,
+    kChannel3,
+    kChannel4
+};
+enum TimerSelection {
+    kDirectTI, /**<TIM Input 1 is selected to be connected to IC1*/
+    kIndirectTI, /**<TIM Input 1 is selected to be connected to IC2*/
+    kTRC /**<TIM Input 1 is selected to be connected to TRC*/
+};
+enum InterruptState {
+    kDisable,
+    kEnable
+};
+struct TimeBaseTypeDef {
+    TimerDirection Direction; /**< Direction of the timer (up/down) */
+    TimerClkDivision ClkDivision;
+};
+struct IcTypeDef {
+    TimerChannels channel;
+    TimerSelection Selection; /**<specifies the input to be used */
+    TimerPolarity Polarity; /**< Polarity of the timer (falling/rising edge) */
+    uint8_t Filter; /**<Specifies the Input Capture Filter */ 
+};
 /**
  * @struct TimerConfig
  * @brief Structure representing the configuration settings for a timer.
@@ -53,13 +78,11 @@ enum TimerDirection {
  * and the function pointer for the interrupt service routine (ISR).
  */
 struct TimerConfig {
-    TimerMode mode;           /**< Mode of the timer */
-    TimerID Timerid;          /**< ID of the timer */
-    TimerDirection Direction; /**< Direction of the timer (up/down) */
-    uint32_t Prescaler;       /**< Prescaler value for adjusting the timer frequency */
-    stm32::type::pFunction pfunction;  /**< Function pointer to the ISR callback */
+    TimerID Timerid; /**< ID of the timer */
+    uint16_t Prescaler; /**< Prescaler value for adjusting the timer frequency */
+    InterruptState interrupt;
+    stm32::type::pFunction pfunction = nullptr; /**< Function pointer to the ISR callback */
 };
-
 /**
  * @class Timer
  * @brief Class for configuring and controlling timers.
@@ -84,7 +107,8 @@ class Timer {
      * 
      * @param value The delay duration in milliseconds.
      */
-    void Delay_ms(uint16_t value);
+    void Delay_ms(const TimeBaseTypeDef & counter, uint16_t value);
+    void ICMode(const IcTypeDef & IC);
 
     /**
      * @brief Gets the function pointer to the ISR for the specified timer ID.
