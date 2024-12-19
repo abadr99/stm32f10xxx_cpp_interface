@@ -2,7 +2,7 @@
 LINT_PATH := ../tools/cppliny.py
 
 U_CXX := g++
-U_CXX_OPT := -std=c++17 -Wall -Wextra -g -DUNIT_TEST
+U_CXX_OPT := -std=c++17 -Wall -Wextra -g -DUNIT_TEST -fprofile-arcs -ftest-coverage
 
 # Find source files in 'unittests' and specific 'dev' directories
 U_SRCS_DIRS := ./unittests ../dev/src
@@ -13,6 +13,11 @@ U_OBJ := $(U_SRC:.cpp=.o)
 U_TARGET := unittests/unittests.elf
 U_LD := -lgtest -lpthread
 U_INC := -I../dev -I../dev/inc/
+
+DEV_SRC := $(shell find ../dev/src -type f -name "*.cpp")
+gcov_files = $(shell find ./ -type f -name "*.gcov")
+gcda_files = $(shell find $(U_SRCS_DIRS) -type f -name "*.gcda")
+gcno_files = $(shell find $(U_SRCS_DIRS) -type f -name "*.gcno")
 
 # Linting
 cpplint:
@@ -32,7 +37,14 @@ build-unittests: $(U_OBJ)
 run-unittests:
 	./$(U_TARGET)
 
+test-coverage:
+	lcov --capture --directory ../dev/ --output-file temp.info
+	lcov --remove temp.info '/usr/*' --output-file coverage.info
+	genhtml coverage.info --output-directory out
+
 # Clean up
 clean:
 	@rm -rf $(U_OBJ)
 	@rm -rf $(U_TARGET)
+	@rm -rf $(gcov_files) $(gcno_files) $(gcda_files) "coverage.info" 
+	@rm -rf out 

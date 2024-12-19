@@ -31,6 +31,9 @@
 *.out
 *.app
 
+# Test Converage 
+*.gcno
+
 # vscode stuff
 ./vscode/**
 *.elf
