@@ -102,7 +102,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build tests
-      run: make -C tests build-unittests
+      run: |
+          sh tools/github/configure-test.sh
+          make -C tests build-unittests
     - name: Run tests
       run: |
         chmod -R 777 ./tests/ 
