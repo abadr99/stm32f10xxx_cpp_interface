@@ -74,6 +74,13 @@ class Exti {
      */
     using pFunction = stm32::type::pFunction;
 
+
+    /**
+     * @brief Initialize the Exti
+     * 
+     */
+    static void Init();
+
     /**
      * @brief Enables the EXTI line with the provided configuration.
      * 
