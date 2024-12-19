@@ -106,11 +106,8 @@ jobs:
       with:
         name: objects-artifact
         path: tests/unittests/
-    - name: Download gcda files
-      uses: actions/download-artifact@v4 
-      with:
-        name: gcda-artifact
-        path: dev/src/mcal 
+    - name: Run tests
+      run: make -C tests run-unittests
     - name: Configure
       run:  sudo apt-get install lcov
     - name: Run coverage tool
