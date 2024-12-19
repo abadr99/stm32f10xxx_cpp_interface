@@ -14,10 +14,15 @@ U_TARGET := unittests/unittests.elf
 U_LD := -lgtest -lpthread
 U_INC := -I../dev -I../dev/inc/
 
-DEV_SRC := $(shell find ../dev/src -type f -name "*.cpp")
-gcov_files = $(shell find ./ -type f -name "*.gcov")
-gcda_files = $(shell find $(U_SRCS_DIRS) -type f -name "*.gcda")
-gcno_files = $(shell find $(U_SRCS_DIRS) -type f -name "*.gcno")
+# ---- TEST COVERAGE
+# note: For now we are intersted in mcal only
+MCAL_DIR = ../dev/src/mcal
+MCAL_SRC = $(shell find $(MCAL_DIR) -type f -name "*.cpp")
+COVERAGE_OUT  = coverage.info
+COVERAGE_TOOL = lcov
+COVERAGE_TOOL_OPT = --capture --directory $(MCAL_DIR) --output-file temp.info
+GENERATE_HTML = genhtml
+GENERATE_HTML_OUT = html
 
 # Linting
 cpplint:
@@ -35,16 +40,17 @@ build-unittests: $(U_OBJ)
 
 # Run the unit tests
 run-unittests:
-	./$(U_TARGET)
+	@./$(U_TARGET)
 
 test-coverage:
-	lcov --capture --directory ../dev/ --output-file temp.info
-	lcov --remove temp.info '/usr/*' --output-file coverage.info
-	genhtml coverage.info --output-directory out
+	@$(COVERAGE_TOOL) $(COVERAGE_TOOL_OPT)
+	@$(COVERAGE_TOOL) --remove temp.info '/usr/*' --output-file $(COVERAGE_OUT)
+	@rm -rf temp.info
+	@$(GENERATE_HTML) $(COVERAGE_OUT) --output-directory $(GENERATE_HTML_OUT)
 
 # Clean up
 clean:
 	@rm -rf $(U_OBJ)
 	@rm -rf $(U_TARGET)
-	@rm -rf $(gcov_files) $(gcno_files) $(gcda_files) "coverage.info" 
-	@rm -rf out 
+	@rm -rf $(MCAL_DIR)/*.gcda $(MCAL_DIR)/*.gcno $(COVERAGE_OUT) 
+	@rm -rf $(COVERAGE_DIR_OPT)
