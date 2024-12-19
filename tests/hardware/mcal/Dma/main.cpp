@@ -9,8 +9,7 @@
  * 
  */
 
-// commit-id: e6092b8fe07dbfd8f548e7ac32c9d768aaf52003
-
+// commit-id: 
 #include "mcal/stm32f103xx.h"
 #include "utils/Types.h"
 #include "utils/BitManipulation.h"
@@ -32,6 +31,10 @@ volatile uint8_t flag = 0;
 void DMA_ISR(void);
 
 int main(void) {
+    Rcc::Init();
+    Gpio::Init();
+    Nvic::Init();
+    flag = 0;
     // Initialize system clock and external clock source
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
@@ -58,18 +61,19 @@ int main(void) {
         .transErrorInterrupt = State::kDisable, 
         .transCompleteInterrupt = State::kEnable, 
     };
-    Dma::SetPointerToTransferCompleteISR(Channel::kChannel1, DMA_ISR);
     Dma::Init(conf);
+    Dma::SetPointerToTransferCompleteISR(Channel::kChannel1, DMA_ISR);
     Dma::Enable(Channel::kChannel1);
     Gpio::Set(pc13);
     Nvic::EnableInterrupt(kDMA1_Channel1_IRQn);
-    // Turn of the Led at pc13 pin
+    // Turn off the Led at pc13 pin
     Gpio::SetPinValue(pc13, DigitalVoltage::kHigh);
 
     while (1) { 
         if (flag  ==  1) {
             if (dest_arr[0]  ==  1 && dest_arr[9]  ==  10) {
-                Gpio::SetPinValue(pc13, DigitalVoltage::kHigh);
+                // Turn On The Led
+                Gpio::SetPinValue(pc13, DigitalVoltage::kLow);
             }
         }
     }
