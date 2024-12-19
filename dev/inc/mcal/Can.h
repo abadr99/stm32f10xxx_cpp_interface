@@ -16,10 +16,12 @@ namespace dev   {
 namespace mcal  {
 namespace can   {
 
+constexpr uint8_t kMaxDlc = 8;
+
 /**
  * @brief Operating modes of the CAN peripheral.
  */
-enum OperatingMode : uint8_t {
+enum class OperatingMode : uint8_t {
     kSleep,             /**< Sleep mode */
     kInitialization,    /**< Initialization mode */
     kNormal             /**< Normal operation mode */
@@ -28,7 +30,7 @@ enum OperatingMode : uint8_t {
 /**
  * @brief CAN test modes.
  */
-enum TestMode : uint8_t {
+enum class TestMode : uint8_t {
     kSilent,        /**< Silent mode */
     kLoopBack,      /**< Loopback mode */
     kCombined       /**< Combined silent and loopback mode */
@@ -37,7 +39,7 @@ enum TestMode : uint8_t {
 /**
  * @brief CAN identifier types.
  */
-enum IdType : uint8_t {
+enum class IdType : uint8_t {
     kStd,   /**< Standard identifier */
     kExt    /**< Extended identifier */
 };
@@ -45,7 +47,7 @@ enum IdType : uint8_t {
 /**
  * @brief Remote Transmission Request (RTR) types.
  */
-enum RTRType : uint8_t {
+enum class RemoteTxReqType : uint8_t {
     kData,      /**< Data frame */
     kRemote     /**< Remote frame */
 };
@@ -53,7 +55,7 @@ enum RTRType : uint8_t {
 /**
  * @brief CAN transmit mailbox identifiers.
  */
-enum MailBoxType : uint8_t {
+enum class MailBoxType : uint8_t {
     kMailBox0,  /**< Mailbox 0 */
     kMailBox1,  /**< Mailbox 1 */
     kMailBox2   /**< Mailbox 2 */
@@ -62,7 +64,7 @@ enum MailBoxType : uint8_t {
 /**
  * @brief FIFO types for received messages.
  */
-enum FifoNumber : uint16_t {
+enum class FifoNumber : uint16_t {
     kFIFO0,     /**< FIFO 0 */
     kFIFO1      /**< FIFO 1 */
 };
@@ -70,7 +72,7 @@ enum FifoNumber : uint16_t {
 /**
  * @brief Priority determination for CAN message transmission.
  */
-enum FifoPriority : uint8_t {
+enum class FifoPriority : uint8_t {
     kID,        /**< Priority based on message ID */
     kRequest    /**< Priority based on request type */
 };
@@ -78,23 +80,15 @@ enum FifoPriority : uint8_t {
 /**
  * @brief Status of received FIFO.
  */
-enum ReceivedFifo : uint8_t {
+enum class ReceivedFifo : uint8_t {
     kUnLocked,  /**< FIFO is unlocked */
     kLocked     /**< FIFO is locked */
 };
 
 /**
- * @brief Retransmission behavior for CAN messages.
- */
-enum Retransmission : uint8_t {
-    kAuto,      /**< Automatic retransmission enabled */
-    kNoAuto     /**< Automatic retransmission disabled */
-};
-
-/**
  * @brief Filter modes for CAN.
  */
-enum FilterMode : uint8_t {
+enum class FilterMode : uint8_t {
     kMask,      /**< Mask mode */
     kList       /**< List mode */
 };
@@ -110,41 +104,41 @@ enum FilterScale : uint8_t {
 /**
  * @brief Prescaler options for CAN communication speed.
  */
-enum Prescaler : uint16_t {
+enum class Prescaler : uint32_t {
     k100KBPS,   /**< 100 kbps */
     k125KBPS,   /**< 125 kbps */
     k250KBPS,   /**< 250 kbps */
     k500KBPS,   /**< 500 kbps */
     k800KBPS,   /**< 800 kbps */
-    k1MBPS      /**< 1 Mbps */
+    k1MBPS      /**< 1 Mbps   */
 };
 
 /**
  * @brief Represents time quanta values for CAN bus timing configurations.
  */
-enum TimeQuanta : uint8_t {
-    k1tq,   /**< 1 Time Quanta (TQ) */
-    k2tq,   /**< 2 Time Quanta (TQ) */
-    k3tq,   /**< 3 Time Quanta (TQ) */
-    k4tq,   /**< 4 Time Quanta (TQ) */
-    k5tq,   /**< 5 Time Quanta (TQ) */
-    k6tq,   /**< 6 Time Quanta (TQ) */
-    k7tq,   /**< 7 Time Quanta (TQ) */
-    k8tq,   /**< 8 Time Quanta (TQ) */
-    k9tq,   /**< 9 Time Quanta (TQ) */
-    k10tq,  /**< 10 Time Quanta (TQ) */
-    k11tq,  /**< 11 Time Quanta (TQ) */
-    k12tq,  /**< 12 Time Quanta (TQ) */
-    k13tq,  /**< 13 Time Quanta (TQ) */
-    k14tq,  /**< 14 Time Quanta (TQ) */
-    k15tq,  /**< 15 Time Quanta (TQ) */
-    k16tq   /**< 16 Time Quanta (TQ) */
+enum class TimeQuanta : uint8_t {
+    kTq1,   /**< 1 Time Quanta (TQ) */
+    kTq2,   /**< 2 Time Quanta (TQ) */
+    kTq3,   /**< 3 Time Quanta (TQ) */
+    kTq4,   /**< 4 Time Quanta (TQ) */
+    kTq5,   /**< 5 Time Quanta (TQ) */
+    kTq6,   /**< 6 Time Quanta (TQ) */
+    kTq7,   /**< 7 Time Quanta (TQ) */
+    kTq8,   /**< 8 Time Quanta (TQ) */
+    kTq9,   /**< 9 Time Quanta (TQ) */
+    kTq10,  /**< 10 Time Quanta (TQ) */
+    kTq11,  /**< 11 Time Quanta (TQ) */
+    kTq12,  /**< 12 Time Quanta (TQ) */
+    kTq13,  /**< 13 Time Quanta (TQ) */
+    kTq14,  /**< 14 Time Quanta (TQ) */
+    kTq15,  /**< 15 Time Quanta (TQ) */
+    kTq16   /**< 16 Time Quanta (TQ) */
 };
 
 /**
  * @brief State for enabling or disabling features.
  */
-enum State : uint8_t {
+enum class State : uint8_t {
     kDisable,   /**< Disabled state */
     kEnable     /**< Enabled state */
 };
@@ -165,7 +159,7 @@ struct CanConfig {
     State AWUM;                /**< Automatic wake-up mode */
     State NART;                /**< No automatic retransmission */
     State RFLM;                /**< Receive FIFO locked mode */
-    State TXFP;                /**< Transmit FIFO priority */
+    State TxFifoPrio;                /**< Transmit FIFO priority */
 };
 
 /**
@@ -190,9 +184,9 @@ struct CanTxMsg {
     uint32_t stdId;            /**< Standard ID between 0 to 0x7FF */
     uint32_t extId;            /**< Extended ID between 0 to 0x1FFFFFFF */
     IdType ide;                /**< Identifier type */
-    RTRType rtr;               /**< Remote transmission request */
+    RemoteTxReqType rtr;       /**< Remote transmission request */
     uint8_t dlc;               /**< Data length code between 0 to 8 */
-    uint8_t data[8];           /**< Data field between 0 to 0xFF */
+    uint8_t data[kMaxDlc];     /**< Data field between 0 to 0xFF */
 };
 
 /**
@@ -202,9 +196,9 @@ struct CanRxMsg {
     uint32_t stdId;            /**< Standard ID between 0 to 0x7FF */
     uint32_t extId;            /**< Extended ID between 0 to 0x1FFFFFFF */
     IdType ide;                /**< Identifier type */
-    RTRType rtr;               /**< Remote transmission request */
+    RemoteTxReqType rtr;       /**< Remote transmission request */
     uint8_t dlc;               /**< Data length code between 0 to 8 */
-    uint8_t data[8];           /**< Data field between 0 to 0xFF */
+    uint8_t data[kMaxDlc];     /**< Data field between 0 to 0xFF */
     uint8_t FMI;               /**< Filter match index between 0 to 0xFF */
 };
 
@@ -256,7 +250,6 @@ class Can {
 
  private:
     static can_ptr CAN;  /**< Pointer to CAN registers */
-
     /**
      * @brief Sets the operating mode for the CAN peripheral.
      * @param conf CAN configuration structure.
