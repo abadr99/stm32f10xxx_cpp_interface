@@ -17,12 +17,13 @@
 
 using namespace stm32::utils::logger;
 
-#define TO_STRING(str_)     #str_
+#define STRINGIFY(x) #x
+#define EXPAND_AND_STRINGIFY(x) STRINGIFY(x)
 #ifdef LOGGER 
 #define STM32_ASSERT(cond_, msg_) \
     do {  \
         if ( !cond_) { \
-            Logger::Print(TO_STRING(__FILE__:__LINE__ :)); \
+            Logger::Print((EXPAND_AND_STRINGIFY(__FILE__:__LINE__ :))); \
             Logger::Error(msg_); \
             assert(cond_);\
         }\
