@@ -118,5 +118,5 @@ jobs:
     - name: Upload HTML files
       uses: actions/upload-artifact@v4
       with:
-        name: html-artifact
+        name: test-coverage-results
         path: tests/html
