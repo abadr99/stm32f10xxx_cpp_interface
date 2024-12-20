@@ -119,4 +119,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: html-artifact
-        path: tests/coverage-out
+        path: tests/html
