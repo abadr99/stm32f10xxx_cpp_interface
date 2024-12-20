@@ -16,8 +16,6 @@ namespace dev   {
 namespace mcal  {
 namespace can   {
 
-constexpr uint8_t kMaxDlc = 8;
-
 /**
  * @brief Operating modes of the CAN peripheral.
  */
@@ -96,7 +94,7 @@ enum class FilterMode : uint8_t {
 /**
  * @brief Filter scale configurations.
  */
-enum FilterScale : uint8_t {
+enum class FilterScale : uint8_t {
     k16bit,      /**< 16-bit scale */
     k32bit      /**< 32-bit scale */
 };
@@ -181,24 +179,26 @@ struct FilterConfig {
  * @brief CAN transmit message structure.
  */
 struct CanTxMsg {
+    static constexpr uint8_t kDataSiz = 8;
     uint32_t stdId;            /**< Standard ID between 0 to 0x7FF */
     uint32_t extId;            /**< Extended ID between 0 to 0x1FFFFFFF */
     IdType ide;                /**< Identifier type */
     RemoteTxReqType rtr;       /**< Remote transmission request */
     uint8_t dlc;               /**< Data length code between 0 to 8 */
-    uint8_t data[kMaxDlc];     /**< Data field between 0 to 0xFF */
+    uint8_t data[kDataSiz];    /**< Data field between 0 to 0xFF */
 };
 
 /**
  * @brief CAN receive message structure.
  */
 struct CanRxMsg {
+    static constexpr uint8_t kDataSiz = 8;
     uint32_t stdId;            /**< Standard ID between 0 to 0x7FF */
     uint32_t extId;            /**< Extended ID between 0 to 0x1FFFFFFF */
     IdType ide;                /**< Identifier type */
     RemoteTxReqType rtr;       /**< Remote transmission request */
     uint8_t dlc;               /**< Data length code between 0 to 8 */
-    uint8_t data[kMaxDlc];     /**< Data field between 0 to 0xFF */
+    uint8_t data[kDataSiz];    /**< Data field between 0 to 0xFF */
     uint8_t FMI;               /**< Filter match index between 0 to 0xFF */
 };
 
@@ -226,7 +226,7 @@ class Can {
      * @brief Transmits a CAN message.
      * @param message CAN transmit message structure.
      */
-    static void Transmit(CanTxMsg message);
+    static void Transmit(const CanTxMsg& message);
 
     /**
      * @brief Cancels message transmission in the specified mailbox.
@@ -239,7 +239,7 @@ class Can {
      * @param message CAN receive message structure.
      * @param fifo FIFO number to receive from.
      */
-    static void Receive(CanRxMsg message, FifoNumber fifo);
+    static void Receive(CanRxMsg& message, FifoNumber fifo);
 
     /**
      * @brief Retrieves the number of pending messages in the specified FIFO.

@@ -50,61 +50,72 @@ void Can::FilterInit(const FilterConfig& conf) {
     CAN->FMR.FINIT = 1;  //  Initialisation mode for the filter
     CAN->FA1R.registerVal = ClearBit(CAN->FA1R.registerVal, conf.bank);  //  Filter Deactivation
 
-    if (conf.scale == k16bit) {
-        CAN->FS1R.registerVal = ClearBit(CAN->FS1R.registerVal, conf.bank);
-        CAN->FilterRegister[conf.bank].FR1 = 
-            WriteBits<uint32_t, 16, 31>(CAN->FilterRegister[conf.bank].FR1, conf.maskIdLow &0xFFFF);
-        CAN->FilterRegister[conf.bank].FR1 = 
-            WriteBits<uint32_t, 0, 15>(CAN->FilterRegister[conf.bank].FR1, conf.idLow &0xFFFF);
-        CAN->FilterRegister[conf.bank].FR2 = 
-            WriteBits<uint32_t, 16, 31>(CAN->FilterRegister[conf.bank].FR2, conf.maskIdHigh &0xFFFF);   //  NOLINT
-        CAN->FilterRegister[conf.bank].FR2 = 
-            WriteBits<uint32_t, 0, 15>(CAN->FilterRegister[conf.bank].FR2, conf.idHigh &0xFFFF);
-
-    } else {
+    auto ComputeFilterVal = [](uint16_t lo, uint16_t hi) -> RegWidth_t {
+        RegWidth_t val = ExtractBits<uint16_t, 0, 15>(lo);
+        return WriteBits<uint32_t, 16, 31>(val, ExtractBits<uint16_t, 0, 15>(hi));
+    };
+    
+    // ---- SET FILTER VALUE
+    if (conf.scale == FilterScale::k16bit) {
+        CAN->FS1R.registerVal = ClearBit(CAN->FS1R.registerVal, conf.bank); 
+        CAN->FilterRegister[conf.bank].FR1 = ComputeFilterVal(conf.idLow,  conf.maskIdLow);
+        CAN->FilterRegister[conf.bank].FR2 = ComputeFilterVal(conf.idHigh, conf.maskIdHigh);
+    } else {  // k32bit
         CAN->FS1R.registerVal = SetBit(CAN->FA1R.registerVal, conf.bank);
-        CAN->FilterRegister[conf.bank].FR1 = 
-            WriteBits<uint32_t, 16, 31>(CAN->FilterRegister[conf.bank].FR1, conf.idHigh &0xFFFF);
-        CAN->FilterRegister[conf.bank].FR1 = 
-            WriteBits<uint32_t, 0, 15>(CAN->FilterRegister[conf.bank].FR1, conf.idLow &0xFFFF);
-        CAN->FilterRegister[conf.bank].FR2 = 
-            WriteBits<uint32_t, 16, 31>(CAN->FilterRegister[conf.bank].FR2, conf.maskIdHigh &0xFFFF);   //  NOLINT
-        CAN->FilterRegister[conf.bank].FR2 = 
-            WriteBits<uint32_t, 0, 15>(CAN->FilterRegister[conf.bank].FR2, conf.maskIdLow &0xFFFF);
+        // Compute and set FR1 and FR2
+        CAN->FilterRegister[conf.bank].FR1 = ComputeFilterVal(conf.idLow, conf.idHigh);
+        CAN->FilterRegister[conf.bank].FR2 = ComputeFilterVal(conf.maskIdLow, conf.maskIdHigh);
     }
-    CAN->FM1R.registerVal = (conf.mode == FilterMode::kMask) ?
-    ClearBit(CAN->FM1R.registerVal, conf.bank) : SetBit(CAN->FM1R.registerVal, conf.bank);
-    CAN->FFA1R.registerVal = (conf.fifoAssign == FifoNumber::kFIFO0) ?
-    ClearBit(CAN->FFA1R.registerVal, conf.bank) : SetBit(CAN->FFA1R.registerVal, conf.bank);
+    // --- SET FILTER MODE
+    CAN->FM1R.registerVal = (conf.mode == FilterMode::kMask) 
+                                ? ClearBit(CAN->FM1R.registerVal, conf.bank)
+                                : SetBit(CAN->FM1R.registerVal, conf.bank);
+    CAN->FFA1R.registerVal = (conf.fifoAssign == FifoNumber::kFIFO0) 
+                                ? ClearBit(CAN->FFA1R.registerVal, conf.bank) 
+                                : SetBit(CAN->FFA1R.registerVal, conf.bank);
     if (conf.activation == State::kEnable) {
         CAN->FA1R.registerVal = SetBit(CAN->FA1R.registerVal, conf.bank); 
     }
     //  Leave the initialisation mode for the filter
     CAN->FMR.FINIT = 0;
 }
-void Can::Transmit(CanTxMsg message) {
+
+void Can::Transmit(const CanTxMsg& message) {
     uint32_t txMailbox = 0;
-    auto isMailBoxAvailable =[&]() ->bool {
-        return (CAN->TSR.TME0 != 0) || (CAN->TSR.TME1 != 0) || (CAN->TSR.TME2 != 0);
+    auto IsMailBoxAvailable =[&]() -> bool {
+        return (CAN->TSR.TME0 != 0) || 
+               (CAN->TSR.TME1 != 0) || 
+               (CAN->TSR.TME2 != 0);
     };
-    if (isMailBoxAvailable()) {
-            txMailbox = CAN->TSR.CODE;
-            if (txMailbox <= 2) {
-                CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
-                CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
-                CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExt) ? 1 : 0;
-                CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
-                for (uint8_t i = 0; i < message.dlc; ++i) {
-                    if (i < 4) {
-                        CAN->TxMailBox[txMailbox].TDLR |= (message.data[i] << (i * 8));
-                    } else {
-                        CAN->TxMailBox[txMailbox].TDHR |= (message.data[i] << ((i - 4) * 8));
-                    }
+    
+    // Helper function to get the next available mailbox
+    auto GetAvailableMailbox = [&]() -> uint32_t {
+        return CAN->TSR.CODE;
+    };
+    
+    if (IsMailBoxAvailable()) {
+        GetAvailableMailbox();
+        if (txMailbox <= 2) {
+            CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
+            CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
+            CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExt) ? 1 : 0;
+            CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
+            uint32_t hi = 0;
+            uint32_t lo = 0;
+            for (uint8_t i = 0; i < message.dlc; ++i) {
+                if (i < 4) {
+                    lo = WriteByte(lo, i, message.data[i]);
+                } else {
+                    hi = WriteByte(hi, i - 4, message.data[i]);
                 }
-                CAN->TxMailBox[txMailbox].TIR.TXRQ = 1;
             }
+            CAN->TxMailBox[txMailbox].TDLR = lo;
+            CAN->TxMailBox[txMailbox].TDHR = hi;
+            CAN->TxMailBox[txMailbox].TIR.TXRQ = 1;
+        }
     }
 }
+
 void Can::CancelTransmit(MailBoxType mailbox) {
     switch (mailbox) {
         case MailBoxType::kMailBox0 : CAN->TSR.ABRQ0 = 1; break;
@@ -112,7 +123,8 @@ void Can::CancelTransmit(MailBoxType mailbox) {
         case MailBoxType::kMailBox2 : CAN->TSR.ABRQ2 = 1; break;
     }
 }
-void Can::Receive(CanRxMsg message, FifoNumber fifo) {
+
+void Can::Receive(CanRxMsg& message, FifoNumber fifo) {
     uint32_t fifoIndex = static_cast<uint32_t>(fifo);
     message.ide = static_cast<IdType>(CAN->RxFIFOMailBox[fifoIndex].RIR.IDE);
 
@@ -124,11 +136,11 @@ void Can::Receive(CanRxMsg message, FifoNumber fifo) {
     message.rtr = (RemoteTxReqType)CAN->RxFIFOMailBox[fifoIndex].RIR.RTR;
     message.dlc = (uint8_t)CAN->RxFIFOMailBox[fifoIndex].RDTR.DLC;
     message.FMI = CAN->RxFIFOMailBox[fifoIndex].RDTR.FMI;
-    for (uint8_t i =0; i < message.dlc; ++i) {
+    for (uint8_t i = 0; i < message.dlc; ++i) {
         if (i < 4) {
-            message.data[i] = (CAN->RxFIFOMailBox[fifoIndex].RDLR >> (i * 8));
+            message.data[i] = ExtractByte(CAN->RxFIFOMailBox[fifoIndex].RDLR, i);
         } else {
-            message.data[i] = (CAN->RxFIFOMailBox[fifoIndex].RDHR >> ((i - 4) * 8));
+            message.data[i] = ExtractByte(CAN->RxFIFOMailBox[fifoIndex].RDHR, i - 4);
         }
     }
     if (fifo == FifoNumber::kFIFO0) {
@@ -137,27 +149,45 @@ void Can::Receive(CanRxMsg message, FifoNumber fifo) {
         CAN->RF1R.RFOM1 = 1;
     }
 }
+
 uint8_t Can::GetPendingMessages(FifoNumber fifo) {
     return (fifo == FifoNumber::kFIFO0) ? CAN->RF0R.FMP0 : CAN->RF1R.FMP1;
 }
+
 void Can::SetOperatingMode(const CanConfig &conf, OperatingMode mode) {
-    if (mode == OperatingMode::kSleep) {
-        if (conf.opMode == OperatingMode::kInitialization) { CAN->MCR.INRQ = 0; }
-            CAN->MCR.SLEEP = 1;
-            util::BusyWait<constant::TimeOut::kDefault>([&](){ return CAN->MSR.SLAK; });
-    } else if (mode == OperatingMode::kInitialization) {
-        if (conf.opMode == OperatingMode::kSleep) { CAN->MCR.SLEEP = 0; }
-            CAN->MCR.INRQ = 1;
-            util::BusyWait<constant::TimeOut::kDefault>([&](){ return CAN->MSR.INAK; });
-    } else if (mode == OperatingMode::kNormal) {
+    using OM = OperatingMode;
+    
+    auto OperateSleepMode = [&]() {
+        if (conf.opMode == OperatingMode::kInitialization) { 
+            CAN->MCR.INRQ = 0; 
+        }
+        CAN->MCR.SLEEP = 1;
+        util::BusyWait<constant::TimeOut::kDefault>([&](){ return CAN->MSR.SLAK; });
+    }; 
+    
+    auto OperateInitMode = [&]() {
+        if (conf.opMode == OperatingMode::kSleep) { 
+            CAN->MCR.SLEEP = 0; 
+        }
+        CAN->MCR.INRQ = 1;
+        util::BusyWait<constant::TimeOut::kDefault>([&](){ return CAN->MSR.INAK; });
+    };
+    
+    auto OperateNormalMode = [&]() {
+        auto IsTimeOut = [&](){ return !(CAN->MSR.INAK || CAN->MSR.SLAK); };
         if (conf.opMode == OperatingMode::kSleep) {
-            util::BusyWait<constant::TimeOut::kDefault>([&](){ return !(CAN->MSR.INAK || 
-                                                                        CAN->MSR.SLAK); });
+            util::BusyWait<constant::TimeOut::kDefault>(IsTimeOut);
         } else if (conf.opMode == OperatingMode::kInitialization) {
-            util::BusyWait<constant::TimeOut::kDefault>([&](){ return !(CAN->MSR.INAK && 
-                                                                        CAN->MSR.SLAK); });
+            util::BusyWait<constant::TimeOut::kDefault>(IsTimeOut);
         }
         CAN->MCR.INRQ = 0;
         CAN->MCR.SLEEP = 0;
+    };
+
+    switch (mode) {
+        case OM::kSleep: OperateSleepMode(); return;
+        case OM::kInitialization: OperateInitMode(); return;
+        case OM::kNormal: OperateNormalMode(); return;
+        default: /* TODO(@abadr99): Support Unreachable code */ break;
     }
 }
