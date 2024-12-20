@@ -127,7 +127,6 @@ void Can::CancelTransmit(MailBoxType mailbox) {
 void Can::Receive(CanRxMsg& message, FifoNumber fifo) {  //  NOLINT [runtime/references]
     uint32_t fifoIndex = static_cast<uint32_t>(fifo);
     message.ide = static_cast<IdType>(CAN->RxFIFOMailBox[fifoIndex].RIR.IDE);
-
     if (message.ide == IdType::kStd) {
         message.stdId = CAN->RxFIFOMailBox[fifoIndex].RIR.STID;
     } else {
@@ -185,9 +184,9 @@ void Can::SetOperatingMode(const CanConfig &conf, OperatingMode mode) {
     };
 
     switch (mode) {
-        case OM::kSleep: OperateSleepMode(); return;
-        case OM::kInitialization: OperateInitMode(); return;
-        case OM::kNormal: OperateNormalMode(); return;
+        case OM::kSleep:          OperateSleepMode();   return;
+        case OM::kInitialization: OperateInitMode();    return;
+        case OM::kNormal:         OperateNormalMode();  return;
         default: /* TODO(@abadr99): Support Unreachable code */ break;
     }
 }
