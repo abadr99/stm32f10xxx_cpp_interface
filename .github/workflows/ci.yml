@@ -64,7 +64,7 @@ jobs:
       run: make -C ./dev build-hw
   build-unitests:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking, hardware-tests-style-checking, static-analysis]
+    needs: [dev-style-checking, test-style-checking, static-analysis, hardware-tests-style-checking]
     steps:
     - uses: actions/checkout@v3
     - name: Configure gtest
@@ -79,7 +79,7 @@ jobs:
   
   run-unittests:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking, hardware-tests-style-checking, static-analysis, build-unitests]
+    needs: [dev-style-checking, test-style-checking, static-analysis, hardware-tests-style-checking, build-unitests]
     steps:
     - name: Download artifact 
       uses: actions/download-artifact@v4 
@@ -98,8 +98,8 @@ jobs:
 
   code-coverage:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking, static-analysis, build, build-unitests, run-unittests]
-    if: contains(github.event.head_commit.message, '(test-coverage)')
+    needs: [dev-style-checking, test-style-checking, static-analysis, hardware-tests-style-checking, build, build-unitests, run-unittests]
+    if: contains(github.event.head_commit.message, 'test-coverage')
     steps:
     - uses: actions/checkout@v3
     - name: Build tests
