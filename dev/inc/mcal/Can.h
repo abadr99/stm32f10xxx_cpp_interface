@@ -239,7 +239,7 @@ class Can {
      * @param message CAN receive message structure.
      * @param fifo FIFO number to receive from.
      */
-    static void Receive(CanRxMsg& message, FifoNumber fifo);
+    static void Receive(CanRxMsg& message, FifoNumber fifo);  //  NOLINT [runtime/references]
 
     /**
      * @brief Retrieves the number of pending messages in the specified FIFO.

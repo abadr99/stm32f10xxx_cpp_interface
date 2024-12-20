@@ -124,7 +124,7 @@ void Can::CancelTransmit(MailBoxType mailbox) {
     }
 }
 
-void Can::Receive(CanRxMsg& message, FifoNumber fifo) {
+void Can::Receive(CanRxMsg& message, FifoNumber fifo) {  //  NOLINT [runtime/references]
     uint32_t fifoIndex = static_cast<uint32_t>(fifo);
     message.ide = static_cast<IdType>(CAN->RxFIFOMailBox[fifoIndex].RIR.IDE);
 
