@@ -104,7 +104,7 @@ jobs:
     - name: Build tests
       run: |
           sh tools/github/configure-test.sh
-          make -C tests build-unittests
+          make -C tests build-unittests -j20
     - name: Run tests
       run: |
         chmod -R 777 ./tests/ 
@@ -114,7 +114,7 @@ jobs:
     - name: Run coverage tool
       run: make -C tests test-coverage
     - name: dbg
-      run: ls
+      run: ls tests
     - name: Upload HTML files
       uses: actions/upload-artifact@v4
       with:
