@@ -112,7 +112,9 @@ jobs:
     - name: Configure
       run:  sudo apt-get install lcov
     - name: Run coverage tool
-      run: make -C tests test-coverage && ls
+      run: make -C tests test-coverage
+    - name: dbg
+      run: ls
     - name: Upload HTML files
       uses: actions/upload-artifact@v4
       with:
