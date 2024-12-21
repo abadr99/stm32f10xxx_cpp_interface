@@ -1,3 +1,9 @@
+# Paths to vcpkg include and lib (windows case)
+VCPKG_TRIPLET = x86-windows
+VCPKG_PATH := $(HOME)/vcpkg/installed/$(VCPKG_TRIPLET)
+VCPKG_INCLUDE := $(VCPKG_PATH)/include
+VCPKG_LIB := $(VCPKG_PATH)/lib
+
 # Variables
 LINT_PATH := ../tools/cppliny.py
 
@@ -11,8 +17,22 @@ U_SRC := $(shell find $(U_SRCS_DIRS) -type f -name "*.cpp")
 U_OBJ := $(U_SRC:.cpp=.o)
 
 U_TARGET := unittests/unittests.elf
-U_LD := -lgtest -lpthread
+
+ifeq ($(OS),Windows_NT)
+USERPROFILE := $(shell echo $$USERPROFILE)
+endif 
+
+
+ifeq ($(OS),Windows_NT)
+U_LD :=  -L$(VCPKG_LIB) -lgtest -lgtest_main -lpthread
+else
+U_LD := -lgtest -lpthread 
+endif 
+
 U_INC := -I../dev -I../dev/inc/
+ifeq ($(OS),Windows_NT)
+U_INC += -I$(VCPKG_INCLUDE)
+endif
 
 # ---- TEST COVERAGE
 # note: For now we are intersted in mcal only
@@ -30,12 +50,12 @@ cpplint:
 
 # Build target
 build-unittests: $(U_OBJ)
-	@$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
-	@echo "[Makefile]: Build Successfully ..."
+	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
+	@echo "[MAKEFILE]: Build Successfully ..."
 
 # Rule for creating object files
 %.o: %.cpp
-	@$(U_CXX) $(U_CXX_OPT) $(U_INC) -c $< -o $@
+	$(U_CXX) $(U_CXX_OPT) $(U_INC) $(U_LD) -c $< -o $@
 	@echo "[Makefile][Unittest]: Done compiling $<"
 
 # Run the unit tests
