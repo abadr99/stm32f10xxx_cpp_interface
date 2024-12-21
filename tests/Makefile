@@ -1,7 +1,7 @@
 # Paths to vcpkg include and lib (windows case)
 VCPKG_TRIPLET = x86-windows
 VCPKG_PATH := $(HOME)/vcpkg/installed/$(VCPKG_TRIPLET)
-VCPKG_INCLUDE := $(VCPKG_PATH)/include
+VCPKG_INCLUDE := $(VCPKG_PATH)/include/gtest
 VCPKG_LIB := $(VCPKG_PATH)/lib
 
 # Variables
