@@ -11,18 +11,10 @@ U_SRC := $(shell find $(U_SRCS_DIRS) -type f -name "*.cpp")
 U_OBJ := $(U_SRC:.cpp=.o)
 
 U_TARGET := unittests/unittests.elf
-
-ifeq ($(OS),Windows_NT)
-USERPROFILE := $(shell echo $$USERPROFILE)
-endif 
-
-
-ifeq ($(OS),Windows_NT)
-U_LD :=  -L$(USERPROFILE)/vcpkg/installed/x86-mingw/lib -lgtest -lgtest_main -lpthread
-else
 U_LD := -lgtest -lpthread 
-endif 
-
+ifeq ($(OS),Windows_NT)
+U_LD += -I"$env:USERPROFILE\vcpkg\installed\x64-windows\include" -L"$env:USERPROFILE\vcpkg\installed\x64-windows\lib"
+endif
 U_INC := -I../dev -I../dev/inc/
 ifeq ($(OS),Windows_NT)
 U_INC += -I$(USERPROFILE)/vcpkg/installed/x86-mingw/include 
