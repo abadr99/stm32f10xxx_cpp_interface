@@ -1,8 +1,17 @@
+# Paths to vcpkg include and lib (windows case)
+VCPKG_PATH := $(HOME)/vcpkg/installed/x86-mingw
+VCPKG_INCLUDE := $(VCPKG_PATH)/include
+VCPKG_LIB := $(VCPKG_PATH)/lib
+
 # Variables
 LINT_PATH := ../tools/cppliny.py
 
 U_CXX := g++
 U_CXX_OPT := -std=c++17 -Wall -Wextra -g -DUNIT_TEST -fprofile-arcs -ftest-coverage
+
+ifeq ($(OS),Windows_NT)
+U_CXX_OPT +=  -I$(VCPKG_INCLUDE)
+endif 
 
 # Find source files in 'unittests' and specific 'dev' directories
 U_SRCS_DIRS := ./unittests ../dev/src
@@ -18,7 +27,7 @@ endif
 
 
 ifeq ($(OS),Windows_NT)
-U_LD :=  -L$(USERPROFILE)/vcpkg/installed/x86-mingw/lib -lgtest -lgtest_main -lpthread
+U_LD :=  -L$(VCPKG_LIB) -lgtest -lgtest_main -lpthread
 else
 U_LD := -lgtest -lpthread 
 endif 
@@ -49,7 +58,7 @@ build-unittests: $(U_OBJ)
 
 # Rule for creating object files
 %.o: %.cpp
-	$(U_CXX) $(U_CXX_OPT) $(U_INC) -c $< -o $@
+	$(U_CXX) $(U_CXX_OPT) $(U_INC) $(U_LD) -c $< -o $@
 	@echo "[Makefile][Unittest]: Done compiling $<"
 
 # Run the unit tests
