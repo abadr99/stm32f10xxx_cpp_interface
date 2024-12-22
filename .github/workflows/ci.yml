@@ -12,12 +12,10 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Showing home path
-      run: echo $HOME
     - name: Configure gtest
       run: ./tools/github/windows/configure-gtest.ps1
     - name: Building tests
-      run: make -C tests build-unittests
+      run: ENV_HOME=$HOME make -C tests build-unittests
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
