@@ -1,5 +1,5 @@
 # Paths to vcpkg include and lib (windows case)
-VCPKG_TRIPLET = x64-mingw
+VCPKG_TRIPLET = x64-mingw-static
 ENV_HOME ?= $(HOME)
 VCPKG_PATH := $(ENV_HOME)/vcpkg/installed/$(VCPKG_TRIPLET)
 VCPKG_INCLUDE := $(VCPKG_PATH)/include
