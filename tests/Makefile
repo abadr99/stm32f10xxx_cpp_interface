@@ -25,7 +25,7 @@ endif
 
 
 ifeq ($(OS),Windows_NT)
-U_LD :=  -L$(VCPKG_LIB) -lgtest -lpthread
+U_LD :=  -L$(VCPKG_LIB) -lgtest 
 else
 U_LD := -lgtest -lpthread 
 endif 
