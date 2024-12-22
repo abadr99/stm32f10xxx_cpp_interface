@@ -15,6 +15,10 @@ jobs:
     - name: Configure gtest
       shell: powershell
       run: ./tools/github/windows/configure-gtest.ps1
+    - name: Set up MinGW
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
     - name: Building tests
       shell: powershell
       run: $env:ENV_HOME=$HOME; make -C tests build-unittests -j
