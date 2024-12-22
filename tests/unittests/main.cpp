@@ -9,7 +9,7 @@
  * 
  */
 
-#include "C:\Users\runneradmin\vcpkg\installed\x86-windows\include\gtest/gtest.h"
+#include "gtest/gtest.h"
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
