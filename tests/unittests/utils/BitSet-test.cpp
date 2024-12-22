@@ -25,7 +25,7 @@ TEST(BitSet, BasicTest1) {
     bs.SetValue<4, 7>(0);
     EXPECT_EQ((bs.GetValue<4, 7>()), 0);
 
-    EXPECT_EQ((bs[5]), 0);
+    EXPECT_EQ((bs[1]), 0);
     EXPECT_EQ((bs[0]), 0);
     EXPECT_EQ((bs[1]), 1);
 }
