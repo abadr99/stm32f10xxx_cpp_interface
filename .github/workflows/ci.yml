@@ -13,9 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Configure gtest
+      shell: powershell
       run: ./tools/github/windows/configure-gtest.ps1
     - name: Building tests
-      run: ENV_HOME=$HOME make -C tests build-unittests
+      shell: powershell
+      run: make -C tests build-unittests
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
