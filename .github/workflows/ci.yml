@@ -24,7 +24,6 @@ jobs:
         name: objects-artifact
         path: tests/unittests/
 
-
   test-windows:
     runs-on: windows-latest
     needs: [build-unitests-windows]
@@ -35,6 +34,7 @@ jobs:
         name: objects-artifact
         path: tests/unittests/
     - name: Running tests
+      shell: powershell
       run: ./tests/unittests/unittests.elf
 
 
