@@ -17,7 +17,7 @@ jobs:
       run: ./tools/github/windows/configure-gtest.ps1
     - name: Building tests
       shell: powershell
-      run: $env:ENV_HOME=$HOME; make -C tests build-unittests
+      run: $env:ENV_HOME=$HOME; make -C tests build-unittests -j
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
