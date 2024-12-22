@@ -35,6 +35,6 @@ jobs:
         path: tests/unittests/
     - name: Running tests
       shell: powershell
-      run: ./tests/unittests/unittests.elf
+      run: ./tests/unittests/unittes.elf
 
 
