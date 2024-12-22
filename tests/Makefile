@@ -56,8 +56,7 @@ build-unittests: $(U_OBJ)
 
 # Rule for creating object files
 %.o: %.cpp
-	@echo  $(U_INC)
-	@echo  $(HOME)
+	@echo  $(VCPKG_PATH)
 	$(U_CXX) $(U_CXX_OPT) $(U_INC) $(U_LD) -c $< -o $@
 	@echo "[Makefile][Unittest]: Done compiling $<"
 
