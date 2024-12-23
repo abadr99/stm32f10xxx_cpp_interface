@@ -51,7 +51,7 @@ cpplint:
 
 # Build target
 build-unittests: $(U_OBJ)
-	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_INC) $(U_LD) unittests/main.cpp -o $(U_TARGET)
+	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_INC) $(U_LD) -o $(U_TARGET)
 	@echo "[Makefile][Unittest]: Build done Successfully ..."
 
 # Rule for creating object files
