@@ -14,11 +14,11 @@ if (-not (Test-Path $vcpkgPath)) {
 
 
 Write-Host "Installing Google Test (gtest)..."
-.\vcpkg install gtest:x64-mingw-static
+.\vcpkg install gtest:x64-mingw-dynamic
 
 Write-Host "Checking if vcpkg package is installed successfully"
 vcpkg list
-ls C:\Users\runneradmin\vcpkg\installed\x64-mingw-static\include\gtest
+ls C:\Users\runneradmin\vcpkg\installed\x64-mingw-dynamic\include\gtest
 
 # Optionally, integrate vcpkg with MSBuild to simplify project setup
 Write-Host "Integrating vcpkg with MSBuild..."
