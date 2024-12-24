@@ -1,6 +1,6 @@
 # Clone the repository
 git clone https://github.com/google/googletest.git --depth 1
-ls  
+ 
 Set-Location googletest
 
 # Create a build directory
@@ -15,6 +15,6 @@ cmake --build . --config Release
 
 # Install the built files
 cmake --install . --config Release
-ls
+ls build/googletest
 # List the output directory
 Get-ChildItem
