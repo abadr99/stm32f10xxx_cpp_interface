@@ -37,6 +37,6 @@ jobs:
       shell: powershell
       run: |
         cd .\tests\unittests 
-        .\unittests.exe --gtest_verbose=info 
+        .\unittests.exe --gtest_shuffle
 
 
