@@ -8,7 +8,7 @@ mkdir build
 Set-Location build
 
 # Configure the build using CMake
-cmake .. -G "Visual Studio 16 2019" -A x64
+cmake .. -G "Ninja" -A x64
 
 # Build the project
 cmake --build . --config Release
