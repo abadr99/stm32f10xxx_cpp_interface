@@ -1,6 +1,6 @@
 # Paths to vcpkg include and lib (windows case)
-GTEST_INC = "C:/Program Files (x86)/googletest-distribution/include"
-GTEST_LIB = "../googletest/build/lib"
+GTEST_INC ?= "C:/Program Files (x86)/googletest-distribution/include"
+GTEST_LIB ?= ../googletest/build/lib/libgtest.a ../googletest/build/lib/libgtest_main.a
 
 # Variables
 LINT_PATH := ../tools/cppliny.py
@@ -26,7 +26,7 @@ endif
 
 
 ifeq ($(OS),Windows_NT)
-U_LD :=  -L$(GTEST_LIB) -lgtest -L$(GTEST_LIB) -lgtest_main
+U_LD :=  $(GTEST_LIB)
 else
 U_LD := -lgtest -lpthread 
 endif 
@@ -53,12 +53,12 @@ cpplint:
 # Build target
 build-unittests: $(U_OBJ)
 	ls $(GTEST_LIB)
-	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_INC) ../googletest/build/lib/libgtest.a ../googletest/build/lib/libgtest_main.a -o $(U_TARGET)
+	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_INC) $(U_LD) -o $(U_TARGET)
 	@echo "[Makefile][Unittest]: Build done Successfully ..."
 
 # Rule for creating object files
 %.o: %.cpp
-	$(U_CXX) $(U_CXX_OPT) $(U_INC) ../googletest/build/lib/libgtest.a ../googletest/build/lib/libgtest_main.a -c $< -o $@
+	@$(U_CXX) $(U_CXX_OPT) $(U_INC) $(U_LD) -c $< -o $@
 	@echo "[Makefile][Unittest]: Done compiling $<"
 
 # Run the unit tests
