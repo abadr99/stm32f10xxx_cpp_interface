@@ -8,7 +8,7 @@ mkdir build
 Set-Location build
 
 # Configure the build using CMake
-cmake .. -G "Ninja" -A x64
+cmake .. 
 
 # Build the project
 cmake --build . --config Release
