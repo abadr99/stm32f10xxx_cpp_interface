@@ -1,6 +1,6 @@
 # Paths to vcpkg include and lib (windows case)
-GTEST_INC = "C:/Program Files (x86)/googletest-distribution/include"
-GTEST_LIB = "C:/Program Files (x86)/googletest-distribution/lib"
+GTEST_INC = "../googletest-distribution/include"
+GTEST_LIB = "../googletest-distribution/lib"
 # Variables
 LINT_PATH := ../tools/cppliny.py
 
