@@ -1,9 +1,5 @@
 # Paths to vcpkg include and lib (windows case)
-VCPKG_TRIPLET = x86-windows
-ENV_HOME ?= $(HOME)
-VCPKG_PATH := $(ENV_HOME)/vcpkg/installed/$(VCPKG_TRIPLET)
-VCPKG_INCLUDE := $(VCPKG_PATH)/include
-VCPKG_LIB := $(VCPKG_PATH)/lib
+GTEST_INC = ../googletest/build/
 
 # Variables
 LINT_PATH := ../tools/cppliny.py
@@ -56,7 +52,6 @@ build-unittests: $(U_OBJ)
 
 # Rule for creating object files
 %.o: %.cpp
-	@echo  $(VCPKG_PATH)
 	$(U_CXX) $(U_CXX_OPT) $(U_INC) $(U_LD) -c $< -o $@
 	@echo "[Makefile][Unittest]: Done compiling $<"
 
