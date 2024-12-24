@@ -1,6 +1,7 @@
 # Paths to vcpkg include and lib (windows case)
 GTEST_INC = "C:/Program Files (x86)/googletest-distribution/include"
 GTEST_LIB = "../../../googletest/build/lib/Release"
+
 # Variables
 LINT_PATH := ../tools/cppliny.py
 
@@ -47,6 +48,7 @@ cpplint:
 
 # Build target
 build-unittests: $(U_OBJ)
+	ls $(GTEST_LIB)
 	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_INC) $(U_LD) -o $(U_TARGET)
 	@echo "[Makefile][Unittest]: Build done Successfully ..."
 
