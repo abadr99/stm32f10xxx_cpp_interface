@@ -14,7 +14,11 @@ U_SRC := $(shell find $(U_SRCS_DIRS) -type f -name "*.cpp")
 
 U_OBJ := $(U_SRC:.cpp=.o)
 
+ifeq ($(OS),Windows_NT)
 U_TARGET := unittests/unittests.elf
+else
+U_TARGET := unittests/unittests.exe
+endif
 
 ifeq ($(OS),Windows_NT)
 USERPROFILE := $(shell echo $$USERPROFILE)
