@@ -1,6 +1,6 @@
 # Paths to vcpkg include and lib (windows case)
-GTEST_INC = ../googletest/build/
-
+GTEST_INC = C:/Program Files (x86)/googletest-distribution/include/
+GTEST_LIB = C:/Program Files (x86)/googletest-distribution/lib
 # Variables
 LINT_PATH := ../tools/cppliny.py
 
@@ -21,14 +21,14 @@ endif
 
 
 ifeq ($(OS),Windows_NT)
-U_LD :=  -L$(VCPKG_LIB) -lgtest -lpthread
+U_LD :=  -L$(GTEST_LIB) -lgtest -lpthread
 else
 U_LD := -lgtest -lpthread 
 endif 
 
 U_INC := -I../dev -I../dev/inc/
 ifeq ($(OS),Windows_NT)
-U_INC += -I$(VCPKG_INCLUDE)
+U_INC += -I$(GTEST_INC)
 endif
 
 # ---- TEST COVERAGE
