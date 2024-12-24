@@ -22,7 +22,7 @@ endif
 
 
 ifeq ($(OS),Windows_NT)
-U_LD :=  -L$(GTEST_LIB) -lgtest -lgtest-main
+U_LD :=  -L$(GTEST_LIB) -lgtest -L$(GTEST_LIB) -lgtest_main
 else
 U_LD := -lgtest -lpthread 
 endif 
