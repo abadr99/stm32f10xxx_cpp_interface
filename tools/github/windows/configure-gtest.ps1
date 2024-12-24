@@ -8,8 +8,8 @@ mkdir build
 Set-Location build
 
 # Configure the build using CMake
-cmake .. 
-
+cmake -G "MinGW Makefiles" -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc ..
+mingw32-make
 # Build the project
 cmake --build . --config Release
 
