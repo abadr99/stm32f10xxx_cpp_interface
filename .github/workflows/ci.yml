@@ -34,7 +34,7 @@ jobs:
         name: objects-artifact
         path: tests/unittests/
     - name: Debug linked symobols
-      run: objdump -t ./tests/unittests/unittests.elf | findstr "testing::"
+      run: nm ./unittests/unittests.elf | grep "testing::"
     - name: Running tests
       shell: powershell
       run: ./tests/unittests/unittests.elf --gtest_verbose=info 

@@ -49,12 +49,12 @@ cpplint:
 # Build target
 build-unittests: $(U_OBJ)
 	ls $(GTEST_LIB)
-	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_INC) $(U_LD) -o $(U_TARGET)
+	$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_INC) ../googletest/build/lib/libgtest.a ../googletest/build/lib/libgtest_main.a -o $(U_TARGET)
 	@echo "[Makefile][Unittest]: Build done Successfully ..."
 
 # Rule for creating object files
 %.o: %.cpp
-	$(U_CXX) $(U_CXX_OPT) $(U_INC) $(U_LD) -c $< -o $@
+	$(U_CXX) $(U_CXX_OPT) $(U_INC) ../googletest/build/lib/libgtest.a ../googletest/build/lib/libgtest_main.a -c $< -o $@
 	@echo "[Makefile][Unittest]: Done compiling $<"
 
 # Run the unit tests
