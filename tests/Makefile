@@ -14,27 +14,16 @@ U_SRC := $(shell find $(U_SRCS_DIRS) -type f -name "*.cpp")
 
 U_OBJ := $(U_SRC:.cpp=.o)
 
-ifeq ($(OS),Windows_NT)
-U_TARGET := unittests/unittests.exe
-else
-U_TARGET := unittests/unittests.elf
-endif
-
-ifeq ($(OS),Windows_NT)
-USERPROFILE := $(shell echo $$USERPROFILE)
-endif 
-
-
-ifeq ($(OS),Windows_NT)
-U_LD :=  $(GTEST_LIB)
-else
-U_LD := -lgtest -lpthread 
-endif 
-
 U_INC := -I../dev -I../dev/inc/
 ifeq ($(OS),Windows_NT)
-U_INC += -I$(GTEST_INC)
+U_TARGET := unittests/unittests.exe
+U_LD 	 :=  $(GTEST_LIB)
+U_INC    += -I$(GTEST_INC)
+else
+U_TARGET := unittests/unittests.elf
+U_LD     := -lgtest -lpthread 
 endif
+
 
 # ---- TEST COVERAGE
 # note: For now we are intersted in mcal only
