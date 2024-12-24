@@ -1,5 +1,5 @@
 # Clone the repository
-Set-Location $env:GITHUB_WORKSPACE
+Set-Location $env:GITHUB_REPOSITORY
 git clone https://github.com/google/googletest.git --depth 1
 Set-Location googletest
 
