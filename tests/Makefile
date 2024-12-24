@@ -1,6 +1,6 @@
 # Paths to vcpkg include and lib (windows case)
-GTEST_INC = "../googletest-distribution/include"
-GTEST_LIB = "../googletest-distribution/lib"
+GTEST_INC = "C:/Program Files (x86)/googletest-distribution/include"
+GTEST_LIB = "../../../googletest/build/lib"
 # Variables
 LINT_PATH := ../tools/cppliny.py
 
@@ -21,7 +21,7 @@ endif
 
 
 ifeq ($(OS),Windows_NT)
-U_LD :=  -L$(GTEST_LIB) -lgtest -lgtest_main 
+U_LD :=  -L$(GTEST_LIB) -lgtest
 else
 U_LD := -lgtest -lpthread 
 endif 

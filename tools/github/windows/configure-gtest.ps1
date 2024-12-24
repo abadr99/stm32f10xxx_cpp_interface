@@ -15,6 +15,6 @@ cmake --build . --config Release
 
 # Install the built files
 cmake --install . --config Release
-ls ../../googletest/build/googletest
+ls ../../googletest/build
 # List the output directory
 Get-ChildItem
