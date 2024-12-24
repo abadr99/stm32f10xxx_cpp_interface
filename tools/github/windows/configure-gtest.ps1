@@ -1,27 +1,20 @@
-# Define the vcpkg installation path
-$vcpkgPath = "$env:USERPROFILE\vcpkg"
+# Clone the repository
+Set-Location $env:GITHUB_WORKSPACE
+git clone https://github.com/google/googletest.git --depth 1
+Set-Location googletest
 
-# Check if vcpkg is installed, if not, clone the vcpkg repository and set it up
-if (-not (Test-Path $vcpkgPath)) {
-    Write-Host "vcpkg not found. Installing vcpkg..."
-    git clone https://github.com/microsoft/vcpkg.git $vcpkgPath
-    cd $vcpkgPath
-    .\bootstrap-vcpkg.bat
-} else {
-    Write-Host "vcpkg already installed. Proceeding..."
-    cd $vcpkgPath
-}
+# Create a build directory
+mkdir build
+Set-Location build
 
+# Configure the build using CMake
+cmake .. -G "Visual Studio 16 2019" -A x64
 
-Write-Host "Installing Google Test (gtest)..."
-.\vcpkg install gtest:x86-windows
+# Build the project
+cmake --build . --config Release
 
-Write-Host "Checking if vcpkg package is installed successfully"
-vcpkg list
-ls C:\Users\runneradmin\vcpkg\installed\x86-windows\include\gtest
+# Install the built files
+cmake --install . --config Release
 
-# Optionally, integrate vcpkg with MSBuild to simplify project setup
-Write-Host "Integrating vcpkg with MSBuild..."
-.\vcpkg integrate install
-
-Write-Host "Google Test (gtest) installation complete."
+# List the output directory
+Get-ChildItem
