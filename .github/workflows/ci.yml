@@ -35,6 +35,6 @@ jobs:
         path: tests/unittests/
     - name: Running tests
       shell: powershell
-      run: ./tests/unittests/unittests.elf --gtest_verbose=info 
+      run: ./tests/unittests/unittests.exe --gtest_verbose=info 
 
 
