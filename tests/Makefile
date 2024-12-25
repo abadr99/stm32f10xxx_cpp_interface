@@ -1,3 +1,7 @@
+# Paths to vcpkg include and lib (windows case)
+GTEST_INC ?= "C:/Program Files (x86)/googletest-distribution/include"
+GTEST_LIB ?= ../googletest/build/lib/libgtest.a ../googletest/build/lib/libgtest_main.a
+
 # Variables
 LINT_PATH := ../tools/cppliny.py
 
@@ -10,9 +14,16 @@ U_SRC := $(shell find $(U_SRCS_DIRS) -type f -name "*.cpp")
 
 U_OBJ := $(U_SRC:.cpp=.o)
 
-U_TARGET := unittests/unittests.elf
-U_LD := -lgtest -lpthread
 U_INC := -I../dev -I../dev/inc/
+ifeq ($(OS),Windows_NT)
+U_TARGET := unittests/unittests.exe
+U_LD 	 :=  $(GTEST_LIB)
+U_INC    += -I$(GTEST_INC)
+else
+U_TARGET := unittests/unittests.elf
+U_LD     := -lgtest -lpthread 
+endif
+
 
 # ---- TEST COVERAGE
 # note: For now we are intersted in mcal only
@@ -30,8 +41,8 @@ cpplint:
 
 # Build target
 build-unittests: $(U_OBJ)
-	@$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_LD) -o $(U_TARGET)
-	@echo "[Makefile]: Build Successfully ..."
+	@$(U_CXX) $(U_CXX_OPT) $(U_OBJ) $(U_INC) $(U_LD) -o $(U_TARGET)
+	@echo "[Makefile][Unittest]: Build done Successfully ..."
 
 # Rule for creating object files
 %.o: %.cpp
