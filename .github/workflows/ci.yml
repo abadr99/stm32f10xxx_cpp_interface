@@ -181,7 +181,7 @@ jobs:
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
-        name: objects-artifact
+        name: windows-tests-artifact
         path: tests/unittests/
 
 # ========================== RUN TESTS STAGE ======================================
@@ -223,7 +223,7 @@ jobs:
     - name: Download artifact 
       uses: actions/download-artifact@v4 
       with:
-        name: objects-artifact
+        name: windows-tests-artifact
         path: tests/unittests/
     - name: Running tests
       shell: powershell
