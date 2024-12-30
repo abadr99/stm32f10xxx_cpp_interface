@@ -1,6 +1,6 @@
-include ../common.mk
+PYTHON ?= python3
 
-PYTHON = python
+# --- BUILD
 INPUT_FILE ?= ./build/modules.in
 SOURCES := $(shell $(PYTHON) ./build/Parser.py --file "$(INPUT_FILE)")
 SOURCES += $(wildcard ./src/utils/*.cpp) # ALl utils should be added with all modules
@@ -8,11 +8,18 @@ SRC_NAMES:= $(notdir $(SOURCES))
 SOURCES_COUNT:= $(words $(SOURCES))
 SOURCES_CTR:=0
 INC:=  -I. -I./inc/
+LIB_DIR := ./lib
+LIB_NAME := stm32f103cpp.a
+STARTUP_CODE := ./src/mcal/stm32f103_startup.cpp
+# --- LINTER
 LINT_PATH:= ../tools/cppliny.py
 
+# --- HARDWARE TESTS
+# TODO(@mrefat): Move this to tests/Makefile 
 HW_TEST_PATH= ../tests/hardware
 HW_MAINS=$(shell find $(HW_TEST_PATH) -name "*.cpp")
 
+# --- DOXYGEN
 DOXYFILE := ../doxy/conf
 DOXYGEN_OUTPUT := ../doxy/html
 
@@ -26,10 +33,11 @@ DOXYGEN_OUTPUT := ../doxy/html
 # $1 - The source file to be compiled (e.g., ./main.cpp).
 # $2 - The output directory where the ELF and HEX files will be saved.
 # $3 - The base name for the ELF and HEX output files (e.g., 'stm').
+# $4 - Path to the startup code file 
 #
 # ---------------------------------------------------------------
 define compile 
-	$(CXX) $(CXX_FLAGS)  $(INC) $(OBJS) $(STARTUPOBJ_PATH) $(1) $(LDFLAGS) -T build/$(MCU).ld -o $(2)/$(3).elf
+	$(CXX) $(CXX_FLAGS) $(INC) $(OBJS) $(4) $(1) $(LDFLAGS) -T build/$(MCU).ld -o $(2)/$(3).elf
 	$(OBJ_COPY) $(OBJ_COPY_OPTS) $(2)/$(3).elf $(2)/$(3).hex
 endef
 
@@ -47,7 +55,7 @@ cpplint:
 # make build
 # ------------------------------------------
 build: $(OBJS) 
-	@$(call compile,./main.cpp,./,$(TARGET))
+	$(call compile, ./main.cpp,.,$(TARGET),$(STARTUP_CODE))
 	@echo "\n[Makefile][build] : Compiled successfully."
 
 # ------------------------------------------
@@ -78,8 +86,14 @@ clean-hw:
 # make opt-build
 # ------------------------------------------
 build-opt: $(OBJS) 
-	$(CXX) $(OPT_CXX_FLAGS) $(OBJS) $(STARTUP_PATH) ./main.cpp -o $(ELF_TARGET)
+	@$(CXX) $(OPT_CXX_FLAGS) $(OBJS) $(STARTUP_PATH) ./main.cpp -o $(ELF_TARGET)
 	@echo "\n[Makefile][opt-build] : Compiled successfully."	
+
+# ---------------------------------------------
+# Rule to create a lib
+# ---------------------------------------------
+gen-lib:$(OBJS)
+	@ar rcs $(LIB_NAME) $(OBJS)
 
 # ------------------------------------------
 # Rule to upload hex file to mcu
