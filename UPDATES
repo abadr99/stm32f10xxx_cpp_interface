@@ -8,6 +8,7 @@ Build and Test Support:
         - Building with the ARM compiler.
         - Building hardware tests using the ARM compiler.
         - Building and running unit tests.
+    - Support generating static lib
 
 Features and Improvements:
     - Added full support for the DMA interface.
