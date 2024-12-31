@@ -37,7 +37,7 @@ DOXYGEN_OUTPUT := ../doxy/html
 #
 # ---------------------------------------------------------------
 define compile 
-	$(CXX) $(CXX_FLAGS) $(INC) $(OBJS) $(4) $(1) $(LDFLAGS) -T build/$(MCU).ld -o $(2)/$(3).elf
+	$(ARM_CXX) $(CXX_FLAGS) $(INC) $(OBJS) $(4) $(1) $(LDFLAGS) -T build/$(MCU).ld -o $(2)/$(3).elf
 	$(OBJ_COPY) $(OBJ_COPY_OPTS) $(2)/$(3).elf $(2)/$(3).hex
 endef
 
@@ -86,7 +86,7 @@ clean-hw:
 # make opt-build
 # ------------------------------------------
 build-opt: $(OBJS) 
-	@$(CXX) $(OPT_CXX_FLAGS) $(OBJS) $(STARTUP_PATH) ./main.cpp -o $(ELF_TARGET)
+	@$(ARM_CXX) $(OPT_CXX_FLAGS) $(OBJS) $(STARTUP_PATH) ./main.cpp -o $(ELF_TARGET)
 	@echo "\n[Makefile][opt-build] : Compiled successfully."	
 
 # ---------------------------------------------

@@ -1,4 +1,4 @@
-CXX ?= arm-none-eabi-g++
+ARM_CXX ?= arm-none-eabi-g++
 OBJ_COPY ?= arm-none-eabi-objcopy
 MCU ?= stm32f103c8t6
 CLK ?= 8000000
@@ -24,12 +24,12 @@ UPLOAD_OPT:= write 0x08000000
 
 $(OBJDIR)/%.o : src/**/%.cpp
 	@$(shell   mkdir -p $(OBJDIR))
-	@$(CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
+	@$(ARM_CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
 	$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
 	echo "[Makefile][Dev]: [$(SOURCES_CTR)/$(words $(SOURCES))] $<"
 
 $(OBJDIR)/%.o : ./%.cpp
 	@$(shell   mkdir -p $(OBJDIR))
-	@$(CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
+	@$(ARM_CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
 	$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
 	echo "[Makefile][Dev]: [$(SOURCES_CTR)/$(words $(SOURCES))] $<"

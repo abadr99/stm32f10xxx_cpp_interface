@@ -1,5 +1,5 @@
 
-CXX ?= arm-none-eabi-g++
+ARM_CXX ?= arm-none-eabi-g++
 OBJ_COPY ?= arm-none-eabi-objcopy
 MCU ?= stm32f103c8t6
 CLK ?= 8000000
@@ -14,5 +14,5 @@ LIB = ./stm32f103cpp.a
 INC = -I../../dev/inc 
 STARTUP_CODE = stm32f103_startup.cpp
 build:
-	$(CXX) $(CXX_FLAGS) $(SRC) $(STARTUP_CODE) $(LIB) $(LDFLAGS) $(INC) -T stm32f103c8t6.ld -o alarm.elf
+	$(ARM_CXX) $(CXX_FLAGS) $(SRC) $(STARTUP_CODE) $(LIB) $(LDFLAGS) $(INC) -T stm32f103c8t6.ld -o alarm.elf
 	$(OBJ_COPY) $(OBJ_COPY_OPTS) alarm.elf alarm.hex
