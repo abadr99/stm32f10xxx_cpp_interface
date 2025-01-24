@@ -131,3 +131,4 @@ clean:
 	@rm -rf *.map
 	@rm -rf .build
 	@rm -rf build.map
+	@rm -rf $(OBJDIR)/*.d
