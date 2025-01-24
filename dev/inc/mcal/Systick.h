@@ -49,6 +49,11 @@ class Systick {
     using time_t = uint32_t;
 
     /**
+     * @brief Initialize the SysTick timer
+     * 
+     */
+    static void Init();
+    /**
      * @brief Enables the SysTick timer with the specified clock source.
      * 
      * @param clksource The clock source for SysTick (either kAHB or kAHB_Div_8).
