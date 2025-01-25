@@ -45,6 +45,17 @@ enum AdcChannel {
 };
 
 /**
+ * @brief Enumeration for ADC channel Modes
+ */
+enum AdcChannelMode {
+    kRegular,          /**< Regular Channel 0 */
+    /** Note
+     * Maximum number of channels in this mode is 4
+     */
+    kInjected,         /**< Injected Channel 1 */
+};
+
+/**
  * @brief Enumeration for ADC data alignment.
  */
 enum Alignment {
@@ -56,15 +67,17 @@ enum Alignment {
  * @brief Enumeration for ADC modes.
  */
 enum AdcMode {
-    kSingleRegular = 0,         /**< Single regular conversion mode. */
-    kContinous = 1,             /**< Continuous conversion mode. */
-    kSingleInjected             /**< Single injected conversion mode. */
+    kSingle,                    /**< Single conversion mode. */
+    kContinuous,             /**< Continuous conversion mode. */
+    // TODO(@nuran): Not Implemented yet
+    kScanMode,                  /**< Scan conversion mode. */
+    kDiscontinuous              /**< Discontinuous conversion mode. */
 };
 
 /**
  * @brief Enumeration for external trigger sources for ADC conversions.
  */
-enum TriggerSource {
+enum AdcTriggerSource {
     kTimer1_CC1   = 0b000,      /**< Timer 1, channel 1. */
     kTimer1_CC2   = 0b001,      /**< Timer 1, channel 2. */
     kTimer1_CC3   = 0b010,      /**< Timer 1, channel 3. */
@@ -77,7 +90,7 @@ enum TriggerSource {
 /**
  * @brief Enumeration for ADC sample times.
  */
-enum SampleTime {
+enum AdcSampleTime {
     kCycles_1_5,        /**< 1.5 ADC clock cycles. */
     kCycles_7_5,        /**< 7.5 ADC clock cycles. */
     kCycles_13_5,       /**< 13.5 ADC clock cycles. */
@@ -100,13 +113,13 @@ enum AdcNum {
  * @brief Structure to hold ADC configuration.
  */
 struct AdcConfig {
-    AdcNum number;              /**< ADC number (ADC1 or ADC2). */
-    Alignment alignment;        /**< Data alignment. */
-    AdcChannel channel;         /**< ADC channel. */
-    AdcMode mode;               /**< ADC conversion mode. */
-    TriggerSource trigSource;   /**< Trigger source for ADC conversions. */
-    SampleTime sampleTime;      /**< ADC sample time. */
-    // TODO(@noran): Add scan mode, multimode, and discontinuous mode.
+    AdcNum number;                  /**< ADC number (ADC1 or ADC2). */
+    Alignment alignment;            /**< Data alignment. */
+    AdcChannel channel;             /**< ADC channel. */
+    AdcChannelMode channelMode;     /**< ADC channel mode. */
+    AdcMode mode;                   /**< ADC conversion mode. */
+    AdcTriggerSource trigSource;    /**< Trigger source for ADC conversions. */
+    AdcSampleTime sampleTime;       /**< ADC sample time. */
 };
 
 /**
@@ -134,7 +147,16 @@ class ADC {
     uint16_t StartSingleConversion();
 
     /**
+     * @brief Get Temperature value from the internal sensor.
+     * 
+     * @return Temperature in Celsius
+     */
+    uint16_t GetTemperatureValue();
+
+    // TODO(@Nuran) reimplement the Continuous Conversion if needed
+    /**
      * @brief Starts continuous conversions.
+     * @note  Not Working yet
      */
     void StartContinuousConversion();
 
@@ -142,6 +164,7 @@ class ADC {
      * @brief Reads the result of a continuous conversion.
      * 
      * @return The result of the conversion.
+     * @note  Not Working yet
      */
     uint16_t ReadContinuousConversion();
 
@@ -149,13 +172,6 @@ class ADC {
      * @brief Stops continuous conversions.
      */
     void StopContinuousConversion();
-
-    /**
-     * @brief Starts an injected conversion.
-     * 
-     * @return The result of the injected conversion.
-     */
-    uint16_t StartInjectedConversion();
 
     /**
      * @brief Enables the ADC interrupt.
@@ -181,6 +197,13 @@ class ADC {
 
  private:
     const AdcConfig& config_;             /**< ADC configuration settings. */
+    static constexpr float kAdcResolution = 4096.0;
+    static constexpr float kV25 = 1.43;
+    static constexpr float kAvgSlope = 4.3;
+    static constexpr float kVref = 3.3;
+    static constexpr float kTempConstant = 25.0;
+
+
     stm32::type::RegType<ADCRegDef>::ptr ADC_reg;    /**< Pointer to the ADC register definition. */
     /**
      * @brief Configures the sample time for the selected ADC channel.
