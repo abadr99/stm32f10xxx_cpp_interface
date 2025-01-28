@@ -11,9 +11,9 @@
 #include <stdint.h>
 #include <gtest/gtest.h>
 
-#include "utils/inc/BitSet.h"
+#include "utils/BitSet.h"
 
-using stm32::utils::bitset::BitSet;
+using stm32::util::BitSet;
 
 TEST(BitSet, BasicTest1) {
     BitSet<uint8_t> bs(0b11110000);
@@ -40,3 +40,4 @@ TEST(BitSet, Sizeof) {
     EXPECT_EQ(sizeof(bs_32), 4);
     EXPECT_EQ(sizeof(bs_64), 8);
 }
+

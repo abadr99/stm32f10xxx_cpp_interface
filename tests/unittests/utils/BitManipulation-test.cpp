@@ -11,10 +11,9 @@
 #include <stdint.h>
 #include <gtest/gtest.h>
 
-#include "utils/inc/BitManipulation.h"
+#include "utils/BitManipulation.h"
 
-
-using namespace stm32::utils::bit_manipulation;  // NOLINT [build/namespaces]
+using namespace stm32::util;
 
 TEST(BitManipulation, GetAllOnes) {
     EXPECT_EQ(0xFF,       (GetAllOnes<uint8_t>()));

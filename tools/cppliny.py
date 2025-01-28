@@ -5102,10 +5102,10 @@ def CheckIncludeLine(filename, clean_lines, linenum, include_state, error):
   # naming convention but not the include convention.
   match = re.match(r'#include\s*"([^/]+\.(.*))"', line)
   if match:
-    if (IsHeaderExtension(match.group(2)) and
-        not _THIRD_PARTY_HEADERS_PATTERN.match(match.group(1))):
-      error(filename, linenum, 'build/include_subdir', 4,
-            'Include the directory when naming header files')
+   if (IsHeaderExtension(match.group(2)) and
+       not _THIRD_PARTY_HEADERS_PATTERN.match(match.group(1))):
+     error(filename, linenum, 'build/include_subdir', 4,
+           'Include the directory when naming header files')
 
   # we shouldn't include a file more than once. actually, there are a
   # handful of instances where doing so is okay, but in general it's

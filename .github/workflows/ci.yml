@@ -1,18 +1,25 @@
-name: CI
+name: CI/CD
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
+  workflow_dispatch:
+    inputs:
+      run_coverage:
+        description: "Run the coverage job (true/false)"
+        required: false
+        default: "false"
 jobs:
+# ========================== LINTER STAGE ======================================
   dev-style-checking:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Dev-Style-Check 
       run:  make -C dev cpplint
+
   test-style-checking:
     runs-on: ubuntu-latest
     steps:
@@ -20,29 +27,246 @@ jobs:
     - name: Test-Style-Check
       run:  make -C tests cpplint
 
-  build:
+  hardware-tests-style-checking:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Hardware-Test-Style-Check
+      run:  python3 tools/hwlint.py --dir tests/hardware/
+
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup-cppcheck
+      run:  sh tools/github/linux/cppcheck-config.sh
+    - name: Run-cppcheck
+      run:  sh tools/github/linux/cppcheck.sh
+
+# ========================== DEV BUILD STAGE ======================================
+  build-linux:
+    runs-on: ubuntu-latest
+    needs: [
+            # -- Needs LINTER STAGE
+            dev-style-checking, 
+            test-style-checking, 
+            static-analysis, 
+            hardware-tests-style-checking
+          ]
     steps:
     - uses: actions/checkout@v3
     - name: Configure Building
-      run: sh /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/tools/github/configure.sh
+      run: sh tools/github/linux/configure.sh
     - name: Building For STM32f103 Target
       run: make -C dev build
     - name: Upload objects artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: objects-artifact
-        path: /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/dev/.build/
+        path: dev/.build/
 
-  test:
+  build-winodws:
+    runs-on: windows-latest
+    needs: [
+            # -- Needs LINTER STAGE
+            dev-style-checking, 
+            test-style-checking, 
+            static-analysis, 
+            hardware-tests-style-checking
+          ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure Building
+      run: |
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+        ./tools/github/windows/configure.ps1
+    - name: Building For STM32f103 Target
+      run: make -C dev build
+    - name: Upload objects artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: objects-artifact
+        path: dev/.build/        
+# ========================== TEST BUILD STAGE ======================================
+  build-hardware-tests-linux:
     runs-on: ubuntu-latest
-    needs: [dev-style-checking, test-style-checking, build]
+    needs: [
+            # -- Needs LINTER STAGE
+            dev-style-checking, 
+            test-style-checking, 
+            static-analysis, 
+            hardware-tests-style-checking,
+            # -- NEEDS BUILD LINUX 
+            build-linux
+          ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure Building
+      run: sh tools/github/linux/configure.sh
+    - name: Download objects artifact
+      uses: actions/download-artifact@v4 
+      with:
+        name: objects-artifact
+        path: dev/.build/
+    - name: Building hardware tests
+      run: make -C ./dev build-hw
+
+  build-hardware-tests-windows:
+    runs-on: windows-latest
+    needs: [
+            # -- Needs LINTER STAGE
+            dev-style-checking, 
+            test-style-checking, 
+            static-analysis, 
+            hardware-tests-style-checking,
+            # -- NEEDS BUILD WINDOWS 
+            build-winodws
+          ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure Building
+      run: |
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+        ./tools/github/windows/configure.ps1
+    - name: Download objects artifact
+      uses: actions/download-artifact@v4 
+      with:
+        name: objects-artifact
+        path: dev/.build/
+    - name: Building hardware tests
+      run: make -C ./dev build-hw
+
+  build-unitests-linux:
+    runs-on: ubuntu-latest
+    needs: [
+            # -- Needs LINTER STAGE
+            dev-style-checking, 
+            test-style-checking, 
+            static-analysis, 
+            hardware-tests-style-checking,
+            # -- NEEDS BUILD WINDOWS 
+            build-linux
+          ]
     steps:
     - uses: actions/checkout@v3
     - name: Configure gtest
-      run: sh /home/runner/work/stm32f10xxx_cpp_interface/stm32f10xxx_cpp_interface/tools/github/configure-test.sh
+      run: sh tools/github/linux/configure-gtest.sh
     - name: Building tests
       run: make -C tests build-unittests
+    - name: Upload objects artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: objects-artifact
+        path: tests/unittests/
+
+  build-unitests-windows:
+    runs-on: windows-latest
+    needs: [
+            # -- Needs LINTER STAGE
+            dev-style-checking, 
+            test-style-checking, 
+            static-analysis, 
+            hardware-tests-style-checking,
+            # -- NEEDS BUILD WINDOWS 
+            build-winodws
+          ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure gtest
+      shell: powershell
+      run: ./tools/github/windows/configure-gtest.ps1
+    - name: Building tests
+      shell: powershell
+      run: $env:ENV_HOME=$HOME; make -C tests build-unittests -j
+    - name: Upload objects artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-tests-artifact
+        path: tests/unittests/
+
+# ========================== RUN TESTS STAGE ======================================
+  run-test-linux:
+    runs-on: ubuntu-latest
+    needs: [
+            # -- Needs LINTER STAGE
+            dev-style-checking, 
+            test-style-checking, 
+            static-analysis, 
+            hardware-tests-style-checking,
+            # -- NEEDS BUILD WINDOWS 
+            build-linux,
+            build-unitests-linux
+          ]
+    steps:
+    - name: Download artifact 
+      uses: actions/download-artifact@v4 
+      with:
+        name: objects-artifact
+        path: tests/unittests/
     - name: Running tests
-      run: make -C tests run-unittests
+      run: |
+       chmod -R 777 ./tests/ 
+       ./tests/unittests/unittests.elf --gtest_shuffle
+  run-test-windows:
+    runs-on: windows-latest
+    needs: [
+            # -- Needs LINTER STAGE
+            dev-style-checking, 
+            test-style-checking, 
+            static-analysis, 
+            hardware-tests-style-checking,
+            # -- NEEDS BUILD WINDOWS 
+            build-winodws,
+            build-unitests-windows
+          ]
+    steps:
+    - name: Download artifact 
+      uses: actions/download-artifact@v4 
+      with:
+        name: windows-tests-artifact
+        path: tests/unittests/
+    - name: Running tests
+      shell: powershell
+      run: |
+        cd .\tests\unittests 
+        .\unittests.exe --gtest_shuffle
+# ========================== Analysis STAGE ========================================
+  code-coverage:
+    runs-on: ubuntu-latest
+    needs: [
+            # --- need style checking  
+            dev-style-checking, 
+            test-style-checking, 
+            hardware-tests-style-checking, 
+            static-analysis, 
+            # --- needs build staged
+            build-linux, 
+            build-winodws,
+            build-hardware-tests-linux, 
+            build-unitests-windows,
+            # --- needs test stage
+            run-test-linux,
+            run-test-windows
+          ]
+    if: github.event.inputs.run_coverage == 'true'
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build tests
+      run: |
+          sh tools/github/configure-test.sh
+          make -C tests build-unittests -j20
+    - name: Run tests
+      run: |
+        chmod -R 777 ./tests/ 
+        ./tests/unittests/unittests.elf --gtest_shuffle
+    - name: Configure
+      run: sudo apt-get install lcov
+    - name: Run coverage tool
+      run: make -C tests test-coverage
+    - name: dbg
+      run: ls tests
+    - name: Upload HTML files
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-coverage-results
+        path: tests/html
