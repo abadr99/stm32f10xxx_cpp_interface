@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2024
  */
 
-// commit-id: b025a5114c20fc64fc02151659abf0d0a810e5a1
+// commit-id: 
 
 #include <stdint.h>
 #include "utils/Types.h"
@@ -28,9 +28,14 @@ using namespace stm32::dev::mcal::spi;
 using namespace stm32::dev::mcal::systick;
 
 int main(void) {
+    Rcc::Init();
+    Gpio::Init();
+    Systick::Init();
+    
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
     Rcc::Enable(Peripheral::kIOPA);
+    Rcc::Enable(Peripheral::kIOPC);
     Rcc::Enable(Peripheral::kSPI1);
 
     uint8_t txData = 0xAA;
@@ -38,7 +43,7 @@ int main(void) {
     Pin MOSI(kPortA, kPin7, PinMode::kAlternativePushPull_2MHz);
     Pin MISO(kPortA, kPin6, PinMode::kInputFloat);
     Pin SS(kPortA, kPin4, PinMode::kAlternativePushPull_2MHz);
-    Pin led(kPortA, kPin8, PinMode::kOutputPushPull_10MHz);
+    Pin led(kPortC, kPin13, PinMode::kOutputPushPull_10MHz);
 
 
     Systick::Enable(kAHB_Div_8);
@@ -50,7 +55,7 @@ int main(void) {
     Gpio::Set(MISO);
     Gpio::Set(SS);
     Gpio::Set(led);
-    Gpio::SetPinValue(led, kLow);
+    Gpio::SetPinValue(led, kHigh);
 
     spi1.MasterInit();
     spi1.Write(txData);
@@ -58,9 +63,9 @@ int main(void) {
     uint8_t rxData = 0;
     rxData = spi1.Read();
     if (rxData == 0xAA) {
-        Gpio::SetPinValue(led, kHigh);
-    } else {
         Gpio::SetPinValue(led, kLow);
+    } else {
+        Gpio::SetPinValue(led, kHigh);
     }
     while (1) {
     }
