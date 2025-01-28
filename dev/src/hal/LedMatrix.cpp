@@ -26,8 +26,8 @@ using namespace stm32::dev::mcal::systick;
 using namespace stm32::utils::font;
 using namespace stm32::dev::hal::ledMatrix;
 
-#define ACTIVE_VOLT_STATE(connectionType)    ((connectionType) == kCommon_Row_Anode ? kHigh : kLow)  
-#define DEACTIVE_VOLT_STATE(connectionType)  ((connectionType) == kCommon_Row_Anode ? kLow  : kHigh) 
+#define ACTIVE_VOLT_STATE(connectionType)    ((connectionType) == kCommon_Row_Anode ? kHigh : kLow)     //  NOLINT  
+#define DEACTIVE_VOLT_STATE(connectionType)  ((connectionType) == kCommon_Row_Anode ? kLow  : kHigh)    //  NOLINT
 
 template <MatrixConnectionType connectionType>
 LedMatrix<connectionType>::LedMatrix(const Array_t rowPins, const Array_t colPins) 
@@ -38,10 +38,12 @@ void LedMatrix<connectionType>::Init() {
     // SET [ROW & COL] PINS AC OUTPUT [PUSHPULL]
     for (uint8_t pin = 0; pin < 8; pin++) { PinMode GetPinMode();
         STM32_ASSERT((rowPins_[pin].GetPinMode() >= PinMode::kOutputPushPull_10MHz) &&
-                     (rowPins_[pin].GetPinMode() <= PinMode::kOutputPushPull_50MHz), CONFIG_ERROR(_LED_MATRIX, _PIN_ERROR));
+                     (rowPins_[pin].GetPinMode() <= PinMode::kOutputPushPull_50MHz), 
+                      CONFIG_ERROR(_LED_MATRIX, _PIN_ERROR));
 
         STM32_ASSERT((colPins_[pin].GetPinMode() >= PinMode::kOutputPushPull_10MHz) &&
-                     (colPins_[pin].GetPinMode() <= PinMode::kOutputPushPull_50MHz), CONFIG_ERROR(_LED_MATRIX, _PIN_ERROR));
+                     (colPins_[pin].GetPinMode() <= PinMode::kOutputPushPull_50MHz), 
+                    CONFIG_ERROR(_LED_MATRIX, _PIN_ERROR));
         Gpio::Set(rowPins_[pin]);
         Gpio::Set(colPins_[pin]);
     }
@@ -62,7 +64,7 @@ void LedMatrix<connectionType>::DrawChar(uint8_t character) {
         
         // SET COL STATE
         for (uint8_t col = 0; col < Font::charWidth; col++) {        
-            if (ExtractBits<uint8_t>(charData[row],0 , col)) {
+            if (ExtractBits<uint8_t>(charData[row], 0, col)) {
                 Gpio::SetPinValue(colPins_[col], DEACTIVE_VOLT_STATE(connectionType));
             } else {
                 Gpio::SetPinValue(colPins_[col], ACTIVE_VOLT_STATE(connectionType));
