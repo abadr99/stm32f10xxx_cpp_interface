@@ -27,7 +27,6 @@ class Font {
     static constexpr size_t charHight = 8;
     static constexpr size_t charWidth = 8;
     using Array_t = std::array<uint8_t, charHight>;
-
     Font() { __FontMapInit(); }
 
     const Array_t& GetCharData(uint8_t character) const {
