@@ -6,13 +6,46 @@
  * @copyright Copyright (c) 2024
  */
 
-#if 0
 #include <gtest/gtest.h>
 #include "utils/BitManipulation.h"
+#include "utils/Types.h"
 #include "mcal/stm32f103xx.h"
 #include "mcal/Nvic.h"
 
+using namespace stm32::util; 
+using namespace stm32::dev::mcal::nvic; 
+using namespace stm32::registers::nvic; 
 
+class NvicTest : public testing::Test {
+ protected:
+    void SetUp() override {
+        using Nvic_addr = Addr<Peripheral::kNVIC>; 
+        //Id id(InterruptID::kTIM4_IRQn);
+        Nvic_addr::Set(&NvicReg[0]);
+        NVIC = reinterpret_cast<volatile NvicRegDef*>(Nvic_addr::Get());
+    }    
+
+    void TestEnable(InterruptID id) {
+        Id ID(id);
+        NVIC->ISER[id / 32] = ClearBit<RegWidth_t>(NVIC->ISER[id / 32], (id % 32));
+        Nvic::EnableInterrupt(ID);
+        EXPECT_EQ(1,    (ExtractBit<uint32_t>(NVIC->ISER[id / 32], (id % 32))));
+    }
+
+    RegWidth_t NvicReg[905];
+    volatile NvicRegDef* NVIC; 
+    //Id id(InterruptID::kTIM4_IRQn);
+};
+
+
+TEST_F(NvicTest, EnableInterrupt) {
+    TestEnable(InterruptID::kTIM4_IRQn);
+    TestEnable(InterruptID::kWWDG_IRQn);
+    TestEnable(InterruptID::kI2C1_ER_IRQn);
+    TestEnable(InterruptID::kRTCAlarm_IRQn);
+}
+
+#if 0
 uint32_t NvicReg[905] = {};
 uint32_t ScbReg[18] = {};
 
