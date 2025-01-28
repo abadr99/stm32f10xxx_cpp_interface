@@ -743,26 +743,48 @@ struct ADCRegDef {
             RegWidth_t       : 2;
         };
         RegWidth_t registerVal;
-    }SMPR2;
+    }   SMPR2;
     RegWidth_t JOFR1;   // Injected Channel Data Offset Register 1
     RegWidth_t JOFR2;   // Injected Channel Data Offset Register 2
     RegWidth_t JOFR3;   // Injected Channel Data Offset Register 3
     RegWidth_t JOFR4;   // Injected Channel Data Offset Register 4
     RegWidth_t HTR;     // Watchdog Higher Threshold Register
     RegWidth_t LTR;     // Watchdog Lower Threshold Register
-    union SQR1 {
+    union {
         struct {
-            RegWidth_t SQ13 : 5;
-            RegWidth_t SQ14 : 5;
-            RegWidth_t SQ15 : 5;
-            RegWidth_t SQ16 : 5;
-            RegWidth_t L    : 4;
-            RegWidth_t      : 8;
+            uint32_t SQ13 : 5;  // Sequence position 13
+            uint32_t SQ14 : 5;  // Sequence position 14
+            uint32_t SQ15 : 5;  // Sequence position 15
+            uint32_t SQ16 : 5;  // Sequence position 16
+            uint32_t L    : 4;  // Sequence length (number of conversions)
+            uint32_t      : 8;  // Reserved bits
         };
-        RegWidth_t registerVal;
-    }SQR1;
-    RegWidth_t SQR2;    // Regular Sequence Register 2
-    RegWidth_t SQR3;    // Regular Sequence Register 3
+        uint32_t registerVal;   // Full register value
+    } SQR1;
+    union {
+        struct {
+            uint32_t SQ7  : 5;  // Sequence position 7
+            uint32_t SQ8  : 5;  // Sequence position 8
+            uint32_t SQ9  : 5;  // Sequence position 9
+            uint32_t SQ10 : 5;  // Sequence position 10
+            uint32_t SQ11 : 5;  // Sequence position 11
+            uint32_t SQ12 : 5;  // Sequence position 12
+            uint32_t      : 2;  // Reserved bits
+        };
+        uint32_t registerVal;   // Full register value
+    } SQR2;
+    union SQR3 {
+        struct {
+            uint32_t SQ1  : 5;  // Sequence position 1
+            uint32_t SQ2  : 5;  // Sequence position 2
+            uint32_t SQ3  : 5;  // Sequence position 3
+            uint32_t SQ4  : 5;  // Sequence position 4
+            uint32_t SQ5  : 5;  // Sequence position 5
+            uint32_t SQ6  : 5;  // Sequence position 6
+            uint32_t      : 2;  // Reserved bits
+        };
+        uint32_t registerVal;   // Full register value
+    } SQR3;
     union JSQR {
         struct {
             RegWidth_t JSQ1 : 5;
