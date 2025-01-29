@@ -203,6 +203,7 @@ class Nvic {
      * @brief Reset the NVIC configuration to default.
      */
     static void Reset();
+    
  private:
     static volatile NvicRegDef*  NVIC;
     static volatile SCBRegDef*  SCB;
