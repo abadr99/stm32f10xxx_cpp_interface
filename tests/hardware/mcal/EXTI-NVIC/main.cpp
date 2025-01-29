@@ -9,7 +9,7 @@
  * 
  */
 
-// commit-id: a5020f63948e1e8a5aa0cf6949409dc7bf34a49e
+// commit-id: 91b1f1ed79cef9cb2c2fe7ea1ae75286a3cb4e17
 
 #include "mcal/stm32f103xx.h"
 #include "utils/Types.h"
@@ -19,7 +19,7 @@
 #include "mcal/Rcc.h"
 #include "mcal/Nvic.h"
 #include "mcal/Exti.h"
-#include "mcal/Systick.h"
+
 
 
 using namespace stm32::type;
@@ -29,17 +29,20 @@ using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::nvic;
 using namespace stm32::dev::mcal::exti;
-using namespace stm32::dev::mcal::systick;
 
 volatile uint8_t flag = 0;
 void EXTI1_ISR(void);
 
 int main(void) {
+    Rcc::Init();
+    Nvic::Init();
+    Exti::Init();
+    Gpio::Init();
+
     // Initialize system clock and external clock source
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
     Rcc::Enable(Peripheral::kIOPC);
-
 
     Pin pc13(kPortC, kPin13, PinMode::kOutputPushPull_10MHz);
     Gpio::Set(pc13);
@@ -48,8 +51,8 @@ int main(void) {
     Gpio::SetPinValue(pc13, kHigh);
 
     // Configure external interrupt on EXTI1, set callback function, and enable interrupt
-    EXTI_Config EXTI1_Config = {kPortA, Line::kExti11, Trigger::kBoth};
-    Exti::SetpCallBackFunction(Line::kExti11, EXTI1_ISR);
+    EXTI_Config EXTI1_Config = {kPortA, Line::kExti1, Trigger::kBoth};
+    Exti::SetpCallBackFunction(Line::kExti1, EXTI1_ISR);
     Exti::Enable(EXTI1_Config);
 
     Nvic::EnableInterrupt(kEXTI1_IRQn);

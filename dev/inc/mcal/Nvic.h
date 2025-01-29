@@ -138,9 +138,15 @@ class Nvic {
     using bit = stm32::type::bit;
     using NvicRegDef = stm32::registers::nvic::NvicRegDef;
     using SCBRegDef = stm32::registers::nvic::SCBRegDef;
-    static void Init();
+    
     template<typename T>
     static volatile T* GetPtr();
+    // using namespace stm32::registers::nvic;
+
+    /**
+     * @brief Initiate the NVIC
+     */
+    static void Init();
 
     /**
      * @brief Enable the specified interrupt.
@@ -198,7 +204,7 @@ class Nvic {
      */
     static void Reset();
  private:
-    static volatile NvicRegDef* NVIC;
+    static volatile NvicRegDef*  NVIC;
     static volatile SCBRegDef*  SCB;
 };
 }   // namespace nvic
