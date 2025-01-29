@@ -18,86 +18,86 @@ using namespace stm32::registers::nvic;
 
 class NvicTest : public testing::Test {
  protected:
+    using pFunc = std::function<void(Id)>;
+
     void SetUp() override {
         using Nvic_addr = Addr<Peripheral::kNVIC>; 
-        //Id id(InterruptID::kTIM4_IRQn);
-        Nvic_addr::Set(&NvicReg[0]);
-        NVIC = reinterpret_cast<volatile NvicRegDef*>(Nvic_addr::Get());
-    }    
+        using Scb_addr = Addr<Peripheral::kSCB>;
+        Nvic_addr::Set(&NvicReg[0]); 
+        Scb_addr::Set(&ScbReg[0]);
+        Nvic::Init();
+        NVIC = Nvic::GetPtr<NvicRegDef>();
+        SCB = Nvic::GetPtr<SCBRegDef>();
+    }  
 
-    void TestEnable(InterruptID id) {
-        Id ID(id);
-        NVIC->ISER[id / 32] = ClearBit<RegWidth_t>(NVIC->ISER[id / 32], (id % 32));
-        Nvic::EnableInterrupt(ID);
-        EXPECT_EQ(1,    (ExtractBit<uint32_t>(NVIC->ISER[id / 32], (id % 32))));
+    template<typename T>
+    void GenericTest(T* regArr, InterruptID id, pFunc interruptFunc) {
+        regArr[id / 32] = 0;
+        interruptFunc(Id(id));
+        EXPECT_TRUE((ExtractBit<RegWidth_t>(regArr[id / 32], (id % 32))));
+    }
+
+    void PriorityTest(InterruptID id, uint8_t priority) {
+        NVIC->IPR[id] = 0;
+        Nvic::SetPriority(Id(id), priority);
+        EXPECT_EQ(priority,   (ExtractBits<RegWidth_t, 4, 7>(NVIC->IPR[id])));
+    }
+
+    void PriorityGroupTest(PriorityGroup group) {
+        SCB->AIRCR = 0;
+        Nvic::SetPriorityGroup(group);
+        EXPECT_EQ(group,   (ExtractBits<RegWidth_t, 0, 31>(SCB->AIRCR)));
     }
 
     RegWidth_t NvicReg[905];
+    RegWidth_t ScbReg[18];
     volatile NvicRegDef* NVIC; 
-    //Id id(InterruptID::kTIM4_IRQn);
+    volatile SCBRegDef*  SCB;
 };
 
 
 TEST_F(NvicTest, EnableInterrupt) {
-    TestEnable(InterruptID::kTIM4_IRQn);
-    TestEnable(InterruptID::kWWDG_IRQn);
-    TestEnable(InterruptID::kI2C1_ER_IRQn);
-    TestEnable(InterruptID::kRTCAlarm_IRQn);
+    GenericTest(NVIC->ISER, InterruptID::kTIM4_IRQn, Nvic::EnableInterrupt);
+    GenericTest(NVIC->ISER, InterruptID::kWWDG_IRQn, Nvic::EnableInterrupt);
+    GenericTest(NVIC->ISER, InterruptID::kI2C1_ER_IRQn, Nvic::EnableInterrupt);
+    GenericTest(NVIC->ISER, InterruptID::kRTCAlarm_IRQn, Nvic::EnableInterrupt);
 }
 
-#if 0
-uint32_t NvicReg[905] = {};
-uint32_t ScbReg[18] = {};
-
-using namespace stm32::util;
-using namespace stm32::dev::mcal::nvic;
-using namespace stm32::registers::nvic;
-
-static volatile NvicRegDef*  NVIC;
-static volatile SCBRegDef*  SCB;
-
-TEST(NvicTest, EnableInterrupt) {
-    Nvic::Reset();
-    Nvic::EnableInterrupt(kEXTI0_IRQn);
-    EXPECT_EQ(1,   (ExtractBits<uint32_t, 6>(NVIC->ISER[0])));
-    Nvic::EnableInterrupt(kUSART3_IRQn);
-    EXPECT_EQ(1,   (ExtractBits<uint32_t, 7>(NVIC->ISER[1])));
+TEST_F(NvicTest, DisableInterrupt) {
+    GenericTest(NVIC->ICER, InterruptID::kTIM4_IRQn, Nvic::DisableInterrupt);
+    GenericTest(NVIC->ICER, InterruptID::kWWDG_IRQn, Nvic::DisableInterrupt);
+    GenericTest(NVIC->ICER, InterruptID::kI2C1_ER_IRQn, Nvic::DisableInterrupt);
+    GenericTest(NVIC->ICER, InterruptID::kRTCAlarm_IRQn, Nvic::DisableInterrupt);
 }
 
-TEST(NvicTest, DisableInterrupt) {
-    Nvic::Reset();
-    Nvic::DisableInterrupt(kEXTI0_IRQn);
-    EXPECT_EQ(1,   (ExtractBits<uint32_t, 6>(NVIC->ICER[0])));
-    Nvic::DisableInterrupt(kUSART3_IRQn);
-    EXPECT_EQ(1,   (ExtractBits<uint32_t, 7>(NVIC->ICER[1])));
+TEST_F(NvicTest, SetPendingFlag) {
+    GenericTest(NVIC->ISPR, InterruptID::kTIM4_IRQn, Nvic::SetPendingFlag);
+    GenericTest(NVIC->ISPR, InterruptID::kWWDG_IRQn, Nvic::SetPendingFlag);
+    GenericTest(NVIC->ISPR, InterruptID::kI2C1_ER_IRQn, Nvic::SetPendingFlag);
+    GenericTest(NVIC->ISPR, InterruptID::kRTCAlarm_IRQn, Nvic::SetPendingFlag);
 }
 
-TEST(NvicTest, SetPendingFlag) {
-    Nvic::Reset();
-    Nvic::SetPendingFlag(kEXTI0_IRQn);
-    EXPECT_EQ(1,   (ExtractBits<uint32_t, 6>(NVIC->ISPR[0])));
-    Nvic::SetPendingFlag(kUSART3_IRQn);
-    EXPECT_EQ(1,   (ExtractBits<uint32_t, 7>(NVIC->ISPR[1])));
+TEST_F(NvicTest, ClearPendingFlag) {
+    GenericTest(NVIC->ICPR, InterruptID::kTIM4_IRQn, Nvic::ClearPendingFlag);
+    GenericTest(NVIC->ICPR, InterruptID::kWWDG_IRQn, Nvic::ClearPendingFlag);
+    GenericTest(NVIC->ICPR, InterruptID::kI2C1_ER_IRQn, Nvic::ClearPendingFlag);
+    GenericTest(NVIC->ICPR, InterruptID::kRTCAlarm_IRQn, Nvic::ClearPendingFlag);
 }
 
-TEST(NvicTest, ClearPendingFlag) {
-    Nvic::Reset();
-    Nvic::ClearPendingFlag(kEXTI0_IRQn);
-    EXPECT_EQ(1,   (ExtractBits<uint32_t, 6>(NVIC->ICPR[0])));
-    Nvic::ClearPendingFlag(kUSART3_IRQn);
-    EXPECT_EQ(1,   (ExtractBits<uint32_t, 7>(NVIC->ICPR[1])));
+TEST_F(NvicTest, SetPriority) {
+    PriorityTest(InterruptID::kTIM4_IRQn, 4);
+    PriorityTest(InterruptID::kWWDG_IRQn, 5);
+    PriorityTest(InterruptID::kI2C1_ER_IRQn, 1);
+    PriorityTest(InterruptID::kRTCAlarm_IRQn, 3);
 }
 
-TEST(NvicTest, SetPriority) {
-    Nvic::Reset();
-    Nvic::SetPriority(kEXTI0_IRQn, 5);
-    EXPECT_EQ(5,   (ExtractBits<uint32_t, 4, 7>(NVIC->IPR[kEXTI0_IRQn])));
-    EXPECT_EQ(80,  (ExtractBits<uint32_t, 0, 7>(NVIC->IPR[kEXTI0_IRQn])));
+TEST_F(NvicTest, SetPriorityGroup) {
+    PriorityGroupTest(kSCB_4GROUP_0SUBGROUP);
+    PriorityGroupTest(kSCB_3GROUP_1SUBGROUP);
+    PriorityGroupTest(kSCB_2GROUP_2SUBGROUP);
+    PriorityGroupTest(kSCB_1GROUP_3SUBGROUP);
+    PriorityGroupTest(kSCB_0GROUP_4SUBGROUP);
 }
 
-TEST(NvicTest, SetPriorityGroup) {
-    Nvic::Reset();
-    Nvic::SetPriorityGroup(kSCB_0GROUP_4SUBGROUP);
-    EXPECT_EQ(kSCB_0GROUP_4SUBGROUP,   (ExtractBits<uint32_t, 0, 31>(SCB->AIRCR)));
-}
-#endif
+
+
