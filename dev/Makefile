@@ -90,7 +90,7 @@ clean-hw:
 # make opt-build
 # ------------------------------------------
 build-opt: $(OBJS) 
-	@$(ARM_CXX) $(OPT_CXX_FLAGS) $(INC)  $(OBJS) $(STARTUP_PATH) ./main.cpp $(LDFLAGS) -T build/$(MCU).ld -o $(ELF_TARGET)
+	@$(ARM_CXX) $(OPT_CXX_FLAGS) $(INC)  $(OBJS) $(STARTUP_CODE) ./main.cpp $(LDFLAGS) -T build/$(MCU).ld -o $(ELF_TARGET)
 	@$(OBJ_COPY) $(OBJ_COPY_OPTS) $(ELF_TARGET) $(HEX_TARGET)
 	@echo "\n[Makefile][opt-build] : Compiled successfully."	
 
