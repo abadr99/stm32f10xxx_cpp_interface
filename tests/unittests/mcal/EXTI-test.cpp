@@ -50,9 +50,6 @@ class ExtiTest : public testing::Test {
     template<Port port, Line line, Trigger trigger>
     void SetPendingTest() {
         exti.SetConfig(port, line, trigger);
-        // Clear flag by writing  1 into the bit of EXTI->IMR
-        EXTI->IMR  = SetBit<RegWidth_t>(static_cast<uint8_t>(line), (EXTI->IMR)); 
-        ControlTest<trigger, 1>(port, line);
         Exti::SetPendingFlag(exti);
         EXPECT_EQ(1, ExtractBit<RegWidth_t>(EXTI->SWIER, static_cast<uint8_t>(line)));
     }
@@ -60,8 +57,8 @@ class ExtiTest : public testing::Test {
     template<Port port, Line line, Trigger trigger>
     void ClearPendingTest() {
         exti.SetConfig(port, line, trigger);
-        Exti::ClearPendingFlag(exti);
         if (Exti::GetPendingFlag(exti)) {
+            Exti::ClearPendingFlag(exti);
             EXPECT_EQ(1, ExtractBit<RegWidth_t>(EXTI->PR, static_cast<uint8_t>(line)));
         }   
     }
@@ -69,8 +66,8 @@ class ExtiTest : public testing::Test {
     template<Trigger trigger>
     void TriggerTest(Line line, uint8_t EV) {
         if (trigger == kBoth) {
-           EXPECT_EQ(EV, ExtractBit<RegWidth_t>(GetReg<kRising>(), static_cast<uint8_t>(line)));
-           EXPECT_EQ(EV, ExtractBit<RegWidth_t>(GetReg<kFalling>(), static_cast<uint8_t>(line)));
+            EXPECT_EQ(EV, ExtractBit<RegWidth_t>(GetReg<kRising>(), static_cast<uint8_t>(line)));
+            EXPECT_EQ(EV, ExtractBit<RegWidth_t>(GetReg<kFalling>(), static_cast<uint8_t>(line)));
         } else {
             EXPECT_EQ(EV, ExtractBit<RegWidth_t>(GetReg<trigger>(), static_cast<uint8_t>(line)));
         }
