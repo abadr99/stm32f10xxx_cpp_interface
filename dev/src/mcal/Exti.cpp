@@ -40,6 +40,7 @@ ASSERT_MEMBER_OFFSET(EXTIRegDef, PR,    sizeof(RegWidth_t) * 5);
 pFunction Exti::pGlobalCallBackFunctions[7] = {nullptr};
 
 volatile EXTIRegDef* Exti::EXTI = nullptr;
+volatile AfioRegDef* Exti::AFIO = nullptr;
 
 void Exti::Init() {
     EXTI = reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::Get());
@@ -47,6 +48,16 @@ void Exti::Init() {
         pGlobalCallBackFunctions[i] = nullptr;
     }
 }
+
+template<typename T>
+volatile T* Exti::GetPtr() { return nullptr; }
+
+template<>
+volatile EXTIRegDef* Exti::GetPtr<EXTIRegDef>() { return EXTI; }
+
+template<>
+volatile AfioRegDef* Exti::GetPtr<AfioRegDef>() { return AFIO; }
+
 void Exti::Enable(const EXTI_Config& config) {
     STM32_ASSERT(((config.trigger >= kRising) 
                 && (config.trigger <= kBoth)), EXTI_CONFIG_ERROR(Trigger));
@@ -105,7 +116,7 @@ pFunction Exti::GetpCallBackFunction(Line line) {
 void Exti::InitAFIOReg(Line line, Port port) {
     uint8_t startBit = (static_cast<uint8_t>(line) % 4) << 2;
     uint8_t CRx = static_cast<uint8_t>(line) >> 2;
-    auto AFIO = reinterpret_cast<volatile AfioRegDef*>(Addr<Peripheral::kAFIO >::Get());
+    AFIO = reinterpret_cast<volatile AfioRegDef*>(Addr<Peripheral::kAFIO >::Get());
     AFIO->EXTICRx[CRx] = util::WriteBits<uint32_t>(startBit, startBit + 3, AFIO->EXTICRx[CRx], port);       // NOLINT
 }
 
@@ -127,7 +138,7 @@ void Exti::ClrTrigger(Line line, Trigger trigger) {
         EXTI->RTSR = util::ClearBit<uint32_t>(EXTI->RTSR, line);
     }
     if (trigger == Trigger::kFalling || trigger == Trigger::kBoth) {
-        EXTI->RTSR = util::ClearBit<uint32_t>(EXTI->RTSR, line);
+        EXTI->FTSR = util::ClearBit<uint32_t>(EXTI->FTSR, line);
     }
 }
 
