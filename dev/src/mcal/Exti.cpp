@@ -77,7 +77,8 @@ void Exti::SetPendingFlag(const EXTI_Config& config) {
     if (Exti::GetPendingBit(config.line) == 1) { 
         return;  // EARLY EXIT
     }
-    EXTI->PR = util::SetBit<uint32_t>(EXTI->PR, config.line);
+    Exti::Enable(config);
+    EXTI->SWIER = util::SetBit<uint32_t>(EXTI->SWIER, config.line);
 }
 
 void Exti::ClearPendingFlag(const EXTI_Config& config) {
