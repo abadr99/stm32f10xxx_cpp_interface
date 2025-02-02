@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2024
  */
 
-// commit-id:
+// commit-id: 92bf4ebeeece0189d312078c045f46ac691438f7
 #include "utils/Types.h"
 #include "mcal/stm32f103xx.h"
 #include "utils/BitManipulation.h"
