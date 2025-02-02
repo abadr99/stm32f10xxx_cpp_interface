@@ -61,17 +61,6 @@ cpplint:
 # Rule to build for debug and test mode 
 # make build
 # ------------------------------------------
-print:
-	@echo '------------------------'
-	@echo $(SOURCES)
-	@echo $(C_SOURCES)
-	@echo '------------------------'
-	@echo $(C_OBJS)
-	@echo '------------------------'
-	@echo $(CXX_OBJS)
-	@echo '------------------------'
-	@echo $(SOURCES_COUNT)
-	@echo '------------------------'
 build: $(CXX_OBJS) $(C_OBJS)
 	$(call compile, ./main.cpp,.,$(TARGET),$(STARTUP_CODE))
 	@echo "\n[Makefile][build] : Compiled successfully."
