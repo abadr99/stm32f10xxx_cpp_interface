@@ -40,3 +40,4 @@ TEST(BitSet, Sizeof) {
     EXPECT_EQ(sizeof(bs_32), 4);
     EXPECT_EQ(sizeof(bs_64), 8);
 }
+

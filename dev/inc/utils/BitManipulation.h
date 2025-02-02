@@ -112,6 +112,16 @@ inline constexpr T ClearBit(const T container) {
     return container & ~(1 << TBitNum);
 }
 
+template<typename T>
+uint8_t ExtractByte(const T val, uint8_t idx) {
+    return ExtractBits<T>(val, idx * 8, (idx + 1) * 8 - 1);
+}
+
+template<typename T>
+T WriteByte(T container, uint8_t idx, uint8_t data) {
+    return WriteBits<T>(idx * 8, (idx + 1) * 8 - 1, container, data);
+}
+
 }  // namespace util
 }  // namespace stm32
 

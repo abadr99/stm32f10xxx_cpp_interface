@@ -743,26 +743,48 @@ struct ADCRegDef {
             RegWidth_t       : 2;
         };
         RegWidth_t registerVal;
-    }SMPR2;
+    }   SMPR2;
     RegWidth_t JOFR1;   // Injected Channel Data Offset Register 1
     RegWidth_t JOFR2;   // Injected Channel Data Offset Register 2
     RegWidth_t JOFR3;   // Injected Channel Data Offset Register 3
     RegWidth_t JOFR4;   // Injected Channel Data Offset Register 4
     RegWidth_t HTR;     // Watchdog Higher Threshold Register
     RegWidth_t LTR;     // Watchdog Lower Threshold Register
-    union SQR1 {
+    union {
         struct {
-            RegWidth_t SQ13 : 5;
-            RegWidth_t SQ14 : 5;
-            RegWidth_t SQ15 : 5;
-            RegWidth_t SQ16 : 5;
-            RegWidth_t L    : 4;
-            RegWidth_t      : 8;
+            uint32_t SQ13 : 5;  // Sequence position 13
+            uint32_t SQ14 : 5;  // Sequence position 14
+            uint32_t SQ15 : 5;  // Sequence position 15
+            uint32_t SQ16 : 5;  // Sequence position 16
+            uint32_t L    : 4;  // Sequence length (number of conversions)
+            uint32_t      : 8;  // Reserved bits
         };
-        RegWidth_t registerVal;
-    }SQR1;
-    RegWidth_t SQR2;    // Regular Sequence Register 2
-    RegWidth_t SQR3;    // Regular Sequence Register 3
+        uint32_t registerVal;   // Full register value
+    } SQR1;
+    union {
+        struct {
+            uint32_t SQ7  : 5;  // Sequence position 7
+            uint32_t SQ8  : 5;  // Sequence position 8
+            uint32_t SQ9  : 5;  // Sequence position 9
+            uint32_t SQ10 : 5;  // Sequence position 10
+            uint32_t SQ11 : 5;  // Sequence position 11
+            uint32_t SQ12 : 5;  // Sequence position 12
+            uint32_t      : 2;  // Reserved bits
+        };
+        uint32_t registerVal;   // Full register value
+    } SQR2;
+    union SQR3 {
+        struct {
+            uint32_t SQ1  : 5;  // Sequence position 1
+            uint32_t SQ2  : 5;  // Sequence position 2
+            uint32_t SQ3  : 5;  // Sequence position 3
+            uint32_t SQ4  : 5;  // Sequence position 4
+            uint32_t SQ5  : 5;  // Sequence position 5
+            uint32_t SQ6  : 5;  // Sequence position 6
+            uint32_t      : 2;  // Reserved bits
+        };
+        uint32_t registerVal;   // Full register value
+    } SQR3;
     union JSQR {
         struct {
             RegWidth_t JSQ1 : 5;
@@ -1227,6 +1249,202 @@ struct IWDGRegDef {
     }SR;
 };
 }  // namespace iwdg
+namespace can {
+struct CANRegDef {
+    union MCR {
+        struct {
+            RegWidth_t INRQ     : 1;        // Initialization request
+            RegWidth_t SLEEP    : 1;        // Sleep mode request
+            RegWidth_t TXFP     : 1;        // Transmit FIFO priority
+            RegWidth_t RFLM     : 1;        // Receive FIFO locked mode
+            RegWidth_t NART     : 1;        // No automatic retransmission
+            RegWidth_t AWUM     : 1;        // Automatic wakeup mode
+            RegWidth_t ABOM     : 1;        // Automatic bus-off management
+            RegWidth_t TTCM     : 1;        // Time triggered communication mode
+            RegWidth_t          : 7;        // Reserved (must be kept at reset value)
+            RegWidth_t RESET    : 1;        // bxCAN software master reset
+            RegWidth_t DBF      : 1;        // Debug freeze
+            RegWidth_t          : 15;       // Reserved
+        };
+        RegWidth_t registerVal;     // 32-bit register value (for direct access)
+    }MCR;   // Master Control Register
+    union MSR {
+        struct {
+            RegWidth_t INAK     : 1;        // Initialization acknowledge
+            RegWidth_t SLAK     : 1;        // Sleep acknowledge
+            RegWidth_t WKUI     : 1;        // Wakeup interrupt
+            RegWidth_t SLAKI    : 1;        // Sleep acknowledge interrupt
+            RegWidth_t TXM      : 1;        // Transmit mode
+            RegWidth_t RXM      : 1;        // Receive mode
+            RegWidth_t SAMP     : 1;        // Last sample point
+            RegWidth_t RX       : 1;        // CAN Rx signal
+            RegWidth_t          : 7;        // Reserved (must be kept at reset value)
+            RegWidth_t ERRI     : 1;        // Error interrupt
+            RegWidth_t          : 20;       // Reserved
+        };
+        RegWidth_t registerVal;     // 32-bit register value (for direct access)
+    }MSR;   // Master Status Register
+    union TSR {
+        struct {
+            RegWidth_t RQCP0    :1;   //   Request Completion for mailbox 0
+            RegWidth_t TXOK0    :1;   //   Transmit OK for mailbox 0
+            RegWidth_t ALST0    :1;   //   Alignment Status for mailbox 0
+            RegWidth_t TERR0    :1;   //   Transmit Error for mailbox 0
+            RegWidth_t          :3;   //   Reserved bits
+            RegWidth_t ABRQ0    :1;   //   Abort Request for mailbox 0
+            RegWidth_t RQCP1    :1;   //   Request Completion for mailbox 1
+            RegWidth_t TXOK1    :1;   //   Transmit OK for mailbox 1
+            RegWidth_t ALST1    :1;   //   Alignment Status for mailbox 1
+            RegWidth_t TERR1    :1;   //   Transmit Error for mailbox 1
+            RegWidth_t          :3;   //   Reserved bits
+            RegWidth_t ABRQ1    :1;   //   Abort Request for mailbox 1
+            RegWidth_t RQCP2    :1;   //   Request Completion for mailbox 2
+            RegWidth_t TXOK2    :1;   //   Transmit OK for mailbox 2
+            RegWidth_t ALST2    :1;   //   Alignment Status for mailbox 2
+            RegWidth_t TERR2    :1;   //   Transmit Error for mailbox 2
+            RegWidth_t          :3;   //   Reserved bits
+            RegWidth_t ABRQ2    :1;   //   Abort Request for mailbox 2
+            RegWidth_t CODE     :2;   //   Error Code
+            RegWidth_t TME0     :1;   //   Time-out Error for mailbox 0
+            RegWidth_t TME1     :1;   //   Time-out Error for mailbox 1
+            RegWidth_t TME2     :1;   //   Time-out Error for mailbox 2
+            RegWidth_t LOW0     :1;   //   Low Power Mode for mailbox 0
+            RegWidth_t LOW1     :1;   //   Low Power Mode for mailbox 1
+            RegWidth_t LOW2     :1;   //   Low Power Mode for mailbox 2
+        };
+        RegWidth_t registerVal;
+    }TSR;
+    union RF0R {
+        struct {
+            RegWidth_t FMP0     :2;    // Indicates the number of messages pending in FIFO 0 (0-3).
+            RegWidth_t          :1;    // Reserved: Unused bit, should remain 0.
+            RegWidth_t FULL0    :1;    // FIFO 0 Full: Set when FIFO 0 is full.
+            RegWidth_t FOVR0    :1;    // FIFO 0 Overrun: Set when FIFO 0 is overrun (message lost).
+            RegWidth_t RFOM0    :1;    // Set to release the oldest message in FIFO 0.
+            RegWidth_t          :26;   // Reserved: Unused bits, should remain 0.    
+        };
+        RegWidth_t registerVal;
+    }RF0R;        // Receive FIFO 0 Register
+    union RF1R {
+        struct {
+            RegWidth_t FMP1     :2;   // Indicates the number of messages pending in FIFO 1 (0-3).
+            RegWidth_t          :1;   // Reserved: Unused bit, should remain 0.
+            RegWidth_t FULL1    :1;   // FIFO 1 Full: Set when FIFO 1 is full.
+            RegWidth_t FOVR1    :1;   // FIFO 1 Overrun: Set when FIFO 1 is overrun (message lost).
+            RegWidth_t RFOM1    :1;   // Set to release the oldest message in FIFO 1.
+            RegWidth_t          :26;  // Reserved: Unused bits, should remain 0   
+        };
+        RegWidth_t registerVal;
+    }RF1R;        // Receive FIFO 1 Register
+    RegWidth_t IER;         // Interrupt Enable Register
+    RegWidth_t ESR;         // Error Status Register
+    RegWidth_t BTR;         // Bit Timing Register
+    RegWidth_t RESERVED0[88];   // Reserved memory space
+
+    // Transmit Mailboxes
+    struct TxMailBox_t {
+    union TIR {
+        struct {
+            RegWidth_t TXRQ      : 1;    // Transmit Mailbox Request
+            RegWidth_t RTR       : 1;    // Remote Transmission Request
+            RegWidth_t IDE       : 1;    // Identifier Extension
+            RegWidth_t EXID      : 18;   // Extended Identifier
+            RegWidth_t STID      : 11;   // Standard Identifier
+        };
+        RegWidth_t registerVal;        // Complete register value
+    } TIR;                             // Transmit Identifier Register
+    union TDTR {
+        struct {
+            RegWidth_t DLC        : 4;   // Data Length Code
+            RegWidth_t            : 5;   // Reserved bits
+            RegWidth_t TGT        : 1;   // Transmit Global Time
+            RegWidth_t            : 7;   // Reserved bits
+            RegWidth_t TIME       : 16;  // Time Stamp
+        };
+        RegWidth_t registerVal;        // Complete register value
+    } TDTR;                           // Transmit Data Length Control and Time Register
+    RegWidth_t TDLR;
+    RegWidth_t TDHR;
+    };
+    TxMailBox_t TxMailBox[3];   // 3 Transmit Mailboxes
+
+    // Receive FIFO Mailboxes
+    struct RxMailBox_t {
+        union RIR {
+            struct {
+                RegWidth_t      :1;   // Reserved: Unused bit, should remain 0.
+                RegWidth_t RTR  :1;   // Remote Transmission Request
+                RegWidth_t IDE  :1;   // Identifier Extension
+                RegWidth_t EXID :18;  // Extended Identifier
+                RegWidth_t STID :11;  // Standard Identifier
+            };
+            RegWidth_t registerVal;
+        }RIR;   // Receive Identifier Register
+        union RDTR {
+            struct {
+                RegWidth_t DLC  :4;   // Data Length Code
+                RegWidth_t      :4;   // Reserved: Unused bits, should remain 0.
+                RegWidth_t FMI  :8;   // Filter Match Index
+                RegWidth_t TIME :16;  // Time Stamp
+            };
+            RegWidth_t registerVal;
+        }RDTR;    // Receive Data Length Control and Time Register
+        RegWidth_t RDLR;    // Receive Data Low Register
+        RegWidth_t RDHR;    // Receive Data High Register
+    };
+    RxMailBox_t RxFIFOMailBox[2];  // 2 Receive FIFOs (FIFO 0 and FIFO 1)
+
+    // Filter Registers
+    union FMR {
+        struct {
+            RegWidth_t FINIT     :1;   // Filter Initialization Mode
+            RegWidth_t           :7;   // Reserved: Must remain 0.
+            RegWidth_t CAN2SB    :6;   // CAN2 Start Bank
+            RegWidth_t           :18;  // Reserved: Must remain 0.
+        };
+        RegWidth_t registerVal;
+    }FMR;   //  Filter Master Register
+    union FM1R {
+        struct {
+            RegWidth_t FBM      :28;  // Filter Mode
+            RegWidth_t          :4;   // Reserved: Must remain 0.
+        };
+        RegWidth_t registerVal;
+    }FM1R;  //  Filter Mode Register
+    RegWidth_t RESERVED1;       // Reserved memory space
+    union FS1R {
+        struct {
+            RegWidth_t FSC      :28;  // Filter Scale
+            RegWidth_t          :4;   // Reserved: Must remain 0.
+        };
+        RegWidth_t registerVal;
+    }FS1R;  //  Filter Scale Register
+    RegWidth_t RESERVED2;       // Reserved memory space
+    union FFA1R {
+        struct {
+            RegWidth_t FFA      :28;  // Filter FIFO Assignment
+            RegWidth_t          :4;   // Reserved: Must remain 0.
+        };
+        RegWidth_t registerVal;
+    }FFA1R;     //  Filter FIFO Assignment Register
+    RegWidth_t RESERVED3;       // Reserved memory space
+    union FA1R {
+        struct {
+            RegWidth_t FACT     :28;  // Filter Activation
+            RegWidth_t          :4;   // Reserved: Must remain 0.
+        };
+        RegWidth_t registerVal;
+    }FA1R;      //  Filter Activation Register
+    RegWidth_t RESERVED4[8];    // Reserved memory space
+
+    // Filter Banks
+    struct FilterBank {
+        RegWidth_t FR1;         // Filter Bank Register 1
+        RegWidth_t FR2;         // Filter Bank Register 2
+    };
+    FilterBank FilterRegister[14];     // STM32F103 has 14 filter banks
+};
+}  // namespace can
 }  // namespace registers
 }  // namespace stm32
 
