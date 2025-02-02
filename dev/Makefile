@@ -1,6 +1,6 @@
 PYTHON ?= python3
 
-INCLUDE_FREE_RTOS_FILES=1
+INCLUDE_FREE_RTOS_FILES=0
 # --- BUILD
 INPUT_FILE ?= ./build/modules.in
 SOURCES := $(shell $(PYTHON) ./build/Parser.py --file "$(INPUT_FILE)")
