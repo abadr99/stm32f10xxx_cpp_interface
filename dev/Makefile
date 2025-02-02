@@ -1,5 +1,6 @@
 PYTHON ?= python3
 
+INCLUDE_FREE_RTOS_FILES=1
 # --- BUILD
 INPUT_FILE ?= ./build/modules.in
 SOURCES := $(shell $(PYTHON) ./build/Parser.py --file "$(INPUT_FILE)")
@@ -11,8 +12,14 @@ INC:=  -I. -I./inc/
 LIB_DIR := ./lib
 LIB_NAME := stm32f103cpp.a
 STARTUP_CODE := ./src/mcal/stm32f103_startup.cpp
+
+ifeq ($(INCLUDE_FREE_RTOS_FILES),1)
+	C_SOURCES := $(wildcard ./src/freeRTOS/*.c)
+	C_SRC_NAMES:= $(notdir $(C_SOURCES))
+	SOURCES_COUNT := $(shell echo $$(($(SOURCES_COUNT) + $(words $(C_SOURCES)))))
+endif
 # --- LINTER
-LINT_PATH:= ../tools/cppliny.py
+LINT_PATH:= ../tools/cppliny.py --exclude=inc/freeRTOS/*.h --exclude=src/freeRTOS/*.c
 
 # --- HARDWARE TESTS
 # TODO(@mrefat): Move this to tests/Makefile 
@@ -37,7 +44,7 @@ DOXYGEN_OUTPUT := ../doxy/html
 #
 # ---------------------------------------------------------------
 define compile 
-	$(ARM_CXX) $(CXX_FLAGS) $(INC) $(OBJS) $(4) $(1) $(LDFLAGS) -T build/$(MCU).ld -o $(2)/$(3).elf
+	$(ARM_CXX) $(CXX_FLAGS) $(INC) $(CXX_OBJS) $(C_OBJS) $(4) $(1) $(LDFLAGS) -T build/$(MCU).ld -o $(2)/$(3).elf
 	$(OBJ_COPY) $(OBJ_COPY_OPTS) $(2)/$(3).elf $(2)/$(3).hex
 endef
 
@@ -54,7 +61,18 @@ cpplint:
 # Rule to build for debug and test mode 
 # make build
 # ------------------------------------------
-build: $(OBJS) 
+print:
+	@echo '------------------------'
+	@echo $(SOURCES)
+	@echo $(C_SOURCES)
+	@echo '------------------------'
+	@echo $(C_OBJS)
+	@echo '------------------------'
+	@echo $(CXX_OBJS)
+	@echo '------------------------'
+	@echo $(SOURCES_COUNT)
+	@echo '------------------------'
+build: $(CXX_OBJS) $(C_OBJS)
 	$(call compile, ./main.cpp,.,$(TARGET),$(STARTUP_CODE))
 	@echo "\n[Makefile][build] : Compiled successfully."
 
@@ -67,7 +85,7 @@ build: $(OBJS)
 # The expression $(notdir $(patsubst %/,%,$(dir $(HW_FILTER)))) in the rule
 # 	is a combination of functions used to extract the base directory name from a file path.
 # ------------------------------------------
-build-hw: $(OBJS)
+build-hw: $(CXX_OBJS) $(C_OBJS)
 ifneq ($(FILTER), )
 	@$(call compile,$(FILTER),$(shell dirname $(FILTER)),$(notdir $(patsubst %/,%,$(dir $(FILTER)))))
 	@echo "\n[Makefile]: note: Filter compilation $(FILTER)"
@@ -85,15 +103,15 @@ clean-hw:
 # Rule to build for real applications
 # make opt-build
 # ------------------------------------------
-build-opt: $(OBJS) 
-	@$(ARM_CXX) $(OPT_CXX_FLAGS) $(OBJS) $(STARTUP_PATH) ./main.cpp -o $(ELF_TARGET)
+build-opt: $(CXX_OBJS) $(C_OBJS) 
+	@$(ARM_CXX) $(OPT_CXX_FLAGS) $(CXX_OBJS) $(C_OBJS) $(STARTUP_PATH) ./main.cpp -o $(ELF_TARGET)
 	@echo "\n[Makefile][opt-build] : Compiled successfully."	
 
 # ---------------------------------------------
 # Rule to create a lib
 # ---------------------------------------------
-gen-lib:$(OBJS)
-	@ar rcs $(LIB_NAME) $(OBJS)
+gen-lib:$(CXX_OBJS) $(C_OBJS)
+	@ar rcs $(LIB_NAME) $(CXX_OBJS) $(C_OBJS)
 
 # ------------------------------------------
 # Rule to upload hex file to mcu
