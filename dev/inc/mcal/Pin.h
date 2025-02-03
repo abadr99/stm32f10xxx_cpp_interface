@@ -34,13 +34,13 @@ enum class PinMode : uint8_t {
     kOutputOpenDrain_2MHz,              /**< Pin conf. as Output open-drain, 2 MHz. */
     kOutputOpenDrain_50MHz,             /**< Pin conf. as Output open-drain, 50 MHz. */
     kInputPullUp,                       /**< Pin conf. as Input with pull-up. */
+    kInputPullDown = 8,                 /**< Pin conf. as Input with pull-down. */
     kAlternativePushPull_10MHz,         /**< Pin conf. as Alternate function push-pull, 10 MHz. */
     kAlternativePushPull_2MHz,          /**< Pin conf. as Alternate function push-pull, 2 MHz. */
     kAlternativePushPull_50MHz,         /**< Pin conf. as Alternate function push-pull, 50 MHz. */
     kAlternativeOpenDrain_10MHz = 13,   /**< Pin conf. as Alternate function open-drain, 10 MHz. */
     kAlternativeOpenDrain_2MHz,         /**< Pin conf. as Alternate function open-drain, 2 MHz. */
     kAlternativeOpenDrain_50MHz,        /**< Pin conf. as Alternate function open-drain, 50 MHz. */
-    kInputPullDown = 20                 /**< Pin conf. as Input with pull-down. */
 };
 
 /**
