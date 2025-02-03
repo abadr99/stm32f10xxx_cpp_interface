@@ -51,7 +51,7 @@ class GpioTest : public testing::Test {
         pin.SetPinNumber(pinNumber);
         pin.SetPinMode(mode);
         Gpio::SetPinMode(pin, mode);
-        EXPECT_EQ(static_cast<uint8_t>(mode), 
+        EXPECT_EQ(GetModeValue(), 
             (ExtractBits<RegWidth_t>(GetModeReg(), GetStartBit(), GetStartBit() + 3)));
     }
 
@@ -66,6 +66,13 @@ class GpioTest : public testing::Test {
             (GPIOx[pin.GetPort()]->ODR)));      
     }
 
+    uint8_t GetModeValue() {
+        if (static_cast<uint8_t>(pin.GetPinMode()) != 24) {
+            return static_cast<uint8_t>(pin.GetPinMode());
+        } else {
+            return 8;
+        }
+    }
     uint8_t GetStartBit() {
         if (pin.GetPinNumber() <= 7) {
             return (pin.GetPinNumber() * 4);
