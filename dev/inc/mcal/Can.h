@@ -29,17 +29,18 @@ enum class OperatingMode : uint8_t {
  * @brief CAN test modes.
  */
 enum class TestMode : uint8_t {
-    kSilent,        /**< Silent mode */
-    kLoopBack,      /**< Loopback mode */
-    kCombined       /**< Combined silent and loopback mode */
+    kNormal   = 0b00,   /**< Silent mode */
+    kSilent   = 0b10,   /**< Silent mode */
+    kLoopBack = 0b01,   /**< Loopback mode */
+    kCombined = 0b11    /**< Combined silent and loopback mode */
 };
 
 /**
  * @brief CAN identifier types.
  */
 enum class IdType : uint8_t {
-    kStd,   /**< Standard identifier */
-    kExt    /**< Extended identifier */
+    kStId,   /**< Standard identifier */
+    kExId    /**< Extended identifier */
 };
 
 /**
@@ -100,18 +101,6 @@ enum class FilterScale : uint8_t {
 };
 
 /**
- * @brief Prescaler options for CAN communication speed.
- */
-enum class Prescaler : uint32_t {
-    k100KBPS,   /**< 100 kbps */
-    k125KBPS,   /**< 125 kbps */
-    k250KBPS,   /**< 250 kbps */
-    k500KBPS,   /**< 500 kbps */
-    k800KBPS,   /**< 800 kbps */
-    k1MBPS      /**< 1 Mbps   */
-};
-
-/**
  * @brief Represents time quanta values for CAN bus timing configurations.
  */
 enum class TimeQuanta : uint8_t {
@@ -145,19 +134,18 @@ enum class State : uint8_t {
  * @brief CAN configuration structure.
  */
 struct CanConfig {
-    Prescaler buadRate;        /**< CAN baud rate prescaler */
-    OperatingMode opMode;      /**< Operating mode */
-    TestMode mode;             /**< Test mode */
-    FifoPriority priority;     /**< FIFO priority */
-    TimeQuanta sjw;            /**< Resynchronization jump width between k1tq and k4tq */
-    TimeQuanta bs1;            /**< Time segment 1 between k1tq and k16tq */
-    TimeQuanta bs2;            /**< Time segment 2 between k1tq and k8tq */
-    State TTCM;                /**< Time-triggered communication mode */
-    State ABOM;                /**< Automatic bus-off management */
-    State AWUM;                /**< Automatic wake-up mode */
-    State NART;                /**< No automatic retransmission */
-    State RFLM;                /**< Receive FIFO locked mode */
-    State TxFifoPrio;                /**< Transmit FIFO priority */
+    OperatingMode opMode;             /**< Operating mode */
+    TestMode testMode;                    /**< Test mode */
+    FifoPriority priority;            /**< FIFO priority */
+    ReceivedFifo receivedFifoLock;    /**< Receive FIFO locked mode */
+    uint16_t baudRatePrescaler : 9;   /**< CAN baud rate prescaler */
+    TimeQuanta sjw;                   /**< Resynchronization jump width between k1tq and k4tq */
+    TimeQuanta bs1;                   /**< Time segment 1 between k1tq and k16tq */
+    TimeQuanta bs2;                   /**< Time segment 2 between k1tq and k8tq */
+    State TTCM;                       /**< Time-triggered communication mode */
+    State ABOM;                       /**< Automatic bus-off management */
+    State AWUM;                       /**< Automatic wake-up mode */
+    State NART;                       /**< No automatic retransmission */
 };
 
 /**

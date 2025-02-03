@@ -1,27 +1,99 @@
 /**
  * @file main.cpp
- * @author your name (you@domain.com)
+ * @author Mohamed Refat
  * @brief 
  * @version 0.1
- * @date 2024-07-08
- * @copyright Copyright (c) 2024
+ * @date 2025-02-03
+ * 
+ * @copyright Copyright (c) 2025
+ * 
  */
+// commit-id:
+
 #include "utils/Types.h"
 #include "mcal/stm32f103xx.h"
 #include "utils/BitManipulation.h"
 #include "mcal/Pin.h"
 #include "mcal/Gpio.h"
 #include "mcal/Rcc.h"
-#include "utils/Logger.h"
+#include "mcal/Can.h"
 
-
+using namespace stm32::type;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::rcc;
-using namespace stm32::utils::logger;
-using namespace stm32::type;
-
+using namespace stm32::dev::mcal::can;
 int main() {
-    while (1) {}
+    Rcc::Init();
+    Gpio::Init();
+    
+    Rcc::InitSysClock();
+    Rcc::SetExternalClock(kHseCrystal);
+    Rcc::Enable(Peripheral::kIOPC);
+    Rcc::Enable(Peripheral::kCAN);
+
+    CanConfig conf = { 
+        .opMode = OperatingMode::kNormal,
+        .testMode = TestMode::kCombined,
+        .priority = FifoPriority::kID,
+        .receivedFifoLock = ReceivedFifo::kUnLocked,
+        .baudRatePrescaler = 1,
+        .sjw = TimeQuanta::kTq1,
+        .bs1 = TimeQuanta::kTq12,
+        .bs2 = TimeQuanta::kTq3,
+        .TTCM = State::kEnable,
+        .ABOM = State::kEnable,
+        .AWUM = State::kEnable,
+        .NART = State::kDisable
+    };
+
+    Can::Init(conf);
+
+    CanTxMsg txMsg = {
+        .stdId = 0xAA,
+        .extId = 0x00,
+        .ide   = IdType::kStId,
+        .rtr   = RemoteTxReqType::kData,
+        .dlc   = 8,
+        .data  = {'E', 'D', 'F', 'B', 'M', 'E', 'C', '\0'}
+    };
+
+    CanRxMsg rxMsg = {
+        .stdId = 0xAA,
+        .extId = 0x00,
+        .ide   = IdType::kStId,
+        .rtr   = RemoteTxReqType::kData,
+        .dlc   = 8,
+        .data  = {0},
+        .FMI   = 0xAA
+    };
+
+    FilterConfig filterConf = {
+        .idHigh     = 0x0000,
+        .idLow      = 0x00AA,
+        .maskIdHigh = 0x0000,
+        .maskIdLow  = 0x00AA,
+        .fifoAssign = FifoNumber::kFIFO0,
+        .bank       = 0,
+        .mode       = FilterMode::kList,
+        .scale      = FilterScale::k32bit,
+        .activation = State::kEnable
+    };
+
+    Pin pc13(kPortC, kPin13, PinMode::kOutputPushPull_10MHz);
+    Gpio::Set(pc13);
+
+    Can::FilterInit(filterConf);
+
+    Can::Transmit(txMsg);
+    
+    while (1) {
+        Can::Receive(rxMsg, FifoNumber::kFIFO0);
+        if (txMsg.data[0] == 'M') {
+            Gpio::SetPinValue(pc13, kLow);
+        } else {
+            Gpio::SetPinValue(pc13, kHigh);
+        }
+    }
 }
