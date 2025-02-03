@@ -45,6 +45,14 @@ void Can::Init(const CanConfig &conf) {
     CAN->BTR = WriteBits<uint32_t, 0, 9>  
             (CAN->BTR, static_cast<uint32_t>(static_cast<uint32_t>(conf.baudRatePrescaler) - 1));
 
+    //  Request abort transmission
+    CAN->TSR.ABRQ0 = 1;
+    CAN->TSR.ABRQ1 = 1;
+    CAN->TSR.ABRQ2 = 1;
+
+    //  Request release receive FIFO
+    CAN->RF0R.RFOM0 = 1;
+    CAN->RF1R.RFOM1 = 1;
     //  Request leave initialisation
     SetOperatingMode(conf, OperatingMode::kNormal);
 }
@@ -63,7 +71,7 @@ void Can::FilterInit(const FilterConfig& conf) {
         CAN->FilterRegister[conf.bank].FR1 = ComputeFilterVal(conf.idLow,  conf.maskIdLow);
         CAN->FilterRegister[conf.bank].FR2 = ComputeFilterVal(conf.idHigh, conf.maskIdHigh);
     } else {  // k32bit
-        CAN->FS1R.registerVal = SetBit(CAN->FA1R.registerVal, conf.bank);
+        CAN->FS1R.registerVal = SetBit(CAN->FS1R.registerVal, conf.bank);
         // Compute and set FR1 and FR2
         CAN->FilterRegister[conf.bank].FR1 = ComputeFilterVal(conf.idLow, conf.idHigh);
         CAN->FilterRegister[conf.bank].FR2 = ComputeFilterVal(conf.maskIdLow, conf.maskIdHigh);
