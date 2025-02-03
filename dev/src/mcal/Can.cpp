@@ -25,24 +25,34 @@ using namespace stm32::registers::can;
 volatile CANRegDef* Can::CAN = nullptr;
   
 void Can::Init(const CanConfig &conf) {
+    CAN = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
+
     //  Exit from sleep mode
     SetOperatingMode(conf, OperatingMode::kInitialization);
 
     CAN->MCR.TTCM = static_cast<uint32_t>(conf.TTCM);
     CAN->MCR.AWUM = static_cast<uint32_t>(conf.AWUM);
     CAN->MCR.ABOM = static_cast<uint32_t>(conf.ABOM);
-    CAN->MCR.RFLM = static_cast<uint32_t>(conf.RFLM);
+    CAN->MCR.RFLM = static_cast<uint32_t>(conf.receivedFifoLock);
     CAN->MCR.NART = static_cast<uint32_t>(conf.NART);
     CAN->MCR.TXFP = static_cast<uint32_t>(conf.priority);
 
     //  Set the bit timing register
-    CAN->BTR = WriteBits<uint32_t, 30, 31>(CAN->BTR, static_cast<uint32_t>(conf.mode));
+    CAN->BTR = WriteBits<uint32_t, 30, 31>(CAN->BTR, static_cast<uint32_t>(conf.testMode));
     CAN->BTR = WriteBits<uint32_t, 24, 25>(CAN->BTR, static_cast<uint32_t>(conf.sjw));
     CAN->BTR = WriteBits<uint32_t, 20, 22>(CAN->BTR, static_cast<uint32_t>(conf.bs2));
     CAN->BTR = WriteBits<uint32_t, 16, 19>(CAN->BTR, static_cast<uint32_t>(conf.bs1));
     CAN->BTR = WriteBits<uint32_t, 0, 9>  
-                        (CAN->BTR, static_cast<uint32_t>(static_cast<uint32_t>(conf.buadRate) - 1));
+            (CAN->BTR, static_cast<uint32_t>(static_cast<uint32_t>(conf.baudRatePrescaler) - 1));
 
+    //  Request abort transmission
+    CAN->TSR.ABRQ0 = 1;
+    CAN->TSR.ABRQ1 = 1;
+    CAN->TSR.ABRQ2 = 1;
+
+    //  Request release receive FIFO
+    CAN->RF0R.RFOM0 = 1;
+    CAN->RF1R.RFOM1 = 1;
     //  Request leave initialisation
     SetOperatingMode(conf, OperatingMode::kNormal);
 }
@@ -61,7 +71,7 @@ void Can::FilterInit(const FilterConfig& conf) {
         CAN->FilterRegister[conf.bank].FR1 = ComputeFilterVal(conf.idLow,  conf.maskIdLow);
         CAN->FilterRegister[conf.bank].FR2 = ComputeFilterVal(conf.idHigh, conf.maskIdHigh);
     } else {  // k32bit
-        CAN->FS1R.registerVal = SetBit(CAN->FA1R.registerVal, conf.bank);
+        CAN->FS1R.registerVal = SetBit(CAN->FS1R.registerVal, conf.bank);
         // Compute and set FR1 and FR2
         CAN->FilterRegister[conf.bank].FR1 = ComputeFilterVal(conf.idLow, conf.idHigh);
         CAN->FilterRegister[conf.bank].FR2 = ComputeFilterVal(conf.maskIdLow, conf.maskIdHigh);
@@ -90,15 +100,18 @@ void Can::Transmit(const CanTxMsg& message) {
     
     // Helper function to get the next available mailbox
     auto GetAvailableMailbox = [&]() -> uint32_t {
-        return CAN->TSR.CODE;
+        if (CAN->TSR.TME0) return 0;
+        if (CAN->TSR.TME1) return 1;
+        if (CAN->TSR.TME2) return 2;
+        return 3;  // No mailbox available
     };
     
     if (IsMailBoxAvailable()) {
-        GetAvailableMailbox();
+        txMailbox = GetAvailableMailbox();
         if (txMailbox <= 2) {
             CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
             CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
-            CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExt) ? 1 : 0;
+            CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExId) ? 1 : 0;
             CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
             uint32_t hi = 0;
             uint32_t lo = 0;
@@ -127,7 +140,7 @@ void Can::CancelTransmit(MailBoxType mailbox) {
 void Can::Receive(CanRxMsg& message, FifoNumber fifo) {  //  NOLINT [runtime/references]
     uint32_t fifoIndex = static_cast<uint32_t>(fifo);
     message.ide = static_cast<IdType>(CAN->RxFIFOMailBox[fifoIndex].RIR.IDE);
-    if (message.ide == IdType::kStd) {
+    if (message.ide == IdType::kStId) {
         message.stdId = CAN->RxFIFOMailBox[fifoIndex].RIR.STID;
     } else {
         message.extId = CAN->RxFIFOMailBox[fifoIndex].RIR.EXID;
