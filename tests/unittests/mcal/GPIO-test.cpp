@@ -62,11 +62,12 @@ class GpioTest : public testing::Test {
         pin.SetPinMode(mode);
         Gpio::SetPinValue(pin, state);
         EXPECT_EQ(static_cast<uint8_t>(state), 
-            (ExtractBits<RegWidth_t, static_cast<uint8_t>(pinNumber)>(GPIOx[pin.GetPort()]->ODR)));      
+        (ExtractBits<RegWidth_t, static_cast<uint8_t>(pinNumber)>
+            (GPIOx[pin.GetPort()]->ODR)));      
     }
 
     uint8_t GetStartBit() {
-        if(pin.GetPinNumber() <= 7) {
+        if (pin.GetPinNumber() <= 7) {
             return (pin.GetPinNumber() * 4);
         } else {
             return ((pin.GetPinNumber() - 8) * 4);
@@ -74,7 +75,7 @@ class GpioTest : public testing::Test {
     }
 
     RegWidth_t GetModeReg() {
-        if(pin.GetPinNumber() <= 7) {
+        if (pin.GetPinNumber() <= 7) {
             return GPIOx[pin.GetPort()]->CRL;
         } else {
             return GPIOx[pin.GetPort()]->CRH;
@@ -99,3 +100,4 @@ TEST_F(GpioTest, SetPinValue) {
     SetPinValueTest<kPortA, kPin7, PinMode::kOutputPushPull_10MHz>(DigitalVoltage::kLow);
     SetPinValueTest<kPortB, kPin1, PinMode::kAlternativeOpenDrain_10MHz>(DigitalVoltage::kHigh);
 }
+
