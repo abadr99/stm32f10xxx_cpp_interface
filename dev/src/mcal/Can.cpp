@@ -182,7 +182,7 @@ void Can::SetOperatingMode(const CanConfig &conf, OperatingMode mode) {
             CAN->MCR.SLEEP = 0; 
         }
         CAN->MCR.INRQ = 1;
-        util::BusyWait<constant::TimeOut::kDefault>([&](){ return CAN->MSR.INAK; });
+        util::BusyWait<constant::TimeOut::kDefault>([&](){ return !(CAN->MSR.SLAK); });
     };
     
     auto OperateNormalMode = [&]() {
