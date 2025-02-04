@@ -26,13 +26,12 @@ volatile CANRegDef* Can::CAN = nullptr;
   
 void Can::Init(const CanConfig &conf) {
     CAN = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
-
+    CAN->MCR.ABOM = 0;
     //  Exit from sleep mode
     SetOperatingMode(conf, OperatingMode::kInitialization);
 
     CAN->MCR.TTCM = static_cast<uint32_t>(conf.TTCM);
     CAN->MCR.AWUM = static_cast<uint32_t>(conf.AWUM);
-    CAN->MCR.ABOM = static_cast<uint32_t>(conf.ABOM);
     CAN->MCR.RFLM = static_cast<uint32_t>(conf.receivedFifoLock);
     CAN->MCR.NART = static_cast<uint32_t>(conf.NART);
     CAN->MCR.TXFP = static_cast<uint32_t>(conf.priority);
@@ -55,6 +54,7 @@ void Can::Init(const CanConfig &conf) {
     CAN->RF1R.RFOM1 = 1;
     //  Request leave initialisation
     SetOperatingMode(conf, OperatingMode::kNormal);
+    CAN->MCR.ABOM = static_cast<uint32_t>(conf.ABOM);
 }
 void Can::FilterInit(const FilterConfig& conf) {
     CAN->FMR.FINIT = 1;  //  Initialisation mode for the filter
@@ -178,11 +178,9 @@ void Can::SetOperatingMode(const CanConfig &conf, OperatingMode mode) {
     }; 
     
     auto OperateInitMode = [&]() {
-        if (conf.opMode == OperatingMode::kSleep) { 
-            CAN->MCR.SLEEP = 0; 
-        }
-        CAN->MCR.INRQ = 1;
+        CAN->MCR.SLEEP = 0; 
         util::BusyWait<constant::TimeOut::kDefault>([&](){ return !(CAN->MSR.SLAK); });
+        CAN->MCR.INRQ = 1;
     };
     
     auto OperateNormalMode = [&]() {
