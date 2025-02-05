@@ -26,7 +26,15 @@ volatile CANRegDef* Can::CAN = nullptr;
   
 void Can::Init(const CanConfig &conf) {
     CAN = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
+
     //  Exit from sleep mode
+    /*
+    CAN->MCR.INRQ = 1;
+    util::BusyWait<constant::TimeOut::kDefault>([&](){ return (CAN->MSR.INAK); });
+    CAN->MCR.SLEEP = 0; 
+    util::BusyWait<constant::TimeOut::kDefault>([&](){ return !(CAN->MSR.SLAK); });
+    */
+
     SetOperatingMode(conf, OperatingMode::kInitialization);
 
     CAN->MCR.TTCM = static_cast<uint32_t>(conf.TTCM);
@@ -54,6 +62,16 @@ void Can::Init(const CanConfig &conf) {
     CAN->RF1R.RFOM1 = 1;
     //  Request leave initialisation
     SetOperatingMode(conf, OperatingMode::kNormal);
+    /*
+    auto IsTimeOut = [&](){ return !(CAN->MSR.INAK || CAN->MSR.SLAK); };
+    if (conf.opMode == OperatingMode::kSleep) {
+        CAN->MCR.SLEEP = 0;
+        util::BusyWait<constant::TimeOut::kDefault>(IsTimeOut);
+    } else if (conf.opMode == OperatingMode::kInitialization) {
+        CAN->MCR.INRQ = 0;
+        util::BusyWait<constant::TimeOut::kDefault>(IsTimeOut);
+    }
+    */
 }
 void Can::FilterInit(const FilterConfig& conf) {
     CAN->FMR.FINIT = 1;  //  Initialisation mode for the filter
