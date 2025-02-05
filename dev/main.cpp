@@ -39,12 +39,12 @@ int main() {
         .priority = FifoPriority::kID,
         .receivedFifoLock = ReceivedFifo::kUnLocked,
         .baudRatePrescaler = 1,
-        .sjw = TimeQuanta::kTq1,
+        .sjw = TimeQuanta::kTq2,
         .bs1 = TimeQuanta::kTq12,
         .bs2 = TimeQuanta::kTq3,
-        .TTCM = State::kEnable,
-        .ABOM = State::kEnable,
-        .AWUM = State::kEnable,
+        .TTCM = State::kDisable,
+        .ABOM = State::kDisable,
+        .AWUM = State::kDisable,
         .NART = State::kDisable
     };
 
@@ -59,24 +59,16 @@ int main() {
         .data  = {'E', 'D', 'F', 'B', 'M', 'E', 'C', '\0'}
     };
 
-    CanRxMsg rxMsg = {
-        .stdId = 0xAA,
-        .extId = 0x00,
-        .ide   = IdType::kStId,
-        .rtr   = RemoteTxReqType::kData,
-        .dlc   = 8,
-        .data  = {0},
-        .FMI   = 0xAA
-    };
+    CanRxMsg rxMsg;
 
     FilterConfig filterConf = {
         .idHigh     = 0x0000,
-        .idLow      = 0x00AA,
+        .idLow      = 0x0000,
         .maskIdHigh = 0x0000,
-        .maskIdLow  = 0x00AA,
+        .maskIdLow  = 0x0000,
         .fifoAssign = FifoNumber::kFIFO0,
         .bank       = 0,
-        .mode       = FilterMode::kList,
+        .mode       = FilterMode::kMask,
         .scale      = FilterScale::k32bit,
         .activation = State::kEnable
     };
@@ -90,7 +82,7 @@ int main() {
     
     while (1) {
         Can::Receive(rxMsg, FifoNumber::kFIFO0);
-        if (txMsg.data[0] == 'M') {
+        if (txMsg.data[0] == 'E') {
             Gpio::SetPinValue(pc13, kLow);
         } else {
             Gpio::SetPinValue(pc13, kHigh);
