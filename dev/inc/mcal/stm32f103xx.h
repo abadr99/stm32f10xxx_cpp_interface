@@ -165,33 +165,35 @@ struct RccRegDef {
     
     union APB1ENR {
         struct {
-            RegWidth_t TIM2EN   :1; 
-            RegWidth_t TIM3EN   :1; 
-            RegWidth_t TIM4EN   :1; 
-            RegWidth_t TIM5EN   :1; 
-            RegWidth_t TIM6EN   :1; 
-            RegWidth_t TIM7EN   :1; 
-            RegWidth_t TIM12EN  :1; 
-            RegWidth_t TIM13EN  :1; 
+            RegWidth_t TIM2EN   :1;
+            RegWidth_t TIM3EN   :1;
+            RegWidth_t TIM4EN   :1;
+            RegWidth_t TIM5EN   :1;
+            RegWidth_t TIM6EN   :1;
+            RegWidth_t TIM7EN   :1;
+            RegWidth_t TIM12EN  :1;
+            RegWidth_t TIM13EN  :1;
             RegWidth_t TIM14EN  :1;
+            RegWidth_t RES0     :2;
             RegWidth_t WWDGEN   :1;
-            RegWidth_t          :2;
+            RegWidth_t RES1     :2;
             RegWidth_t SPI2EN   :1;
             RegWidth_t SPI3EN   :1;
+            RegWidth_t RES2     :1;
             RegWidth_t USART2EN :1;
             RegWidth_t USART3EN :1;
             RegWidth_t USART4EN :1;
-            RegWidth_t USART5EN :1; 
-            RegWidth_t I2C1EN   :1; 
-            RegWidth_t I2C2EN   :1; 
-            RegWidth_t USBEN    :1; 
-            RegWidth_t          :1; 
-            RegWidth_t CANEN    :1; 
-            RegWidth_t          :1; 
-            RegWidth_t BKPEN    :1; 
-            RegWidth_t PWREN    :1; 
-            RegWidth_t DACEN    :1; 
-            RegWidth_t          :2; 
+            RegWidth_t USART5EN :1;
+            RegWidth_t I2C1EN   :1;
+            RegWidth_t I2C2EN   :1;
+            RegWidth_t USBEN    :1;
+            RegWidth_t RES      :1;
+            RegWidth_t CANEN    :1;
+            RegWidth_t RES3     :1;
+            RegWidth_t BKPEN    :1;
+            RegWidth_t PWREN    :1;
+            RegWidth_t DACEN    :1;
+            RegWidth_t RES4     :2;
         };
         RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
     }APB1ENR;

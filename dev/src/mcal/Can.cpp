@@ -30,9 +30,9 @@ void Can::Init(const CanConfig &conf) {
     //  Exit from sleep mode
     /*
     CAN->MCR.INRQ = 1;
-    util::BusyWait<constant::TimeOut::kDefault>([&](){ return (CAN->MSR.INAK); });
+    util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->MSR.INAK); });
     CAN->MCR.SLEEP = 0; 
-    util::BusyWait<constant::TimeOut::kDefault>([&](){ return !(CAN->MSR.SLAK); });
+    util::BusyWait<constant::TimeOut::kCan>([&](){ return !(CAN->MSR.SLAK); });
     */
 
     SetOperatingMode(conf, OperatingMode::kInitialization);
@@ -66,10 +66,10 @@ void Can::Init(const CanConfig &conf) {
     auto IsTimeOut = [&](){ return !(CAN->MSR.INAK || CAN->MSR.SLAK); };
     if (conf.opMode == OperatingMode::kSleep) {
         CAN->MCR.SLEEP = 0;
-        util::BusyWait<constant::TimeOut::kDefault>(IsTimeOut);
+        util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);
     } else if (conf.opMode == OperatingMode::kInitialization) {
         CAN->MCR.INRQ = 0;
-        util::BusyWait<constant::TimeOut::kDefault>(IsTimeOut);
+        util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);
     }
     */
 }
@@ -188,24 +188,24 @@ void Can::SetOperatingMode(const CanConfig &conf, OperatingMode mode) {
     
     auto OperateSleepMode = [&]() {
         CAN->MCR.SLEEP = 1;
-        util::BusyWait<constant::TimeOut::kDefault>([&](){ return CAN->MSR.SLAK; });
+        util::BusyWait<constant::TimeOut::kCan>([&](){ return CAN->MSR.SLAK; });
     }; 
     
     auto OperateInitMode = [&]() {
         CAN->MCR.INRQ = 1;
-        util::BusyWait<constant::TimeOut::kDefault>([&](){ return (CAN->MSR.INAK); });
+        util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->MSR.INAK == 0); });
         CAN->MCR.SLEEP = 0; 
-        util::BusyWait<constant::TimeOut::kDefault>([&](){ return !(CAN->MSR.SLAK); });
+        util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->MSR.SLAK ==1); });
     };
     
     auto OperateNormalMode = [&]() {
         auto IsTimeOut = [&](){ return !(CAN->MSR.INAK || CAN->MSR.SLAK); };
         if (conf.opMode == OperatingMode::kSleep) {
             CAN->MCR.SLEEP = 0;
-            util::BusyWait<constant::TimeOut::kDefault>(IsTimeOut);
+            util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);
         } else if (conf.opMode == OperatingMode::kInitialization) {
             CAN->MCR.INRQ = 0;
-            util::BusyWait<constant::TimeOut::kDefault>(IsTimeOut);
+            util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);
         }
     };
 
