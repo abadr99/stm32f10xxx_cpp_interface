@@ -28,13 +28,6 @@ void Can::Init(const CanConfig &conf) {
     CAN = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
 
     //  Exit from sleep mode
-    /*
-    CAN->MCR.INRQ = 1;
-    util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->MSR.INAK); });
-    CAN->MCR.SLEEP = 0; 
-    util::BusyWait<constant::TimeOut::kCan>([&](){ return !(CAN->MSR.SLAK); });
-    */
-
     SetOperatingMode(conf, OperatingMode::kInitialization);
 
     CAN->MCR.TTCM = static_cast<uint32_t>(conf.TTCM);
@@ -62,16 +55,6 @@ void Can::Init(const CanConfig &conf) {
     CAN->RF1R.RFOM1 = 1;
     //  Request leave initialisation
     SetOperatingMode(conf, OperatingMode::kNormal);
-    /*
-    auto IsTimeOut = [&](){ return !(CAN->MSR.INAK || CAN->MSR.SLAK); };
-    if (conf.opMode == OperatingMode::kSleep) {
-        CAN->MCR.SLEEP = 0;
-        util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);
-    } else if (conf.opMode == OperatingMode::kInitialization) {
-        CAN->MCR.INRQ = 0;
-        util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);
-    }
-    */
 }
 void Can::FilterInit(const FilterConfig& conf) {
     CAN->FMR.FINIT = 1;  //  Initialisation mode for the filter
@@ -125,24 +108,22 @@ void Can::Transmit(const CanTxMsg& message) {
     
     if (IsMailBoxAvailable()) {
         txMailbox = GetAvailableMailbox();
-        if (txMailbox <= 2) {
-            CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
-            CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
-            CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExId) ? 1 : 0;
-            CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
-            uint32_t hi = 0;
-            uint32_t lo = 0;
-            for (uint8_t i = 0; i < message.dlc; ++i) {
-                if (i < 4) {
-                    lo = WriteByte(lo, i, message.data[i]);
-                } else {
-                    hi = WriteByte(hi, i - 4, message.data[i]);
-                }
+        CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
+        CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
+        CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExId) ? 1 : 0;
+        CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
+        uint32_t hi = 0;
+        uint32_t lo = 0;
+        for (uint8_t i = 0; i < message.dlc; ++i) {
+            if (i < 4) {
+                lo = WriteByte(lo, i, message.data[i]);
+            } else {
+                hi = WriteByte(hi, i - 4, message.data[i]);
             }
-            CAN->TxMailBox[txMailbox].TDLR = lo;
-            CAN->TxMailBox[txMailbox].TDHR = hi;
-            CAN->TxMailBox[txMailbox].TIR.TXRQ = 1;
         }
+        CAN->TxMailBox[txMailbox].TDLR = lo;
+        CAN->TxMailBox[txMailbox].TDHR = hi;
+        CAN->TxMailBox[txMailbox].TIR.TXRQ = 1;
     }
 }
 
@@ -163,8 +144,13 @@ void Can::Receive(CanRxMsg& message, FifoNumber fifo) {  //  NOLINT [runtime/ref
         message.extId = CAN->RxFIFOMailBox[fifoIndex].RIR.EXID;
     }
     message.rtr = (RemoteTxReqType)CAN->RxFIFOMailBox[fifoIndex].RIR.RTR;
-    message.dlc = (uint8_t)CAN->RxFIFOMailBox[fifoIndex].RDTR.DLC;
+    if (CAN->RxFIFOMailBox[fifoIndex].RDTR.DLC >= 8) {
+        message.dlc = 8;
+    } else {
+        message.dlc = CAN->RxFIFOMailBox[fifoIndex].RDTR.DLC;
+    }
     message.FMI = CAN->RxFIFOMailBox[fifoIndex].RDTR.FMI;
+    message.timeStamp = CAN->RxFIFOMailBox[fifoIndex].RDTR.TIME;
     for (uint8_t i = 0; i < message.dlc; ++i) {
         if (i < 4) {
             message.data[i] = ExtractByte(CAN->RxFIFOMailBox[fifoIndex].RDLR, i);
@@ -188,18 +174,18 @@ void Can::SetOperatingMode(const CanConfig &conf, OperatingMode mode) {
     
     auto OperateSleepMode = [&]() {
         CAN->MCR.SLEEP = 1;
-        util::BusyWait<constant::TimeOut::kCan>([&](){ return CAN->MSR.SLAK; });
+        util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->MSR.SLAK == 0); });
     }; 
     
     auto OperateInitMode = [&]() {
         CAN->MCR.INRQ = 1;
         util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->MSR.INAK == 0); });
         CAN->MCR.SLEEP = 0; 
-        util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->MSR.SLAK ==1); });
+        util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->MSR.SLAK == 1); });
     };
     
     auto OperateNormalMode = [&]() {
-        auto IsTimeOut = [&](){ return !(CAN->MSR.INAK || CAN->MSR.SLAK); };
+        auto IsTimeOut = [&](){ return ((CAN->MSR.INAK == 1) || (CAN->MSR.SLAK == 1)); };
         if (conf.opMode == OperatingMode::kSleep) {
             CAN->MCR.SLEEP = 0;
             util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);

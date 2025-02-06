@@ -183,6 +183,7 @@ struct CanRxMsg {
     static constexpr uint8_t kDataSiz = 8;
     uint32_t stdId;            /**< Standard ID between 0 to 0x7FF */
     uint32_t extId;            /**< Extended ID between 0 to 0x1FFFFFFF */
+    uint32_t timeStamp;        /**< Time stamp counter value */
     IdType ide;                /**< Identifier type */
     RemoteTxReqType rtr;       /**< Remote transmission request */
     uint8_t dlc;               /**< Data length code between 0 to 8 */
