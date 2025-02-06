@@ -109,8 +109,8 @@ void Can::Transmit(const CanTxMsg& message) {
     if (IsMailBoxAvailable()) {
         txMailbox = GetAvailableMailbox();
         CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
-        CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
         CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExId) ? 1 : 0;
+        CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
         CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
         uint32_t hi = 0;
         uint32_t lo = 0;
