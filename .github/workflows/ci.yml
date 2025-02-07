@@ -253,7 +253,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build tests
       run: |
-          sh tools/github/configure-gtest.sh
+          sh tools/github/linux/configure-gtest.sh
           make -C tests build-unittests -j20
     - name: Run tests
       run: |
