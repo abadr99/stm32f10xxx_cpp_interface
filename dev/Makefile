@@ -23,6 +23,10 @@ HW_MAINS=$(shell find $(HW_TEST_PATH) -name "*.cpp")
 DOXYFILE := ../doxy/conf
 DOXYGEN_OUTPUT := ../doxy/html
 
+CXX_FLAGS += -MDD -MP
+OBJS := $(SOURCES:.cpp=.o)
+DEPS :=$(OBJS:.o=.d)
+-include $(DEPS)
 # ---------------------------------------------------------------
 # compile
 # This function compiles a given source file into an ELF file 
@@ -86,7 +90,8 @@ clean-hw:
 # make opt-build
 # ------------------------------------------
 build-opt: $(OBJS) 
-	@$(ARM_CXX) $(OPT_CXX_FLAGS) $(OBJS) $(STARTUP_PATH) ./main.cpp -o $(ELF_TARGET)
+	@$(ARM_CXX) $(OPT_CXX_FLAGS) $(INC)  $(OBJS) $(STARTUP_CODE) ./main.cpp $(LDFLAGS) -T build/$(MCU).ld -o $(ELF_TARGET)
+	@$(OBJ_COPY) $(OBJ_COPY_OPTS) $(ELF_TARGET) $(HEX_TARGET)
 	@echo "\n[Makefile][opt-build] : Compiled successfully."	
 
 # ---------------------------------------------
@@ -127,3 +132,4 @@ clean:
 	@rm -rf *.map
 	@rm -rf .build
 	@rm -rf build.map
+	@rm -rf $(OBJDIR)/*.d
