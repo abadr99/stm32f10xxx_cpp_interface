@@ -211,8 +211,10 @@ void Reset_Handler(void) {
 
     // -- 2] INITIATE.BSS WITH ZEROS
     pDest = reinterpret_cast<uint8_t*>(&_sbss);
-    uint32_t bss_size =  static_cast<uint32_t>(&_ebss - &_sbss);
-
+    // Cast to uint8_t* for byte-wise operations
+    uint8_t* sbss = reinterpret_cast<uint8_t*>(&_sbss);
+    uint8_t* ebss = reinterpret_cast<uint8_t*>(&_ebss);
+    uint32_t bss_size = ebss - sbss;   // Size in bytes
     for (uint32_t i = 0; i < bss_size; i++) {
        pDest[i] = 0;
     }
