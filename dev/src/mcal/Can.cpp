@@ -33,10 +33,10 @@ void Can::Init(const CanConfig &conf) {
     CAN->MCR.ABOM = static_cast<uint32_t>(conf.ABOM);
     CAN->MCR.RFLM = static_cast<uint32_t>(conf.RFLM);
     CAN->MCR.NART = static_cast<uint32_t>(conf.NART);
-    CAN->MCR.TXFP = static_cast<uint32_t>(conf.priority);
+    //CAN->MCR.TXFP = static_cast<uint32_t>(conf.priority);
 
     //  Set the bit timing register
-    CAN->BTR = WriteBits<uint32_t, 30, 31>(CAN->BTR, static_cast<uint32_t>(conf.mode));
+    //CAN->BTR = WriteBits<uint32_t, 30, 31>(CAN->BTR, static_cast<uint32_t>(conf.mode));
     CAN->BTR = WriteBits<uint32_t, 24, 25>(CAN->BTR, static_cast<uint32_t>(conf.sjw));
     CAN->BTR = WriteBits<uint32_t, 20, 22>(CAN->BTR, static_cast<uint32_t>(conf.bs2));
     CAN->BTR = WriteBits<uint32_t, 16, 19>(CAN->BTR, static_cast<uint32_t>(conf.bs1));
@@ -46,7 +46,7 @@ void Can::Init(const CanConfig &conf) {
     //  Request leave initialisation
     SetOperatingMode(conf, OperatingMode::kNormal);
 }
-void Can::FilterInit(const FilterConfig& conf) {
+void Can::FilterInit(const CanConfig &canconf, const FilterConfig& conf) {
     CAN->FMR.FINIT = 1;  //  Initialisation mode for the filter
     CAN->FA1R.registerVal = ClearBit(CAN->FA1R.registerVal, conf.bank);  //  Filter Deactivation
 
