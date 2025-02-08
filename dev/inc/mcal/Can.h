@@ -147,8 +147,6 @@ enum class State : uint8_t {
 struct CanConfig {
     Prescaler buadRate;        /**< CAN baud rate prescaler */
     OperatingMode opMode;      /**< Operating mode */
-    TestMode mode;             /**< Test mode */
-    FifoPriority priority;     /**< FIFO priority */
     TimeQuanta sjw;            /**< Resynchronization jump width between k1tq and k4tq */
     TimeQuanta bs1;            /**< Time segment 1 between k1tq and k16tq */
     TimeQuanta bs2;            /**< Time segment 2 between k1tq and k8tq */
@@ -185,6 +183,7 @@ struct CanTxMsg {
     IdType ide;                /**< Identifier type */
     RemoteTxReqType rtr;       /**< Remote transmission request */
     uint8_t dlc;               /**< Data length code between 0 to 8 */
+    State transmitGlobalTime;  /**< Transmit global time */
     uint8_t data[kDataSiz];    /**< Data field between 0 to 0xFF */
 };
 
@@ -198,8 +197,9 @@ struct CanRxMsg {
     IdType ide;                /**< Identifier type */
     RemoteTxReqType rtr;       /**< Remote transmission request */
     uint8_t dlc;               /**< Data length code between 0 to 8 */
-    uint8_t data[kDataSiz];    /**< Data field between 0 to 0xFF */
+    uint32_t timestamp;        /**< Timestamp counter value */
     uint8_t FMI;               /**< Filter match index between 0 to 0xFF */
+    uint8_t data[kDataSiz];    /**< Data field between 0 to 0xFF */
 };
 
 /**
@@ -220,7 +220,7 @@ class Can {
      * @brief Initializes the CAN filter with the specified configuration.
      * @param conf Filter configuration structure.
      */
-    static void FilterInit(const FilterConfig& conf);
+    static void FilterInit(const CanConfig &canconf, const FilterConfig& conf);
 
     /**
      * @brief Transmits a CAN message.
