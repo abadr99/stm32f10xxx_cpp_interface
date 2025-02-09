@@ -112,7 +112,16 @@ void Can::Transmit(const CanTxMsg& message) {
         CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExId) ? 1 : 0;
         CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
         CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
-        uint32_t hi = 0;
+
+        CAN->TxMailBox[txMailbox].TDLR = (((uint32_t)message.data[3] << 24)) |
+                                         (((uint32_t)message.data[2] << 16)) |
+                                         (((uint32_t)message.data[1] << 8))  |
+                                         (((uint32_t)message.data[0]));
+        CAN->TxMailBox[txMailbox].TDHR = (((uint32_t)message.data[7] << 24)) |
+                                         (((uint32_t)message.data[6] << 16)) |
+                                         (((uint32_t)message.data[5] << 8))  |
+                                         (((uint32_t)message.data[4]));
+        /*uint32_t hi = 0;
         uint32_t lo = 0;
         for (uint8_t i = 0; i < message.dlc; ++i) {
             if (i < 4) {
@@ -122,7 +131,7 @@ void Can::Transmit(const CanTxMsg& message) {
             }
         }
         CAN->TxMailBox[txMailbox].TDLR = lo;
-        CAN->TxMailBox[txMailbox].TDHR = hi;
+        CAN->TxMailBox[txMailbox].TDHR = hi;*/
         CAN->TxMailBox[txMailbox].TIR.TXRQ = 1;
     }
 }
@@ -151,13 +160,23 @@ void Can::Receive(CanRxMsg& message, FifoNumber fifo) {  //  NOLINT [runtime/ref
     }
     message.FMI = CAN->RxFIFOMailBox[fifoIndex].RDTR.FMI;
     message.timeStamp = CAN->RxFIFOMailBox[fifoIndex].RDTR.TIME;
-    for (uint8_t i = 0; i < message.dlc; ++i) {
+
+    message.data[0] = (uint8_t)0xFF & CAN->RxFIFOMailBox[fifoIndex].RDLR;
+    message.data[1] = (uint8_t)(0xFF & (CAN->RxFIFOMailBox[fifoIndex].RDLR >> 8));
+    message.data[2] = (uint8_t)(0xFF & (CAN->RxFIFOMailBox[fifoIndex].RDLR >> 16));
+    message.data[3] = (uint8_t)(0xFF & (CAN->RxFIFOMailBox[fifoIndex].RDLR >> 24));
+    message.data[4] = (uint8_t)(0xFF & CAN->RxFIFOMailBox[fifoIndex].RDHR);
+    message.data[5] = (uint8_t)(0xFF & (CAN->RxFIFOMailBox[fifoIndex].RDHR >> 8));
+    message.data[6] = (uint8_t)(0xFF & (CAN->RxFIFOMailBox[fifoIndex].RDHR >> 16));
+    message.data[7] = (uint8_t)(0xFF & (CAN->RxFIFOMailBox[fifoIndex].RDHR >> 24));
+    
+    /*for (uint8_t i = 0; i < message.dlc; ++i) {
         if (i < 4) {
             message.data[i] = ExtractByte(CAN->RxFIFOMailBox[fifoIndex].RDLR, i);
         } else {
             message.data[i] = ExtractByte(CAN->RxFIFOMailBox[fifoIndex].RDHR, i - 4);
         }
-    }
+    }*/
     if (fifo == FifoNumber::kFIFO0) {
         CAN->RF0R.RFOM0 = 1;
     } else {
