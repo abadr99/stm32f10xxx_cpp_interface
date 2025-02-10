@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_HAL_INC_LEDMATRIX_H_
-#define DEV_HAL_INC_LEDMATRIX_H_
+#ifndef DEV_INC_HAL_LEDMATRIX_H_ 
+#define DEV_INC_HAL_LEDMATRIX_H_ 
 
 using namespace stm32::dev::mcal::pin; 
 using namespace stm32::dev::mcal::gpio;
@@ -26,7 +26,7 @@ namespace dev {
 namespace hal {
 namespace ledMatrix {
 
-enum  LedMatrixConnection : uint8_t {
+enum LedMatrixConnection : uint8_t {
     kCommon_Row_Cathode,
     kCommon_Row_Anode,
 };
@@ -49,4 +49,4 @@ class LedMatrix {
 }  // namespace hal
 }  // namespace dev
 }  // namespace stm32
-#endif  // DEV_HAL_INC_LEDMATRIX_H_
+#endif  //  DEV_INC_HAL_LEDMATRIX_H_ 
