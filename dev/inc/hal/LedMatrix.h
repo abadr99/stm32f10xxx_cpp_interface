@@ -19,19 +19,19 @@ using namespace stm32::dev::mcal::gpio;
 #include "mcal/Pin.h"
 #include "utils/Font.h"
 
-using namespace stm32::utils::font;
+using namespace stm32::font;
 
 namespace stm32 {
 namespace dev {
 namespace hal {
 namespace ledMatrix {
 
-enum ConnectionType : uint8_t {
+enum  LedMatrixConnection : uint8_t {
     kCommon_Row_Cathode,
     kCommon_Row_Anode,
 };
 
-template <ConnectionType connectionType>
+template <LedMatrixConnection connectionType>
 class LedMatrix {
  public:
     using Array_t = std::array<Pin, 8>;
