@@ -35,7 +35,7 @@ LedMatrix<connectionType>::LedMatrix(const Array_t rowPins, const Array_t colPin
 template <LedMatrixConnection connectionType>
 void LedMatrix<connectionType>::Init() {
     // SET [ROW & COL] PINS AC OUTPUT [PUSHPULL]
-    for (uint8_t pin = 0; pin < 8; pin++) { PinMode GetPinMode();
+    for (uint8_t pin = 0; pin < 8; pin++) {
         Gpio::Set(rowPins_[pin]);
         Gpio::Set(colPins_[pin]);
     }
