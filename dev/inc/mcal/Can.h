@@ -244,7 +244,7 @@ class Can {
      * @param conf CAN configuration structure.
      * @param mode Operating mode.
      */
-    static void SetOperatingMode(const CanConfig &conf, OperatingMode mode);
+    static void SetOperatingMode(OperatingMode mode);
 };
 }   // namespace can
 }   // namespace mcal

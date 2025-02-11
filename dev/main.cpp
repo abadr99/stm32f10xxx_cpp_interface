@@ -59,7 +59,8 @@ int main() {
         .data  = {'E', 'D', 'F', 'B', 'M', 'E', 'C', '\0'}
     };
 
-    CanRxMsg rxMsg;
+    CanRxMsg rxMsg = {0,0,0,.ide   = IdType::kStId, .rtr = RemoteTxReqType::kData,
+    .dlc=0,.data = {0}, .FMI=0};
 
     FilterConfig filterConf = {
         .idHigh     = 0x0000,
@@ -81,11 +82,14 @@ int main() {
     Can::Transmit(txMsg);
     
     while (1) {
-        Can::Receive(rxMsg, FifoNumber::kFIFO0);
-        if (txMsg.data[0] == 'E') {
+        for(int i=0; i<50000; i++) {
+            __asm("NOP");
+        }
+        if (rxMsg.data[0] == 'E') {
             Gpio::SetPinValue(pc13, kLow);
         } else {
             Gpio::SetPinValue(pc13, kHigh);
         }
+        Can::Receive(rxMsg, FifoNumber::kFIFO0);
     }
 }

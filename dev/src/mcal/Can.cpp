@@ -28,7 +28,7 @@ void Can::Init(const CanConfig &conf) {
     CAN = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
 
     //  Exit from sleep mode
-    SetOperatingMode(conf, OperatingMode::kInitialization);
+    SetOperatingMode(OperatingMode::kInitialization);
 
     CAN->MCR.TTCM = static_cast<uint32_t>(conf.TTCM);
     CAN->MCR.ABOM = static_cast<uint32_t>(conf.ABOM);
@@ -54,8 +54,10 @@ void Can::Init(const CanConfig &conf) {
     CAN->RF0R.RFOM0 = 1;
     CAN->RF1R.RFOM1 = 1;
     //  Request leave initialisation
-    SetOperatingMode(conf, OperatingMode::kNormal);
+    SetOperatingMode(OperatingMode::kNormal);
 }
+
+
 void Can::FilterInit(const FilterConfig& conf) {
     CAN->FMR.FINIT = 1;  //  Initialisation mode for the filter
     CAN->FA1R.registerVal = ClearBit(CAN->FA1R.registerVal, conf.bank);  //  Filter Deactivation
@@ -90,12 +92,13 @@ void Can::FilterInit(const FilterConfig& conf) {
     CAN->FMR.FINIT = 0;
 }
 
+
 void Can::Transmit(const CanTxMsg& message) {
     uint32_t txMailbox = 0;
     auto IsMailBoxAvailable =[&]() -> bool {
-        return (CAN->TSR.TME0 != 0) || 
-               (CAN->TSR.TME1 != 0) || 
-               (CAN->TSR.TME2 != 0);
+        return (CAN->TSR.ABRQ0 == 0) || 
+               (CAN->TSR.ABRQ1 == 0) || 
+               (CAN->TSR.ABRQ2 == 0);
     };
     
     // Helper function to get the next available mailbox
@@ -108,6 +111,9 @@ void Can::Transmit(const CanTxMsg& message) {
     
     if (IsMailBoxAvailable()) {
         txMailbox = GetAvailableMailbox();
+        if (3 == txMailbox ) {
+            return;
+        }
         CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
         CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExId) ? 1 : 0;
         CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
@@ -188,7 +194,7 @@ uint8_t Can::GetPendingMessages(FifoNumber fifo) {
     return (fifo == FifoNumber::kFIFO0) ? CAN->RF0R.FMP0 : CAN->RF1R.FMP1;
 }
 
-void Can::SetOperatingMode(const CanConfig &conf, OperatingMode mode) {
+void Can::SetOperatingMode(OperatingMode mode) {
     using OM = OperatingMode;
     
     auto OperateSleepMode = [&]() {
@@ -204,14 +210,13 @@ void Can::SetOperatingMode(const CanConfig &conf, OperatingMode mode) {
     };
     
     auto OperateNormalMode = [&]() {
-        auto IsTimeOut = [&](){ return ((CAN->MSR.INAK == 1) || (CAN->MSR.SLAK == 1)); };
-        if (conf.opMode == OperatingMode::kSleep) {
-            CAN->MCR.SLEEP = 0;
-            util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);
-        } else if (conf.opMode == OperatingMode::kInitialization) {
-            CAN->MCR.INRQ = 0;
-            util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);
-        }
+        auto IsTimeOut = [&](){ return ((CAN->MSR.INAK == 1) /* || (CAN->MSR.SLAK == 1) */); };
+        // // Exit from seep Mode
+        // CAN->MCR.SLEEP = 0;
+        // util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);
+        // Exit Initialization mode 
+        CAN->MCR.INRQ = 0;
+        util::BusyWait<constant::TimeOut::kCan>(IsTimeOut);
     };
 
     switch (mode) {
