@@ -25,8 +25,10 @@ volatile stm32::registers::rtc::RtcRegDef* Rtc::RTC = nullptr;
 
 void Rtc::Init(const RtcConfig &config) {
     RTC = reinterpret_cast<volatile RtcRegDef*>(Addr<Peripheral::kRTC >::Get());
+    #if !UNIT_TEST
     // wait for the last operation to be done
     WaitForLastTask();
+    #endif
 
     // Enter Configuration mode
     EnterConfigMode();
@@ -47,12 +49,13 @@ void Rtc::Init(const RtcConfig &config) {
 
     // Exit RTC configuration mode
     ExitConfigMode();
-
+    #if !UNIT_TEST
     // wait for the last operation to be done
     WaitForLastTask();
 
     // wait for the Synchronization between the RTC Registers
     WaitForSync();
+    #endif
 }
 volatile stm32::registers::rtc::RtcRegDef* Rtc::GetRtcRegister() {
         return RTC;
@@ -91,24 +94,36 @@ void Rtc::ExitConfigMode(void) {
     RTC->CRL.CNF = 0;
 }
 void Rtc::SetPrescaler(uint32_t prescaler_value) {
+    #if !UNIT_TEST
     WaitForLastTask();
+    #endif
     RTC->PRLH.PRL = (prescaler_value >> 16) & 0x000F;
     RTC->PRLL.PRL = prescaler_value & 0xFFFF;
+    #if !UNIT_TEST
     WaitForLastTask();
+    #endif
 }
 
 void Rtc::SetAlarmValue(uint32_t alarm_value) {
+    #if !UNIT_TEST
     WaitForLastTask();
+    #endif
     RTC->ALRH.ALR = (alarm_value >> 16) & 0xFFFF;
     RTC->ALRL.ALR = alarm_value & 0xFFFF;
+    #if !UNIT_TEST
     WaitForLastTask();
+    #endif
 }
 
 void Rtc::SetCounterValue(uint32_t time_in_seconds) {
+    #if !UNIT_TEST
     WaitForLastTask();
+    #endif
     RTC->CNTH.CNT = (time_in_seconds >> 16) & 0xFFFF;
     RTC->CNTL.CNT = time_in_seconds & 0xFFFF;
+    #if !UNIT_TEST
     WaitForLastTask();
+    #endif
 }
 
 void Rtc::GetCurrentTime(Time *pCurrent_time) {
