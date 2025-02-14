@@ -206,6 +206,11 @@ class Can {
     static void Init(const CanConfig &conf);
 
     /**
+     * @brief Start the CAN Module.
+     */
+    static void Start();
+
+    /**
      * @brief Initializes the CAN filter with the specified configuration.
      * @param conf Filter configuration structure.
      */

@@ -27,13 +27,13 @@ using namespace stm32::dev::mcal::can;
 int main() {
     Rcc::Init();
     Gpio::Init();
-    
+
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
     Rcc::Enable(Peripheral::kIOPC);
     Rcc::Enable(Peripheral::kCAN);
 
-    CanConfig conf = { 
+    CanConfig conf = {
         .opMode = OperatingMode::kNormal,
         .testMode = TestMode::kCombined,
         .priority = FifoPriority::kID,
@@ -51,16 +51,15 @@ int main() {
     Can::Init(conf);
 
     CanTxMsg txMsg = {
-        .stdId = 0xAA,
+        .stdId = 0x123,
         .extId = 0x00,
         .ide   = IdType::kStId,
         .rtr   = RemoteTxReqType::kData,
         .dlc   = 8,
-        .data  = {'E', 'D', 'F', 'B', 'M', 'E', 'C', '\0'}
+        .data  = {'M', 'O', 'H', 'B', 'M', 'E', 'C', '\0'}
     };
 
-    CanRxMsg rxMsg = {0,0,0,.ide   = IdType::kStId, .rtr = RemoteTxReqType::kData,
-    .dlc=0,.data = {0}, .FMI=0};
+    CanRxMsg rxMsg;
 
     FilterConfig filterConf = {
         .idHigh     = 0x0000,
@@ -79,13 +78,13 @@ int main() {
 
     Can::FilterInit(filterConf);
 
-    Can::Transmit(txMsg);
-    
+    Can::Start();
     while (1) {
+        Can::Transmit(txMsg);
         for(int i=0; i<50000; i++) {
             __asm("NOP");
         }
-        if (rxMsg.data[0] == 'E') {
+        if (rxMsg.data[2] == 'H') {
             Gpio::SetPinValue(pc13, kLow);
         } else {
             Gpio::SetPinValue(pc13, kHigh);
