@@ -34,7 +34,7 @@ enum LedMatrixConnection : uint8_t {
 template <LedMatrixConnection connectionType>
 class LedMatrix {
  public:
-    using Array_t = std::array<Pin, 8>;
+    using Array_t = util::Array<Pin, 8>;
     LedMatrix(const Array_t rowPins, const Array_t colPins);
     void Init();
     void DrawChar(uint8_t character);
