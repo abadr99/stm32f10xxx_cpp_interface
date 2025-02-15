@@ -8,32 +8,30 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef DEV_INC_HAL_LEDMATRIX_H_
-#define DEV_INC_HAL_LEDMATRIX_H_
+#ifndef DEV_INC_HAL_LEDMATRIX_H_ 
+#define DEV_INC_HAL_LEDMATRIX_H_ 
 
 using namespace stm32::dev::mcal::pin; 
-// using namespace stm32::dev::mcal::gpio;
+using namespace stm32::dev::mcal::gpio;
 
 #include <array>
 
 #include "mcal/Pin.h"
 #include "utils/Font.h"
-#include "utils/Array.h"
 
-using namespace stm32::utils::font;
-using namespace stm32::util;
+using namespace stm32::font;
 
 namespace stm32 {
 namespace dev {
 namespace hal {
 namespace ledMatrix {
 
-enum  MatrixConnectionType : uint8_t {
+enum LedMatrixConnection : uint8_t {
     kCommon_Row_Cathode,
     kCommon_Row_Anode,
 };
 
-template <MatrixConnectionType connectionType>
+template <LedMatrixConnection connectionType>
 class LedMatrix {
  public:
     using Array_t = util::Array<Pin, 8>;
@@ -51,4 +49,4 @@ class LedMatrix {
 }  // namespace hal
 }  // namespace dev
 }  // namespace stm32
-#endif  // DEV_INC_HAL_LEDMATRIX_H_
+#endif  //  DEV_INC_HAL_LEDMATRIX_H_ 
