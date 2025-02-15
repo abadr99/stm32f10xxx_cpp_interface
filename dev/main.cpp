@@ -31,11 +31,12 @@ int main() {
     Rcc::InitSysClock();
     Rcc::SetExternalClock(kHseCrystal);
     Rcc::Enable(Peripheral::kIOPC);
+    Rcc::Enable(Peripheral::kIOPA);
     Rcc::Enable(Peripheral::kCAN);
 
     CanConfig conf = {
         .opMode = OperatingMode::kNormal,
-        .testMode = TestMode::kCombined,
+        .testMode = TestMode::kNormal,
         .priority = FifoPriority::kID,
         .receivedFifoLock = ReceivedFifo::kUnLocked,
         .baudRatePrescaler = 1,
@@ -51,12 +52,12 @@ int main() {
     Can::Init(conf);
 
     CanTxMsg txMsg = {
-        .stdId = 0x123,
+        .stdId = 0xbbb,
         .extId = 0x00,
         .ide   = IdType::kStId,
         .rtr   = RemoteTxReqType::kData,
         .dlc   = 8,
-        .data  = {'M', 'O', 'H', 'B', 'M', 'E', 'C', '\0'}
+        .data  ={4,0,0,0,0,0,0,0} /* {'M', 'O', 'H', 'B', 'M', 'E', 'C', '\0'} */
     };
 
     CanRxMsg rxMsg;
@@ -74,7 +75,11 @@ int main() {
     };
 
     Pin pc13(kPortC, kPin13, PinMode::kOutputPushPull_10MHz);
+    Pin pa12_tx(kPortA, kPin12, PinMode::kAlternativePushPull_2MHz);
+    Pin pa11_rx(kPortA, kPin11, PinMode::kInputFloat);
     Gpio::Set(pc13);
+    Gpio::Set(pa12_tx);
+    Gpio::Set(pa11_rx);
 
     Can::FilterInit(filterConf);
 

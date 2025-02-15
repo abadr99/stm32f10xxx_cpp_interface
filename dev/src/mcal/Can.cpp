@@ -140,6 +140,17 @@ void Can::CancelTransmit(MailBoxType mailbox) {
 
 void Can::Receive(CanRxMsg& message, FifoNumber fifo) {  //  NOLINT [runtime/references]
     uint32_t fifoIndex = static_cast<uint32_t>(fifo);
+    
+    // Check that the Rx FIFO [0,1] is empty
+    if (fifo == FifoNumber::kFIFO0) {
+        if (CAN->RF0R.FMP0 == 0) {
+            return;
+        }
+    } else {
+        if (CAN->RF1R.FMP1 == 0) {
+            return;
+        }
+    } 
     message.ide = static_cast<IdType>(CAN->RxFIFOMailBox[fifoIndex].RIR.IDE);
     if (message.ide == IdType::kStId) {
         message.stdId = CAN->RxFIFOMailBox[fifoIndex].RIR.STID;
@@ -164,6 +175,7 @@ void Can::Receive(CanRxMsg& message, FifoNumber fifo) {  //  NOLINT [runtime/ref
     message.data[6] = (uint8_t)(0xFF & (CAN->RxFIFOMailBox[fifoIndex].RDHR >> 16));
     message.data[7] = (uint8_t)(0xFF & (CAN->RxFIFOMailBox[fifoIndex].RDHR >> 24));
     
+    // Release the Mailbox of the FIFO
     if (fifo == FifoNumber::kFIFO0) {
         CAN->RF0R.RFOM0 = 1;
     } else {
