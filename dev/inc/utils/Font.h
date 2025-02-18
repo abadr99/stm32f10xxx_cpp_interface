@@ -19,7 +19,6 @@
 #include <map>
 
 namespace stm32 {
-namespace utils {
 namespace font {
 
 class Font {
@@ -111,7 +110,6 @@ class Font {
     }
 };
 }  // namespace font
-}  // namespace utils
 }  // namespace stm32
 
 #endif  // DEV_INC_UTILS_FONT_H_
