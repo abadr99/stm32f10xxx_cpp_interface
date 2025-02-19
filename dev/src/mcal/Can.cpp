@@ -44,7 +44,6 @@ void Can::Init(const CanConfig &conf) {
     CAN->BTR = WriteBits<uint32_t, 16, 19>(CAN->BTR, static_cast<uint32_t>(conf.bs1));
     CAN->BTR = WriteBits<uint32_t, 0, 9>  
             (CAN->BTR, static_cast<uint32_t>(static_cast<uint32_t>(conf.baudRatePrescaler) - 1));
-
 }
 
 void Can::Start() {
@@ -98,36 +97,32 @@ void Can::Transmit(const CanTxMsg& message) {
      txMailbox = GetAvailableMailbox();
 
     if (txMailbox != 3) {
-
-    
-    CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
-    CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExId) ? 1 : 0;
-    CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
-    CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
-    CAN->TxMailBox[txMailbox].TDLR = (((uint32_t)message.data[3] << 24)) |
-                                     (((uint32_t)message.data[2] << 16)) |
-                                     (((uint32_t)message.data[1] << 8))  |
-                                     (((uint32_t)message.data[0]));
-    CAN->TxMailBox[txMailbox].TDHR = (((uint32_t)message.data[7] << 24)) |
-                                     (((uint32_t)message.data[6] << 16)) |
-                                     (((uint32_t)message.data[5] << 8))  |
-                                     (((uint32_t)message.data[4]));
-    // Request Transmission
-    CAN->TxMailBox[txMailbox].TIR.TXRQ = 1;
-
-
-    if (txMailbox == 0) {
-    	//  Wait until the transmission ocures
-    	util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK0 == 1); });
-    }else if (txMailbox == 1) {
-    	//  Wait until the transmission ocures
-    	util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK1 == 1); });
-    }else if (txMailbox ==2) {
-    	util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK2 == 1); });
+        CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
+        CAN->TxMailBox[txMailbox].TIR.IDE = (message.ide == IdType::kExId) ? 1 : 0;
+        CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
+        CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
+        CAN->TxMailBox[txMailbox].TDLR = (((uint32_t)message.data[3] << 24)) |
+                                         (((uint32_t)message.data[2] << 16)) |
+                                         (((uint32_t)message.data[1] << 8))  |
+                                         (((uint32_t)message.data[0]));
+        CAN->TxMailBox[txMailbox].TDHR = (((uint32_t)message.data[7] << 24)) |
+                                         (((uint32_t)message.data[6] << 16)) |
+                                         (((uint32_t)message.data[5] << 8))  |
+                                         (((uint32_t)message.data[4]));
+        // Request Transmission
+        CAN->TxMailBox[txMailbox].TIR.TXRQ = 1;
+        
+        
+        if (txMailbox == 0) {
+            //  Wait until the transmission ocures
+            util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK0 == 1); });
+        } else if (txMailbox == 1) {
+            //  Wait until the transmission ocures
+            util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK1 == 1); });
+        } else if (txMailbox ==2) {
+            util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK2 == 1); });
+        }
     }
-
-}
-
 }
 
 void Can::CancelTransmit(MailBoxType mailbox) {
