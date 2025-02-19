@@ -25,11 +25,15 @@ UPLOAD_OPT:= write 0x08000000
 $(OBJDIR)/%.o : src/**/%.cpp
 	@$(shell   mkdir -p $(OBJDIR))
 	@$(ARM_CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
-	$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
-	echo "[Makefile][Dev]: [$(SOURCES_CTR)/$(words $(SOURCES))] $<"
+	@$(ARM_CXX) -MMD -MP -MF $(OBJDIR)/$*.d $(CXX_FLAGS) $(INC) -c $< -o $@
+	@$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
+	@echo "[Makefile][Dev]: [$(SOURCES_CTR)/$(words $(SOURCES))] $<"
 
 $(OBJDIR)/%.o : ./%.cpp
-	@$(shell   mkdir -p $(OBJDIR))
+	@$(shell mkdir -p $(OBJDIR))
 	@$(ARM_CXX) $(CXX_FLAGS) $(INC) -c $< -o $@
-	$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
-	echo "[Makefile][Dev]: [$(SOURCES_CTR)/$(words $(SOURCES))] $<"
+	@$(eval SOURCES_CTR=$(shell echo $$(($(SOURCES_CTR)+1))))
+	@echo "[Makefile][Dev]: [$(SOURCES_CTR)/$(words $(SOURCES))] $<"
+	@$(ARM_CXX) -MMD -MP -MF $(OBJDIR)/$*.d $(CXX_FLAGS) $(INC) -c $< -o $@
+
+-include $(OBJS:.o=.d)
