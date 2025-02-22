@@ -165,33 +165,35 @@ struct RccRegDef {
     
     union APB1ENR {
         struct {
-            RegWidth_t TIM2EN   :1; 
-            RegWidth_t TIM3EN   :1; 
-            RegWidth_t TIM4EN   :1; 
-            RegWidth_t TIM5EN   :1; 
-            RegWidth_t TIM6EN   :1; 
-            RegWidth_t TIM7EN   :1; 
-            RegWidth_t TIM12EN  :1; 
-            RegWidth_t TIM13EN  :1; 
+            RegWidth_t TIM2EN   :1;
+            RegWidth_t TIM3EN   :1;
+            RegWidth_t TIM4EN   :1;
+            RegWidth_t TIM5EN   :1;
+            RegWidth_t TIM6EN   :1;
+            RegWidth_t TIM7EN   :1;
+            RegWidth_t TIM12EN  :1;
+            RegWidth_t TIM13EN  :1;
             RegWidth_t TIM14EN  :1;
+            RegWidth_t RES0     :2;
             RegWidth_t WWDGEN   :1;
-            RegWidth_t          :2;
+            RegWidth_t RES1     :2;
             RegWidth_t SPI2EN   :1;
             RegWidth_t SPI3EN   :1;
+            RegWidth_t RES2     :1;
             RegWidth_t USART2EN :1;
             RegWidth_t USART3EN :1;
             RegWidth_t USART4EN :1;
-            RegWidth_t USART5EN :1; 
-            RegWidth_t I2C1EN   :1; 
-            RegWidth_t I2C2EN   :1; 
-            RegWidth_t USBEN    :1; 
-            RegWidth_t          :1; 
-            RegWidth_t CANEN    :1; 
-            RegWidth_t          :1; 
-            RegWidth_t BKPEN    :1; 
-            RegWidth_t PWREN    :1; 
-            RegWidth_t DACEN    :1; 
-            RegWidth_t          :2; 
+            RegWidth_t USART5EN :1;
+            RegWidth_t I2C1EN   :1;
+            RegWidth_t I2C2EN   :1;
+            RegWidth_t USBEN    :1;
+            RegWidth_t RES      :1;
+            RegWidth_t CANEN    :1;
+            RegWidth_t RES3     :1;
+            RegWidth_t BKPEN    :1;
+            RegWidth_t PWREN    :1;
+            RegWidth_t DACEN    :1;
+            RegWidth_t RES4     :2;
         };
         RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
     }APB1ENR;
@@ -1272,18 +1274,18 @@ struct CANRegDef {
         struct {
             RegWidth_t INAK     : 1;        // Initialization acknowledge
             RegWidth_t SLAK     : 1;        // Sleep acknowledge
+            RegWidth_t ERRI     : 1;        // Error interrupt
             RegWidth_t WKUI     : 1;        // Wakeup interrupt
             RegWidth_t SLAKI    : 1;        // Sleep acknowledge interrupt
+            RegWidth_t          : 3;        // Reserved (must be kept at reset value)
             RegWidth_t TXM      : 1;        // Transmit mode
             RegWidth_t RXM      : 1;        // Receive mode
             RegWidth_t SAMP     : 1;        // Last sample point
             RegWidth_t RX       : 1;        // CAN Rx signal
-            RegWidth_t          : 7;        // Reserved (must be kept at reset value)
-            RegWidth_t ERRI     : 1;        // Error interrupt
             RegWidth_t          : 20;       // Reserved
         };
         RegWidth_t registerVal;     // 32-bit register value (for direct access)
-    }MSR;   // Master Status Register
+    }MSR;  // Master Status Register
     union TSR {
         struct {
             RegWidth_t RQCP0    :1;   //   Request Completion for mailbox 0
@@ -1356,7 +1358,7 @@ struct CANRegDef {
     union TDTR {
         struct {
             RegWidth_t DLC        : 4;   // Data Length Code
-            RegWidth_t            : 5;   // Reserved bits
+            RegWidth_t            : 4;   // Reserved bits
             RegWidth_t TGT        : 1;   // Transmit Global Time
             RegWidth_t            : 7;   // Reserved bits
             RegWidth_t TIME       : 16;  // Time Stamp
@@ -1394,6 +1396,7 @@ struct CANRegDef {
     };
     RxMailBox_t RxFIFOMailBox[2];  // 2 Receive FIFOs (FIFO 0 and FIFO 1)
 
+    RegWidth_t RESERVED1[12];
     // Filter Registers
     union FMR {
         struct {
@@ -1411,7 +1414,7 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }FM1R;  //  Filter Mode Register
-    RegWidth_t RESERVED1;       // Reserved memory space
+    RegWidth_t RESERVED2;       // Reserved memory space
     union FS1R {
         struct {
             RegWidth_t FSC      :28;  // Filter Scale
@@ -1419,7 +1422,7 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }FS1R;  //  Filter Scale Register
-    RegWidth_t RESERVED2;       // Reserved memory space
+    RegWidth_t RESERVED3;       // Reserved memory space
     union FFA1R {
         struct {
             RegWidth_t FFA      :28;  // Filter FIFO Assignment
@@ -1427,7 +1430,7 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }FFA1R;     //  Filter FIFO Assignment Register
-    RegWidth_t RESERVED3;       // Reserved memory space
+    RegWidth_t RESERVED4;       // Reserved memory space
     union FA1R {
         struct {
             RegWidth_t FACT     :28;  // Filter Activation
@@ -1435,7 +1438,7 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }FA1R;      //  Filter Activation Register
-    RegWidth_t RESERVED4[8];    // Reserved memory space
+    RegWidth_t RESERVED5[8];    // Reserved memory space
 
     // Filter Banks
     struct FilterBank {
