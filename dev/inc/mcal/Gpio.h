@@ -34,6 +34,10 @@ class Gpio {
   // configurations are abstracted in Pin class so we can use Set() method 
   // to set all gpio configurations
   static void Init();
+
+  template<Port portName>
+  static volatile GpioRegDef* GetPtr();
+
   static void Set(const Pin& pin);
 
   /**
