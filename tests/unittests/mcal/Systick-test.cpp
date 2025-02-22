@@ -71,3 +71,4 @@ TEST_F(SystickTest, Delay) {
     DELAY_TEST(1, Delay_us);
     DELAY_TEST(1000, Delay_ms);
 }
+
