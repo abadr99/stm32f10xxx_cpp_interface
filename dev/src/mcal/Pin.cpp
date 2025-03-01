@@ -77,14 +77,18 @@ bool Pin::IsInput() const {
 
 bool Pin::IsOutput() {
     PinMode mode = GetPinMode();
-    return mode >= PinMode::kOutputOpenDrain_2MHz 
-        && mode <= PinMode::kOutputPushPull_50MHz;
+    return (mode >= PinMode::kOutputPushPull_10MHz 
+        && mode <= PinMode::kOutputPushPull_50MHz)
+        ||(mode >= PinMode::kOutputOpenDrain_10MHz
+        && mode <= PinMode::kOutputOpenDrain_50MHz);
 }
 
 bool Pin::IsOutput() const {
     PinMode mode = GetPinMode();
-    return mode >= PinMode::kOutputOpenDrain_2MHz 
-        && mode <= PinMode::kOutputPushPull_50MHz;
+    return (mode >= PinMode::kOutputPushPull_10MHz 
+        && mode <= PinMode::kOutputPushPull_50MHz)
+        ||(mode >= PinMode::kOutputOpenDrain_10MHz
+        && mode <= PinMode::kOutputOpenDrain_50MHz);
 }
 
 bool Pin::IsAlternative() {
