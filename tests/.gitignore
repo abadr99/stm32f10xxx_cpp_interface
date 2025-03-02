@@ -1,1 +1,6 @@
+# main elf
 unittests/unittests.elf
+
+# lcov files
+*.gcda
+*.gcno

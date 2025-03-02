@@ -107,6 +107,8 @@ class Dma {
     /**
      * @brief Initializes the DMA with the given configuration.
      * 
+     * @note Must be called before calling any other DMA functions
+     * 
      * @param config The configuration settings for the DMA.
      */
     static void Init(const DMAConfig& config);

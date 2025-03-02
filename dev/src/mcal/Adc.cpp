@@ -72,45 +72,99 @@ ADC::ADC(const AdcConfig& config) : config_(config) {
 }
 
 void ADC::Init() {
-    ADC_reg->CR2.registerVal = 0;  // Reset ADC
-    ADC_reg->CR2.ALIGN = static_cast<RegWidth_t>(config_.alignment);
-    if (config_.trigSource != kSoftware) {
-        ADC_reg->CR2.ADON = 1;
-        return;
-    } else if (config_.mode == kSingleInjected) {
-        ADC_reg->CR2.JEXTTRIG = 1;
-        ADC_reg->CR2.JEXTSEL = static_cast<RegWidth_t>(config_.trigSource);
-    } else {
-        ADC_reg->CR2.EXTTRIG = 1;
-        ADC_reg->CR2.EXTSEL = static_cast<RegWidth_t>(config_.trigSource);
-    }
+    //  Reset ADC configuration 
+    ADC_reg->CR1.registerVal = 0;
+    ADC_reg->CR2.registerVal = 0;
+
+    //  Wakes up the ADC from Power Down state
     ADC_reg->CR2.ADON = 1;
+
+    //  Configure Alignment 
+    ADC_reg->CR2.ALIGN = static_cast<RegWidth_t>(config_.alignment);
+
+    //  Configure Mode
+    switch (config_.mode) {
+        case AdcMode::kSingle:
+            ADC_reg->CR2.CONT = 0;   // Disable Continuous Mode
+            ADC_reg->CR1.SCAN = 0;   // Disable Scan Mode
+            break;
+        case AdcMode::kContinuous:
+            ADC_reg->CR2.CONT = 1;   // Enable Continuous Mode
+            ADC_reg->CR1.SCAN = 0;   // Disable Scan Mode
+            break;
+        case AdcMode::kScanMode:
+            ADC_reg->CR2.CONT = 0;   // Disable Continuous Mode
+            ADC_reg->CR1.SCAN = 1;   // Enable Scan Mode
+            break;
+        case AdcMode::kDiscontinuous:
+            ADC_reg->CR2.CONT = 0;   // Disable Continuous Mode
+            ADC_reg->CR1.SCAN = 1;   // Enable Scan Mode
+            break;
+    }
+
+    //  Configure Trigger Source
+    if (config_.channelMode == AdcChannelMode::kRegular) {
+        ADC_reg->CR2.EXTSEL = static_cast<RegWidth_t>(config_.trigSource);
+    } else if (config_.channelMode == AdcChannelMode::kInjected) {
+        ADC_reg->CR2.JEXTSEL = static_cast<RegWidth_t>(config_.trigSource);
+    }
+
+    if (config_.trigSource == AdcTriggerSource::kEXTI_LINE11) {
+        ADC_reg->CR2.EXTTRIG = 1;   // Enable External conversion
+    }
+        
+    //  Configure Channel Sequence
+    if (config_.mode == AdcMode::kSingle) {
+        if (config_.channelMode == kRegular) {
+            ADC_reg->SQR1.L = 1;  // Only one channel
+            ADC_reg->SQR3.SQ1 = static_cast<RegWidth_t>(config_.channel);
+        } else if (config_.channelMode == kInjected) {
+            ADC_reg->JSQR.JL = 1;  // Only one channel
+            ADC_reg->JSQR.JSQ1 = static_cast<RegWidth_t>(config_.channel);
+        }
+    } else {
+        // TODO(@nuran) : if needed
+    }
+
+    //  Configure Sampling cycles
+    ConfigureChannelSample();
 }
 
 uint16_t ADC:: StartSingleConversion() {
+    // Start COnversion
+    ADC_reg->CR2.ADON = 1;
+
     // Ensure ADC is not busy
-    util::BusyWait<constant::TimeOut::kAdc>([&](){ return !ADC_reg->SR.STRT; });
-    // Set up for single conversion
-    ADC_reg->CR2.CONT = 0;  // Disable continuous mode
-    ADC_reg->SQR1.L = 0;    // Set sequence length to 1
-    ADC_reg->SQR3 = static_cast<uint8_t>(config_.channel);  // Set channel
+    util::BusyWait<constant::TimeOut::kAdc>([&](){ return !(ADC_reg->SR.STRT); });
+    
     ConfigureChannelSample();
-    // Start conversion
+    // Start conversion of regular channel
     ADC_reg->CR2.SWSTART = 1;
     // Wait for conversion to complete
-    util::BusyWait<constant::TimeOut::kAdc>([&](){ return ADC_reg->SR.EOC; });
+    util::BusyWait<constant::TimeOut::kAdc>([&](){ return !(ADC_reg->SR.EOC); });
     // Read and return the result
     return ADC_reg->DR.DATA;
-    }
+}
+
+uint16_t ADC:: GetTemperatureValue() {
+    //  Enable Temperature Sensor
+    ADC_reg->CR2.TSVREFE = 1;
+    
+    //  Get Adc Digital value
+    uint16_t adc_value = StartSingleConversion();
+
+    //  Convert the digital value to analog value(Voltage)
+    float voltage_sense = (adc_value * (kVref / kAdcResolution));
+
+    //  Convert the Voltage to a temperature value
+    uint16_t temperature_value = ((kV25 - voltage_sense) / kAvgSlope) + kTempConstant; 
+    return temperature_value;
+}
 
 void ADC::StartContinuousConversion() {
     // Ensure ADC is not busy
     util::BusyWait<constant::TimeOut::kAdc>([&](){ return !ADC_reg->SR.STRT; });
-    // Set up for continuous conversion
-    ADC_reg->CR2.CONT = 1;  // Enable continuous mode
-    ADC_reg->SQR1.L = 0;    // Set sequence length to 1
-    ADC_reg->SQR3 = static_cast<uint8_t>(config_.channel);  // Set channel
-    ConfigureChannelSample();
+    
     // Start conversion
     ADC_reg->CR2.SWSTART = 1;
 }
@@ -127,23 +181,13 @@ void ADC::StopContinuousConversion() {
     ADC_reg->CR2.SWSTART = 0;  // Stop conversion
 }
 
-uint16_t ADC::StartInjectedConversion() {
-    ADC_reg->JSQR.JL = 0;
-    // Configure injected channel
-    ADC_reg->JSQR.JSQ4 = static_cast<RegWidth_t>(config_.channel);
-    ConfigureChannelSample();
-    // Start injected conversion
-    ADC_reg->CR2.JSWSTART = 1;
-    util::BusyWait<constant::TimeOut::kAdc>([&](){ return ADC_reg->SR.JEOC; });
-    return ADC_reg->JDR1.registerVal;
-}
 
 void ADC::EnableInterrupt() {
-    switch (config_.mode) {
-    case kSingleRegular:
+    switch (config_.channelMode) {
+    case kRegular:
         ADC_reg->CR1.EOCIE = 1;
         break;
-    case kSingleInjected:
+    case kInjected:
         ADC_reg->CR1.JEOCIE = 1;
         break;
     default:
@@ -152,11 +196,11 @@ void ADC::EnableInterrupt() {
 }
 
 void ADC::DisableInterrupt() {
-    switch (config_.mode) {
-    case kSingleRegular:
+    switch (config_.channelMode) {
+    case kRegular:
         ADC_reg->CR1.EOCIE = 0;
         break;
-    case kSingleInjected:
+    case kInjected:
         ADC_reg->CR1.JEOCIE = 0;
         break;
     default:

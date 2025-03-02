@@ -97,7 +97,8 @@ struct Address;
     PA(TIM2,       0x40000000)                \
     PA(TIM3,       0x40000400)                \
     PA(TIM4,       0x40000800)                \
-    PA(TIM5,       0x40000C00)
+    PA(TIM5,       0x40000C00)                \
+    PA(CAN,       0x40006400)
 
 #define PA(name, addr) \
     template<> struct Address<Peripheral::k##name> : BaseAddress<Peripheral::k##name, addr> {};    
