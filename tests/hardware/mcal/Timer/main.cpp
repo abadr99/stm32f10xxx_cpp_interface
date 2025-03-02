@@ -25,7 +25,6 @@ using namespace stm32::registers::timer;
 using namespace stm32::dev::mcal::systick;
 
 int main(void) {
-
     Systick::Init();
     Rcc::Init();
     Gpio::Init();
@@ -46,7 +45,7 @@ int main(void) {
     TimerConfig config = {
             .Timerid = kTimer2,
             .Direction = kUP,
-            .Prescaler =72,
+            .Prescaler = 72,
             .interrupt = kDisable
             };
     Timer tim2(config);
@@ -55,17 +54,15 @@ int main(void) {
         .mode = kPWM1,
         .state = kEnable,
         .polarity = kActiveHigh,
-		.period = 100
+        .period = 100
     };
     tim2.OCMode(oc);
 
 
-   while (1) {
-
-		tim2.SetCompare1(oc, kChannel1, 100);
-		Systick::Delay_ms(1000);
-
-		tim2.SetCompare1(oc, kChannel1, 20);
-		Systick::Delay_ms(1000);
-}
+    while (1) {
+        tim2.SetCompare1(oc, kChannel1, 100);
+        Systick::Delay_ms(1000);
+        tim2.SetCompare1(oc, kChannel1, 20);
+        Systick::Delay_ms(1000);
+    }
 }
