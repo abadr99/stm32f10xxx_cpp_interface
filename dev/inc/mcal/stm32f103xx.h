@@ -1140,7 +1140,7 @@ union CCMR2 {
 
         RegWidth_t Reserved : 16;  // Reserved bits
     };
-    RegWidth_t registerVal; // Full 32-bit register value
+    RegWidth_t registerVal;  // Full 32-bit register value
 } CCMR2;
     union CCER {
     struct {

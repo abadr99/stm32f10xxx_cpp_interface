@@ -57,22 +57,22 @@ enum TimerSelection {
     kTRC /**<TIM Input 1 is selected to be connected to TRC*/
 };
 enum OCMode {
-    kTiming, // Output compare timing mode (no output on the pin).
-    kActive, // Output compare active mode.
-    kInactive, // Output compare inactive mode.
-    kToggle, // Output compare toggle mode.
-    kForced_Inactive, // Forced inactive mode.
-    kForced_Active, // Forced active mode.
-    kPWM1, // PWM mode 1.
-    kPWM2 // PWM mode 2.
+    kTiming,  // Output compare timing mode (no output on the pin).
+    kActive,  // Output compare active mode.
+    kInactive,  // Output compare inactive mode.
+    kToggle,  // Output compare toggle mode.
+    kForced_Inactive,  // Forced inactive mode.
+    kForced_Active,  // Forced active mode.
+    kPWM1,  // PWM mode 1.
+    kPWM2  // PWM mode 2.
 };
 enum OCPolarity {
     kActiveHigh ,
     kActiveLow 
 };
 enum OCIdleState {
-    kIdleState_Reset, // Output is reset during idle state
-    kIdleState_Set // Output is set during idle state.
+    kIdleState_Reset,  // Output is reset during idle state
+    kIdleState_Set  // Output is set during idle state.
 };
 enum State {
     kDisable,
@@ -128,7 +128,7 @@ class Timer {
      */
     void Delay_ms(const TimeBaseTypeDef & counter, uint16_t value);
     void OCMode(const TimerOCTypeDef & OC);
-    void SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel,uint16_t pwmvalue) ;
+    void SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel, uint16_t pwmvalue);
     void Cmd(State state);
     /**
      * @brief Gets the function pointer to the ISR for the specified timer ID.

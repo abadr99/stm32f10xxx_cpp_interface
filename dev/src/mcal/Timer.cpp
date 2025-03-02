@@ -89,7 +89,6 @@ void Timer::Delay_ms(const TimeBaseTypeDef & counter, uint16_t value) {
 }
 // Channel 1 , Timer 2
 void Timer::OCMode(const TimerOCTypeDef & OC ) {
-
     // Disable Timer at first
     timerReg->CR1.CEN = 0;
 
@@ -108,41 +107,40 @@ void Timer::OCMode(const TimerOCTypeDef & OC ) {
     timerReg->BDTR.MOE = 1;
 }
 void Timer::SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel, uint16_t pwmvalue) {
-
     timerReg->CR1.CEN = 0;
-	// Set preLoad value
+    // Set preLoad value
     timerReg->ARR = OC.period - 1;
-   // timerReg->CCR1 = pwmvalue;
-	    switch(channel) {
-	    case kChannel1:  //  PORTA_0
-	        timerReg->CCMR1.CC1S = 0;
-	        timerReg->CCMR1.OC1M = OC.mode;
-	        timerReg->CCMR1.OC1PE = kEnable;
-	        /* Set the Output State */
-	        timerReg->CCER.CC1E = OC.state;
-	        timerReg->CCR1 = 0;
-	        timerReg->CCR1 = pwmvalue;
-	        break;
-	    case kChannel2:  //PORTA_1:
-	    	timerReg->CCMR1.CC2S = 0;   // Channel as output
-            timerReg->CCMR1.OC2M = OC.mode;   // PWM mode 1
-            timerReg->CCMR1.OC2PE = kEnable;  // Enable preload
-            timerReg->CCER.CC2E = OC.state;    // Enable output
-	        timerReg->CCR2 = pwmvalue;
-	        break;
-	    case kChannel3:  //PORTA_2:
-            timerReg->CCMR2.CC3S = 0;   // Channel as output
-            timerReg->CCMR2.OC3M = OC.mode;   // PWM mode 1
-            timerReg->CCMR2.OC3PE = kEnable;  // Enable preload
-            timerReg->CCER.CC3E = OC.state;    // Enable output
-            timerReg->CCR3 = pwmvalue;
-	        break;
-	    case kChannel4:  //PORTA_3:
-	        timerReg->CCR4 = pwmvalue;
-	        break;
-	    }
-        timerReg->EGR.UG = 1;
-		   Timer::Cmd(kEnable);
+    // timerReg->CCR1 = pwmvalue;
+    switch (channel) {
+        case kChannel1:  //  PORTA_0
+        timerReg->CCMR1.CC1S = 0;
+        timerReg->CCMR1.OC1M = OC.mode;
+        timerReg->CCMR1.OC1PE = kEnable;
+        /* Set the Output State */
+        timerReg->CCER.CC1E = OC.state;
+        timerReg->CCR1 = 0;
+        timerReg->CCR1 = pwmvalue;
+        break;
+    case kChannel2:  // PORTA_1:
+        timerReg->CCMR1.CC2S = 0;   // Channel as output
+        timerReg->CCMR1.OC2M = OC.mode;   // PWM mode 1
+        timerReg->CCMR1.OC2PE = kEnable;  // Enable preload
+        timerReg->CCER.CC2E = OC.state;    // Enable output
+        timerReg->CCR2 = pwmvalue;
+        break;
+    case kChannel3:  // PORTA_2:
+        timerReg->CCMR2.CC3S = 0;   // Channel as output
+        timerReg->CCMR2.OC3M = OC.mode;   // PWM mode 1
+        timerReg->CCMR2.OC3PE = kEnable;  // Enable preload
+        timerReg->CCER.CC3E = OC.state;    // Enable output
+        timerReg->CCR3 = pwmvalue;
+        break;
+    case kChannel4:  // PORTA_3:
+        timerReg->CCR4 = pwmvalue;
+        break;
+    }
+    timerReg->EGR.UG = 1;
+    Timer::Cmd(kEnable);
 }
 void Timer::Cmd(State state) {
     timerReg->CR1.CEN = state;
