@@ -44,6 +44,7 @@ struct TimeOut {
     static constexpr uint32_t kSpi     = 400UL;
     static constexpr uint32_t kAdc     = 400UL;
     static constexpr uint32_t kI2C     = 400UL;
+    static constexpr uint32_t kCan     = 0xFFFF;
 };
 
 }  // namespace constant
