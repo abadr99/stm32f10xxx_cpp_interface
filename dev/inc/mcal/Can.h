@@ -122,6 +122,22 @@ enum class TimeQuanta : uint8_t {
     kTq16   /**< 16 Time Quanta (TQ) */
 };
 
+enum class Interrupts : uint32_t {
+    kTxMailBoxEmpty,        /**< Transmit mailbox empty */
+    kFifo0MessagePending,   /**< FIFO 0 message pending */
+    kFifo0Full,             /**< FIFO 0 full */
+    kFifo0Overrun,          /**< FIFO 0 overrun */
+    kFifo1MessagePending,   /**< FIFO 1 message pending */
+    kFifo1Full,             /**< FIFO 1 full */
+    kFifo1Overrun,          /**< FIFO 1 overrun */
+    kWakeUp,                /**< Wake-up */
+    kSleepAck,              /**< Sleep acknowledge */
+    kErorrWarning,          /**< Error warning */
+    kErrorPassive,          /**< Error passive */
+    kBusOff,                /**< Bus-off */
+    kLastErrorCode,         /**< Last error code */
+    kError                  /**< Error */
+};
 /**
  * @brief State for enabling or disabling features.
  */
@@ -242,6 +258,9 @@ class Can {
      */
     uint8_t GetPendingMessages(FifoNumber fifo);
 
+    static void EnableInterrupt(Interrupts interrupt);
+    static void DisableInterrupt(Interrupts interrupt);
+    
  private:
     static can_ptr CAN;  /**< Pointer to CAN registers */
     /**
