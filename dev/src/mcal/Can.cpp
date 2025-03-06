@@ -23,7 +23,14 @@ using namespace stm32::dev::mcal::can;
 using namespace stm32::registers::can;
 
 volatile CANRegDef* Can::CAN = nullptr;
-  
+pFunction Can::TxMailboxComplete[3] = {nullptr};
+pFunction Can::TxMailboxAbort[3] = {nullptr};
+pFunction Can::RxFifoMsgPending[2] = {nullptr};
+pFunction Can::RxFifoFull[2] = {nullptr};
+pFunction Can::SleepCallback = nullptr;
+pFunction Can::WakeUpCallback = nullptr;
+pFunction Can::ErrorCallback = nullptr;
+
 void Can::Init(const CanConfig &conf) {
     CAN = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
 
@@ -180,6 +187,32 @@ void Can::Receive(CanRxMsg& message, FifoNumber fifo) {  //  NOLINT [runtime/ref
 
 uint8_t Can::GetPendingMessages(FifoNumber fifo) {
     return (fifo == FifoNumber::kFIFO0) ? CAN->RF0R.FMP0 : CAN->RF1R.FMP1;
+}
+
+void Can::EnableInterrupt(Interrupts interrupt) {
+    CAN->IER = SetBit(CAN->IER, static_cast<uint32_t>(interrupt));
+}
+
+void Can::DisableInterrupt(Interrupts interrupt) {
+    CAN->IER = ClearBit(CAN->IER, static_cast<uint32_t>(interrupt));
+}
+
+void Can::SetCallback(CallbackId id, pFunction func) {
+    switch (id) {
+        case CallbackId::kTxMailbox0Complete: TxMailboxComplete[0] = func; break;
+        case CallbackId::kTxMailbox1Complete: TxMailboxComplete[1] = func; break;
+        case CallbackId::kTxMailbox2Complete: TxMailboxComplete[2] = func; break;
+        case CallbackId::kTxMailbox0Abort: TxMailboxAbort[0] = func; break;
+        case CallbackId::kTxMailbox1Abort: TxMailboxAbort[1] = func; break;
+        case CallbackId::kTxMailbox2Abort: TxMailboxAbort[2] = func; break;
+        case CallbackId::kFifo0MessagePending: RxFifoMsgPending[0] = func; break;
+        case CallbackId::kFifo1MessagePending: RxFifoMsgPending[1] = func; break;
+        case CallbackId::kFifo0Full: RxFifoFull[0] = func; break;
+        case CallbackId::kFifo1Full: RxFifoFull[1] = func; break;
+        case CallbackId::kSleepAck: SleepCallback = func; break;
+        case CallbackId::kWakeUp: WakeUpCallback = func; break;
+        case CallbackId::kError: ErrorCallback = func; break;
+    }
 }
 
 void Can::SetOperatingMode(OperatingMode mode) {

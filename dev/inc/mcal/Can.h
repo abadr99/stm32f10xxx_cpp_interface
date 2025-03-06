@@ -130,13 +130,29 @@ enum class Interrupts : uint32_t {
     kFifo1MessagePending,   /**< FIFO 1 message pending */
     kFifo1Full,             /**< FIFO 1 full */
     kFifo1Overrun,          /**< FIFO 1 overrun */
-    kWakeUp,                /**< Wake-up */
-    kSleepAck,              /**< Sleep acknowledge */
-    kErorrWarning,          /**< Error warning */
+    kErorrWarning = 8,      /**< Error warning */
     kErrorPassive,          /**< Error passive */
     kBusOff,                /**< Bus-off */
     kLastErrorCode,         /**< Last error code */
-    kError                  /**< Error */
+    kError = 15,            /**< Error */
+    kWakeUp,                /**< Wake-up */
+    kSleepAck,              /**< Sleep acknowledge */
+};
+
+enum class CallbackId : uint32_t {
+    kTxMailbox0Complete,    /**< Transmit mailbox 0 complete */
+    kTxMailbox1Complete,    /**< Transmit mailbox 1 complete */
+    kTxMailbox2Complete,    /**< Transmit mailbox 2 complete */
+    kTxMailbox0Abort,       /**< Transmit mailbox 0 abort */
+    kTxMailbox1Abort,       /**< Transmit mailbox 1 abort */
+    kTxMailbox2Abort,       /**< Transmit mailbox 2 abort */
+    kFifo0MessagePending,   /**< FIFO 0 message pending */
+    kFifo0Full,             /**< FIFO 0 full */
+    kFifo1MessagePending,   /**< FIFO 1 message pending */
+    kFifo1Full,             /**< FIFO 1 full */
+    kSleepAck,              /**< Sleep acknowledge */
+    kWakeUp,                /**< Wake-up */
+    kError,          /**< Error */
 };
 /**
  * @brief State for enabling or disabling features.
@@ -258,11 +274,31 @@ class Can {
      */
     uint8_t GetPendingMessages(FifoNumber fifo);
 
+    /**
+     * @brief Enables the specified CAN interrupt.
+     * @param interrupt Interrupt to enable.
+     */
     static void EnableInterrupt(Interrupts interrupt);
+
+    /**
+     * @brief Disables the specified CAN interrupt.
+     * @param interrupt Interrupt to disable.
+     */
     static void DisableInterrupt(Interrupts interrupt);
+
+    static void SetCallback(CallbackId id, pFunction func);
     
  private:
     static can_ptr CAN;  /**< Pointer to CAN registers */
+    static constexpr uint32_t kMailboxSiz = 3;
+    static constexpr uint32_t kFifoSiz = 2;
+    static pFunction TxMailboxComplete[kMailboxSiz];  /**< Transmit mailbox complete callback */
+    static pFunction TxMailboxAbort[kMailboxSiz];     /**< Transmit mailbox abort callback */
+    static pFunction RxFifoMsgPending[kFifoSiz];       /**< Receive FIFO message pending callback */
+    static pFunction RxFifoFull[kFifoSiz];             /**< Receive FIFO full callback */
+    static pFunction SleepCallback;                    /**< Sleep callback */
+    static pFunction WakeUpCallback;                   /**< Wake-up callback */
+    static pFunction ErrorCallback;                    /**< Error callback */
     /**
      * @brief Sets the operating mode for the CAN peripheral.
      * @param conf CAN configuration structure.
