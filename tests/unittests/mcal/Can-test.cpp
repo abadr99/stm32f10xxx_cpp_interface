@@ -13,7 +13,8 @@
 #include "mcal/stm32f103xx.h"
 #include "mcal/Can.h"
 
+using namespace stm32::util;
+using namespace stm32::type;
 using namespace stm32::registers::can;
 using namespace stm32::dev::mcal::can;
-
 
