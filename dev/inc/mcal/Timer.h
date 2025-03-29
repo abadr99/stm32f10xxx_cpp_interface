@@ -130,6 +130,7 @@ class Timer {
     void OCMode(const TimerOCTypeDef & OC);
     void SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel, uint16_t pwmvalue);
     void Cmd(State state);
+    TimerID GetID() const;
     /**
      * @brief Gets the function pointer to the ISR for the specified timer ID.
      * 

@@ -145,6 +145,9 @@ void Timer::SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel, uint16
 void Timer::Cmd(State state) {
     timerReg->CR1.CEN = state;
 }
+TimerID Timer::GetID() const {
+    return config_.Timerid;
+}
 
 pFunction Timer::GetFunToISR(TimerID id) {
     STM32_ASSERT((id >= kTimer1) &&
