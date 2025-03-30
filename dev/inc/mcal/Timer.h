@@ -88,6 +88,12 @@ struct TimerOCTypeDef {
     uint16_t period;
     OCIdleState idleState = kIdleState_Reset;
 };
+struct TimerICTypeDef {
+    TimerSelection selection;
+    uint8_t prescaler;
+    uint8_t filter;
+    TimerPolarity polarity;
+};
 /**
  * @struct TimerConfig
  * @brief Structure representing the configuration settings for a timer.
@@ -129,6 +135,9 @@ class Timer {
     void Delay_ms(const TimeBaseTypeDef & counter, uint16_t value);
     void OCMode(const TimerOCTypeDef & OC);
     void SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel, uint16_t pwmvalue);
+    void ICMode(TimerChannels channel, TimerICTypeDef IC);
+    uint16_t GetCaptureValue(TimerChannels channel);
+    void ClearCaptureFlag(TimerChannels channel);
     void Cmd(State state);
     /**
      * @brief Gets the function pointer to the ISR for the specified timer ID.
