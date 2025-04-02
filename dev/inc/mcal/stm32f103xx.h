@@ -1338,8 +1338,41 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }RF1R;        // Receive FIFO 1 Register
-    RegWidth_t IER;         // Interrupt Enable Register
-    RegWidth_t ESR;         // Error Status Register
+    union IER {
+        struct {
+            RegWidth_t TMEIE    :1;   // Transmit mailbox empty interrupt enable
+            RegWidth_t FMPIE0   :1;   // FIFO message pending interrupt enable for FIFO 0
+            RegWidth_t FFIE0    :1;   // FIFO full interrupt enable for FIFO 0
+            RegWidth_t FOVIE0   :1;   // FIFO overrun interrupt enable for FIFO 0
+            RegWidth_t FMPIE1   :1;   // FIFO message pending interrupt enable for FIFO 1
+            RegWidth_t FFIE1    :1;   // FIFO full interrupt enable for FIFO 1
+            RegWidth_t FOVIE1   :1;   // FIFO overrun interrupt enable for FIFO 1
+            RegWidth_t          :1;   // Reserved: Unused bit, should remain 0.
+            RegWidth_t EWGIE    :1;   // Error warning interrupt enable
+            RegWidth_t EPVIE    :1;   // Error passive interrupt enable
+            RegWidth_t BOFIE    :1;   // Bus-off interrupt enable
+            RegWidth_t LECIE    :1;   // Last error code interrupt enable
+            RegWidth_t          :3;   // Reserved: Unused bits, should remain 0.
+            RegWidth_t ERRIE    :1;   // Error interrupt enable
+            RegWidth_t WKUIE    :1;   // Wakeup interrupt enable
+            RegWidth_t SLKIE    :1;   // Sleep acknowledge interrupt enable 
+            RegWidth_t          :14;  // Reserved: Unused bits, should remain 0.
+        };
+        RegWidth_t registerVal;  
+    }IER;         // Interrupt Enable Register
+    union ESR {
+        struct {
+            RegWidth_t EWGF     :1;   // Error warning flag
+            RegWidth_t EPVF     :1;   // Error passive flag
+            RegWidth_t BOFF     :1;   // Bus-off flag
+            RegWidth_t          :1;   // Reserved: Unused bit, should remain 0.
+            RegWidth_t LEC      :3;   // Last error code
+            RegWidth_t          :9;   // Reserved: Unused bits, should remain 0.
+            RegWidth_t TEC      :8;   // Transmit error counter
+            RegWidth_t REC      :8;   // Receive error counter
+        };
+        RegWidth_t registerVal;
+    }ESR;         // Error Status Register
     RegWidth_t BTR;         // Bit Timing Register
     RegWidth_t RESERVED0[88];   // Reserved memory space
 

@@ -152,7 +152,7 @@ enum class CallbackId : uint32_t {
     kFifo1Full,             /**< FIFO 1 full */
     kSleepAck,              /**< Sleep acknowledge */
     kWakeUp,                /**< Wake-up */
-    kError,          /**< Error */
+    kError,                 /**< Error */
 };
 /**
  * @brief State for enabling or disabling features.
@@ -161,13 +161,39 @@ enum class State : uint8_t {
     kDisable,   /**< Disabled state */
     kEnable     /**< Enabled state */
 };
+enum class CanError : uint32_t {
+    kNone            = 0x00000000U,  /**< No error */
+    kEwg             = 0x00000001U,  /**< Protocol Error Warning */
+    kEpv             = 0x00000002U,  /**< Error Passive */
+    kBof             = 0x00000004U,  /**< Bus-off error */
+    kStf             = 0x00000008U,  /**< Stuff error */
+    kFor             = 0x00000010U,  /**< Form error */
+    kAck             = 0x00000020U,  /**< Acknowledgment error */
+    kBr              = 0x00000040U,  /**< Bit recessive error */
+    kBd              = 0x00000080U,  /**< Bit dominant error */
+    kCrc             = 0x00000100U,  /**< CRC error */
+    kRxFov0          = 0x00000200U,  /**< Rx FIFO0 overrun error */
+    kRxFov1          = 0x00000400U,  /**< Rx FIFO1 overrun error */
+    kTxAlst0         = 0x00000800U,  /**< TxMailbox 0 arbitration lost */
+    kTxTerr0         = 0x00001000U,  /**< TxMailbox 0 transmit error */
+    kTxAlst1         = 0x00002000U,  /**< TxMailbox 1 arbitration lost */
+    kTxTerr1         = 0x00004000U,  /**< TxMailbox 1 transmit error */
+    kTxAlst2         = 0x00008000U,  /**< TxMailbox 2 arbitration lost */
+    kTxTerr2         = 0x00010000U,  /**< TxMailbox 2 transmit error */
+    kTimeout         = 0x00020000U,  /**< Timeout error */
+    kNotInitialized  = 0x00040000U,  /**< Peripheral not initialized */
+    kNotReady        = 0x00080000U,  /**< Peripheral not ready */
+    kNotStarted      = 0x00100000U,  /**< Peripheral not started */
+    kParam           = 0x00200000U   /**< Parameter error */
+};
+
 
 /**
  * @brief CAN configuration structure.
  */
 struct CanConfig {
     OperatingMode opMode;             /**< Operating mode */
-    TestMode testMode;                    /**< Test mode */
+    TestMode testMode;                /**< Test mode */
     FifoPriority priority;            /**< FIFO priority */
     ReceivedFifo receivedFifoLock;    /**< Receive FIFO locked mode */
     uint16_t baudRatePrescaler : 9;   /**< CAN baud rate prescaler */
@@ -230,7 +256,7 @@ class Can {
  public:
     using CANRegDef = stm32::registers::can::CANRegDef;
     using can_ptr   = stm32::type::RegType<CANRegDef>::ptr;
-
+    using pFunction = stm32::type::pFunction;
     /**
      * @brief Initializes the CAN peripheral with the specified configuration.
      * @param conf Configuration structure for CAN initialization.
@@ -287,6 +313,7 @@ class Can {
     static void DisableInterrupt(Interrupts interrupt);
 
     static void SetCallback(CallbackId id, pFunction func);
+    static pFunction GetCallback(CallbackId id);
     
  private:
     static can_ptr CAN;  /**< Pointer to CAN registers */
