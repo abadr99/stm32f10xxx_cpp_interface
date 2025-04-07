@@ -162,7 +162,7 @@ enum class State : uint8_t {
     kEnable     /**< Enabled state */
 };
 enum class CanError : uint32_t {
-    kNone            = 0x00000000U,  /**< No error */
+    kNoEr            = 0x00000000U,  /**< No error */
     kEwg             = 0x00000001U,  /**< Protocol Error Warning */
     kEpv             = 0x00000002U,  /**< Error Passive */
     kBof             = 0x00000004U,  /**< Bus-off error */
@@ -204,6 +204,7 @@ struct CanConfig {
     State ABOM;                       /**< Automatic bus-off management */
     State AWUM;                       /**< Automatic wake-up mode */
     State NART;                       /**< No automatic retransmission */
+    CanError error = CanError::kNoEr;           /**< Error handling */
 };
 
 /**

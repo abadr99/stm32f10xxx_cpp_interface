@@ -268,7 +268,8 @@ void Can::SetOperatingMode(OperatingMode mode) {
 }
 extern "C" void Can_Handler(void) {
     auto CanReg = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
-    CanError code = CanError::kNone;
+    CanConfig conf;
+    CanError code = CanError::kNoEr;
     if (CanReg->IER.TMEIE) {
         if (CanReg->TSR.RQCP0) {
             CanReg->TSR.RQCP0 = 1;
@@ -385,7 +386,7 @@ extern "C" void Can_Handler(void) {
                 switch (CanReg->ESR.LEC) {
                     case 0:
                         SetBit(static_cast<uint32_t>(code), 
-                                static_cast<uint32_t>(CanError::kNone));
+                                static_cast<uint32_t>(CanError::kNoEr));
                         break;
                     case 1:
                         SetBit(static_cast<uint32_t>(code), 
@@ -418,8 +419,8 @@ extern "C" void Can_Handler(void) {
         CanReg->MSR.ERRI = 0;
     }
     CanReg->IER.ERRIE = 0;
-    if (code != CanError::kNone) {
-        // TODO(@noura36): Update error code in handler
+    if (code != CanError::kNoEr) {
+        SetBit(static_cast<uint32_t>(conf.error), static_cast<uint32_t>(code));
         Can::GetCallback(CallbackId::kError)();
     }
 }
