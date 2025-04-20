@@ -45,4 +45,5 @@ hal {
     src/LDR.cpp
     src/LM35.cpp
     src/LedMatrix.cpp
+    src/Ultrasonic.cpp
 }
