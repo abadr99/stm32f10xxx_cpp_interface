@@ -27,21 +27,23 @@ class Ultrasonic {
      * @param echoPin The pin used to receive the echo from the ultrasonic sensor.
      * @param timer The timer used for measuring time intervals.
      */
-    Ultrasonic(const Pin& triggerPin, const Pin& echoPin, Timer *timer);
+    Ultrasonic(const Pin& triggerPin, const Pin& echoPin, const TimerConfig &cfg, TimerChannels ch);
 
     /**
      * @brief Measures the distance using the ultrasonic sensor.
      *
      * @return The measured distance in centimeters.
      */
-    float MeasureDistance();
+    float MeasureDistanceCM();
 
  private:
     Pin triggerPin_;  /**< Pin used to trigger the ultrasonic sensor */
     Pin echoPin_;     /**< Pin used to receive the echo from the ultrasonic sensor */
-    Timer *timer_;    /**< Timer used for measuring time intervals */
+    Timer timer_;    /**< Timer used for measuring time intervals */
+    TimerChannels channel_;  /**< Timer channel used for input capture */   
 
     void Trigger();
+    uint16_t GetEchoDuration();
 };
 }   // namespace ultrasonic
 }   // namespace hal

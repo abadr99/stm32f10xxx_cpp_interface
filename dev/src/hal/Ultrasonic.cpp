@@ -24,35 +24,49 @@ using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::timer;
 using namespace stm32::dev::hal::ultrasonic;
 
-Ultrasonic::Ultrasonic(const Pin& triggerPin, const Pin& echoPin, Timer *timer)
-    : triggerPin_(triggerPin), echoPin_(echoPin), timer_(timer) {
+Ultrasonic::Ultrasonic(const Pin& triggerPin, const Pin& echoPin, const TimerConfig &cfg, TimerChannels ch)
+    : triggerPin_(triggerPin), echoPin_(echoPin), timer_(cfg), channel_(ch) {
     Rcc::Enable(MapPortToPeripheral(triggerPin_.GetPort()));
     Rcc::Enable(MapPortToPeripheral(echoPin_.GetPort()));
     Gpio::Set(triggerPin_);
     Gpio::Set(echoPin_);
-    Gpio::SetPinValue(triggerPin_, kLow);
+    
+    TimerICTypeDef icConfig {
+        .selection = kDirectTI,
+        .prescaler = 0,
+        .filter = 0,
+        .polarity = kRisingEdge  // Will change to FallingEdge after first edge
+    };
+    timer_.ICMode(channel_, icConfig);
 }
 void Ultrasonic::Trigger() {
+    Gpio::SetPinValue(triggerPin_, kLow);
+    Systick::Delay_us(2);  // Wait for 2 microseconds
     Gpio::SetPinValue(triggerPin_, kHigh);
     Systick::Delay_us(10);  // Trigger pulse duration
     Gpio::SetPinValue(triggerPin_, kLow);
 }
-float Ultrasonic::MeasureDistance() {
-    TimerICTypeDef ic {
+uint16_t Ultrasonic::GetEchoDuration() {
+    TimerICTypeDef icConfig {
         .selection = kDirectTI,
         .prescaler = 0,
         .filter = 0,
-        .polarity = kRisingEdge,
+        .polarity = kRisingEdge
     };
-    timer_->ICMode(kChannel1, ic);
-    while (timer_->GetCaptureValue(kChannel1) == 0) { }
-    uint16_t startTime = timer_->GetCaptureValue(kChannel1);
-    timer_->ClearCaptureFlag(kChannel1);
+    timer_.ICMode(channel_, icConfig);
+    while (timer_.GetCaptureValue(channel_) == 0) { }
+    uint16_t risingEdge = timer_.GetCaptureValue(channel_);
+    timer_.ClearCaptureFlag(channel_);
     // Switch to falling edge detection
-    ic.polarity = kFallingEdge;
-    timer_->ICMode(kChannel1, ic);
-    while (timer_->GetCaptureValue(kChannel1) == startTime) { }
-    uint16_t endTime = timer_->GetCaptureValue(kChannel1);
-    uint16_t duration = endTime - startTime;
-    return (static_cast<float>(duration) / 58.0f);
+    icConfig.polarity = kFallingEdge;
+    timer_.ICMode(channel_, icConfig);
+    while (timer_.GetCaptureValue(channel_) == 0) { }
+    uint16_t fallingEdge = timer_.GetCaptureValue(channel_);
+    return fallingEdge > risingEdge ? (fallingEdge - risingEdge) : 0;
+}
+float Ultrasonic::MeasureDistanceCM() {
+    Trigger();
+    uint16_t duration = GetEchoDuration();
+    float distance = (duration * 0.0343f) / 2;  // Speed of sound is 343 m/s
+    return distance;  // Distance in cm
 }
