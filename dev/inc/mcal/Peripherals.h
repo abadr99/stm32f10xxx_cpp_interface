@@ -61,6 +61,7 @@ namespace peripherals {
         kEXTI,
         kRTC,
         kIWDG,
+        kFLASH,
         #define P(name_, ignore_)       k##name_,
         PERIPHERALS
         #undef P

@@ -1448,6 +1448,72 @@ struct CANRegDef {
     FilterBank FilterRegister[14];     // STM32F103 has 14 filter banks
 };
 }  // namespace can
+namespace flash {
+struct FlashRegDef {
+    union ACR {
+        struct {
+            RegWidth_t LATENCY   : 3;   // Latency
+            RegWidth_t HLFCYA    : 1;   // Half Cycle Access Enable
+            RegWidth_t PRFTBE    : 1;   // Prefetch Buffer Enable
+            RegWidth_t PRFTBS    : 1;   // Prefetch Buffer Status
+            RegWidth_t           : 26;  // Reserved bits
+        };
+        RegWidth_t registerVal;
+    }ACR;   // Access Control Register
+
+    RegWidth_t KEYR;        // Flash Key Register
+    RegWidth_t OPTKEYR;     // Option Key Register
+    union SR {
+        struct {
+            RegWidth_t BSY          : 1;   // Busy
+            RegWidth_t RESERVED0    : 1;   // Reserved
+            RegWidth_t PGERR        : 1;   // Programming Error
+            RegWidth_t RESERVED1    : 1;   // Reserved
+            RegWidth_t WRPRTERR     : 1;   // Write Protection Error
+            RegWidth_t EOP          : 1;   // End of Operation
+            RegWidth_t RESERVED2    : 26;   // Reserved
+        };
+        RegWidth_t registerVal;
+    }SR;          // Status Register
+    union CR {
+        struct {
+            RegWidth_t PG           : 1;   // Programming
+            RegWidth_t PER          : 1;   // Page Erase
+            RegWidth_t MER          : 1;   // Mass Erase
+            RegWidth_t RESERVED0    : 1;   // Reserved
+            RegWidth_t OPTPG        : 1;   // Option Programming
+            RegWidth_t OPTER        : 1;   // Option Erase
+            RegWidth_t START        : 1;   // Start
+            RegWidth_t LOCK         : 1;   // Lock
+            RegWidth_t RESERVED1    : 1;   // Reserved
+            RegWidth_t OPTWRE       : 1;   // Option Write Enable
+            RegWidth_t ERRIE        : 1;   // Error Interrupt Enable
+            RegWidth_t RESERVED2    : 1;  // Reserved bit
+            RegWidth_t EOPIE        : 1;   // End of Operation Interrupt Enable
+            RegWidth_t RESERVED3    : 19;   // Reserved
+        };
+        RegWidth_t registerVal;
+    }CR;          // Control Register
+    RegWidth_t AR;          // Address Register
+    RegWidth_t RESERVED0;
+    union OBR {
+        struct {
+            RegWidth_t OPTERR       : 1;   // Option Byte Error
+            RegWidth_t RDPRT        : 1;   // Read Protection
+            RegWidth_t WDG_SW       : 1;   // Window Watchdog
+            RegWidth_t nRST_STOP    : 1;   // nRST_STOP
+            RegWidth_t nRST_STDBY   : 1;   // nRST_STDBY
+            RegWidth_t BEB2         : 1;   // Boot 2
+            RegWidth_t RESERVED0    : 4;   // Reserved
+            RegWidth_t DATA0        :11;   // Data 0
+            RegWidth_t DATA1        : 8;   // Data 1
+            RegWidth_t RESERVED1    : 7;   // Reserved
+        };  
+        RegWidth_t registerVal;
+    }OBR;         // Option Byte Register
+    RegWidth_t WRPR;        // Write Protection Register
+};   
+}  // namespace flash
 }  // namespace registers
 }  // namespace stm32
 
