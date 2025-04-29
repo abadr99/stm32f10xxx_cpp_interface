@@ -1483,7 +1483,7 @@ struct FlashRegDef {
             RegWidth_t RESERVED0    : 1;   // Reserved
             RegWidth_t OPTPG        : 1;   // Option Programming
             RegWidth_t OPTER        : 1;   // Option Erase
-            RegWidth_t START        : 1;   // Start
+            RegWidth_t STRT        : 1;   // Start
             RegWidth_t LOCK         : 1;   // Lock
             RegWidth_t RESERVED1    : 1;   // Reserved
             RegWidth_t OPTWRE       : 1;   // Option Write Enable
