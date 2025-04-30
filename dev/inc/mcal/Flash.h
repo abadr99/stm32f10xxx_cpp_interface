@@ -10,6 +10,9 @@
  * This file defines an abstraction layer for FLASH memory control on STM32F1 series.
  * It supports polling and interrupt-based programming, page and mass erase, option bytes handling, and error reporting.
  * 
+ * References:
+ * -STM32F103xx Reference Manual RM0008
+ * -STM32F103xx Flash Programming Manual PM0075
  */
 #ifndef DEV_INC_MCAL_FLASH_H_
 #define DEV_INC_MCAL_FLASH_H_
@@ -25,7 +28,7 @@ namespace flash {
 /**
  * @brief Enumeration for FLASH procedure types
  */
-enum class ProcedureTypeDef {
+enum class ProcedureTypeDef : uint8_t {
     kNone,               /**< No ongoing procedure */
     kPageErase,          /**< Page erase */
     kMassErase,          /**< Mass erase */
@@ -36,7 +39,7 @@ enum class ProcedureTypeDef {
 /**
  * @brief Enumeration for FLASH lock states
  */
-enum class LockState {
+enum class LockState : uint8_t {
     kLocked,
     kUnLocked,
 };
@@ -52,7 +55,7 @@ enum class FlashError : uint32_t {
 /**
  * @brief Enumeration for FLASH program types
  */
-enum class TypeProgram {
+enum class TypeProgram : uint8_t {
     kHalfWord = 1,
     kWord,
     kDoubleWord,
@@ -60,7 +63,7 @@ enum class TypeProgram {
 /**
  * @brief Enumeration for FLASH latency settings
  */
-enum class Latency {
+enum class Latency : uint8_t {
     kLatency0,  /**< 0 wait state */
     kLatency1,  /** 1 wait state */
     kLatency2,  /** 2 wait states */
@@ -68,7 +71,7 @@ enum class Latency {
 /**
  * @brief Enumeration for FLASH status
  */
-enum class Status {
+enum class Status : uint8_t {
     kOK,
     kError,
     kBusy,
@@ -95,6 +98,8 @@ struct FlashTypeDef {
 };
 /**
  * @brief Class for FLASH memory control
+ * @note For write and erase operations on the Flash memory (write/erase), the internal RC oscillator
+        (HSI) must be ON.
  */
 class Flash {
  public:
@@ -152,22 +157,26 @@ class Flash {
      * @return FlashError Enum representing the last error
      */
     FlashError GetError(const FlashTypeDef& pflash);
-
     /**
      * @brief Sets the error callback function
      * @param func Pointer to the error callback function
      */
     static void SetErrorCallback(pFunction func);
     /**
+     * @brief Sets the end of operation callback function
+     * @param func Pointer to the end of operation callback function
+     * @note The End of write operation (programming or erasing) can trigger an interrupt. This interrupt
+             can be used to exit from WFI mode, only if the FLITF clock is enabled. Otherwise, the
+             interrupt is served only after an exit from WFI.
+     */
+    static void SetEndOfOperationCallback(pFunction func);
+
+    /**< These Functions for ISR Handler > **/
+    /**
      * @brief Gets the error callback function
      * @return Pointer to the error callback function
      */
     static pFunction GetErrorCallback();
-    /**
-     * @brief Sets the end of operation callback function
-     * @param func Pointer to the end of operation callback function
-     */
-    static void SetEndOfOperationCallback(pFunction func);
     /**
      * @brief Gets the end of operation callback function
      * @return Pointer to the end of operation callback function
