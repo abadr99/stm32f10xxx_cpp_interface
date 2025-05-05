@@ -57,6 +57,8 @@ class Systick {
      * @brief Enables the SysTick timer with the specified clock source.
      * 
      * @param clksource The clock source for SysTick (either kAHB or kAHB_Div_8).
+     * 
+     * @note This Method Enables the Systick Interrupt by default
      */
     static void Enable(CLKSource clksource);
 
@@ -93,6 +95,8 @@ class Systick {
      * 
      * @param value The delay value.
      * @param func The function to call during the delay.
+     * 
+     * @note This Functions Enables the Interrupt by default
      */
     static void Delay_By_Exception(uint32_t value, pFunction func);
 
@@ -115,6 +119,15 @@ class Systick {
      */
     static pFunction GetPointerToISR();
 
+    /**
+     * @brief Enables the SysTick Interrupts.
+     */
+    static void InterruptEnable();
+    /**
+     * @brief Disables the SysTick Interrupts.
+     */
+    static void InterruptDisable();
+    
  private:
     using SystickRegDef = stm32::registers::systick::SystickRegDef;
     static stm32::type::RegType<SystickRegDef>::ptr SYSTICK;
