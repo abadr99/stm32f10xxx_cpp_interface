@@ -127,6 +127,7 @@ class Systick {
      * @brief Disables the SysTick Interrupts.
      */
     static void InterruptDisable();
+    
  private:
     using SystickRegDef = stm32::registers::systick::SystickRegDef;
     static stm32::type::RegType<SystickRegDef>::ptr SYSTICK;
