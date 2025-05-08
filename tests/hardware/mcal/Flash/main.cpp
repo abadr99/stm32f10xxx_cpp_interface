@@ -9,7 +9,7 @@
  * 
  */
 
-
+// commit-id: 7f24e1cbbb8304f6f43bdb2fb672275bd66bfc17
 #include "mcal/stm32f103xx.h"
 #include "utils/Types.h"
 #include "utils/BitManipulation.h"
@@ -40,7 +40,5 @@ int main() {
     flash.PageErase(kTestAddress);
     Status result = flash.Program(&ctx, TypeProgram::kHalfWord, kTestAddress, kTestData);
     flash.Lock();
-    while (1) {
-
-    }
+    while (1) { }
 }
