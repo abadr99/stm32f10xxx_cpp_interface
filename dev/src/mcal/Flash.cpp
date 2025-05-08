@@ -35,11 +35,10 @@ void Flash::Init() {
 Status Flash::Program(FlashTypeDef* pflash, TypeProgram prog, uint32_t address, uint64_t data) {
     Status status = Status::kError;
     uint8_t niteration = 0;
-    if (pflash->lockState == LockState::kLocked) {
-        return Status::kBusy;
-    } else {
-        pflash->lockState = LockState::kLocked;
+    if (FLASH->CR.LOCK == 1) {
+        Unlock();
     }
+    FLASH->CR.STRT = 0;
     status = WaitForLastOperation(pflash);
     if (status == Status::kOK) {
         if (prog == TypeProgram::kHalfWord) {
@@ -73,6 +72,9 @@ Status Flash::ProgramIT(TypeProgram prog, uint32_t address, uint64_t data) {
         conf.type = ProcedureTypeDef::kDoubleWordProgram;
         conf.dataremaining = 4;
     }
+    FLASH->CR.ERRIE = 1;
+    FLASH->CR.EOPIE = 1;
+    FLASH->CR.PG = 1;
     ProgramHalfWord(&conf, conf.address, static_cast<uint16_t>(conf.data));
     return status;
 }

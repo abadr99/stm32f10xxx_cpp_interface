@@ -1503,11 +1503,10 @@ struct FlashRegDef {
             RegWidth_t WDG_SW       : 1;   // Window Watchdog
             RegWidth_t nRST_STOP    : 1;   // nRST_STOP
             RegWidth_t nRST_STDBY   : 1;   // nRST_STDBY
-            RegWidth_t BEB2         : 1;   // Boot 2
-            RegWidth_t RESERVED0    : 4;   // Reserved
-            RegWidth_t DATA0        :11;   // Data 0
+            RegWidth_t NOTUSED      : 5;   // Not used
+            RegWidth_t DATA0        : 8;   // Data 0
             RegWidth_t DATA1        : 8;   // Data 1
-            RegWidth_t RESERVED1    : 7;   // Reserved
+            RegWidth_t RESERVED1    : 6;   // Reserved
         };  
         RegWidth_t registerVal;
     }OBR;         // Option Byte Register

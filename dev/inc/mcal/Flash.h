@@ -130,6 +130,7 @@ class Flash {
 
     /**
      * @brief Locks the FLASH memory for programming
+     * @note This function should be called after programming is complete to prevent accidental writes.
      */
     void Lock();
     /**
@@ -139,6 +140,7 @@ class Flash {
     /**
      * @brief Unlocks the FLASH memory for programming
      * @return Status of the operation
+     * @note This function should be called before programming to allow write access.
      */
     Status Unlock();
     /**
