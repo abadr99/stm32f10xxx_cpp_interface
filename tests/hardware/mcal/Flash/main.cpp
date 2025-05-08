@@ -39,6 +39,11 @@ int main() {
     flash.Unlock();
     flash.PageErase(kTestAddress);
     Status result = flash.Program(&ctx, TypeProgram::kHalfWord, kTestAddress, kTestData);
+    if (result == Status::kOK) {
+        //  Programming successful
+    } else {
+        FlashError error = flash.GetError(ctx);
+    }
     flash.Lock();
     while (1) { }
 }
