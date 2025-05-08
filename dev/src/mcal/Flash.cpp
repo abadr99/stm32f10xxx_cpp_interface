@@ -112,7 +112,7 @@ FlashError Flash::GetError(const FlashTypeDef& pflash) {
 void Flash::ProgramHalfWord(FlashTypeDef *pflash, uint32_t address, uint16_t data) {
     pflash->errorcode = FlashError::kNone;
     FLASH->CR.PG = 1;  // Enable programming
-    *(volatile uint16_t*)address = data;  // Program the half-word
+    *(reinterpret_cast<volatile uint16_t*>(address)) = data;  // Program the half-word
 }
 Status Flash::WaitForLastOperation(FlashTypeDef *pflash) {
     util::BusyWait<constant::TimeOut::kDefault>([&](){ return (FLASH->SR.BSY); });
