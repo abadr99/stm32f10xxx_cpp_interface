@@ -122,6 +122,38 @@ enum class TimeQuanta : uint8_t {
     kTq16   /**< 16 Time Quanta (TQ) */
 };
 
+enum class Interrupts : uint32_t {
+    kTxMailBoxEmpty,        /**< Transmit mailbox empty */
+    kFifo0MessagePending,   /**< FIFO 0 message pending */
+    kFifo0Full,             /**< FIFO 0 full */
+    kFifo0Overrun,          /**< FIFO 0 overrun */
+    kFifo1MessagePending,   /**< FIFO 1 message pending */
+    kFifo1Full,             /**< FIFO 1 full */
+    kFifo1Overrun,          /**< FIFO 1 overrun */
+    kErorrWarning = 8,      /**< Error warning */
+    kErrorPassive,          /**< Error passive */
+    kBusOff,                /**< Bus-off */
+    kLastErrorCode,         /**< Last error code */
+    kError = 15,            /**< Error */
+    kWakeUp,                /**< Wake-up */
+    kSleepAck,              /**< Sleep acknowledge */
+};
+
+enum class CallbackId : uint32_t {
+    kTxMailbox0Complete,    /**< Transmit mailbox 0 complete */
+    kTxMailbox1Complete,    /**< Transmit mailbox 1 complete */
+    kTxMailbox2Complete,    /**< Transmit mailbox 2 complete */
+    kTxMailbox0Abort,       /**< Transmit mailbox 0 abort */
+    kTxMailbox1Abort,       /**< Transmit mailbox 1 abort */
+    kTxMailbox2Abort,       /**< Transmit mailbox 2 abort */
+    kFifo0MessagePending,   /**< FIFO 0 message pending */
+    kFifo0Full,             /**< FIFO 0 full */
+    kFifo1MessagePending,   /**< FIFO 1 message pending */
+    kFifo1Full,             /**< FIFO 1 full */
+    kSleepAck,              /**< Sleep acknowledge */
+    kWakeUp,                /**< Wake-up */
+    kError,                 /**< Error */
+};
 /**
  * @brief State for enabling or disabling features.
  */
@@ -129,13 +161,39 @@ enum class State : uint8_t {
     kDisable,   /**< Disabled state */
     kEnable     /**< Enabled state */
 };
+enum class CanError : uint32_t {
+    kNoEr            = 0x00000000U,  /**< No error */
+    kEwg             = 0x00000001U,  /**< Protocol Error Warning */
+    kEpv             = 0x00000002U,  /**< Error Passive */
+    kBof             = 0x00000004U,  /**< Bus-off error */
+    kStf             = 0x00000008U,  /**< Stuff error */
+    kFor             = 0x00000010U,  /**< Form error */
+    kAck             = 0x00000020U,  /**< Acknowledgment error */
+    kBr              = 0x00000040U,  /**< Bit recessive error */
+    kBd              = 0x00000080U,  /**< Bit dominant error */
+    kCrc             = 0x00000100U,  /**< CRC error */
+    kRxFov0          = 0x00000200U,  /**< Rx FIFO0 overrun error */
+    kRxFov1          = 0x00000400U,  /**< Rx FIFO1 overrun error */
+    kTxAlst0         = 0x00000800U,  /**< TxMailbox 0 arbitration lost */
+    kTxTerr0         = 0x00001000U,  /**< TxMailbox 0 transmit error */
+    kTxAlst1         = 0x00002000U,  /**< TxMailbox 1 arbitration lost */
+    kTxTerr1         = 0x00004000U,  /**< TxMailbox 1 transmit error */
+    kTxAlst2         = 0x00008000U,  /**< TxMailbox 2 arbitration lost */
+    kTxTerr2         = 0x00010000U,  /**< TxMailbox 2 transmit error */
+    kTimeout         = 0x00020000U,  /**< Timeout error */
+    kNotInitialized  = 0x00040000U,  /**< Peripheral not initialized */
+    kNotReady        = 0x00080000U,  /**< Peripheral not ready */
+    kNotStarted      = 0x00100000U,  /**< Peripheral not started */
+    kParam           = 0x00200000U   /**< Parameter error */
+};
+
 
 /**
  * @brief CAN configuration structure.
  */
 struct CanConfig {
     OperatingMode opMode;             /**< Operating mode */
-    TestMode testMode;                    /**< Test mode */
+    TestMode testMode;                /**< Test mode */
     FifoPriority priority;            /**< FIFO priority */
     ReceivedFifo receivedFifoLock;    /**< Receive FIFO locked mode */
     uint16_t baudRatePrescaler : 9;   /**< CAN baud rate prescaler */
@@ -146,6 +204,7 @@ struct CanConfig {
     State ABOM;                       /**< Automatic bus-off management */
     State AWUM;                       /**< Automatic wake-up mode */
     State NART;                       /**< No automatic retransmission */
+    CanError error = CanError::kNoEr;           /**< Error handling */
 };
 
 /**
@@ -198,7 +257,7 @@ class Can {
  public:
     using CANRegDef = stm32::registers::can::CANRegDef;
     using can_ptr   = stm32::type::RegType<CANRegDef>::ptr;
-
+    using pFunction = stm32::type::pFunction;
     /**
      * @brief Initializes the CAN peripheral with the specified configuration.
      * @param conf Configuration structure for CAN initialization.
@@ -242,8 +301,32 @@ class Can {
      */
     uint8_t GetPendingMessages(FifoNumber fifo);
 
+    /**
+     * @brief Enables the specified CAN interrupt.
+     * @param interrupt Interrupt to enable.
+     */
+    static void EnableInterrupt(Interrupts interrupt);
+
+    /**
+     * @brief Disables the specified CAN interrupt.
+     * @param interrupt Interrupt to disable.
+     */
+    static void DisableInterrupt(Interrupts interrupt);
+
+    static void SetCallback(CallbackId id, pFunction func);
+    static pFunction GetCallback(CallbackId id);
+    
  private:
     static can_ptr CAN;  /**< Pointer to CAN registers */
+    static constexpr uint32_t kMailboxSiz = 3;
+    static constexpr uint32_t kFifoSiz = 2;
+    static pFunction TxMailboxComplete[kMailboxSiz];  /**< Transmit mailbox complete callback */
+    static pFunction TxMailboxAbort[kMailboxSiz];     /**< Transmit mailbox abort callback */
+    static pFunction RxFifoMsgPending[kFifoSiz];       /**< Receive FIFO message pending callback */
+    static pFunction RxFifoFull[kFifoSiz];             /**< Receive FIFO full callback */
+    static pFunction SleepCallback;                    /**< Sleep callback */
+    static pFunction WakeUpCallback;                   /**< Wake-up callback */
+    static pFunction ErrorCallback;                    /**< Error callback */
     /**
      * @brief Sets the operating mode for the CAN peripheral.
      * @param conf CAN configuration structure.

@@ -67,36 +67,40 @@ PinMode Pin::GetPinMode() const {
 
 bool Pin::IsInput() {
     PinMode mode = GetPinMode();
-    return mode >= PinMode::kInputFloat && mode <= PinMode::kInputPullDown;
+    return (mode == PinMode::kInputFloat || mode == PinMode::kInputPullDown ||
+            mode == PinMode::kInputPullDown);
 }
 
 bool Pin::IsInput() const {
     PinMode mode = GetPinMode();
-    return mode >= PinMode::kInputFloat && mode <= PinMode::kInputPullDown;
+    return (mode == PinMode::kInputFloat || mode == PinMode::kInputPullDown ||
+            mode == PinMode::kInputPullDown);
 }
 
 bool Pin::IsOutput() {
     PinMode mode = GetPinMode();
-    return mode >= PinMode::kOutputOpenDrain_2MHz 
-        && mode <= PinMode::kOutputPushPull_50MHz;
+    return (mode >= PinMode::kOutputPushPull_10MHz
+        &&  mode <= PinMode::kOutputOpenDrain_50MHz
+        &&  mode != PinMode::kInputFloat);
 }
 
 bool Pin::IsOutput() const {
     PinMode mode = GetPinMode();
-    return mode >= PinMode::kOutputOpenDrain_2MHz 
-        && mode <= PinMode::kOutputPushPull_50MHz;
+    return (mode >= PinMode::kOutputPushPull_10MHz
+        &&  mode <= PinMode::kOutputOpenDrain_50MHz
+        &&  mode != PinMode::kInputFloat);
 }
 
 bool Pin::IsAlternative() {
     PinMode mode = GetPinMode();
-    return mode >= PinMode::kAlternativeOpenDrain_2MHz 
-        && mode <= PinMode::kAlternativePushPull_50MHz;
+    return mode >= PinMode::kAlternativePushPull_10MHz 
+        && mode <= PinMode::kAlternativeOpenDrain_50MHz;
 }
 
 bool Pin::IsAlternative() const {
     PinMode mode = GetPinMode();
-    return mode >= PinMode::kAlternativeOpenDrain_2MHz 
-        && mode <= PinMode::kAlternativePushPull_50MHz;
+    return mode >= PinMode::kAlternativePushPull_10MHz 
+        && mode <= PinMode::kAlternativeOpenDrain_50MHz;
 }
 
 

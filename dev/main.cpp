@@ -14,7 +14,6 @@
 #include "mcal/Rcc.h"
 #include "utils/Logger.h"
 
-
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
