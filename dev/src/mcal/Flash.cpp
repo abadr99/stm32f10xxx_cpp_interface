@@ -55,7 +55,6 @@ Status Flash::Program(FlashTypeDef* pflash, TypeProgram prog, uint32_t address, 
             if (status != Status::kOK) break;
         }
     }
-    pflash->lockState = LockState::kUnLocked;
     return status;
 }
 Status Flash::ProgramIT(TypeProgram prog, uint32_t address, uint64_t data) {
