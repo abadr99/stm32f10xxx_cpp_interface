@@ -40,6 +40,11 @@ volatile SystickRegDef* Systick::SYSTICK = nullptr;
 void Systick::Init() {
     SYSTICK = reinterpret_cast<volatile SystickRegDef*>(Addr<Peripheral::kSYSTICK >::Get());
 }
+
+volatile SystickRegDef* Systick::GetPtr() {
+    return SYSTICK;
+}
+
 void Systick::Enable(CLKSource clksource) {
     STM32_ASSERT((clksource == kAHB_Div_8) || 
                  (clksource == kAHB), SYSTICK_CONFIG_ERROR(CLKSource));
@@ -52,8 +57,10 @@ void Systick::SetCounterValue(uint32_t value) {
     STM32_ASSERT((value <= kSystickMaxVal), SYSTICK_CONFIG_ERROR(kSystickMaxVal));
     SYSTICK->CTRL.ENABLE = 1;
     SYSTICK->LOAD = value;
+    #if !UNIT_TEST
     // Busy wait is required here to wait until the the counter reach to Zero  
     while (SYSTICK->CTRL.COUNTFLAG == 0) {}
+    #endif
     SYSTICK->CTRL.COUNTFLAG = 0;
     SYSTICK->CTRL.ENABLE = 0;
 }
