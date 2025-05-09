@@ -151,4 +151,3 @@ class Systick {
 }  // namespace stm32
 
 #endif  // DEV_INC_MCAL_SYSTICK_H_
-

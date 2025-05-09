@@ -6,58 +6,66 @@
  * @date 2024-09-23
  * @copyright Copyright (c) 2024
  */
-// commit-id: 68885efca6e7b0517f3cbbc3c4bc85c48aca0414
-#include <stdint.h>
-#include "utils/Types.h"
+
+// commit-id: 188edd327eb488f1d15cd20a4893913f83dd850b
+
 #include "mcal/stm32f103xx.h"
+#include "utils/Types.h"
 #include "utils/BitManipulation.h"
 #include "mcal/Pin.h"
 #include "mcal/Gpio.h"
 #include "mcal/Rcc.h"
-#include "mcal/Nvic.h"
 #include "mcal/Timer.h"
-#include "hal/Led.h"
+#include "mcal/Systick.h"
+
 using namespace stm32::type;
 using namespace stm32::registers::rcc;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::timer;
-using namespace stm32::dev::mcal::nvic;
-using namespace stm32::type;
-using namespace stm32::dev::hal::led;
+using namespace stm32::registers::timer;
+using namespace stm32::dev::mcal::systick;
 
-void func(void);
 int main(void) {
+    Systick::Init();
+    Rcc::Init();
+    Gpio::Init();
+
     Rcc::InitSysClock(kHse, kClock_1x);
     Rcc::SetExternalClock(kHseCrystal);
-    Rcc::Enable(Peripheral::kIOPC);
+    Rcc::Enable(Peripheral::kIOPA);
     Rcc::Enable(Peripheral::kTIM2);
+    Rcc::InitSysClock();
 
-    Id id_config(kTIM2_IRQn);
-    Nvic::EnableInterrupt(id_config);
 
-    TimerConfig tim2_config = {
-            .mode = kTimeBase,
+    Systick::Enable(kAHB_Div_8);
+
+    Pin A0(kPortA, kPin0, PinMode::kAlternativePushPull_50MHz);
+    Gpio::Set(A0);
+
+
+    TimerConfig config = {
             .Timerid = kTimer2,
-            .Direction = kDown,
-            .Prescaler = 4000,  // 4000/4000=1
-            .pfunction = func
+            .Direction = kUP,
+            .Prescaler = 72,
+            .interrupt = kDisable
             };
-    Timer tim2(tim2_config);
-while(1) {
-    tim2.Delay_ms(1000);
-}
-}
-void func(void) {
-    static uint32_t c = 0;
-    Pin pLed(kPortC, kPin15, PinMode::kOutputPushPull_10MHz);
-    Led<ConnectionType::kForward_Bias> led(pLed);
-    if (c % 2 == 0) {
-        led.TurnOn();
-        c++;
-    } else {    
-        led.TurnOff();
-        c++;
+    Timer tim2(config);
+
+    TimerOCTypeDef oc = {
+        .mode = kPWM1,
+        .state = kEnable,
+        .polarity = kActiveHigh,
+        .period = 100
+    };
+    tim2.OCMode(oc);
+
+
+    while (1) {
+        tim2.SetCompare1(oc, kChannel1, 100);
+        Systick::Delay_ms(1000);
+        tim2.SetCompare1(oc, kChannel1, 20);
+        Systick::Delay_ms(1000);
     }
 }

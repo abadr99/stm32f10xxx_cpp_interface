@@ -1126,30 +1126,8 @@ struct timerRegDef {
     };
     RegWidth_t registerVal;
     } EGR;
-    union CCMR1 {
-    struct {
-        RegWidth_t CC1S  : 2;  // Capture/Compare 1 Selection
-        RegWidth_t IC1PSC: 2;  // Input Capture 1 Prescaler
-        RegWidth_t IC1F  : 4;  // Input Capture 1 Filter
-        RegWidth_t CC2S  : 2;  // Capture/Compare 2 Selection
-        RegWidth_t IC2PSC: 2;  // Input Capture 2 Prescaler
-        RegWidth_t IC2F  : 4;  // Input Capture 2 Filter
-        RegWidth_t Reserved : 16;  // Reserved bits
-    };
-    RegWidth_t registerVal;
-    } CCMR1;
-    union CCMR2 {
-    struct {
-        RegWidth_t CC3S  : 2;  // Capture/Compare 3 Selection
-        RegWidth_t IC3PSC: 2;  // Input Capture 3 Prescaler
-        RegWidth_t IC3F  : 4;  // Input Capture 3 Filter
-        RegWidth_t CC4S  : 2;  // Capture/Compare 4 Selection
-        RegWidth_t IC4PSC: 2;  // Input Capture 4 Prescaler
-        RegWidth_t IC4F  : 4;  // Input Capture 4 Filter
-        RegWidth_t Reserved : 16;  // Reserved bits
-    };
-    RegWidth_t registerVal;
-    } CCMR2;
+    RegWidth_t CCMR1;   // Capture/Compare Mode Register 1
+    RegWidth_t CCMR2;   // Capture/Compare Mode Register 2
     union CCER {
     struct {
         RegWidth_t CC1E : 1;  // Capture/Compare 1 Output Enable
