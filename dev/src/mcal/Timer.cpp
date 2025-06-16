@@ -53,7 +53,6 @@ Timer::Timer(const TimerConfig & config): config_(config) {
     }   
     Init();
 }
-    
 void Timer::Init() {
     STM32_ASSERT(((config_.Timerid >= kTimer1) &&
                  (config_.Timerid <= kTimer5)), TIMER_CONFIG_ERROR(TimerID));
@@ -142,64 +141,7 @@ void Timer::SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel, uint16
     timerReg->EGR.UG = 1;
     Timer::Cmd(kEnable);
 }
-void Timer::ICMode(TimerChannels channel, TimerICTypeDef IC) {
-    // Disable timer during configuration
-    Timer::Cmd(kDisable);
-
-    switch (channel) {
-        case kChannel1:
-            timerReg->CCMR1.CC1S = IC.selection;    // Select input source
-            timerReg->CCMR1.IC1PSC = IC.prescaler;  // Set prescaler
-            timerReg->CCMR1.IC1F = IC.filter;       // Set input filter
-            timerReg->CCER.CC1P = IC.polarity;      // Set polarity
-            timerReg->CCER.CC1E = 1;                // Enable capture
-            break;
-        case kChannel2:
-            timerReg->CCMR1.CC2S = IC.selection;
-            timerReg->CCMR1.IC2PSC = IC.prescaler;
-            timerReg->CCMR1.IC2F = IC.filter;
-            timerReg->CCER.CC2P = IC.polarity;
-            timerReg->CCER.CC2E = 1;
-            break;
-        case kChannel3:
-            timerReg->CCMR2.CC3S = IC.selection;
-            timerReg->CCMR2.IC3PSC = IC.prescaler;
-            timerReg->CCMR2.IC3F = IC.filter;
-            timerReg->CCER.CC3P = IC.polarity;
-            timerReg->CCER.CC3E = 1;
-            break;
-        case kChannel4:
-            timerReg->CCMR2.CC4S = IC.selection;
-            timerReg->CCMR2.IC4PSC = IC.prescaler;
-            timerReg->CCMR2.IC4F = IC.filter;
-            timerReg->CCER.CC4P = IC.polarity;
-            timerReg->CCER.CC4E = 1;
-            break;
-    }
-
-    // Enable timer
-    Timer::Cmd(kEnable);
-}
-
-uint16_t Timer::GetCaptureValue(TimerChannels channel) {
-    switch (channel) {
-        case kChannel1: return timerReg->CCR1;
-        case kChannel2: return timerReg->CCR2;
-        case kChannel3: return timerReg->CCR3;
-        case kChannel4: return timerReg->CCR4;
-        default: return 0;
-    }
-}
-
-void Timer::ClearCaptureFlag(TimerChannels channel) {
-    switch (channel) {
-        case kChannel1: timerReg->SR.CC1IF = 0; break;
-        case kChannel2: timerReg->SR.CC2IF = 0; break;
-        case kChannel3: timerReg->SR.CC3IF = 0; break;
-        case kChannel4: timerReg->SR.CC4IF = 0; break;
-    }
-}
-void Timer::Cmd(State state) {
+void Timer::Cmd(TimerState state) {
     timerReg->CR1.CEN = state;
 }
 

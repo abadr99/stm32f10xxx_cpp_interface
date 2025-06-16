@@ -9,140 +9,142 @@
  * 
  */
 
-#include <cstring>
-#include <string>
-
-#include "utils/Assert.h"
-
-#include "mcal/Rcc.h"
-#include "mcal/Usart.h"
-#include "hal/HC05.h"
-
-static constexpr const char* commandStrings[] = {
-    "AT\r\n",            // CMD_AT
-    "AT+RESET\r\n",      // CMD_AT_RESET
-    "AT+VERSION",        // CMD_AT_VERSION
-    "AT+NAME",           // CMD_AT_NAME
-    "AT+PSWD",           // CMD_AT_PSWD
-    "AT+ROLE",           // CMD_AT_ROLE
-    "AT+UART",           // CMD_AT_UART
-    "AT+INQM",           // CMD_AT_INQM
-    "AT+BIND",           // CMD_AT_BIND
-    "AT+INQ",            // CMD_AT_INQ
-    "=",                 // CMD_SET_POSTFIX
-    "?",                 // CMD_GET_POSTFIX
-    "\r\n",              // CMD_END
-    ",",                 // CMD_COMMA
-};
-
-
-using namespace stm32::dev::mcal::usart;
-using namespace stm32::dev::mcal::rcc;
-using namespace stm32::dev::hal::bluetooth;
-
-HC05::HC05(const Usart& usart) : usart_(usart) {
-    switch (usart_.GetUsartNum()) {
-        case kUsart1: 
-            Rcc::Enable(Peripheral::kUSART1); 
-            break; 
-        case kUsart2: 
-            Rcc::Enable(Peripheral::kUSART2); 
-            break; 
-        case kUsart3: 
-            Rcc::Enable(Peripheral::kUSART3); 
-            break;
-    }
-}
-
-void HC05::Send(typename Usart::DataValType n) {
-    usart_.Transmit(n);
-}
-
-void HC05::Send(const char* str) {
-    std::size_t size = std::strlen(str);
-    for (uint32_t i = 0 ; i < size ; ++i) {
-        usart_.Transmit(str[i]);
-    }
-}
-
-void HC05::Send(const std::string& str) {
-    this->Send(str.c_str());
-}
-
-typename HC05::Usart::DataValType HC05::Receive() {
-    return usart_.Receive();
-}
-
-void HC05::Test() {
-    this->Send(commandStrings[kAT]);
-    this->Send(commandStrings[kAT_END]);
-}
-
-void HC05::Reset() {
-    this->Send(commandStrings[kAT_RESET]);
-    this->Send(commandStrings[kAT_END]);
-}
-
-void HC05::GetFirmWareVersion() {
-    this->Send(commandStrings[kAT_VERSION]);
-    this->Send(commandStrings[kGET_POSTFIX]);
-    this->Send(commandStrings[kAT_END]);
-}
-
-void HC05::SetDeviceName(const std::string& name) {
-    this->Send(commandStrings[kAT_NAME]);
-    this->Send(commandStrings[kSET_POSTFIX]);
-    this->Send(name);
-    this->Send(commandStrings[kAT_END]);
-}
-
-void HC05::SetParingPin(const std::string& pin) {
-    this->Send(commandStrings[kAT_PSWD]);
-    this->Send(commandStrings[kSET_POSTFIX]);
-    this->Send(pin);
-    this->Send(commandStrings[kAT_END]);
-}
-
-void HC05::SetDeviceRole(DeviceRole role) {
-    this->Send(commandStrings[kAT_ROLE]);
-    this->Send(commandStrings[kSET_POSTFIX]);
-    this->Send(std::to_string(static_cast<uint32_t>(role)));
-    this->Send(commandStrings[kAT_END]);
-}
-
-void HC05::SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity) {               
-    this->Send(commandStrings[kAT_UART]);
-    this->Send(commandStrings[kSET_POSTFIX]);
-    this->Send(std::to_string(baudRate));
-    this->Send(commandStrings[kCOMMA]);
-    this->Send(std::to_string(stopBits));
-    this->Send(commandStrings[kCOMMA]);
-    this->Send(std::to_string(parity));
-    this->Send(commandStrings[kAT_END]);
-}
-
-void HC05::SetInquiryMode(InquiryMode im, 
-                            uint32_t maxNumberOfBluetoothDevices, 
-                            uint32_t timeout) {
-    this->Send(commandStrings[kAT_INQM]);
-    this->Send(commandStrings[kSET_POSTFIX]);
-    this->Send(std::to_string(static_cast<uint32_t>(im)));
-    this->Send(commandStrings[kCOMMA]);
-    this->Send(std::to_string(maxNumberOfBluetoothDevices));
-    this->Send(commandStrings[kCOMMA]);
-    this->Send(std::to_string(timeout));
-    this->Send(commandStrings[kAT_END]);
-}
-
-void HC05::SetBindToAddress(const std::string& address) {
-    this->Send(commandStrings[kAT_BIND]);
-    this->Send(commandStrings[kSET_POSTFIX]);
-    this->Send(address);
-    this->Send(commandStrings[kAT_END]);
-}
-
-void HC05::InquiryBluetoothDevices() {
-    this->Send(commandStrings[kAT_INQ]);
-    this->Send(commandStrings[kGET_POSTFIX]);
-    this->Send(commandStrings[kAT_END]);
-}
+ #include <cstring>
+ #include <string>
+ 
+ #include "utils/Assert.h"
+ 
+ #include "mcal/Rcc.h"
+ #include "mcal/Usart.h"
+ #include "hal/HC05.h"
+ 
+ static constexpr const char* commandStrings[] = {
+     "AT\r\n",            // CMD_AT
+     "AT+RESET\r\n",      // CMD_AT_RESET
+     "AT+VERSION",        // CMD_AT_VERSION
+     "AT+NAME",           // CMD_AT_NAME
+     "AT+PSWD",           // CMD_AT_PSWD
+     "AT+ROLE",           // CMD_AT_ROLE
+     "AT+UART",           // CMD_AT_UART
+     "AT+INQM",           // CMD_AT_INQM
+     "AT+BIND",           // CMD_AT_BIND
+     "AT+INQ",            // CMD_AT_INQ
+     "=",                 // CMD_SET_POSTFIX
+     "?",                 // CMD_GET_POSTFIX
+     "\r\n",              // CMD_END
+     ",",                 // CMD_COMMA
+ };
+ 
+ 
+ using namespace stm32::dev::mcal::usart;
+ using namespace stm32::dev::mcal::rcc;
+ using namespace stm32::dev::hal::bluetooth;
+ 
+ HC05::HC05(const Usart& usart) : usart_(usart) {
+     switch (usart_.GetUsartNum()) {
+         case kUsart1: 
+             Rcc::Enable(Peripheral::kUSART1); 
+             break; 
+         case kUsart2: 
+             Rcc::Enable(Peripheral::kUSART2); 
+             break; 
+         case kUsart3: 
+             Rcc::Enable(Peripheral::kUSART3); 
+             break;
+     }
+     usart_.Init();
+ }
+ 
+ void HC05::Send(typename Usart::DataValType n) {
+     usart_.Transmit(n);
+ }
+ 
+ void HC05::Send(const char* str) {
+     std::size_t size = std::strlen(str);
+     for (uint32_t i = 0 ; i < size ; ++i) {
+         usart_.Transmit(str[i]);
+     }
+ }
+ 
+ void HC05::Send(const std::string& str) {
+     this->Send(str.c_str());
+ }
+ 
+ typename HC05::Usart::DataValType HC05::Receive() {
+     return usart_.Receive();
+ }
+ 
+ void HC05::Test() {
+     this->Send(commandStrings[kAT]);
+     this->Send(commandStrings[kAT_END]);
+ }
+ 
+ void HC05::Reset() {
+     this->Send(commandStrings[kAT_RESET]);
+     this->Send(commandStrings[kAT_END]);
+ }
+ 
+ void HC05::GetFirmWareVersion() {
+     this->Send(commandStrings[kAT_VERSION]);
+     this->Send(commandStrings[kGET_POSTFIX]);
+     this->Send(commandStrings[kAT_END]);
+ }
+ 
+ void HC05::SetDeviceName(const std::string& name) {
+     this->Send(commandStrings[kAT_NAME]);
+     this->Send(commandStrings[kSET_POSTFIX]);
+     this->Send(name);
+     this->Send(commandStrings[kAT_END]);
+ }
+ 
+ void HC05::SetParingPin(const std::string& pin) {
+     this->Send(commandStrings[kAT_PSWD]);
+     this->Send(commandStrings[kSET_POSTFIX]);
+     this->Send(pin);
+     this->Send(commandStrings[kAT_END]);
+ }
+ 
+ void HC05::SetDeviceRole(DeviceRole role) {
+     this->Send(commandStrings[kAT_ROLE]);
+     this->Send(commandStrings[kSET_POSTFIX]);
+     this->Send(std::to_string(static_cast<uint32_t>(role)));
+     this->Send(commandStrings[kAT_END]);
+ }
+ 
+ void HC05::SetUART(uint32_t baudRate, uint32_t stopBits, uint32_t parity) {               
+     this->Send(commandStrings[kAT_UART]);
+     this->Send(commandStrings[kSET_POSTFIX]);
+     this->Send(std::to_string(baudRate));
+     this->Send(commandStrings[kCOMMA]);
+     this->Send(std::to_string(stopBits));
+     this->Send(commandStrings[kCOMMA]);
+     this->Send(std::to_string(parity));
+     this->Send(commandStrings[kAT_END]);
+ }
+ 
+ void HC05::SetInquiryMode(InquiryMode im, 
+                             uint32_t maxNumberOfBluetoothDevices, 
+                             uint32_t timeout) {
+     this->Send(commandStrings[kAT_INQM]);
+     this->Send(commandStrings[kSET_POSTFIX]);
+     this->Send(std::to_string(static_cast<uint32_t>(im)));
+     this->Send(commandStrings[kCOMMA]);
+     this->Send(std::to_string(maxNumberOfBluetoothDevices));
+     this->Send(commandStrings[kCOMMA]);
+     this->Send(std::to_string(timeout));
+     this->Send(commandStrings[kAT_END]);
+ }
+ 
+ void HC05::SetBindToAddress(const std::string& address) {
+     this->Send(commandStrings[kAT_BIND]);
+     this->Send(commandStrings[kSET_POSTFIX]);
+     this->Send(address);
+     this->Send(commandStrings[kAT_END]);
+ }
+ 
+ void HC05::InquiryBluetoothDevices() {
+     this->Send(commandStrings[kAT_INQ]);
+     this->Send(commandStrings[kGET_POSTFIX]);
+     this->Send(commandStrings[kAT_END]);
+ }
+ 

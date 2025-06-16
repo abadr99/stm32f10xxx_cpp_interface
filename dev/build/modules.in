@@ -46,4 +46,6 @@ hal {
     src/LM35.cpp
     src/LedMatrix.cpp
     src/Ultrasonic.cpp
+    src/LKA.cpp
+    src/Car_Control.cpp
 }

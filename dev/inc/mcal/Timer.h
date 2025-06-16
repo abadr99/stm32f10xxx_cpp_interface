@@ -74,7 +74,7 @@ enum OCIdleState {
     kIdleState_Reset,  // Output is reset during idle state
     kIdleState_Set  // Output is set during idle state.
 };
-enum State {
+enum TimerState {
     kDisable,
     kEnable
 };
@@ -83,16 +83,10 @@ struct TimeBaseTypeDef { /**< Direction of the timer (up/down) */
 };
 struct TimerOCTypeDef {
     OCMode mode;
-    State state;
+    TimerState state;
     OCPolarity polarity;
     uint16_t period;
     OCIdleState idleState = kIdleState_Reset;
-};
-struct TimerICTypeDef {
-    TimerSelection selection;
-    uint8_t prescaler;
-    uint8_t filter;
-    TimerPolarity polarity;
 };
 /**
  * @struct TimerConfig
@@ -105,7 +99,7 @@ struct TimerConfig {
     TimerID Timerid;
     TimerDirection Direction; /**< ID of the timer */
     uint16_t Prescaler; /**< Prescaler value for adjusting the timer frequency */
-    State interrupt;
+    TimerState interrupt;
     stm32::type::pFunction pfunction = nullptr; /**< Function pointer to the ISR callback */
 };
 /**
@@ -135,10 +129,7 @@ class Timer {
     void Delay_ms(const TimeBaseTypeDef & counter, uint16_t value);
     void OCMode(const TimerOCTypeDef & OC);
     void SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel, uint16_t pwmvalue);
-    void ICMode(TimerChannels channel, TimerICTypeDef IC);
-    uint16_t GetCaptureValue(TimerChannels channel);
-    void ClearCaptureFlag(TimerChannels channel);
-    void Cmd(State state);
+    void Cmd(TimerState state);
     /**
      * @brief Gets the function pointer to the ISR for the specified timer ID.
      * 
