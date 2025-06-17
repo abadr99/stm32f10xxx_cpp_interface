@@ -120,4 +120,3 @@ extern "C" void SysTick_Handler(void) {
         SysticReg->VAL = 1;
     }
 }
-

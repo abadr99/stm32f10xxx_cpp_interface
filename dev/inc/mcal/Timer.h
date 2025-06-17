@@ -17,14 +17,6 @@ namespace dev {
 namespace mcal {
 namespace timer {
 /**
- * @enum TimerMode
- * @brief Enumeration representing the mode of the timer.
- */
-enum TimerMode {
-    kTimeBase,  /**< Time base mode */
-};
-
-/**
  * @enum TimerID
  * @brief Enumeration representing the ID of the timer.
  */
@@ -44,7 +36,58 @@ enum TimerDirection {
     kUP,    /**< Count up */
     kDown   /**< Count down */
 };
-
+enum TimerClkDivision {
+    kDIV1 = 0x0000,
+    kDIV2 = 0x0100,
+    kDIV4 = 0x0200
+};
+enum TimerPolarity {
+    kRisingEdge,
+    kFallingEdge
+};
+enum TimerChannels {
+    kChannel1,
+    kChannel2,
+    kChannel3,
+    kChannel4
+};
+enum TimerSelection {
+    kDirectTI, /**<TIM Input 1 is selected to be connected to IC1*/
+    kIndirectTI, /**<TIM Input 1 is selected to be connected to IC2*/
+    kTRC /**<TIM Input 1 is selected to be connected to TRC*/
+};
+enum OCMode {
+    kTiming,  // Output compare timing mode (no output on the pin).
+    kActive,  // Output compare active mode.
+    kInactive,  // Output compare inactive mode.
+    kToggle,  // Output compare toggle mode.
+    kForced_Inactive,  // Forced inactive mode.
+    kForced_Active,  // Forced active mode.
+    kPWM1,  // PWM mode 1.
+    kPWM2  // PWM mode 2.
+};
+enum OCPolarity {
+    kActiveHigh ,
+    kActiveLow 
+};
+enum OCIdleState {
+    kIdleState_Reset,  // Output is reset during idle state
+    kIdleState_Set  // Output is set during idle state.
+};
+enum TimerState {
+    kDisable,
+    kEnable
+};
+struct TimeBaseTypeDef { /**< Direction of the timer (up/down) */
+    TimerClkDivision ClkDivision;
+};
+struct TimerOCTypeDef {
+    OCMode mode;
+    TimerState state;
+    OCPolarity polarity;
+    uint16_t period;
+    OCIdleState idleState = kIdleState_Reset;
+};
 /**
  * @struct TimerConfig
  * @brief Structure representing the configuration settings for a timer.
@@ -53,13 +96,12 @@ enum TimerDirection {
  * and the function pointer for the interrupt service routine (ISR).
  */
 struct TimerConfig {
-    TimerMode mode;           /**< Mode of the timer */
-    TimerID Timerid;          /**< ID of the timer */
-    TimerDirection Direction; /**< Direction of the timer (up/down) */
-    uint32_t Prescaler;       /**< Prescaler value for adjusting the timer frequency */
-    stm32::type::pFunction pfunction;  /**< Function pointer to the ISR callback */
+    TimerID Timerid;
+    TimerDirection Direction; /**< ID of the timer */
+    uint16_t Prescaler; /**< Prescaler value for adjusting the timer frequency */
+    TimerState interrupt;
+    stm32::type::pFunction pfunction = nullptr; /**< Function pointer to the ISR callback */
 };
-
 /**
  * @class Timer
  * @brief Class for configuring and controlling timers.
@@ -84,8 +126,10 @@ class Timer {
      * 
      * @param value The delay duration in milliseconds.
      */
-    void Delay_ms(uint16_t value);
-
+    void Delay_ms(const TimeBaseTypeDef & counter, uint16_t value);
+    void OCMode(const TimerOCTypeDef & OC);
+    void SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel, uint16_t pwmvalue);
+    void Cmd(TimerState state);
     /**
      * @brief Gets the function pointer to the ISR for the specified timer ID.
      * 
@@ -105,6 +149,10 @@ class Timer {
     static constexpr uint32_t kCallBackSiz = 5;
     /**< Global callback functions array for ISRs */
     static pFunction pGlobalCallBackFunction[kCallBackSiz];
+    void Helper_TI1Config(TimerPolarity Polarity,
+                          TimerSelection Selection, uint16_t Filter);
+    void Helper_TI2Config(TimerPolarity Polarity,
+                          TimerSelection Selection, uint16_t Filter);
 };
 }  // namespace timer
 }  // namespace mcal

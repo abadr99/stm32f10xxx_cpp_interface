@@ -105,8 +105,7 @@ gen-lib:$(OBJS)
 # make upload
 # ------------------------------------------
 upload:
-	$(FLASH) write $(HEX_TARGET) 0x08000000 
-
+	$(FLASH) --format ihex write $(HEX_TARGET)
 # ------------------------------------------
 # Rule to generate Doxygen documentation
 # make doxygen
