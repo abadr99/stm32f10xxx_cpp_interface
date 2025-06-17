@@ -23,7 +23,14 @@ using namespace stm32::dev::mcal::can;
 using namespace stm32::registers::can;
 
 volatile CANRegDef* Can::CAN = nullptr;
-  
+typename Can::pFunction Can::TxMailboxComplete[3] = {nullptr};
+typename Can::pFunction Can::TxMailboxAbort[3] = {nullptr};
+typename Can::pFunction Can::RxFifoMsgPending[2] = {nullptr};
+typename Can::pFunction Can::RxFifoFull[2] = {nullptr};
+typename Can::pFunction Can::SleepCallback = nullptr;
+typename Can::pFunction Can::WakeUpCallback = nullptr;
+typename Can::pFunction Can::ErrorCallback = nullptr;
+
 void Can::Init(const CanConfig &conf) {
     CAN = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
 
@@ -182,6 +189,51 @@ uint8_t Can::GetPendingMessages(FifoNumber fifo) {
     return (fifo == FifoNumber::kFIFO0) ? CAN->RF0R.FMP0 : CAN->RF1R.FMP1;
 }
 
+void Can::EnableInterrupt(Interrupts interrupt) {
+    CAN->IER.registerVal = SetBit(CAN->IER.registerVal, static_cast<uint32_t>(interrupt));
+}
+
+void Can::DisableInterrupt(Interrupts interrupt) {
+    CAN->IER.registerVal = ClearBit(CAN->IER.registerVal, static_cast<uint32_t>(interrupt));
+}
+
+void Can::SetCallback(CallbackId id, pFunction func) {
+    switch (id) {
+        case CallbackId::kTxMailbox0Complete: TxMailboxComplete[0] = func; break;
+        case CallbackId::kTxMailbox1Complete: TxMailboxComplete[1] = func; break;
+        case CallbackId::kTxMailbox2Complete: TxMailboxComplete[2] = func; break;
+        case CallbackId::kTxMailbox0Abort: TxMailboxAbort[0] = func; break;
+        case CallbackId::kTxMailbox1Abort: TxMailboxAbort[1] = func; break;
+        case CallbackId::kTxMailbox2Abort: TxMailboxAbort[2] = func; break;
+        case CallbackId::kFifo0MessagePending: RxFifoMsgPending[0] = func; break;
+        case CallbackId::kFifo1MessagePending: RxFifoMsgPending[1] = func; break;
+        case CallbackId::kFifo0Full: RxFifoFull[0] = func; break;
+        case CallbackId::kFifo1Full: RxFifoFull[1] = func; break;
+        case CallbackId::kSleepAck: SleepCallback = func; break;
+        case CallbackId::kWakeUp: WakeUpCallback = func; break;
+        case CallbackId::kError: ErrorCallback = func; break;
+    }
+}
+
+typename Can::pFunction Can::GetCallback(CallbackId id) {
+    switch (id) {
+        case CallbackId::kTxMailbox0Complete: return TxMailboxComplete[0];
+        case CallbackId::kTxMailbox1Complete: return TxMailboxComplete[1];
+        case CallbackId::kTxMailbox2Complete: return TxMailboxComplete[2];
+        case CallbackId::kTxMailbox0Abort: return TxMailboxAbort[0];
+        case CallbackId::kTxMailbox1Abort: return TxMailboxAbort[1];
+        case CallbackId::kTxMailbox2Abort: return TxMailboxAbort[2];
+        case CallbackId::kFifo0MessagePending: return RxFifoMsgPending[0];
+        case CallbackId::kFifo1MessagePending: return RxFifoMsgPending[1];
+        case CallbackId::kFifo0Full: return RxFifoFull[0];
+        case CallbackId::kFifo1Full: return RxFifoFull[1];
+        case CallbackId::kSleepAck: return SleepCallback;
+        case CallbackId::kWakeUp: return WakeUpCallback;
+        case CallbackId::kError: return ErrorCallback;
+    }
+    return nullptr;
+}
+
 void Can::SetOperatingMode(OperatingMode mode) {
     using OM = OperatingMode;
     
@@ -212,5 +264,163 @@ void Can::SetOperatingMode(OperatingMode mode) {
         case OM::kInitialization: OperateInitMode();    return;
         case OM::kNormal:         OperateNormalMode();  return;
         default: /* TODO(@abadr99): Support Unreachable code */ break;
+    }
+}
+extern "C" void Can_Handler(void) {
+    auto CanReg = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
+    CanConfig conf;
+    CanError code = CanError::kNoEr;
+    if (CanReg->IER.TMEIE) {
+        if (CanReg->TSR.RQCP0) {
+            CanReg->TSR.RQCP0 = 1;
+            if (CanReg->TSR.TXOK0) {
+                Can::GetCallback(CallbackId::kTxMailbox0Complete)();
+            } else {
+                if (CanReg->TSR.ALST0) {
+                    SetBit(static_cast<uint32_t>(code), 
+                            static_cast<uint32_t>(CanError::kTxAlst0));
+                } else if (CanReg->TSR.TERR0) {
+                    SetBit(static_cast<uint32_t>(code), 
+                            static_cast<uint32_t>(CanError::kTxTerr0));
+                } else {
+                    Can::GetCallback(CallbackId::kTxMailbox0Abort)();
+                }
+            }
+        }
+        if (CanReg->TSR.RQCP1) {
+            CanReg->TSR.RQCP1 = 1;
+            if (CanReg->TSR.TXOK1) {
+                Can::GetCallback(CallbackId::kTxMailbox1Complete)();
+            } else {
+                if (CanReg->TSR.ALST1) {
+                    SetBit(static_cast<uint32_t>(code), 
+                            static_cast<uint32_t>(CanError::kTxAlst1));
+                } else if (CanReg->TSR.TERR1) {
+                    SetBit(static_cast<uint32_t>(code), 
+                            static_cast<uint32_t>(CanError::kTxTerr1));
+                } else {
+                    Can::GetCallback(CallbackId::kTxMailbox1Abort)();
+                }
+            }
+        }
+        if (CanReg->TSR.RQCP2) {
+            CanReg->TSR.RQCP2 = 1;
+            if (CanReg->TSR.TXOK2) {
+                Can::GetCallback(CallbackId::kTxMailbox2Complete)();
+            } else {
+                if (CanReg->TSR.ALST2) {
+                    SetBit(static_cast<uint32_t>(code), 
+                            static_cast<uint32_t>(CanError::kTxAlst2));
+                } else if (CanReg->TSR.TERR2) {
+                    SetBit(static_cast<uint32_t>(code), 
+                            static_cast<uint32_t>(CanError::kTxTerr2));
+                } else {
+                    Can::GetCallback(CallbackId::kTxMailbox2Abort)();
+                }
+            }
+        }
+    }
+    if (CanReg->IER.FOVIE0) {
+        if (CanReg->RF0R.FOVR0) {
+            CanReg->RF0R.FOVR0 = 0;
+            SetBit(static_cast<uint32_t>(code), 
+                    static_cast<uint32_t>(CanError::kRxFov0));
+        }
+    }
+    if (CanReg->IER.FFIE0) {
+        if (CanReg->RF0R.FULL0) {
+            CanReg->RF0R.FULL0 = 0;
+            Can::GetCallback(CallbackId::kFifo0Full)();
+        }
+    }
+    if (CanReg->IER.FMPIE0) {
+        if (CanReg->RF0R.FMP0) {
+            Can::GetCallback(CallbackId::kFifo0MessagePending)();
+        }
+    }
+    if (CanReg->IER.FOVIE1) {
+        if (CanReg->RF1R.FOVR1) {
+            CanReg->RF1R.FOVR1 = 0;
+            SetBit(static_cast<uint32_t>(code), 
+                    static_cast<uint32_t>(CanError::kRxFov1));
+        }
+    }
+    if (CanReg->IER.FFIE1) {
+        if (CanReg->RF1R.FULL1) {
+            CanReg->RF1R.FULL1 = 0;
+            Can::GetCallback(CallbackId::kFifo1Full)();
+        }
+    }
+    if (CanReg->IER.FMPIE1) {
+        if (CanReg->RF1R.FMP1) {
+            Can::GetCallback(CallbackId::kFifo1MessagePending)();
+        }
+    }
+    if (CanReg->IER.SLKIE) {
+        if (CanReg->MSR.SLAK) {
+            CanReg->MSR.SLAK = 0;
+            Can::GetCallback(CallbackId::kSleepAck)();
+        }
+    }
+    if (CanReg->IER.WKUIE) {
+        if (CanReg->MSR.WKUI) {
+            CanReg->MSR.WKUI = 0;
+            Can::GetCallback(CallbackId::kWakeUp)();
+        }
+    }
+    if (CanReg->IER.ERRIE) {
+        if (CanReg->MSR.ERRI) {
+           if (CanReg->IER.EWGIE && CanReg->ESR.EWGF) {
+                SetBit(static_cast<uint32_t>(code), 
+                        static_cast<uint32_t>(CanError::kEwg));
+            }
+            if (CanReg->IER.EPVIE && CanReg->ESR.EPVF) {
+                SetBit(static_cast<uint32_t>(code), 
+                        static_cast<uint32_t>(CanError::kEpv));
+            }
+            if (CanReg->IER.BOFIE && CanReg->ESR.BOFF) {
+                SetBit(static_cast<uint32_t>(code), 
+                        static_cast<uint32_t>(CanError::kBof));
+            }
+            if (CanReg->IER.LECIE && CanReg->ESR.LEC) {
+                switch (CanReg->ESR.LEC) {
+                    case 0:
+                        SetBit(static_cast<uint32_t>(code), 
+                                static_cast<uint32_t>(CanError::kNoEr));
+                        break;
+                    case 1:
+                        SetBit(static_cast<uint32_t>(code), 
+                                static_cast<uint32_t>(CanError::kStf));
+                        break;
+                    case 2:
+                        SetBit(static_cast<uint32_t>(code), 
+                                static_cast<uint32_t>(CanError::kFor));
+                        break;
+                    case 3:
+                        SetBit(static_cast<uint32_t>(code), 
+                                static_cast<uint32_t>(CanError::kAck));
+                        break;
+                    case 4:
+                        SetBit(static_cast<uint32_t>(code), 
+                                static_cast<uint32_t>(CanError::kBr));
+                        break;
+                    case 5:
+                        SetBit(static_cast<uint32_t>(code), 
+                                static_cast<uint32_t>(CanError::kBd));
+                        break;
+                    case 6:
+                        SetBit(static_cast<uint32_t>(code), 
+                                static_cast<uint32_t>(CanError::kCrc));
+                        break;
+                    default: break;
+                }
+            }
+        }
+        CanReg->MSR.ERRI = 0;
+    }
+    CanReg->IER.ERRIE = 0;
+    if (code != CanError::kNoEr) {
+        SetBit(static_cast<uint32_t>(conf.error), static_cast<uint32_t>(code));
+        Can::GetCallback(CallbackId::kError)();
     }
 }

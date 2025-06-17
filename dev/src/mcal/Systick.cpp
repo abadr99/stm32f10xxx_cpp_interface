@@ -44,9 +44,8 @@ void Systick::Enable(CLKSource clksource) {
     STM32_ASSERT((clksource == kAHB_Div_8) || 
                  (clksource == kAHB), SYSTICK_CONFIG_ERROR(CLKSource));
     SYSTICK->CTRL.ENABLE = 1;
-    SYSTICK->CTRL.TICKINT = 0;
+    SYSTICK->CTRL.TICKINT = 1;
     SYSTICK->CTRL.CLKSOURCE = clksource;
-    SetPointerToISR(nullptr);
 }
 
 void Systick::SetCounterValue(uint32_t value) {
@@ -81,7 +80,7 @@ void Systick::Delay_us(uint32_t time_us) {
 }
 
 void Systick::Delay_By_Exception(uint32_t value, pFunction func) {
-// STM32_ASSERT(func != NULL && value <= kSystickMaxVal);
+STM32_ASSERT((func != nullptr) && value <= kSystickMaxVal , SYSTICK_CONFIG_ERROR(ParameterError));
     SYSTICK->LOAD = value;
     SetPointerToISR(func);
     SYSTICK->CTRL.TICKINT = 1;
@@ -97,6 +96,14 @@ void Systick::Disable() {
     SetPointerToISR(nullptr);
 }
 
+void Systick::InterruptEnable() {
+    SYSTICK->CTRL.TICKINT = 1;
+}
+
+void Systick::InterruptDisable() {
+    SYSTICK->CTRL.TICKINT = 0;
+}
+
 void Systick::SetPointerToISR(pFunction func) {
     Systick::PointerToISR = func;
 }
@@ -110,7 +117,6 @@ extern "C" void SysTick_Handler(void) {
         fun();
         auto SysticReg = reinterpret_cast<volatile SystickRegDef*>
                          (Addr<Peripheral::kSYSTICK >::Get());
-        SysticReg->CTRL.ENABLE = 0;
         SysticReg->VAL = 1;
     }
 }
