@@ -112,25 +112,38 @@ void Timer::SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel, uint16
     // timerReg->CCR1 = pwmvalue;
     switch (channel) {
         case kChannel1:  //  PORTA_0
-        timerReg->CCMR1.CC1S = 0;
+        // Clear CC1S (bits 1:0), OC1M (6:4), OC1PE (3)
+        timerReg->CCMR1 &= ~((3 << 0) | (7 << 4) | (1 << 3));
+        // Set OC1M mode and enable preload
+        timerReg->CCMR1 |= ((OC.mode & 0x7) << 4) | (1 << 3);
+
+        /*timerReg->CCMR1.CC1S = 0;
         timerReg->CCMR1.OC1M = OC.mode;
-        timerReg->CCMR1.OC1PE = kEnable;
+        timerReg->CCMR1.OC1PE = kEnable;*/
         /* Set the Output State */
         timerReg->CCER.CC1E = OC.state;
         timerReg->CCR1 = 0;
         timerReg->CCR1 = pwmvalue;
         break;
     case kChannel2:  // PORTA_1:
-        timerReg->CCMR1.CC2S = 0;   // Channel as output
+        // Clear CC2S (bits 9:8), OC2M (14:12), OC2PE (11)
+        timerReg->CCMR1 &= ~((3 << 8) | (7 << 12) | (1 << 11));
+        // Set OC2M mode and enable preload
+        timerReg->CCMR1 |= ((OC.mode & 0x7) << 12) | (1 << 11);
+        /*timerReg->CCMR1.CC2S = 0;   // Channel as output
         timerReg->CCMR1.OC2M = OC.mode;   // PWM mode 1
-        timerReg->CCMR1.OC2PE = kEnable;  // Enable preload
+        timerReg->CCMR1.OC2PE = kEnable;  // Enable preload*/
         timerReg->CCER.CC2E = OC.state;    // Enable output
         timerReg->CCR2 = pwmvalue;
         break;
     case kChannel3:  // PORTA_2:
-        timerReg->CCMR2.CC3S = 0;   // Channel as output
+        // Clear CC3S (1:0), OC3M (6:4), OC3PE (3) in CCMR2
+        timerReg->CCMR2 &= ~((3 << 0) | (7 << 4) | (1 << 3));
+        // Set OC3M and preload
+        timerReg->CCMR2 |= ((OC.mode & 0x7) << 4) | (1 << 3);
+        /*timerReg->CCMR2.CC3S = 0;   // Channel as output
         timerReg->CCMR2.OC3M = OC.mode;   // PWM mode 1
-        timerReg->CCMR2.OC3PE = kEnable;  // Enable preload
+        timerReg->CCMR2.OC3PE = kEnable;  // Enable preload*/
         timerReg->CCER.CC3E = OC.state;    // Enable output
         timerReg->CCR3 = pwmvalue;
         break;
