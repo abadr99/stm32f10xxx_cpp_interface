@@ -27,9 +27,9 @@ using namespace stm32::dev::mcal::timer;
 using namespace stm32::dev::hal::dc_motor;
 
 DC_Motor::DC_Motor(const Pin& pin1, const Pin& pin2) 
-        : pin1_(pin1) , pin2_(pin2){
-   // STM32_ASSERT(pin1.IsOutput(), CONFIG_ERROR(_MOTOR, _CONFIG));
-    //STM32_ASSERT(pin2.IsOutput(), CONFIG_ERROR(_MOTOR, _CONFIG));
+        : pin1_(pin1) , pin2_(pin2) {
+    // STM32_ASSERT(pin1.IsOutput(), CONFIG_ERROR(_MOTOR, _CONFIG));
+    // STM32_ASSERT(pin2.IsOutput(), CONFIG_ERROR(_MOTOR, _CONFIG));
     Gpio::Set(pin1_);
     Gpio::Set(pin2_);
 }

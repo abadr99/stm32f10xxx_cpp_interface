@@ -24,7 +24,8 @@ using namespace stm32::dev::mcal::rcc;
 using namespace stm32::dev::mcal::timer;
 using namespace stm32::dev::hal::ultrasonic;
 
-Ultrasonic::Ultrasonic(const Pin& triggerPin, const Pin& echoPin, const TimerConfig &cfg, TimerChannels ch)
+Ultrasonic::Ultrasonic(const Pin& triggerPin, const Pin& echoPin,
+                       const TimerConfig &cfg, TimerChannels ch)
     : triggerPin_(triggerPin), echoPin_(echoPin), timer_(cfg), channel_(ch) {
     Rcc::Enable(MapPortToPeripheral(triggerPin_.GetPort()));
     Rcc::Enable(MapPortToPeripheral(echoPin_.GetPort()));

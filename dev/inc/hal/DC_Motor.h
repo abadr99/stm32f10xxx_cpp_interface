@@ -54,8 +54,8 @@ class DC_Motor {
     void Stop();
 
  private:
-   const Pin& pin1_; /**< First control pin for the DC motor */
-   const Pin& pin2_; /**< Second control pin for the DC motor */
+    const Pin& pin1_; /**< First control pin for the DC motor */
+    const Pin& pin2_; /**< Second control pin for the DC motor */
 };
 }   //  namespace dc_motor
 }   //  namespace hal
