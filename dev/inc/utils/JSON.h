@@ -12,69 +12,68 @@
 #ifndef DEV_INC_UTILS_JSON_H_
 #define DEV_INC_UTILS_JSON_H_
 
-#include <map>
-#include <string>
-#include <cstring>
-#include <vector>
+#include "String.h"
+#include "Types.h"
 
+using namespace stm32::util;
 namespace stm32 {
 namespace util {
 class JsonUtil {
+    String str_;
+    uint32_t size_;
+    
  public:
-    void add(const std::string& key, const std::string& value) {
-        entries.push_back("\"" + key + "\": \"" + value + "\"");
+    JsonUtil() : str_{}, size_{0} {
     }
-    void add(const std::string& key, int value) {
-        entries.push_back("\"" + key + "\": " + std::to_string(value));
+    void add(const String& key, const String& value) {
+    if (size_ >= 1) {
+            str_+= String(",");
     }
-    std::string build() const {
-        std::string json = "{";
-        for (size_t i = 0; i < entries.size(); ++i) {
-            json += entries[i];
-            if (i != entries.size() - 1) {
-                json += ", ";
-            }
-        }
-        json += "}";
+        String str(String("\"") + key + String("\": \"") + value + String("\""));
+        str_+=str;
+        size_++;
+    }
+    
+    String build() const {
+        String json = String("{");
+        json+=str_;
+        json += String("}");
         return json;
     }
-    static std::map<std::string, std::string> parse(const std::string& json) {
-        std::map<std::string, std::string> result;
-        size_t i = 0;
+
+    void parse(const String& json, void (*pFun)(String, String)) {
+        uint32_t i = 0;
         while (i < json.size()) {
             if (json[i] == '\"') {
-                size_t keyStart = ++i;
+                uint32_t keyStart = ++i;
                 while (i < json.size() && json[i] != '\"') {
                     i++;
                 }
-                std::string key = json.substr(keyStart, i - keyStart);
+                String key = json.substr(keyStart, i - keyStart);
                 i += 2;  // Skip over the closing quote and the colon
-                std ::string value;
+                String value;
                 if (json[i] == '\"') {
-                    size_t valueStart = ++i;
+                    uint32_t valueStart = ++i;
                     while (i < json.size() && json[i] != '\"') {
                         i++;
                     }
                     value = json.substr(valueStart, i - valueStart);
                     i++;  // Skip over the closing quote
                 } else {
-                    size_t valueStart = i;
+                    uint32_t valueStart = i;
                     while (i < json.size() && json[i] != ',' && json[i] != '}') {
                         i++;
                     }
                     value = json.substr(valueStart, i - valueStart);
                 }
-                result[key] = value;
+                pFun(key, value);
             } else {
                 i++;  // Skip over any non-quote characters 
             }
         }
-        return result;
     }
-
- private:
-    std::vector<std::string> entries;
 };
+
 }   // namespace util
 }   // namespace stm32
 #endif  // DEV_INC_UTILS_JSON_H_
