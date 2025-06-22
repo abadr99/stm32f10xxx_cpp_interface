@@ -92,16 +92,38 @@ void Can::FilterInit(const FilterConfig& conf) {
 
 
 void Can::Transmit(const CanTxMsg& message) {
+    uint32_t txMailbox = Helper_Transmit(message);
+    //-- Wait until the transmission occurs 
+    if (txMailbox == 0) {
+        util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK0 == 1); });
+    } else if (txMailbox == 1) {
+        util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK1 == 1); });
+    } else if (txMailbox ==2) {
+        util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK2 == 1); });
+    }
+}
+
+void Can::Transmit(const CanTxMsg& message, pFunction fun) {
+    SetCallback(CallbackId::kTxMailbox0Complete, fun);
+    SetCallback(CallbackId::kTxMailbox1Complete, fun);
+    SetCallback(CallbackId::kTxMailbox2Complete, fun);
+
+    Can::EnableInterrupt(Interrupts::kTxMailBoxEmpty);
+
+    Helper_Transmit(message);
+}
+
+uint32_t Can::Helper_Transmit(const CanTxMsg& message)  {
     uint32_t txMailbox = 3;
-     auto GetAvailableMailbox = [&]() -> uint8_t {
+    auto GetAvailableMailbox = [&]() -> uint8_t {
          uint8_t retMailBox = 3;
          if (CAN->TSR.TME0) retMailBox = 0;
          else if (CAN->TSR.TME1) retMailBox = 1;
          else if (CAN->TSR.TME2) retMailBox = 2;
          return retMailBox;  // No mailbox available
-     };
+    };
 
-     txMailbox = GetAvailableMailbox();
+    txMailbox = GetAvailableMailbox();
 
     if (txMailbox != 3) {
         CAN->TxMailBox[txMailbox].TIR.STID = message.stdId;
@@ -109,7 +131,7 @@ void Can::Transmit(const CanTxMsg& message) {
         CAN->TxMailBox[txMailbox].TIR.RTR = static_cast<uint32_t>(message.rtr);
         CAN->TxMailBox[txMailbox].TDTR.DLC = message.dlc;
         CAN->TxMailBox[txMailbox].TDLR = (((uint32_t)message.data[3] << 24)) |
-                                         (((uint32_t)message.data[2] << 16)) |
+                                            (((uint32_t)message.data[2] << 16)) |
                                          (((uint32_t)message.data[1] << 8))  |
                                          (((uint32_t)message.data[0]));
         CAN->TxMailBox[txMailbox].TDHR = (((uint32_t)message.data[7] << 24)) |
@@ -118,18 +140,8 @@ void Can::Transmit(const CanTxMsg& message) {
                                          (((uint32_t)message.data[4]));
         // Request Transmission
         CAN->TxMailBox[txMailbox].TIR.TXRQ = 1;
-        
-        
-        if (txMailbox == 0) {
-            //  Wait until the transmission ocures
-            util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK0 == 1); });
-        } else if (txMailbox == 1) {
-            //  Wait until the transmission ocures
-            util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK1 == 1); });
-        } else if (txMailbox ==2) {
-            util::BusyWait<constant::TimeOut::kCan>([&](){ return (CAN->TSR.TXOK2 == 1); });
-        }
     }
+    return txMailbox;
 }
 
 void Can::CancelTransmit(MailBoxType mailbox) {
@@ -266,15 +278,19 @@ void Can::SetOperatingMode(OperatingMode mode) {
         default: /* TODO(@abadr99): Support Unreachable code */ break;
     }
 }
-extern "C" void Can_Handler(void) {
+extern "C" void USB_HP_CAN_TX_IRQHandler(void) {
     auto CanReg = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
     CanConfig conf;
     CanError code = CanError::kNoEr;
     if (CanReg->IER.TMEIE) {
         if (CanReg->TSR.RQCP0) {
-            CanReg->TSR.RQCP0 = 1;
             if (CanReg->TSR.TXOK0) {
-                Can::GetCallback(CallbackId::kTxMailbox0Complete)();
+                CanReg->TSR.RQCP0 = 1;
+                Can::pFunction fun = Can::GetCallback(CallbackId::kTxMailbox0Complete);
+                if (fun) {
+                    fun();
+                }
+
             } else {
                 if (CanReg->TSR.ALST0) {
                     SetBit(static_cast<uint32_t>(code), 
@@ -283,14 +299,20 @@ extern "C" void Can_Handler(void) {
                     SetBit(static_cast<uint32_t>(code), 
                             static_cast<uint32_t>(CanError::kTxTerr0));
                 } else {
-                    Can::GetCallback(CallbackId::kTxMailbox0Abort)();
+                    Can::pFunction fun = Can::GetCallback(CallbackId::kTxMailbox0Abort);
+                    if (fun != nullptr) {
+                        fun();
+                    }
                 }
             }
         }
         if (CanReg->TSR.RQCP1) {
             CanReg->TSR.RQCP1 = 1;
             if (CanReg->TSR.TXOK1) {
-                Can::GetCallback(CallbackId::kTxMailbox1Complete)();
+                Can::pFunction fun = Can::GetCallback(CallbackId::kTxMailbox1Complete);
+                if (fun) {
+                    fun();
+                }
             } else {
                 if (CanReg->TSR.ALST1) {
                     SetBit(static_cast<uint32_t>(code), 
@@ -299,14 +321,20 @@ extern "C" void Can_Handler(void) {
                     SetBit(static_cast<uint32_t>(code), 
                             static_cast<uint32_t>(CanError::kTxTerr1));
                 } else {
-                    Can::GetCallback(CallbackId::kTxMailbox1Abort)();
+                    Can::pFunction fun = Can::GetCallback(CallbackId::kTxMailbox0Abort);
+                    if (fun) {
+                        fun();
+                    }
                 }
             }
         }
         if (CanReg->TSR.RQCP2) {
             CanReg->TSR.RQCP2 = 1;
             if (CanReg->TSR.TXOK2) {
-                Can::GetCallback(CallbackId::kTxMailbox2Complete)();
+                Can::pFunction fun = Can::GetCallback(CallbackId::kTxMailbox2Complete);
+                if (fun) {
+                    fun();
+                }
             } else {
                 if (CanReg->TSR.ALST2) {
                     SetBit(static_cast<uint32_t>(code), 
@@ -315,11 +343,21 @@ extern "C" void Can_Handler(void) {
                     SetBit(static_cast<uint32_t>(code), 
                             static_cast<uint32_t>(CanError::kTxTerr2));
                 } else {
-                    Can::GetCallback(CallbackId::kTxMailbox2Abort)();
+                    Can::pFunction fun = Can::GetCallback(CallbackId::kTxMailbox0Abort);
+                    if (fun) {
+                        fun();
+                    }
                 }
             }
         }
     }
+}
+
+
+extern "C" void USB_LP_CAN_RX0_IRQHandler(void) {
+    auto CanReg = reinterpret_cast<volatile CANRegDef*>(Addr<Peripheral::kCAN>::Get());
+    CanConfig conf;
+    CanError code = CanError::kNoEr;
     if (CanReg->IER.FOVIE0) {
         if (CanReg->RF0R.FOVR0) {
             CanReg->RF0R.FOVR0 = 0;
@@ -330,12 +368,18 @@ extern "C" void Can_Handler(void) {
     if (CanReg->IER.FFIE0) {
         if (CanReg->RF0R.FULL0) {
             CanReg->RF0R.FULL0 = 0;
-            Can::GetCallback(CallbackId::kFifo0Full)();
+            Can::pFunction fun = Can::GetCallback(CallbackId::kFifo0Full);
+            if (fun) {
+                fun();
+            }
         }
     }
     if (CanReg->IER.FMPIE0) {
         if (CanReg->RF0R.FMP0) {
-            Can::GetCallback(CallbackId::kFifo0MessagePending)();
+            Can::pFunction fun = Can::GetCallback(CallbackId::kFifo0MessagePending);
+            if (fun) {
+                fun();
+            }
         }
     }
     if (CanReg->IER.FOVIE1) {
@@ -348,24 +392,36 @@ extern "C" void Can_Handler(void) {
     if (CanReg->IER.FFIE1) {
         if (CanReg->RF1R.FULL1) {
             CanReg->RF1R.FULL1 = 0;
-            Can::GetCallback(CallbackId::kFifo1Full)();
+            Can::pFunction fun = Can::GetCallback(CallbackId::kFifo1Full);
+            if (fun) {
+                fun();
+            }
         }
     }
     if (CanReg->IER.FMPIE1) {
         if (CanReg->RF1R.FMP1) {
-            Can::GetCallback(CallbackId::kFifo1MessagePending)();
+            Can::pFunction fun = Can::GetCallback(CallbackId::kFifo1MessagePending);
+            if (fun) {
+                fun();
+            }
         }
     }
     if (CanReg->IER.SLKIE) {
         if (CanReg->MSR.SLAK) {
             CanReg->MSR.SLAK = 0;
-            Can::GetCallback(CallbackId::kSleepAck)();
+            Can::pFunction fun = Can::GetCallback(CallbackId::kSleepAck);
+            if (fun) {
+                fun();
+            }
         }
     }
     if (CanReg->IER.WKUIE) {
         if (CanReg->MSR.WKUI) {
             CanReg->MSR.WKUI = 0;
-            Can::GetCallback(CallbackId::kWakeUp)();
+            Can::pFunction fun = Can::GetCallback(CallbackId::kWakeUp);
+            if (fun) {
+                fun();
+            }
         }
     }
     if (CanReg->IER.ERRIE) {
@@ -421,6 +477,9 @@ extern "C" void Can_Handler(void) {
     CanReg->IER.ERRIE = 0;
     if (code != CanError::kNoEr) {
         SetBit(static_cast<uint32_t>(conf.error), static_cast<uint32_t>(code));
-        Can::GetCallback(CallbackId::kError)();
+        Can::pFunction fun = Can::GetCallback(CallbackId::kError);
+        if (fun) {
+            fun();
+        }
     }
 }

@@ -281,6 +281,7 @@ class Can {
      */
     static void Transmit(const CanTxMsg& message);
 
+    static void Transmit(const CanTxMsg& message, pFunction fun);
     /**
      * @brief Cancels message transmission in the specified mailbox.
      * @param mailbox Mailbox identifier.
@@ -333,6 +334,7 @@ class Can {
      * @param mode Operating mode.
      */
     static void SetOperatingMode(OperatingMode mode);
+    static uint32_t Helper_Transmit(const CanTxMsg& message);
 };
 }   // namespace can
 }   // namespace mcal
