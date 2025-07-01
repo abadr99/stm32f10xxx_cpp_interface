@@ -10,10 +10,12 @@
  */
 #include "mcal/stm32f103xx.h"
 #include "utils/Assert.h"
+#include "utils/BitManipulation.h"
 #include "mcal/Timer.h"
 
 using namespace stm32::dev::mcal::timer;
 using namespace stm32::registers::timer;
+using namespace stm32::util;
 using namespace stm32::type;
 
 #define TIMER_EMPTY_MESSAGE               ""
@@ -55,16 +57,8 @@ Timer::Timer(const TimerConfig & config): config_(config) {
 void Timer::Init() {
     STM32_ASSERT(((config_.Timerid >= kTimer1) &&
                  (config_.Timerid <= kTimer5)), TIMER_CONFIG_ERROR(TimerID));
-    STM32_ASSERT((config_.Direction == kUP) || 
-                 (config_.Direction == kDown), TIMER_CONFIG_ERROR(TimerDirection));
-    // Disable Timer at first
-    timerReg->CR1.CEN = 0;
-    // Set prescaler value
-    timerReg->PSC = config_.Prescaler-1;
-    // Set counter Direction
-    timerReg->CR1.DIR = config_.Direction;
     // Set Interrupt update
-    timerReg->DIER.UIE = 1;
+    timerReg->DIER.UIE = config_.interrupt;
     pGlobalCallBackFunction[config_.Timerid] = config_.pfunction;
 }
 typename Timer::timerRegDefPtr Timer::GetPtr(TimerID id) {
@@ -80,20 +74,92 @@ typename Timer::timerRegDefPtr Timer::GetPtr(TimerID id) {
         }   
 }
 
-void Timer::Delay_ms(uint16_t value) {
+void Timer::Delay_ms(const TimeBaseTypeDef & counter, uint16_t value) {
+    // Set prescaler value
+    timerReg->PSC = config_.Prescaler-1;
+    // Set counter Direction
+    timerReg->CR1.DIR = config_.Direction;
+    timerReg->CR1.ARPE = kEnable;
+    // Disable Timer at first
+    timerReg->CR1.CEN = 0;
+    // Set preLoad value
     timerReg->ARR = value-1;
-    // Enable Timer at first
-    timerReg->CR1.CEN = 1;
+    // Set Clock Division
+    timerReg->CR1.CKD = counter.ClkDivision;
 }
+// Channel 1 , Timer 2
+void Timer::OCMode(const TimerOCTypeDef & OC ) {
+    // Disable Timer at first
+    timerReg->CR1.CEN = 0;
+
+    timerReg->PSC = config_.Prescaler-1;
+        // Set counter Direction
+    timerReg->CR1.DIR = config_.Direction;
+    timerReg->CR1.ARPE = kEnable;
+
+    /* Set the Output Compare Polarity */
+    timerReg->CCER.CC1P = OC.polarity;
+
+    /* Initialize all the registers */
+    timerReg->EGR.UG = 1;
+
+
+    timerReg->BDTR.MOE = 1;
+}
+void Timer::SetCompare1(const TimerOCTypeDef & OC, TimerChannels channel, uint16_t pwmvalue) {
+    timerReg->CR1.CEN = 0;
+    // Set preLoad value
+    timerReg->ARR = OC.period - 1;
+    // timerReg->CCR1 = pwmvalue;
+        switch (channel) {
+        case kChannel1:  //  PORTA_0
+            timerReg->CCMR1.CC1S = 0;
+            timerReg->CCMR1.OC1M = OC.mode;
+            timerReg->CCMR1.OC1PE = kEnable;
+            /* Set the Output State */
+            timerReg->CCER.CC1E = OC.state;
+            timerReg->CCR1 = 0;
+            timerReg->CCR1 = pwmvalue;
+            break;
+            case kChannel2:  //  PORTA_1:
+            timerReg->CCMR1.CC2S = 0;   // Channel as output
+            timerReg->CCMR1.OC2M = OC.mode;   // PWM mode 1
+            timerReg->CCMR1.OC2PE = kEnable;  // Enable preload
+            timerReg->CCER.CC2E = OC.state;    // Enable output
+            timerReg->CCR2 = pwmvalue;
+            break;
+        case kChannel3:  //  PORTA_2:
+            timerReg->CCMR2.CC3S = 0;   // Channel as output
+            timerReg->CCMR2.OC3M = OC.mode;   // PWM mode 1
+            timerReg->CCMR2.OC3PE = kEnable;  // Enable preload
+            timerReg->CCER.CC3E = OC.state;    // Enable output
+            timerReg->CCR3 = pwmvalue;
+            break;
+        case kChannel4:  //  PORTA_3:
+            timerReg->CCR4 = pwmvalue;
+            break;
+        }
+        timerReg->EGR.UG = 1;
+        Timer::Cmd(kEnable);
+}
+void Timer::Cmd(State state) {
+    timerReg->CR1.CEN = state;
+}
+
 pFunction Timer::GetFunToISR(TimerID id) {
     STM32_ASSERT((id >= kTimer1) &&
                  (id <= kTimer5), TIMER_CONFIG_ERROR(TimerID));
     return pGlobalCallBackFunction[id];
 }
-
 extern "C" void TIM1_UP_IRQHandler(void) {
     pFunction func = Timer::GetFunToISR(kTimer1);
     Timer::GetPtr(kTimer1)->SR.UIF ^= 1;
+    func();
+}
+
+extern "C" void TIM1_CC_IRQHandler(void) {
+    pFunction func = Timer::GetFunToISR(kTimer1);
+    Timer::GetPtr(kTimer1)->SR.CC1IF ^= 1;
     func();
 }
 

@@ -11,7 +11,10 @@
 #ifndef DEV_INC_HAL_DC_MOTOR_H_
 #define DEV_INC_HAL_DC_MOTOR_H_
 
-using namespace stm32::dev::mcal::pin; 
+#include "mcal/Pin.h"
+#include "mcal/Gpio.h"
+
+using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio;
 
 namespace stm32 {
@@ -35,7 +38,6 @@ class DC_Motor {
      * @param pin2 Second pin controlling the DC motor direction.
      */
     DC_Motor(const Pin& pin1, const Pin& pin2);
-
     /**
      * @brief Rotates the DC motor in a clockwise direction.
      */
@@ -52,8 +54,8 @@ class DC_Motor {
     void Stop();
 
  private:
-    Pin pin1; /**< First control pin for the DC motor */
-    Pin pin2; /**< Second control pin for the DC motor */
+    const Pin& pin1_; /**< First control pin for the DC motor */
+    const Pin& pin2_; /**< Second control pin for the DC motor */
 };
 }   //  namespace dc_motor
 }   //  namespace hal
