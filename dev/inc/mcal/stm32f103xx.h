@@ -1120,36 +1120,49 @@ struct timerRegDef {
         RegWidth_t CC2G : 1;   // Capture/Compare 2 Generation
         RegWidth_t CC3G : 1;   // Capture/Compare 3 Generation
         RegWidth_t CC4G : 1;   // Capture/Compare 4 Generation
+        RegWidth_t COMG : 1;
         RegWidth_t TG   : 1;   // Trigger Generation
         RegWidth_t BG   : 1;   // Break Generation
-        RegWidth_t Reserved : 25;  // Reserved bits
+        RegWidth_t Reserved : 24;  // Reserved bits
     };
     RegWidth_t registerVal;
     } EGR;
-    union CCMR1 {
-    struct {
-        RegWidth_t CC1S  : 2;  // Capture/Compare 1 Selection
-        RegWidth_t IC1PSC: 2;  // Input Capture 1 Prescaler
-        RegWidth_t IC1F  : 4;  // Input Capture 1 Filter
-        RegWidth_t CC2S  : 2;  // Capture/Compare 2 Selection
-        RegWidth_t IC2PSC: 2;  // Input Capture 2 Prescaler
-        RegWidth_t IC2F  : 4;  // Input Capture 2 Filter
-        RegWidth_t Reserved : 16;  // Reserved bits
-    };
-    RegWidth_t registerVal;
-    } CCMR1;
-    union CCMR2 {
-    struct {
-        RegWidth_t CC3S  : 2;  // Capture/Compare 3 Selection
-        RegWidth_t IC3PSC: 2;  // Input Capture 3 Prescaler
-        RegWidth_t IC3F  : 4;  // Input Capture 3 Filter
-        RegWidth_t CC4S  : 2;  // Capture/Compare 4 Selection
-        RegWidth_t IC4PSC: 2;  // Input Capture 4 Prescaler
-        RegWidth_t IC4F  : 4;  // Input Capture 4 Filter
-        RegWidth_t Reserved : 16;  // Reserved bits
-    };
-    RegWidth_t registerVal;
-    } CCMR2;
+        union CCMR1 {
+            struct {
+                // Output Compare Mode (OC1M) and Input Capture Mode (CC1S) for Channel 1
+                RegWidth_t CC1S  : 2;    // Capture/Compare 1 Selection
+                RegWidth_t OC1FE : 1;    // Output Compare 1 Fast Enable
+                RegWidth_t OC1PE : 1;    // Output Compare 1 Preload Enable
+                RegWidth_t OC1M  : 3;    // Output Compare 1 Mode
+                RegWidth_t OC1CE : 1;    // Output Compare 1 Clear Enable
+
+                // Output Compare Mode (OC2M) and Input Capture Mode (CC2S) for Channel 2
+                RegWidth_t CC2S  : 2;    // Capture/Compare 2 Selection
+                RegWidth_t OC2FE : 1;    // Output Compare 2 Fast Enable
+                RegWidth_t OC2PE : 1;    // Output Compare 2 Preload Enable
+                RegWidth_t OC2M  : 3;    // Output Compare 2 Mode
+                RegWidth_t OC2CE : 1;    // Output Compare 2 Clear Enable
+            };
+            RegWidth_t registerVal;
+        } CCMR1;
+            union CCMR2 {
+                struct {
+                    // Output Compare Mode (OC3M) and Input Capture Mode (CC3S) for Channel 3
+                    RegWidth_t CC3S  : 2;    // Capture/Compare 3 Selection
+                    RegWidth_t OC3FE : 1;    // Output Compare 3 Fast Enable
+                    RegWidth_t OC3PE : 1;    // Output Compare 3 Preload Enable
+                    RegWidth_t OC3M  : 3;    // Output Compare 3 Mode
+                    RegWidth_t OC3CE : 1;    // Output Compare 3 Clear Enable
+
+                    // Output Compare Mode (OC4M) and Input Capture Mode (CC4S) for Channel 4
+                    RegWidth_t CC4S  : 2;    // Capture/Compare 4 Selection
+                    RegWidth_t OC4FE : 1;    // Output Compare 4 Fast Enable
+                    RegWidth_t OC4PE : 1;    // Output Compare 4 Preload Enable
+                    RegWidth_t OC4M  : 3;    // Output Compare 4 Mode
+                    RegWidth_t OC4CE : 1;    // Output Compare 4 Clear Enable
+                };
+                RegWidth_t registerVal;
+            } CCMR2;
     union CCER {
     struct {
         RegWidth_t CC1E : 1;  // Capture/Compare 1 Output Enable

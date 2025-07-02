@@ -52,6 +52,7 @@ HC05::HC05(const Usart& usart) : usart_(usart) {
             Rcc::Enable(Peripheral::kUSART3); 
             break;
     }
+    usart_.Init();
 }
 
 void HC05::Send(typename Usart::DataValType n) {
