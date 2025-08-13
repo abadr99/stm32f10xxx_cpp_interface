@@ -40,6 +40,25 @@ void Gpio:: Init() {
     GPIOx[1] = reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPB>::Get());
     GPIOx[2] = reinterpret_cast<volatile GpioRegDef*>(Addr<Peripheral::kIOPC>::Get());
 }
+
+template<Port portName>
+volatile GpioRegDef* Gpio::GetPtr() { return nullptr; }
+
+template<>
+volatile GpioRegDef* Gpio::GetPtr<kPortA>() {
+  return GPIOx[0]; 
+}
+
+template<>
+volatile GpioRegDef* Gpio::GetPtr<kPortB>() {
+  return GPIOx[1]; 
+}
+
+template<>
+volatile GpioRegDef* Gpio::GetPtr<kPortC>() {
+  return GPIOx[2]; 
+}
+
 void Gpio::Set(const Pin& pin) {
     SetPinMode(pin, pin.GetPinMode());
 }

@@ -40,7 +40,7 @@ enum class PinMode : uint8_t {
     kAlternativeOpenDrain_10MHz = 13,   /**< Pin conf. as Alternate function open-drain, 10 MHz. */
     kAlternativeOpenDrain_2MHz,         /**< Pin conf. as Alternate function open-drain, 2 MHz. */
     kAlternativeOpenDrain_50MHz,        /**< Pin conf. as Alternate function open-drain, 50 MHz. */
-    kInputPullDown = 20                 /**< Pin conf. as Input with pull-down. */
+    kInputPullDown = 24,                 /**< Pin conf. as Input with pull-down. */
 };
 
 /**

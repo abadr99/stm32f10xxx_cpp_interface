@@ -38,6 +38,7 @@ enum CLKSource {
  */
 class Systick {
  public:
+    using SystickRegDef = stm32::registers::systick::SystickRegDef;
     /**
      * @brief Function pointer type for callback functions (interrupt service routines).
      */
@@ -53,6 +54,8 @@ class Systick {
      * 
      */
     static void Init();
+
+    static volatile SystickRegDef* GetPtr();
     /**
      * @brief Enables the SysTick timer with the specified clock source.
      * 
@@ -105,7 +108,7 @@ class Systick {
      * 
      * @return time_t The elapsed time in milliseconds.
      */
-    time_t GetElapsedTime();
+    static time_t GetElapsedTime();
 
     /**
      * @brief Disables the SysTick timer.
@@ -129,7 +132,6 @@ class Systick {
     static void InterruptDisable();
     
  private:
-    using SystickRegDef = stm32::registers::systick::SystickRegDef;
     static stm32::type::RegType<SystickRegDef>::ptr SYSTICK;
     /**
      * @brief Sets the pointer to the interrupt service routine (ISR).
