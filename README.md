@@ -37,6 +37,22 @@ An object-oriented, lightweight abstraction layer for STM32F10x microcontrollers
 
  ### Documentation 
  – Doxygen-ready with full API documentation
+
+ 
+ ## 🛠️ Development Workflow
+
+This project supports both **embedded builds** (for STM32F10x targets) and **host builds** (for development, testing, and linting).  
+
+---
+
+### 🔨 Compile for Embedded (Firmware)
+```bash
+# Build firmware for STM32
+make
+
+# Flash firmware using ST-Link / OpenOCD
+make flash
+
 ---
 
 ## How to build?
