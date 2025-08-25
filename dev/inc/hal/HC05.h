@@ -13,6 +13,7 @@
 #define DEV_INC_HAL_HC05_H_
 
 #include <string>
+#include "mcal/Usart.h"
 
 namespace stm32 {
 namespace dev {

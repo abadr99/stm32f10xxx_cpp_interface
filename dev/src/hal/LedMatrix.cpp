@@ -16,34 +16,26 @@
 #include "mcal/Gpio.h"
 #include "mcal/Systick.h"
 #include "hal/LedMatrix.h"
-#include "utils/Types.h"
 
+using namespace stm32::util;   
+using namespace stm32::type;
+using namespace stm32::font;
 using namespace stm32::dev::mcal::pin;
 using namespace stm32::dev::mcal::gpio; 
-using namespace stm32::util;
-using namespace stm32::type;
 using namespace stm32::dev::mcal::systick;       
-using namespace stm32::utils::font;
 using namespace stm32::dev::hal::ledMatrix;
 
-#define ACTIVE_VOLT_STATE(connectionType)    ((connectionType) == kCommon_Row_Anode ? kHigh : kLow)     //  NOLINT  
-#define DEACTIVE_VOLT_STATE(connectionType)  ((connectionType) == kCommon_Row_Anode ? kLow  : kHigh)    //  NOLINT
+#define ACTIVE_VOLT_STATE(connectionType)    (connectionType == kCommon_Row_Anode ? kHigh : kLow)  
+#define DEACTIVE_VOLT_STATE(connectionType)  (connectionType == kCommon_Row_Anode ? kLow  : kHigh) 
 
-template <MatrixConnectionType connectionType>
+template <LedMatrixConnection connectionType>
 LedMatrix<connectionType>::LedMatrix(const Array_t rowPins, const Array_t colPins) 
     : rowPins_(rowPins) , colPins_(colPins) {} 
 
-template <MatrixConnectionType connectionType>
+template <LedMatrixConnection connectionType>
 void LedMatrix<connectionType>::Init() {
     // SET [ROW & COL] PINS AC OUTPUT [PUSHPULL]
-    for (uint8_t pin = 0; pin < 8; pin++) { PinMode GetPinMode();
-        STM32_ASSERT((rowPins_[pin].GetPinMode() >= PinMode::kOutputPushPull_10MHz) &&
-                     (rowPins_[pin].GetPinMode() <= PinMode::kOutputPushPull_50MHz), 
-                      CONFIG_ERROR(_LED_MATRIX, _PIN_ERROR));
-
-        STM32_ASSERT((colPins_[pin].GetPinMode() >= PinMode::kOutputPushPull_10MHz) &&
-                     (colPins_[pin].GetPinMode() <= PinMode::kOutputPushPull_50MHz), 
-                    CONFIG_ERROR(_LED_MATRIX, _PIN_ERROR));
+    for (uint8_t pin = 0; pin < 8; pin++) {
         Gpio::Set(rowPins_[pin]);
         Gpio::Set(colPins_[pin]);
     }
@@ -55,7 +47,7 @@ void LedMatrix<connectionType>::Init() {
     }
 }
 
-template <MatrixConnectionType connectionType>
+template <LedMatrixConnection connectionType>
 void LedMatrix<connectionType>::DrawChar(uint8_t character) {
     Font::Array_t charData = font_.GetCharData(character);
     for (uint8_t row = 0; row < Font::charHight; row++) {
@@ -64,7 +56,7 @@ void LedMatrix<connectionType>::DrawChar(uint8_t character) {
         
         // SET COL STATE
         for (uint8_t col = 0; col < Font::charWidth; col++) {        
-            if (ExtractBits<uint8_t>(charData[row], 0, col)) {
+            if (ExtractBit<uint8_t>(charData[row], col)) {
                 Gpio::SetPinValue(colPins_[col], DEACTIVE_VOLT_STATE(connectionType));
             } else {
                 Gpio::SetPinValue(colPins_[col], ACTIVE_VOLT_STATE(connectionType));
@@ -79,7 +71,7 @@ void LedMatrix<connectionType>::DrawChar(uint8_t character) {
     }
 }
 
-template <MatrixConnectionType connectionType>
+template <LedMatrixConnection connectionType>
 void  LedMatrix<connectionType>::ClearDisblay() {
     for (uint8_t pin = 0; pin < 8; pin++) {
         Gpio::SetPinValue(rowPins_[pin], DEACTIVE_VOLT_STATE(connectionType));

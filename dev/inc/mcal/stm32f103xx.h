@@ -165,33 +165,35 @@ struct RccRegDef {
     
     union APB1ENR {
         struct {
-            RegWidth_t TIM2EN   :1; 
-            RegWidth_t TIM3EN   :1; 
-            RegWidth_t TIM4EN   :1; 
-            RegWidth_t TIM5EN   :1; 
-            RegWidth_t TIM6EN   :1; 
-            RegWidth_t TIM7EN   :1; 
-            RegWidth_t TIM12EN  :1; 
-            RegWidth_t TIM13EN  :1; 
+            RegWidth_t TIM2EN   :1;
+            RegWidth_t TIM3EN   :1;
+            RegWidth_t TIM4EN   :1;
+            RegWidth_t TIM5EN   :1;
+            RegWidth_t TIM6EN   :1;
+            RegWidth_t TIM7EN   :1;
+            RegWidth_t TIM12EN  :1;
+            RegWidth_t TIM13EN  :1;
             RegWidth_t TIM14EN  :1;
+            RegWidth_t RES0     :2;
             RegWidth_t WWDGEN   :1;
-            RegWidth_t          :2;
+            RegWidth_t RES1     :2;
             RegWidth_t SPI2EN   :1;
             RegWidth_t SPI3EN   :1;
+            RegWidth_t RES2     :1;
             RegWidth_t USART2EN :1;
             RegWidth_t USART3EN :1;
             RegWidth_t USART4EN :1;
-            RegWidth_t USART5EN :1; 
-            RegWidth_t I2C1EN   :1; 
-            RegWidth_t I2C2EN   :1; 
-            RegWidth_t USBEN    :1; 
-            RegWidth_t          :1; 
-            RegWidth_t CANEN    :1; 
-            RegWidth_t          :1; 
-            RegWidth_t BKPEN    :1; 
-            RegWidth_t PWREN    :1; 
-            RegWidth_t DACEN    :1; 
-            RegWidth_t          :2; 
+            RegWidth_t USART5EN :1;
+            RegWidth_t I2C1EN   :1;
+            RegWidth_t I2C2EN   :1;
+            RegWidth_t USBEN    :1;
+            RegWidth_t RES      :1;
+            RegWidth_t CANEN    :1;
+            RegWidth_t RES3     :1;
+            RegWidth_t BKPEN    :1;
+            RegWidth_t PWREN    :1;
+            RegWidth_t DACEN    :1;
+            RegWidth_t RES4     :2;
         };
         RegWidth_t registerVal; /* APB1 peripheral Clock enable register */
     }APB1ENR;
@@ -1118,36 +1120,49 @@ struct timerRegDef {
         RegWidth_t CC2G : 1;   // Capture/Compare 2 Generation
         RegWidth_t CC3G : 1;   // Capture/Compare 3 Generation
         RegWidth_t CC4G : 1;   // Capture/Compare 4 Generation
+        RegWidth_t COMG : 1;
         RegWidth_t TG   : 1;   // Trigger Generation
         RegWidth_t BG   : 1;   // Break Generation
-        RegWidth_t Reserved : 25;  // Reserved bits
+        RegWidth_t Reserved : 24;  // Reserved bits
     };
     RegWidth_t registerVal;
     } EGR;
-    union CCMR1 {
-    struct {
-        RegWidth_t CC1S  : 2;  // Capture/Compare 1 Selection
-        RegWidth_t IC1PSC: 2;  // Input Capture 1 Prescaler
-        RegWidth_t IC1F  : 4;  // Input Capture 1 Filter
-        RegWidth_t CC2S  : 2;  // Capture/Compare 2 Selection
-        RegWidth_t IC2PSC: 2;  // Input Capture 2 Prescaler
-        RegWidth_t IC2F  : 4;  // Input Capture 2 Filter
-        RegWidth_t Reserved : 16;  // Reserved bits
-    };
-    RegWidth_t registerVal;
-    } CCMR1;
-    union CCMR2 {
-    struct {
-        RegWidth_t CC3S  : 2;  // Capture/Compare 3 Selection
-        RegWidth_t IC3PSC: 2;  // Input Capture 3 Prescaler
-        RegWidth_t IC3F  : 4;  // Input Capture 3 Filter
-        RegWidth_t CC4S  : 2;  // Capture/Compare 4 Selection
-        RegWidth_t IC4PSC: 2;  // Input Capture 4 Prescaler
-        RegWidth_t IC4F  : 4;  // Input Capture 4 Filter
-        RegWidth_t Reserved : 16;  // Reserved bits
-    };
-    RegWidth_t registerVal;
-    } CCMR2;
+        union CCMR1 {
+            struct {
+                // Output Compare Mode (OC1M) and Input Capture Mode (CC1S) for Channel 1
+                RegWidth_t CC1S  : 2;    // Capture/Compare 1 Selection
+                RegWidth_t OC1FE : 1;    // Output Compare 1 Fast Enable
+                RegWidth_t OC1PE : 1;    // Output Compare 1 Preload Enable
+                RegWidth_t OC1M  : 3;    // Output Compare 1 Mode
+                RegWidth_t OC1CE : 1;    // Output Compare 1 Clear Enable
+
+                // Output Compare Mode (OC2M) and Input Capture Mode (CC2S) for Channel 2
+                RegWidth_t CC2S  : 2;    // Capture/Compare 2 Selection
+                RegWidth_t OC2FE : 1;    // Output Compare 2 Fast Enable
+                RegWidth_t OC2PE : 1;    // Output Compare 2 Preload Enable
+                RegWidth_t OC2M  : 3;    // Output Compare 2 Mode
+                RegWidth_t OC2CE : 1;    // Output Compare 2 Clear Enable
+            };
+            RegWidth_t registerVal;
+        } CCMR1;
+            union CCMR2 {
+                struct {
+                    // Output Compare Mode (OC3M) and Input Capture Mode (CC3S) for Channel 3
+                    RegWidth_t CC3S  : 2;    // Capture/Compare 3 Selection
+                    RegWidth_t OC3FE : 1;    // Output Compare 3 Fast Enable
+                    RegWidth_t OC3PE : 1;    // Output Compare 3 Preload Enable
+                    RegWidth_t OC3M  : 3;    // Output Compare 3 Mode
+                    RegWidth_t OC3CE : 1;    // Output Compare 3 Clear Enable
+
+                    // Output Compare Mode (OC4M) and Input Capture Mode (CC4S) for Channel 4
+                    RegWidth_t CC4S  : 2;    // Capture/Compare 4 Selection
+                    RegWidth_t OC4FE : 1;    // Output Compare 4 Fast Enable
+                    RegWidth_t OC4PE : 1;    // Output Compare 4 Preload Enable
+                    RegWidth_t OC4M  : 3;    // Output Compare 4 Mode
+                    RegWidth_t OC4CE : 1;    // Output Compare 4 Clear Enable
+                };
+                RegWidth_t registerVal;
+            } CCMR2;
     union CCER {
     struct {
         RegWidth_t CC1E : 1;  // Capture/Compare 1 Output Enable
@@ -1272,18 +1287,18 @@ struct CANRegDef {
         struct {
             RegWidth_t INAK     : 1;        // Initialization acknowledge
             RegWidth_t SLAK     : 1;        // Sleep acknowledge
+            RegWidth_t ERRI     : 1;        // Error interrupt
             RegWidth_t WKUI     : 1;        // Wakeup interrupt
             RegWidth_t SLAKI    : 1;        // Sleep acknowledge interrupt
+            RegWidth_t          : 3;        // Reserved (must be kept at reset value)
             RegWidth_t TXM      : 1;        // Transmit mode
             RegWidth_t RXM      : 1;        // Receive mode
             RegWidth_t SAMP     : 1;        // Last sample point
             RegWidth_t RX       : 1;        // CAN Rx signal
-            RegWidth_t          : 7;        // Reserved (must be kept at reset value)
-            RegWidth_t ERRI     : 1;        // Error interrupt
             RegWidth_t          : 20;       // Reserved
         };
         RegWidth_t registerVal;     // 32-bit register value (for direct access)
-    }MSR;   // Master Status Register
+    }MSR;  // Master Status Register
     union TSR {
         struct {
             RegWidth_t RQCP0    :1;   //   Request Completion for mailbox 0
@@ -1336,8 +1351,41 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }RF1R;        // Receive FIFO 1 Register
-    RegWidth_t IER;         // Interrupt Enable Register
-    RegWidth_t ESR;         // Error Status Register
+    union IER {
+        struct {
+            RegWidth_t TMEIE    :1;   // Transmit mailbox empty interrupt enable
+            RegWidth_t FMPIE0   :1;   // FIFO message pending interrupt enable for FIFO 0
+            RegWidth_t FFIE0    :1;   // FIFO full interrupt enable for FIFO 0
+            RegWidth_t FOVIE0   :1;   // FIFO overrun interrupt enable for FIFO 0
+            RegWidth_t FMPIE1   :1;   // FIFO message pending interrupt enable for FIFO 1
+            RegWidth_t FFIE1    :1;   // FIFO full interrupt enable for FIFO 1
+            RegWidth_t FOVIE1   :1;   // FIFO overrun interrupt enable for FIFO 1
+            RegWidth_t          :1;   // Reserved: Unused bit, should remain 0.
+            RegWidth_t EWGIE    :1;   // Error warning interrupt enable
+            RegWidth_t EPVIE    :1;   // Error passive interrupt enable
+            RegWidth_t BOFIE    :1;   // Bus-off interrupt enable
+            RegWidth_t LECIE    :1;   // Last error code interrupt enable
+            RegWidth_t          :3;   // Reserved: Unused bits, should remain 0.
+            RegWidth_t ERRIE    :1;   // Error interrupt enable
+            RegWidth_t WKUIE    :1;   // Wakeup interrupt enable
+            RegWidth_t SLKIE    :1;   // Sleep acknowledge interrupt enable 
+            RegWidth_t          :14;  // Reserved: Unused bits, should remain 0.
+        };
+        RegWidth_t registerVal;  
+    }IER;         // Interrupt Enable Register
+    union ESR {
+        struct {
+            RegWidth_t EWGF     :1;   // Error warning flag
+            RegWidth_t EPVF     :1;   // Error passive flag
+            RegWidth_t BOFF     :1;   // Bus-off flag
+            RegWidth_t          :1;   // Reserved: Unused bit, should remain 0.
+            RegWidth_t LEC      :3;   // Last error code
+            RegWidth_t          :9;   // Reserved: Unused bits, should remain 0.
+            RegWidth_t TEC      :8;   // Transmit error counter
+            RegWidth_t REC      :8;   // Receive error counter
+        };
+        RegWidth_t registerVal;
+    }ESR;         // Error Status Register
     RegWidth_t BTR;         // Bit Timing Register
     RegWidth_t RESERVED0[88];   // Reserved memory space
 
@@ -1356,7 +1404,7 @@ struct CANRegDef {
     union TDTR {
         struct {
             RegWidth_t DLC        : 4;   // Data Length Code
-            RegWidth_t            : 5;   // Reserved bits
+            RegWidth_t            : 4;   // Reserved bits
             RegWidth_t TGT        : 1;   // Transmit Global Time
             RegWidth_t            : 7;   // Reserved bits
             RegWidth_t TIME       : 16;  // Time Stamp
@@ -1394,6 +1442,7 @@ struct CANRegDef {
     };
     RxMailBox_t RxFIFOMailBox[2];  // 2 Receive FIFOs (FIFO 0 and FIFO 1)
 
+    RegWidth_t RESERVED1[12];
     // Filter Registers
     union FMR {
         struct {
@@ -1411,7 +1460,7 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }FM1R;  //  Filter Mode Register
-    RegWidth_t RESERVED1;       // Reserved memory space
+    RegWidth_t RESERVED2;       // Reserved memory space
     union FS1R {
         struct {
             RegWidth_t FSC      :28;  // Filter Scale
@@ -1419,7 +1468,7 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }FS1R;  //  Filter Scale Register
-    RegWidth_t RESERVED2;       // Reserved memory space
+    RegWidth_t RESERVED3;       // Reserved memory space
     union FFA1R {
         struct {
             RegWidth_t FFA      :28;  // Filter FIFO Assignment
@@ -1427,7 +1476,7 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }FFA1R;     //  Filter FIFO Assignment Register
-    RegWidth_t RESERVED3;       // Reserved memory space
+    RegWidth_t RESERVED4;       // Reserved memory space
     union FA1R {
         struct {
             RegWidth_t FACT     :28;  // Filter Activation
@@ -1435,7 +1484,7 @@ struct CANRegDef {
         };
         RegWidth_t registerVal;
     }FA1R;      //  Filter Activation Register
-    RegWidth_t RESERVED4[8];    // Reserved memory space
+    RegWidth_t RESERVED5[8];    // Reserved memory space
 
     // Filter Banks
     struct FilterBank {
@@ -1445,6 +1494,71 @@ struct CANRegDef {
     FilterBank FilterRegister[14];     // STM32F103 has 14 filter banks
 };
 }  // namespace can
+namespace flash {
+struct FlashRegDef {
+    union ACR {
+        struct {
+            RegWidth_t LATENCY   : 3;   // Latency
+            RegWidth_t HLFCYA    : 1;   // Half Cycle Access Enable
+            RegWidth_t PRFTBE    : 1;   // Prefetch Buffer Enable
+            RegWidth_t PRFTBS    : 1;   // Prefetch Buffer Status
+            RegWidth_t           : 26;  // Reserved bits
+        };
+        RegWidth_t registerVal;
+    }ACR;   // Access Control Register
+
+    RegWidth_t KEYR;        // Flash Key Register
+    RegWidth_t OPTKEYR;     // Option Key Register
+    union SR {
+        struct {
+            RegWidth_t BSY          : 1;   // Busy
+            RegWidth_t RESERVED0    : 1;   // Reserved
+            RegWidth_t PGERR        : 1;   // Programming Error
+            RegWidth_t RESERVED1    : 1;   // Reserved
+            RegWidth_t WRPRTERR     : 1;   // Write Protection Error
+            RegWidth_t EOP          : 1;   // End of Operation
+            RegWidth_t RESERVED2    : 26;   // Reserved
+        };
+        RegWidth_t registerVal;
+    }SR;          // Status Register
+    union CR {
+        struct {
+            RegWidth_t PG           : 1;   // Programming
+            RegWidth_t PER          : 1;   // Page Erase
+            RegWidth_t MER          : 1;   // Mass Erase
+            RegWidth_t RESERVED0    : 1;   // Reserved
+            RegWidth_t OPTPG        : 1;   // Option Programming
+            RegWidth_t OPTER        : 1;   // Option Erase
+            RegWidth_t STRT        : 1;   // Start
+            RegWidth_t LOCK         : 1;   // Lock
+            RegWidth_t RESERVED1    : 1;   // Reserved
+            RegWidth_t OPTWRE       : 1;   // Option Write Enable
+            RegWidth_t ERRIE        : 1;   // Error Interrupt Enable
+            RegWidth_t RESERVED2    : 1;  // Reserved bit
+            RegWidth_t EOPIE        : 1;   // End of Operation Interrupt Enable
+            RegWidth_t RESERVED3    : 19;   // Reserved
+        };
+        RegWidth_t registerVal;
+    }CR;          // Control Register
+    RegWidth_t AR;          // Address Register
+    RegWidth_t RESERVED0;
+    union OBR {
+        struct {
+            RegWidth_t OPTERR       : 1;   // Option Byte Error
+            RegWidth_t RDPRT        : 1;   // Read Protection
+            RegWidth_t WDG_SW       : 1;   // Window Watchdog
+            RegWidth_t nRST_STOP    : 1;   // nRST_STOP
+            RegWidth_t nRST_STDBY   : 1;   // nRST_STDBY
+            RegWidth_t NOTUSED      : 5;   // Not used
+            RegWidth_t DATA0        : 8;   // Data 0
+            RegWidth_t DATA1        : 8;   // Data 1
+            RegWidth_t RESERVED1    : 6;   // Reserved
+        };  
+        RegWidth_t registerVal;
+    }OBR;         // Option Byte Register
+    RegWidth_t WRPR;        // Write Protection Register
+};   
+}  // namespace flash
 }  // namespace registers
 }  // namespace stm32
 

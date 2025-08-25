@@ -203,22 +203,22 @@ void Reset_Handler(void) {
     uint8_t *pDest = reinterpret_cast<uint8_t*>(&_sdata);
     
     // 1.c) calculating the datasize i.e. size of initialized data section
-    uint32_t data_size = static_cast<uint32_t>(&_edata - &_sdata);
-
+    // uint32_t data_size = static_cast<uint32_t>(&_edata - &_sdata);
+    uint32_t data_size = reinterpret_cast<uint8_t*>(&_edata) - reinterpret_cast<uint8_t*>(&_sdata);
+    
     for (uint32_t i = 0; i < data_size; i++) {
        pDest[i] = pSrc[i];
     }
 
     // -- 2] INITIATE.BSS WITH ZEROS
     pDest = reinterpret_cast<uint8_t*>(&_sbss);
-    // Cast to uint8_t* for byte-wise operations
-    uint8_t* sbss = reinterpret_cast<uint8_t*>(&_sbss);
-    uint8_t* ebss = reinterpret_cast<uint8_t*>(&_ebss);
-    uint32_t bss_size = ebss - sbss;   // Size in bytes
+    // uint32_t bss_size =  static_cast<uint32_t>(&_ebss - &_sbss);
+    uint32_t bss_size = reinterpret_cast<uint8_t*>(&_ebss) - reinterpret_cast<uint8_t*>(&_sbss);
+
     for (uint32_t i = 0; i < bss_size; i++) {
        pDest[i] = 0;
     }
-
+    
     // -- 3] CALL ENTRY POINT
     main();
 

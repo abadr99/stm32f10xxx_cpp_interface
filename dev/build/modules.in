@@ -24,6 +24,7 @@ mcal {
     src/Timer.cpp
     src/Adc.cpp
     src/Can.cpp
+    src/Flash.cpp
 }
 
 // --- HAL PERIPHERALS  --------------------------------------------------------
