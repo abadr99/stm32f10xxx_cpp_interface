@@ -31,4 +31,4 @@
     #warning The name of this file has changed to stack_macros.h.  Please update your code accordingly.  This source file (which has the original name) will be removed in a future release.
 #endif
 
-#include "freeRTOS/stack_macros.h"
+#include "stack_macros.h"

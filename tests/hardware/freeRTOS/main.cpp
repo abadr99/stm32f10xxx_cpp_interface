@@ -7,15 +7,16 @@
  * @copyright Copyright (c) 2024
  */
 
-// commit-id: 92bf4ebeeece0189d312078c045f46ac691438f7
+// commit-id:
 #include "utils/Types.h"
 #include "mcal/stm32f103xx.h"
 #include "utils/BitManipulation.h"
 #include "mcal/Pin.h"
 #include "mcal/Gpio.h"
 #include "mcal/Rcc.h"
+
 #include "freeRTOS/FreeRTOS.h"
-#include "freeRTOS//task.h"
+#include "freeRTOS/task.h"
 
 
 using namespace stm32::registers::rcc;
