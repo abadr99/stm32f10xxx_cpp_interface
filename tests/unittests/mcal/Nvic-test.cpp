@@ -14,9 +14,6 @@
 #include "mcal/Nvic.h"
 
 
-uint32_t NvicReg[905] = {};
-uint32_t ScbReg[18] = {};
-
 using namespace stm32::util;
 using namespace stm32::dev::mcal::nvic;
 using namespace stm32::registers::nvic;

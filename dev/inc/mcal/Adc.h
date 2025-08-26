@@ -127,6 +127,9 @@ struct AdcConfig {
  */
 class ADC {
  public:
+    using ADCRegDef = stm32::registers::adc::ADCRegDef;
+    template<typename T>
+    static volatile T* GetPtr();
     /**
      * @brief Constructs an ADC object with the specified configuration.
      * 
@@ -203,8 +206,8 @@ class ADC {
     static constexpr float kVref = 3.3;
     static constexpr float kTempConstant = 25.0;
 
-
-    stm32::type::RegType<ADCRegDef>::ptr ADC_reg;    /**< Pointer to the ADC register definition. */
+    /**< Pointer to the ADC register definition. */
+    static stm32::type::RegType<ADCRegDef>::ptr ADC_reg;
     /**
      * @brief Configures the sample time for the selected ADC channel.
      */
