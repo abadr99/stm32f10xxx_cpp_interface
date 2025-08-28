@@ -37,6 +37,14 @@ static constexpr uint32_t kSystickMaxVal = util::GetOnes<uint32_t>(24);
 typename Systick::pFunction Systick::PointerToISR = nullptr;
 volatile SystickRegDef* Systick::SYSTICK = nullptr;
 
+template<typename T>
+volatile T* Systick::GetPtr() { return nullptr; }
+
+template<>
+volatile SystickRegDef* Systick::GetPtr<SystickRegDef>() {
+    return SYSTICK; 
+}
+
 void Systick::Init() {
     SYSTICK = reinterpret_cast<volatile SystickRegDef*>(Addr<Peripheral::kSYSTICK >::Get());
 }

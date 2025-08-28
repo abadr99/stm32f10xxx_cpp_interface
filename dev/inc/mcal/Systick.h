@@ -42,11 +42,21 @@ class Systick {
      * @brief Function pointer type for callback functions (interrupt service routines).
      */
     using pFunction = stm32::type::pFunction;
+    using SystickRegDef = stm32::registers::systick::SystickRegDef;
 
     /**
      * @brief Defines the type for time values (in milliseconds or microseconds).
      */
     using time_t = uint32_t;
+    /**
+     * @brief Gets a pointer to the SysTick register definition.
+     * 
+     * @param T The type of the register definition structure.
+     * 
+     * @return volatile T* Pointer to the SysTick register definition.
+     */
+    template<typename T>
+    static volatile T* GetPtr();
 
     /**
      * @brief Initialize the SysTick timer
@@ -129,7 +139,6 @@ class Systick {
     static void InterruptDisable();
     
  private:
-    using SystickRegDef = stm32::registers::systick::SystickRegDef;
     static stm32::type::RegType<SystickRegDef>::ptr SYSTICK;
     /**
      * @brief Sets the pointer to the interrupt service routine (ISR).
