@@ -85,6 +85,18 @@ enum class PwrFlag {
  */
 class Pwr {
  public:
+    using PwrRegDef = stm32::registers::pwr::PwrRegDef;
+    /**
+     * @brief Gets a pointer to the PWR register definition.
+     */
+    template<typename T>
+    static volatile T* GetPtr();
+    /**
+     * @brief Initializes the PWR peripheral.
+     * 
+     * This function sets up the PWR peripheral by assigning the base address
+     * of the PWR registers to the internal pointer.
+     */
     static void Init();
     /**
      * @brief Enter sleep mode.
@@ -127,7 +139,7 @@ class Pwr {
     static void ClearFlag(PwrFlag flag);
 
  private:
-    static volatile stm32::registers::pwr::PwrRegDef* PWR;
+    static  stm32::type::RegType<PwrRegDef>::ptr PWR;
     static void EnterLowPowerMode(PwrEntry entry);
 };
 
