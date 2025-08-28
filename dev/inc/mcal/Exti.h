@@ -73,6 +73,10 @@ class Exti {
      * @brief Typedef for a pointer to a callback function.
      */
     using pFunction = stm32::type::pFunction;
+    using EXTIRegDef = stm32::registers::exti::EXTIRegDef;
+    using AfioRegDef = stm32::registers::afio::AfioRegDef;
+    template<typename T>
+    static volatile T* GetPtr();
 
 
     /**
@@ -136,8 +140,8 @@ class Exti {
  private:
     static constexpr uint32_t kCallBackSiz = 7;
     using Port       = stm32::dev::mcal::pin::Port;
-    using EXTIRegDef = stm32::registers::exti::EXTIRegDef;
     static stm32::type::RegType<EXTIRegDef>::ptr EXTI;
+    static stm32::type::RegType<AfioRegDef>::ptr AFIO;
     static pFunction pGlobalCallBackFunctions[kCallBackSiz];
 
     /**

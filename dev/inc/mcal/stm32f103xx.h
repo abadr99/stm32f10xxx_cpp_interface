@@ -1253,7 +1253,7 @@ namespace iwdg {
 struct IWDGRegDef {
     RegWidth_t KR;
     RegWidth_t PR;
-    RegWidth_t RLD;
+    RegWidth_t RLR;
     union SR {
         struct {
             RegWidth_t PVU : 1;

@@ -40,6 +40,19 @@ ASSERT_MEMBER_OFFSET(EXTIRegDef, PR,    sizeof(RegWidth_t) * 5);
 pFunction Exti::pGlobalCallBackFunctions[7] = {nullptr};
 
 volatile EXTIRegDef* Exti::EXTI = nullptr;
+volatile AfioRegDef* Exti::AFIO = nullptr;
+template<typename T>
+volatile T* Exti::GetPtr() { return nullptr; }
+
+template<>
+volatile EXTIRegDef* Exti::GetPtr<EXTIRegDef>() {
+    return EXTI; 
+}
+
+template<>
+volatile AfioRegDef* Exti::GetPtr<AfioRegDef>() {
+    return reinterpret_cast<volatile AfioRegDef*>(Addr<Peripheral::kAFIO>::Get());
+}
 
 void Exti::Init() {
     EXTI = reinterpret_cast<volatile EXTIRegDef*>(Addr<Peripheral::kEXTI >::Get());

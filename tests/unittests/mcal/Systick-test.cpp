@@ -12,33 +12,44 @@
 #if 0
 #include <gtest/gtest.h>
 #include "utils/BitManipulation.h"
+#include "utils/Types.h"
 #include "mcal/stm32f103xx.h"
 #include "mcal/Systick.h"
 
-uint32_t SYSTICKReg[3] = {0x0};
 
 using namespace stm32::constant;
 using namespace stm32::util;
 using namespace stm32::dev::mcal::systick;
 using namespace stm32::registers::systick;
 
-static volatile SystickRegDef* SYSTICK;
+class SystickTest : public testing::Test {
+ protected:
+    void SetUp() override {
+        using Systick_addr = Addr<Peripheral::kSYSTICK>;
+        Systick_addr::Set(&SYSTICKReg[0]);
+        Systick::Init();
+        SYSTICK = Systick::GetPtr<SystickRegDef>();
+    }
 
-TEST(SystickTest, Delay_ms) {
+    RegWidth_t SYSTICKReg[3]  = {};
+    volatile SystickRegDef* SYSTICK;
+};
+
+TEST_F(SystickTest, Delay_ms) {
     Systick::Enable(kAHB_Div_8);
     SYSTICK->CTRL.COUNTFLAG = 1;
     Systick::Delay_ms(1);
-    EXPECT_EQ(0b000, (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));
+    EXPECT_EQ(0b010, (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));
     EXPECT_EQ(1000, SYSTICK->LOAD);
     Systick::Disable();
 }
-
-TEST(SystickTest, Delay_us) {
+TEST_F(SystickTest, Delay_us) {
     Systick::Enable(kAHB);
     SYSTICK->CTRL.COUNTFLAG = 1;
     Systick::Delay_us(10);
-    EXPECT_EQ(0b100, (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));
+    EXPECT_EQ(0b110, (ExtractBits<uint32_t, 0, 2>(SYSTICK->CTRL.registerVal)));
     EXPECT_EQ(80, SYSTICK->LOAD);
     Systick::Disable();
 }
-#endif 
+#endif
+
