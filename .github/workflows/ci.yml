@@ -103,11 +103,7 @@ jobs:
       run: sh tools/github/linux/configure.sh
     - name: Building For STM32f103 Target
       run: USE_FREERTOS=1 make -C dev build 
-    - name: Upload objects artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: linux-objects-artifact
-        path: dev/.build/obj
+      
 # ========================== TEST BUILD STAGE ======================================
   build-hardware-tests-linux:
     runs-on: ubuntu-latest
