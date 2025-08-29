@@ -62,10 +62,10 @@ jobs:
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
-        name: objects-artifact
-        path: dev/.build/
+        name: linux-objects-artifact
+        path: dev/.build/obj
 
-  build-winodws:
+  build-windows:
     runs-on: windows-latest
     needs: [
             # -- Needs LINTER STAGE
@@ -85,8 +85,8 @@ jobs:
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
-        name: objects-artifact
-        path: dev/.build/        
+        name: windows-objects-artifact
+        path: dev/.build/obj/        
 # ========================== TEST BUILD STAGE ======================================
   build-hardware-tests-linux:
     runs-on: ubuntu-latest
@@ -106,8 +106,8 @@ jobs:
     - name: Download objects artifact
       uses: actions/download-artifact@v4 
       with:
-        name: objects-artifact
-        path: dev/.build/
+        name: linux-objects-artifact
+        path: dev/.build/obj/
     - name: Building hardware tests
       run: make -C ./dev build-hw
 
@@ -120,7 +120,7 @@ jobs:
             static-analysis, 
             hardware-tests-style-checking,
             # -- NEEDS BUILD WINDOWS 
-            build-winodws
+            build-windows
           ]
     steps:
     - uses: actions/checkout@v3
@@ -131,8 +131,8 @@ jobs:
     - name: Download objects artifact
       uses: actions/download-artifact@v4 
       with:
-        name: objects-artifact
-        path: dev/.build/
+        name: windows-objects-artifact
+        path: dev/.build/obj/
     - name: Building hardware tests
       run: make -C ./dev build-hw
 
@@ -156,7 +156,7 @@ jobs:
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
-        name: objects-artifact
+        name: linux-u-tests-objects-artifact
         path: tests/unittests/
 
   build-unitests-windows:
@@ -168,7 +168,7 @@ jobs:
             static-analysis, 
             hardware-tests-style-checking,
             # -- NEEDS BUILD WINDOWS 
-            build-winodws
+            build-windows
           ]
     steps:
     - uses: actions/checkout@v3
@@ -181,11 +181,11 @@ jobs:
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
-        name: windows-tests-artifact
+        name: windows-u-tests-objects-artifact
         path: tests/unittests/
 
 # ========================== RUN TESTS STAGE ======================================
-  run-test-linux:
+  run-utest-linux:
     runs-on: ubuntu-latest
     needs: [
             # -- Needs LINTER STAGE
@@ -201,13 +201,13 @@ jobs:
     - name: Download artifact 
       uses: actions/download-artifact@v4 
       with:
-        name: objects-artifact
+        name: linux-u-tests-objects-artifact
         path: tests/unittests/
     - name: Running tests
       run: |
        chmod -R 777 ./tests/ 
        ./tests/unittests/unittests.elf --gtest_shuffle
-  run-test-windows:
+  run-utest-windows:
     runs-on: windows-latest
     needs: [
             # -- Needs LINTER STAGE
@@ -216,14 +216,14 @@ jobs:
             static-analysis, 
             hardware-tests-style-checking,
             # -- NEEDS BUILD WINDOWS 
-            build-winodws,
+            build-windows,
             build-unitests-windows
           ]
     steps:
     - name: Download artifact 
       uses: actions/download-artifact@v4 
       with:
-        name: windows-tests-artifact
+        name: windows-u-tests-objects-artifact
         path: tests/unittests/
     - name: Running tests
       shell: powershell
@@ -241,12 +241,12 @@ jobs:
             static-analysis, 
             # --- needs build staged
             build-linux, 
-            build-winodws,
+            build-windows,
             build-hardware-tests-linux, 
             build-unitests-windows,
             # --- needs test stage
-            run-test-linux,
-            run-test-windows
+            run-utest-linux,
+            run-utest-windows
           ]
     if: github.event.inputs.run_coverage == 'true'
     steps:
