@@ -62,7 +62,7 @@ jobs:
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
-        name: objects-artifact
+        name: linux-objects-artifact
         path: dev/.build/
 
   build-winodws:
@@ -85,7 +85,7 @@ jobs:
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
-        name: objects-artifact
+        name: windows-objects-artifact
         path: dev/.build/        
 # ========================== TEST BUILD STAGE ======================================
   build-hardware-tests-linux:
@@ -106,7 +106,7 @@ jobs:
     - name: Download objects artifact
       uses: actions/download-artifact@v4 
       with:
-        name: objects-artifact
+        name: linux-objects-artifact
         path: dev/.build/
     - name: Building hardware tests
       run: make -C ./dev build-hw
@@ -131,7 +131,7 @@ jobs:
     - name: Download objects artifact
       uses: actions/download-artifact@v4 
       with:
-        name: objects-artifact
+        name: windows-objects-artifact
         path: dev/.build/
     - name: Building hardware tests
       run: make -C ./dev build-hw
@@ -156,7 +156,7 @@ jobs:
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
-        name: objects-artifact
+        name: linux-u-tests-objects-artifact
         path: tests/unittests/
 
   build-unitests-windows:
@@ -181,11 +181,11 @@ jobs:
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
-        name: windows-tests-artifact
+        name: windows-u-tests--tests-artifact
         path: tests/unittests/
 
 # ========================== RUN TESTS STAGE ======================================
-  run-test-linux:
+  run-utest-linux:
     runs-on: ubuntu-latest
     needs: [
             # -- Needs LINTER STAGE
@@ -201,13 +201,13 @@ jobs:
     - name: Download artifact 
       uses: actions/download-artifact@v4 
       with:
-        name: objects-artifact
+        name: linux-u-tests-objects-artifact
         path: tests/unittests/
     - name: Running tests
       run: |
        chmod -R 777 ./tests/ 
        ./tests/unittests/unittests.elf --gtest_shuffle
-  run-test-windows:
+  run-utest-windows:
     runs-on: windows-latest
     needs: [
             # -- Needs LINTER STAGE
@@ -223,7 +223,7 @@ jobs:
     - name: Download artifact 
       uses: actions/download-artifact@v4 
       with:
-        name: windows-tests-artifact
+        name: windows-u-tests-objects-artifact
         path: tests/unittests/
     - name: Running tests
       shell: powershell
