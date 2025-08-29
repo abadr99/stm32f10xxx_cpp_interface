@@ -16,7 +16,7 @@ FREE_RTOS_SRC_DIR := ./lib//src
 STARTUP_CODE := ./src/mcal/stm32f103_startup.cpp
 
 ifeq ($(USE_FREERTOS),1)
-	@echo "\n[Makefile][Dev]: Linking with FreeRTOS"
+@echo "\n[Makefile][Dev]: Linking with FreeRTOS"
 	FREE_RTOS_LIB := ./lib/freeRTOS/libfreertos.a
 	C_SOURCES := $(wildcard $(FREE_RTOS_SRC_DIR)/*.c)
 	C_SRC_NAMES:= $(notdir $(C_SOURCES))
