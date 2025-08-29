@@ -63,9 +63,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: linux-objects-artifact
-        path: dev/.build/
+        path: dev/.build/obj
 
-  build-winodws:
+  build-windows:
     runs-on: windows-latest
     needs: [
             # -- Needs LINTER STAGE
@@ -86,7 +86,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: windows-objects-artifact
-        path: dev/.build/        
+        path: dev/.build/obj/        
 # ========================== TEST BUILD STAGE ======================================
   build-hardware-tests-linux:
     runs-on: ubuntu-latest
@@ -107,7 +107,7 @@ jobs:
       uses: actions/download-artifact@v4 
       with:
         name: linux-objects-artifact
-        path: dev/.build/
+        path: dev/.build/obj/
     - name: Building hardware tests
       run: make -C ./dev build-hw
 
@@ -120,7 +120,7 @@ jobs:
             static-analysis, 
             hardware-tests-style-checking,
             # -- NEEDS BUILD WINDOWS 
-            build-winodws
+            build-windows
           ]
     steps:
     - uses: actions/checkout@v3
@@ -132,7 +132,7 @@ jobs:
       uses: actions/download-artifact@v4 
       with:
         name: windows-objects-artifact
-        path: dev/.build/
+        path: dev/.build/obj/
     - name: Building hardware tests
       run: make -C ./dev build-hw
 
@@ -168,7 +168,7 @@ jobs:
             static-analysis, 
             hardware-tests-style-checking,
             # -- NEEDS BUILD WINDOWS 
-            build-winodws
+            build-windows
           ]
     steps:
     - uses: actions/checkout@v3
@@ -181,7 +181,7 @@ jobs:
     - name: Upload objects artifact
       uses: actions/upload-artifact@v4
       with:
-        name: windows-u-tests--tests-artifact
+        name: windows-u-tests-objects-artifact
         path: tests/unittests/
 
 # ========================== RUN TESTS STAGE ======================================
@@ -216,7 +216,7 @@ jobs:
             static-analysis, 
             hardware-tests-style-checking,
             # -- NEEDS BUILD WINDOWS 
-            build-winodws,
+            build-windows,
             build-unitests-windows
           ]
     steps:
@@ -241,7 +241,7 @@ jobs:
             static-analysis, 
             # --- needs build staged
             build-linux, 
-            build-winodws,
+            build-windows,
             build-hardware-tests-linux, 
             build-unitests-windows,
             # --- needs test stage
