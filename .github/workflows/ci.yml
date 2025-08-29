@@ -245,8 +245,8 @@ jobs:
             build-hardware-tests-linux, 
             build-unitests-windows,
             # --- needs test stage
-            run-test-linux,
-            run-test-windows
+            run-utest-linux,
+            run-utest-windows
           ]
     if: github.event.inputs.run_coverage == 'true'
     steps:
