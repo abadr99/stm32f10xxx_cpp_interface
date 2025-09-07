@@ -119,6 +119,7 @@ typename Systick::pFunction Systick::GetPointerToISR() {
     return Systick::PointerToISR;
 }
 
+#if USE_FREERTOS == 0
 extern "C" void SysTick_Handler(void) {
     typename Systick::pFunction fun = Systick::GetPointerToISR();
     if (fun != NULL) {
@@ -128,4 +129,5 @@ extern "C" void SysTick_Handler(void) {
         SysticReg->VAL = 1;
     }
 }
+#endif  // USE_FREERTOS == 0
 

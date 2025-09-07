@@ -38,6 +38,7 @@
 # vscode stuff
 ./vscode/**
 *.elf
+.vscode/settings.json
 
 # doxygen files
 doxy/html

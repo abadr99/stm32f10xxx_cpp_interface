@@ -56,7 +56,9 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "fstream": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "freertos.h": "c",
+        "task.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

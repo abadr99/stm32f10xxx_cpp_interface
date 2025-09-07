@@ -1,5 +1,7 @@
 PYTHON ?= python3
 
+USE_FREERTOS ?= 0
+
 # --- BUILD
 INPUT_FILE ?= ./build/modules.in
 SOURCES := $(shell $(PYTHON) ./build/Parser.py --file "$(INPUT_FILE)")
@@ -7,12 +9,22 @@ SOURCES += $(wildcard ./src/utils/*.cpp) # ALl utils should be added with all mo
 SRC_NAMES:= $(notdir $(SOURCES))
 SOURCES_COUNT:= $(words $(SOURCES))
 SOURCES_CTR:=0
-INC:=  -I. -I./inc/
+INC:=  -I. -I./inc/ -I./lib/
 LIB_DIR := ./lib
 LIB_NAME := stm32f103cpp.a
+FREE_RTOS_SRC_DIR := ./lib//src
 STARTUP_CODE := ./src/mcal/stm32f103_startup.cpp
+
+ifeq ($(USE_FREERTOS),1)
+@echo "\n[Makefile][Dev]: Linking with FreeRTOS"
+	FREE_RTOS_LIB := ./lib/freeRTOS/libfreertos.a
+	C_SOURCES := $(wildcard $(FREE_RTOS_SRC_DIR)/*.c)
+	C_SRC_NAMES:= $(notdir $(C_SOURCES))
+	SOURCES_COUNT := $(shell echo $$(($(SOURCES_COUNT) + $(words $(C_SOURCES)))))
+endif
+
 # --- LINTER
-LINT_PATH:= ../tools/cppliny.py
+LINT_PATH:= ../tools/cppliny.py --exclude=lib/freeRTOS/*.h
 
 # --- HARDWARE TESTS
 # TODO(@mrefat): Move this to tests/Makefile 
@@ -41,7 +53,7 @@ DEPS :=$(OBJS:.o=.d)
 #
 # ---------------------------------------------------------------
 define compile 
-	$(ARM_CXX) $(CXX_FLAGS) $(INC) $(OBJS) $(4) $(1) $(LDFLAGS) -T build/$(MCU).ld -o $(2)/$(3).elf
+	$(ARM_CXX) $(CXX_FLAGS) $(INC) $(CXX_OBJS)  $(4) $(1) $(LDFLAGS) -T build/$(MCU).ld  $(FREE_RTOS_LIB) -o $(2)/$(3).elf
 	$(OBJ_COPY) $(OBJ_COPY_OPTS) $(2)/$(3).elf $(2)/$(3).hex
 endef
 
@@ -58,7 +70,7 @@ cpplint:
 # Rule to build for debug and test mode 
 # make build
 # ------------------------------------------
-build: $(OBJS) 
+build: $(CXX_OBJS) 
 	$(call compile, ./main.cpp,.,$(TARGET),$(STARTUP_CODE))
 	@echo "\n[Makefile][build] : Compiled successfully."
 
@@ -71,7 +83,7 @@ build: $(OBJS)
 # The expression $(notdir $(patsubst %/,%,$(dir $(HW_FILTER)))) in the rule
 # 	is a combination of functions used to extract the base directory name from a file path.
 # ------------------------------------------
-build-hw: $(OBJS)
+build-hw: $(CXX_OBJS)
 ifneq ($(FILTER), )
 	@$(call compile,$(FILTER),$(shell dirname $(FILTER)),$(notdir $(patsubst %/,%,$(dir $(FILTER)))))
 	@echo "\n[Makefile]: note: Filter compilation $(FILTER)"
@@ -90,15 +102,15 @@ clean-hw:
 # make opt-build
 # ------------------------------------------
 build-opt: $(OBJS) 
-	@$(ARM_CXX) $(OPT_CXX_FLAGS) $(INC)  $(OBJS) $(STARTUP_CODE) ./main.cpp $(LDFLAGS) -T build/$(MCU).ld -o $(ELF_TARGET)
+	@$(ARM_CXX) $(OPT_CXX_FLAGS) $(INC)  $(OBJS) $(STARTUP_CODE) $(FREE_RTOS_LIB) ./main.cpp $(LDFLAGS) -T build/$(MCU).ld -o $(ELF_TARGET)
 	@$(OBJ_COPY) $(OBJ_COPY_OPTS) $(ELF_TARGET) $(HEX_TARGET)
 	@echo "\n[Makefile][opt-build] : Compiled successfully."	
 
 # ---------------------------------------------
 # Rule to create a lib
 # ---------------------------------------------
-gen-lib:$(OBJS)
-	@ar rcs $(LIB_NAME) $(OBJS)
+gen-lib:$(CXX_OBJS) $(C_OBJS)
+	@ar rcs $(LIB_NAME) $(CXX_OBJS) $(C_OBJS)
 
 # ------------------------------------------
 # Rule to upload hex file to mcu
@@ -123,6 +135,22 @@ clean-doxygen:
 	@echo "Cleaning Doxygen output..."
 	@rm -rf $(DOXYGEN_OUTPUT)
 
+# ----------------------------------------------
+# Rule to generate FreeRTOS lib
+# make gen-freertos-lib
+# Note: remember before generating the library
+#        to edit FREE_RTOS_SRC_DIR in this 
+#        Makefile and make sure it points to 
+#        the correct FreeRTOS source directory.
+# ----------------------------------------------
+gen-freertos-lib: $(C_OBJS)
+	@ar rcs $(FREE_RTOS_LIB)  $(C_OBJS)
+	@echo "\n[Makefile][Dev]: Generated FreeRTOS lib files successfully."
+
+# ------------------------------------------
+# Rule to clean up build files
+# make clean
+# ------------------------------------------
 clean:
 	@rm -rf *.o
 	@rm -rf *.bin
