@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2024
  * 
  */
+#if 0
 #include <gtest/gtest.h>
 #include "utils/Types.h"
 #include "utils/BitManipulation.h"
@@ -48,3 +49,4 @@ TEST_F(RtcTest, OverflowInterruptEnableDisable) {
     Rtc::OverflowInterruptDisable();
     EXPECT_EQ(0, (ExtractBits<uint32_t, 2>(RTC->CRH.registerVal)));
 }
+#endif

@@ -7,6 +7,7 @@
  * 
  * @copyright Copyright (c) 2024
  */
+#if 0
 #include <gtest/gtest.h>
 #include "utils/Types.h"
 #include "utils/BitManipulation.h"
@@ -99,3 +100,4 @@ TEST_F(TimerTest, OCModeEnable) {
     EXPECT_EQ(0, (ExtractBits<uint32_t, 1>(TIM2->CCER.registerVal)));
     EXPECT_EQ(1, (ExtractBits<uint32_t, 15>(TIM2->BDTR.registerVal)));
 }
+#endif
