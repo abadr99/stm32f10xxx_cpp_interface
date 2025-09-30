@@ -22,9 +22,10 @@ using namespace stm32::type;
 
 pFunction Rtc::pRtcCallBackFunctions[3] = {nullptr, nullptr, nullptr};
 volatile stm32::registers::rtc::RtcRegDef* Rtc::RTC = nullptr;
-
-void Rtc::Init(const RtcConfig &config) {
+void Rtc::Init() {
     RTC = reinterpret_cast<volatile RtcRegDef*>(Addr<Peripheral::kRTC >::Get());
+}
+void Rtc::SetConf(const RtcConfig &config) {
     // wait for the last operation to be done
     WaitForLastTask();
 

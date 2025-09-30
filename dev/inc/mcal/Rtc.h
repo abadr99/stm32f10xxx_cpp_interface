@@ -63,7 +63,8 @@ class Rtc {
      * 
      * @param config Configuration structure containing prescaler, counter, and alarm values.
      */
-    static void Init(const RtcConfig &config);
+    static void SetConf(const RtcConfig &config);
+    static void Init(); 
 
     /**
      * @brief Gets the current time from the RTC.

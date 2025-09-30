@@ -37,6 +37,9 @@ enum Prescaler {
  */
 class Iwdg {
  public:
+    using IWDGRegDef = stm32::registers::iwdg::IWDGRegDef;
+    template<typename T>
+    static volatile T* GetPtr();
     /**
      * @brief Constructor to initialize the IWDG with the specified prescaler and reload value.
      * 
@@ -45,6 +48,7 @@ class Iwdg {
      * 
      * @note The reload value determines the timeout period before the watchdog resets the system.
      */
+    static void Init();
     Iwdg(Prescaler prescaler, uint16_t reloadVal);
 
     /**
@@ -56,7 +60,6 @@ class Iwdg {
     void Refresh();
     
  private:
-    using IWDGRegDef = stm32::registers::iwdg::IWDGRegDef;
     static stm32::type::RegType<IWDGRegDef>::ptr IWDG;
 }; 
 

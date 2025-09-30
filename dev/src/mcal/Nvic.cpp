@@ -23,6 +23,19 @@ using namespace stm32::registers::nvic;
 volatile NvicRegDef* Nvic::NVIC = {0};
 volatile SCBRegDef*  Nvic::SCB  = {0};
 
+template<typename T>
+volatile T* Nvic::GetPtr() { return nullptr; }
+
+template<>
+volatile NvicRegDef* Nvic::GetPtr<NvicRegDef>() {
+  return NVIC; 
+}
+
+template<>
+volatile SCBRegDef* Nvic::GetPtr<SCBRegDef>() {
+  return SCB; 
+}
+
 // static volatile NvicRegDef*  NVIC = reinterpret_cast<volatile NvicRegDef*>
 //                                     (Addr<Peripheral::kNVIC>::Get());
 // static volatile SCBRegDef*  SCB = reinterpret_cast<volatile SCBRegDef*>

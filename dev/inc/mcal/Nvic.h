@@ -139,7 +139,8 @@ class Nvic {
     using NvicRegDef = stm32::registers::nvic::NvicRegDef;
     using SCBRegDef = stm32::registers::nvic::SCBRegDef;
     // using namespace stm32::registers::nvic;
-
+    template<typename T>
+    static volatile T* GetPtr();
     /**
      * @brief Initiate the NVIC
      */
