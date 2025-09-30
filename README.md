@@ -44,6 +44,35 @@ An object-oriented, lightweight abstraction layer for STM32F10x microcontrollers
 This project supports both **embedded builds** (for STM32F10x targets) and **host builds** (for development, testing, and linting).  
 
 ---
+## Continuous Integration (CI) Workflow
+The project uses a CI workflow defined in `ci.yml` that runs on every **pull_request**. This workflow ensures code quality and correctness across different platforms.
+
+### CI Workflow Description:
+The workflow is a multi-stage pipeline triggered on `pull_request` and includes the following steps:
+
+1.  **Initial Checks (Parallel)**:
+    * `dev-style-checking` 
+    * `test-style-checking` 
+    * `hardware-tests-style-checking` 
+    * `static-analysis` 
+
+2.  **Builds (Parallel, dependent on Initial Checks)**:
+    * **Linux Path**: `build-linux` 
+    * **Windows Path**: `build-windows` 
+    * **RTOS Path**: `build-linux-rtos` 
+
+3.  **Hardware Tests and Unit Tests (Parallel, dependent on Builds)**:
+    * **Linux Path**: `build-hardware-tests-linux`  $\rightarrow$ `run-utest-linux` 
+    * **Windows Path**: `build-unitests-linux`  $\rightarrow$ `run-utest-windows` 
+    * **RTOS Path**: `build-unitests-windows` 
+
+4.  **Hardware Tests (Windows)**:
+    * `build-hardware-tests-win...` (2m 4s) (Dependent on `build-windows` and `build-unitests-windows`).
+
+5.  **Final Step**:
+    * `code-coverage` (Dependent on all Unit Tests and Hardware Tests succeeding).
+
+---
 
 ### 🔨 Compile for Embedded (Firmware)
 ```bash
