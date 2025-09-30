@@ -35,6 +35,12 @@ An object-oriented, lightweight abstraction layer for STM32F10x microcontrollers
 - Hardware register accesses are **mocked** using test doubles/stubs
 - GTest suite located in the `tests/` folder
 
+### 🧪 Hardware Validation (STM32 Boards)
+- Conducted **real hardware tests** on STM32F10x boards (e.g., STM32F103C8T6 "Blue Pill")
+- Verified key peripherals (GPIO, timers, UART) directly on target hardware
+- Cross-checked behavior with unit test mocks to ensure consistency
+- Ensures the abstraction layer is not only **theoretically testable** but also **practically validated** on STM32 devices
+
  ### Documentation 
  – Doxygen-ready with full API documentation
 
