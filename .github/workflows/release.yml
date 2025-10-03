@@ -1,0 +1,45 @@
+name: Library Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  create-library-release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup ARM Toolchain
+      run: |
+        wget -qO- https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 | tar xj
+        echo "$PWD/gcc-arm-none-eabi-10.3-2021.10/bin" >> $GITHUB_PATH
+        
+    - name: Build static library
+      run: |
+        make -C dev gen-lib
+        
+    - name: Generate documentation
+      run: |
+        make -C dev doxygen || echo "Documentation generation failed, continuing..."
+        
+    - name: Create library package structure
+      run: |
+        mkdir -p release-package/{lib,include,docs,examples}
+        
+        # Copy library file
+        cp dev/build/libstm32f10xxx.a release-package/lib/ 2>/dev/null || echo "Library file not found, skipping..."
+        
+        # Copy headers
+        cp -r dev/inc/* release-package/include/ 2>/dev/null || echo "Headers not found, skipping..."
+        
+        # Copy documentation
+        cp -r doxy/html/* release-package/docs/ 2>/dev/null || echo "Documentation not found, skipping..."
+        
+        # Copy examples
+        cp -r examples/* release-package/examples/ 2>/dev/null || echo "Examples not found, skipping..."
+        
+        # Create integration guide
+        cat > release-package/INTEGRATION_GUIDE.md << 'EOF'
