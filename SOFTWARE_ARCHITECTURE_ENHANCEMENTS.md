@@ -1,7 +1,7 @@
-# STM32F10xxx C++ Interface - Software Architecture Enhancements
+# STM32F10xxx C++ Interface - Embedded-First Architecture Enhancements
 
 ## Overview
-This document outlines comprehensive software architecture improvements for the STM32F10xxx C++ interface project. The enhancements focus on modern design patterns, better separation of concerns, improved testability, and scalable architecture principles.
+This document outlines embedded-appropriate software architecture improvements for the STM32F10xxx C++ interface project. The enhancements focus on simplicity, predictability, resource efficiency, and real-time performance suitable for resource-constrained embedded systems.
 
 ## Current Architecture Analysis
 
@@ -11,34 +11,33 @@ This document outlines comprehensive software architecture improvements for the 
 - Basic unit testing framework with Google Test
 - Modular structure with well-defined namespaces
 - Hardware abstraction through register definitions
+- Static allocation approach
+- No dynamic memory usage
 
 ### Areas for Improvement
-- Limited use of modern design patterns
-- Tight coupling between components
-- No dependency injection framework
-- Limited configuration management
-- Basic error handling architecture
-- No event-driven architecture
-- Limited scalability for complex applications
+- Configuration management could be more centralized
+- Error handling could be more systematic
+- State management could be more structured
+- Communication protocols could be simplified
+- Testing could be more embedded-appropriate
+- Documentation could be more focused on embedded constraints
 
-## 1. Layered Architecture Enhancement
+## 1. Simple Layered Architecture
 
-### 1.1 Enhanced Layered Architecture
-**Current Issue**: Basic MCAL/HAL separation without clear service layers
-**Impact**: Better maintainability, testability, and scalability
+### 1.1 Embedded-Appropriate Architecture
+**Current Issue**: Architecture could be more focused on embedded constraints
+**Impact**: Better resource utilization, predictability, and real-time performance
 
 **Proposed Architecture**:
 ```
 ┌─────────────────────────────────────────┐
-│           Application Layer             │
+│           Application Code              │
 ├─────────────────────────────────────────┤
-│           Service Layer                 │
+│           Simple HAL                    │
 ├─────────────────────────────────────────┤
-│           HAL Layer                     │
+│           MCAL (Hardware)               │
 ├─────────────────────────────────────────┤
-│           MCAL Layer                    │
-├─────────────────────────────────────────┤
-│           Hardware Layer                │
+│           STM32 Hardware                │
 └─────────────────────────────────────────┘
 ```
 
