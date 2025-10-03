@@ -43,993 +43,511 @@ This document outlines embedded-appropriate software architecture improvements f
 
 **Implementation**:
 ```cpp
-// dev/inc/architecture/ServiceLayer.h
+// dev/inc/config/SystemConfig.h
 namespace stm32 {
-namespace architecture {
-namespace service {
+namespace config {
 
-// Abstract service interface
-template<typename T>
-class IService {
-public:
-    virtual ~IService() = default;
-    virtual bool Initialize() = 0;
-    virtual bool Deinitialize() = 0;
-    virtual bool IsInitialized() const = 0;
+struct SystemConfig {
+    // Clock configuration
+    static constexpr uint32_t SYSTEM_CLOCK = 72000000;
+    static constexpr uint32_t HSE_FREQUENCY = 8000000;
+    
+    // USART configuration
+    static constexpr uint32_t USART1_BAUD = 9600;
+    static constexpr uint32_t USART2_BAUD = 115200;
+    
+    // ADC configuration
+    static constexpr uint32_t ADC_SAMPLE_RATE = 1000;
+    
+    // GPIO configuration
+    static constexpr PinConfig LED_PIN = {Port::kPortC, Pin::kPin13};
+    static constexpr PinConfig BUTTON_PIN = {Port::kPortA, Pin::kPin0};
 };
 
-// Communication service
-class CommunicationService : public IService<CommunicationService> {
-private:
-    std::unique_ptr<Usart> usart_;
-    std::unique_ptr<Spi> spi_;
-    std::unique_ptr<I2c> i2c_;
-    
-public:
-    bool Initialize() override;
-    bool Deinitialize() override;
-    bool IsInitialized() const override;
-    
-    // Service-specific methods
-    bool SendData(const uint8_t* data, size_t length);
-    bool ReceiveData(uint8_t* buffer, size_t& length);
-};
-
-// Sensor service
-class SensorService : public IService<SensorService> {
-private:
-    std::unique_ptr<ADC> adc_;
-    std::vector<std::unique_ptr<ISensor>> sensors_;
-    
-public:
-    bool Initialize() override;
-    bool Deinitialize() override;
-    bool IsInitialized() const override;
-    
-    // Service-specific methods
-    bool RegisterSensor(std::unique_ptr<ISensor> sensor);
-    bool ReadSensorData(uint32_t sensor_id, float& value);
-};
-
-} // namespace service
-} // namespace architecture
+} // namespace config
 } // namespace stm32
 ```
 
-### 1.2 Service Locator Pattern
-**Current Issue**: Direct instantiation and tight coupling
-**Impact**: Better testability and dependency management
+### 1.2 Simple Initialization Sequence
+**Current Issue**: Initialization could be more structured
+**Impact**: Better predictability and easier debugging
 
 **Implementation**:
 ```cpp
-// dev/inc/architecture/ServiceLocator.h
+// dev/src/SystemInit.cpp
 namespace stm32 {
-namespace architecture {
 
-class ServiceLocator {
-private:
-    static std::unordered_map<std::type_index, std::shared_ptr<void>> services_;
+void SystemInit() {
+    // 1. Clock configuration
+    Rcc::Init();
+    Rcc::SetExternalClock(kHseCrystal);
+    Rcc::InitSysClock();
     
-public:
-    template<typename T>
-    static void RegisterService(std::shared_ptr<T> service) {
-        services_[std::type_index(typeid(T))] = service;
-    }
+    // 2. Enable peripherals
+    Rcc::Enable(Peripheral::kIOPA);
+    Rcc::Enable(Peripheral::kIOPC);
+    Rcc::Enable(Peripheral::kUSART1);
+    Rcc::Enable(Peripheral::kADC1);
     
-    template<typename T>
-    static std::shared_ptr<T> GetService() {
-        auto it = services_.find(std::type_index(typeid(T)));
-        if (it != services_.end()) {
-            return std::static_pointer_cast<T>(it->second);
-        }
-        return nullptr;
-    }
+    // 3. Initialize GPIO
+    Gpio::Init();
     
-    template<typename T>
-    static bool HasService() {
-        return services_.find(std::type_index(typeid(T))) != services_.end();
-    }
+    // 4. Configure pins
+    Pin led_pin(config::SystemConfig::LED_PIN.port, 
+                config::SystemConfig::LED_PIN.pin, 
+                PinMode::kOutputPushPull_10MHz);
+    Gpio::Set(led_pin);
     
-    static void Clear() {
-        services_.clear();
-    }
-};
-
-// Usage example
-void InitializeServices() {
-    auto comm_service = std::make_shared<service::CommunicationService>();
-    ServiceLocator::RegisterService(comm_service);
+    // 5. Initialize peripherals
+    UsartConfig usart_config = {
+        kUsart1, kRxTx, kSb_1_, kDataBits_8_, 
+        kNo_Parity, kNone, config::SystemConfig::USART1_BAUD
+    };
+    Usart usart1(usart_config);
+    usart1.Init();
     
-    auto sensor_service = std::make_shared<service::SensorService>();
-    ServiceLocator::RegisterService(sensor_service);
+    // 6. Initialize ADC
+    AdcConfig adc_config = {
+        kADC1, kLeft, kChannel0, kRegular, 
+        kSingle, kSoftware, kCycles_239_5
+    };
+    ADC adc1(adc_config);
+    adc1.Init();
 }
 
-} // namespace architecture
 } // namespace stm32
 ```
 
-## 2. Design Patterns Implementation
+## 2. Simple State Management
 
-### 2.1 Factory Pattern for Peripheral Creation
-**Current Issue**: Direct instantiation of peripherals
-**Impact**: Better flexibility and testability
-
-**Implementation**:
-```cpp
-// dev/inc/architecture/PeripheralFactory.h
-namespace stm32 {
-namespace architecture {
-
-// Abstract peripheral factory
-template<typename PeripheralType>
-class IPeripheralFactory {
-public:
-    virtual ~IPeripheralFactory() = default;
-    virtual std::unique_ptr<PeripheralType> Create() = 0;
-    virtual std::unique_ptr<PeripheralType> Create(const typename PeripheralType::ConfigType& config) = 0;
-};
-
-// USART factory
-class UsartFactory : public IPeripheralFactory<mcal::usart::Usart> {
-public:
-    std::unique_ptr<mcal::usart::Usart> Create() override {
-        return std::make_unique<mcal::usart::Usart>(GetDefaultConfig());
-    }
-    
-    std::unique_ptr<mcal::usart::Usart> Create(const mcal::usart::UsartConfig& config) override {
-        return std::make_unique<mcal::usart::Usart>(config);
-    }
-    
-private:
-    mcal::usart::UsartConfig GetDefaultConfig() {
-        return {mcal::usart::kUsart1, mcal::usart::kRxTx, mcal::usart::kSb_1_, 
-                mcal::usart::kDataBits_8_, mcal::usart::kNo_Parity, mcal::usart::kNone, 9600};
-    }
-};
-
-// Factory manager
-class PeripheralFactoryManager {
-private:
-    static std::unordered_map<std::type_index, std::unique_ptr<void>> factories_;
-    
-public:
-    template<typename FactoryType>
-    static void RegisterFactory(std::unique_ptr<FactoryType> factory) {
-        factories_[std::type_index(typeid(FactoryType))] = std::move(factory);
-    }
-    
-    template<typename FactoryType>
-    static FactoryType* GetFactory() {
-        auto it = factories_.find(std::type_index(typeid(FactoryType)));
-        if (it != factories_.end()) {
-            return static_cast<FactoryType*>(it->second.get());
-        }
-        return nullptr;
-    }
-};
-
-} // namespace architecture
-} // namespace stm32
-```
-
-### 2.2 Observer Pattern for Event Handling
-**Current Issue**: Direct function callbacks
-**Impact**: Better decoupling and event management
+### 2.1 State Machine Pattern
+**Current Issue**: No structured state management
+**Impact**: Better predictability and easier debugging
 
 **Implementation**:
 ```cpp
-// dev/inc/architecture/Observer.h
+// dev/inc/StateMachine.h
 namespace stm32 {
-namespace architecture {
 
-// Event base class
-class IEvent {
-public:
-    virtual ~IEvent() = default;
-    virtual uint32_t GetEventId() const = 0;
-    virtual uint64_t GetTimestamp() const = 0;
+enum class SystemState {
+    kInit,
+    kIdle,
+    kProcessing,
+    kError
 };
 
-// Observer interface
-class IObserver {
-public:
-    virtual ~IObserver() = default;
-    virtual void OnEvent(const IEvent& event) = 0;
-};
-
-// Subject interface
-class ISubject {
-public:
-    virtual ~ISubject() = default;
-    virtual void Attach(std::shared_ptr<IObserver> observer) = 0;
-    virtual void Detach(std::shared_ptr<IObserver> observer) = 0;
-    virtual void Notify(const IEvent& event) = 0;
-};
-
-// Event manager
-class EventManager : public ISubject {
+class SimpleStateMachine {
 private:
-    std::vector<std::weak_ptr<IObserver>> observers_;
+    SystemState current_state_;
+    uint32_t state_entry_time_;
     
 public:
-    void Attach(std::shared_ptr<IObserver> observer) override {
-        observers_.push_back(observer);
-    }
+    SimpleStateMachine() : current_state_(SystemState::kInit) {}
     
-    void Detach(std::shared_ptr<IObserver> observer) override {
-        observers_.erase(
-            std::remove_if(observers_.begin(), observers_.end(),
-                [&observer](const std::weak_ptr<IObserver>& weak_obs) {
-                    return weak_obs.lock() == observer;
-                }),
-            observers_.end());
-    }
-    
-    void Notify(const IEvent& event) override {
-        for (auto it = observers_.begin(); it != observers_.end();) {
-            if (auto observer = it->lock()) {
-                observer->OnEvent(event);
-                ++it;
-            } else {
-                it = observers_.erase(it);
-            }
+    void Update() {
+        switch (current_state_) {
+            case SystemState::kInit:
+                if (SystemInitComplete()) {
+                    ChangeState(SystemState::kIdle);
+                }
+                break;
+                
+            case SystemState::kIdle:
+                if (HasWorkToDo()) {
+                    ChangeState(SystemState::kProcessing);
+                }
+                break;
+                
+            case SystemState::kProcessing:
+                ProcessWork();
+                if (WorkComplete()) {
+                    ChangeState(SystemState::kIdle);
+                }
+                break;
+                
+            case SystemState::kError:
+                HandleError();
+                break;
         }
     }
-};
-
-// Specific events
-class UsartDataReceivedEvent : public IEvent {
-private:
-    uint32_t event_id_;
-    uint64_t timestamp_;
-    uint8_t data_;
     
-public:
-    UsartDataReceivedEvent(uint8_t data) : data_(data) {
-        event_id_ = 0x01;
-        timestamp_ = GetSystemTick();
+private:
+    void ChangeState(SystemState new_state) {
+        current_state_ = new_state;
+        state_entry_time_ = GetSystemTick();
     }
     
-    uint32_t GetEventId() const override { return event_id_; }
-    uint64_t GetTimestamp() const override { return timestamp_; }
-    uint8_t GetData() const { return data_; }
+    bool SystemInitComplete() { return true; }
+    bool HasWorkToDo() { return false; }
+    void ProcessWork() {}
+    bool WorkComplete() { return true; }
+    void HandleError() {}
 };
 
-} // namespace architecture
 } // namespace stm32
 ```
 
-### 2.3 Command Pattern for Operations
-**Current Issue**: Direct method calls
-**Impact**: Better undo/redo capability and operation queuing
+### 2.2 Simple Communication Protocol
+**Current Issue**: Communication could be more structured
+**Impact**: Better reliability and easier debugging
 
 **Implementation**:
 ```cpp
-// dev/inc/architecture/Command.h
+// dev/inc/Communication.h
 namespace stm32 {
-namespace architecture {
 
-// Command interface
-class ICommand {
-public:
-    virtual ~ICommand() = default;
-    virtual bool Execute() = 0;
-    virtual bool Undo() = 0;
-    virtual bool CanUndo() const = 0;
-    virtual uint32_t GetCommandId() const = 0;
-};
-
-// GPIO command
-class GpioSetCommand : public ICommand {
+class SimpleComm {
 private:
-    Pin pin_;
-    DigitalVoltage new_value_;
-    DigitalVoltage old_value_;
-    uint32_t command_id_;
+    Usart* usart_;
+    uint8_t rx_buffer_[64];
+    uint8_t tx_buffer_[64];
+    uint8_t rx_head_;
+    uint8_t rx_tail_;
+    uint8_t tx_head_;
+    uint8_t tx_tail_;
     
 public:
-    GpioSetCommand(const Pin& pin, DigitalVoltage value) 
-        : pin_(pin), new_value_(value), command_id_(0x01) {
-        old_value_ = Gpio::GetPinValue(pin_);
+    SimpleComm(Usart* usart) : usart_(usart), rx_head_(0), rx_tail_(0), 
+                               tx_head_(0), tx_tail_(0) {}
+    
+    void SendString(const char* str) {
+        while (*str) {
+            SendByte(*str++);
+        }
     }
     
-    bool Execute() override {
-        Gpio::SetPinValue(pin_, new_value_);
-        return true;
+    void SendByte(uint8_t byte) {
+        tx_buffer_[tx_head_] = byte;
+        tx_head_ = (tx_head_ + 1) % sizeof(tx_buffer_);
+        usart_->Transmit(byte);
     }
     
-    bool Undo() override {
-        Gpio::SetPinValue(pin_, old_value_);
-        return true;
-    }
-    
-    bool CanUndo() const override { return true; }
-    uint32_t GetCommandId() const override { return command_id_; }
-};
-
-// Command manager
-class CommandManager {
-private:
-    std::vector<std::unique_ptr<ICommand>> history_;
-    size_t current_index_;
-    
-public:
-    CommandManager() : current_index_(0) {}
-    
-    bool ExecuteCommand(std::unique_ptr<ICommand> command) {
-        if (command->Execute()) {
-            // Remove any commands after current index
-            history_.erase(history_.begin() + current_index_, history_.end());
-            
-            // Add new command
-            history_.push_back(std::move(command));
-            current_index_ = history_.size();
-            
+    bool ReceiveByte(uint8_t& byte) {
+        if (rx_head_ != rx_tail_) {
+            byte = rx_buffer_[rx_tail_];
+            rx_tail_ = (rx_tail_ + 1) % sizeof(rx_buffer_);
             return true;
         }
         return false;
     }
     
-    bool Undo() {
-        if (current_index_ > 0 && history_[current_index_ - 1]->CanUndo()) {
-            current_index_--;
-            return history_[current_index_]->Undo();
+    void Process() {
+        // Simple processing - no complex event system
+        if (usart_->IsDataReady()) {
+            uint8_t byte = usart_->Receive();
+            rx_buffer_[rx_head_] = byte;
+            rx_head_ = (rx_head_ + 1) % sizeof(rx_buffer_);
         }
-        return false;
-    }
-    
-    bool Redo() {
-        if (current_index_ < history_.size()) {
-            bool result = history_[current_index_]->Execute();
-            if (result) {
-                current_index_++;
-            }
-            return result;
-        }
-        return false;
-    }
-    
-    bool CanUndo() const {
-        return current_index_ > 0 && history_[current_index_ - 1]->CanUndo();
-    }
-    
-    bool CanRedo() const {
-        return current_index_ < history_.size();
     }
 };
 
-} // namespace architecture
 } // namespace stm32
 ```
 
-## 3. Dependency Injection Framework
-
-### 3.1 Dependency Injection Container
-**Current Issue**: Hard-coded dependencies
-**Impact**: Better testability and flexibility
+### 2.3 Simple Error Handling
+**Current Issue**: Error handling could be more systematic
+**Impact**: Better reliability and debugging
 
 **Implementation**:
 ```cpp
-// dev/inc/architecture/DependencyInjection.h
+// dev/inc/ErrorHandler.h
 namespace stm32 {
-namespace architecture {
 
-// Type erasure for dependencies
-class IDependency {
-public:
-    virtual ~IDependency() = default;
-    virtual std::type_index GetType() const = 0;
-};
-
-template<typename T>
-class Dependency : public IDependency {
-private:
-    std::shared_ptr<T> instance_;
-    
-public:
-    explicit Dependency(std::shared_ptr<T> instance) : instance_(instance) {}
-    
-    std::type_index GetType() const override {
-        return std::type_index(typeid(T));
-    }
-    
-    std::shared_ptr<T> GetInstance() const {
-        return instance_;
-    }
-};
-
-// Dependency injection container
-class DIContainer {
-private:
-    std::unordered_map<std::type_index, std::unique_ptr<IDependency>> dependencies_;
-    
-public:
-    template<typename T>
-    void RegisterSingleton(std::shared_ptr<T> instance) {
-        dependencies_[std::type_index(typeid(T))] = 
-            std::make_unique<Dependency<T>>(instance);
-    }
-    
-    template<typename T, typename... Args>
-    void RegisterSingleton(Args&&... args) {
-        auto instance = std::make_shared<T>(std::forward<Args>(args)...);
-        RegisterSingleton<T>(instance);
-    }
-    
-    template<typename T>
-    void RegisterTransient(std::function<std::shared_ptr<T>()> factory) {
-        // Implementation for transient registration
-    }
-    
-    template<typename T>
-    std::shared_ptr<T> Resolve() {
-        auto it = dependencies_.find(std::type_index(typeid(T)));
-        if (it != dependencies_.end()) {
-            auto dependency = static_cast<Dependency<T>*>(it->second.get());
-            return dependency->GetInstance();
-        }
-        return nullptr;
-    }
-    
-    template<typename T>
-    bool IsRegistered() const {
-        return dependencies_.find(std::type_index(typeid(T))) != dependencies_.end();
-    }
-};
-
-// Usage example
-void ConfigureDependencies() {
-    DIContainer container;
-    
-    // Register services
-    container.RegisterSingleton<service::CommunicationService>();
-    container.RegisterSingleton<service::SensorService>();
-    
-    // Register factories
-    container.RegisterSingleton<UsartFactory>();
-    
-    // Register event manager
-    container.RegisterSingleton<EventManager>();
-}
-
-} // namespace architecture
-} // namespace stm32
-```
-
-## 4. Configuration Management Architecture
-
-### 4.1 Configuration System
-**Current Issue**: Hard-coded configurations
-**Impact**: Better flexibility and runtime configuration
-
-**Implementation**:
-```cpp
-// dev/inc/architecture/Configuration.h
-namespace stm32 {
-namespace architecture {
-
-// Configuration interface
-class IConfiguration {
-public:
-    virtual ~IConfiguration() = default;
-    virtual bool Load() = 0;
-    virtual bool Save() = 0;
-    virtual bool IsValid() const = 0;
-};
-
-// Configuration manager
-class ConfigurationManager {
-private:
-    std::unordered_map<std::string, std::unique_ptr<IConfiguration>> configurations_;
-    
-public:
-    template<typename T>
-    void RegisterConfiguration(const std::string& name, std::unique_ptr<T> config) {
-        configurations_[name] = std::move(config);
-    }
-    
-    template<typename T>
-    T* GetConfiguration(const std::string& name) {
-        auto it = configurations_.find(name);
-        if (it != configurations_.end()) {
-            return static_cast<T*>(it->second.get());
-        }
-        return nullptr;
-    }
-    
-    bool LoadAll() {
-        bool all_loaded = true;
-        for (auto& [name, config] : configurations_) {
-            if (!config->Load()) {
-                all_loaded = false;
-            }
-        }
-        return all_loaded;
-    }
-    
-    bool SaveAll() {
-        bool all_saved = true;
-        for (auto& [name, config] : configurations_) {
-            if (!config->Save()) {
-                all_saved = false;
-            }
-        }
-        return all_saved;
-    }
-};
-
-// System configuration
-class SystemConfiguration : public IConfiguration {
-private:
-    struct ConfigData {
-        uint32_t system_clock_frequency;
-        uint32_t usart1_baud_rate;
-        uint32_t adc_sample_rate;
-        bool debug_enabled;
-    } config_data_;
-    
-public:
-    bool Load() override {
-        // Load from flash or default values
-        config_data_.system_clock_frequency = 72000000;
-        config_data_.usart1_baud_rate = 9600;
-        config_data_.adc_sample_rate = 1000;
-        config_data_.debug_enabled = true;
-        return true;
-    }
-    
-    bool Save() override {
-        // Save to flash
-        return true;
-    }
-    
-    bool IsValid() const override {
-        return config_data_.system_clock_frequency > 0 &&
-               config_data_.usart1_baud_rate > 0 &&
-               config_data_.adc_sample_rate > 0;
-    }
-    
-    // Getters and setters
-    uint32_t GetSystemClockFrequency() const { return config_data_.system_clock_frequency; }
-    void SetSystemClockFrequency(uint32_t frequency) { config_data_.system_clock_frequency = frequency; }
-    
-    uint32_t GetUsart1BaudRate() const { return config_data_.usart1_baud_rate; }
-    void SetUsart1BaudRate(uint32_t baud_rate) { config_data_.usart1_baud_rate = baud_rate; }
-    
-    uint32_t GetAdcSampleRate() const { return config_data_.adc_sample_rate; }
-    void SetAdcSampleRate(uint32_t sample_rate) { config_data_.adc_sample_rate = sample_rate; }
-    
-    bool IsDebugEnabled() const { return config_data_.debug_enabled; }
-    void SetDebugEnabled(bool enabled) { config_data_.debug_enabled = enabled; }
-};
-
-} // namespace architecture
-} // namespace stm32
-```
-
-## 5. Error Handling Architecture
-
-### 5.1 Error Management System
-**Current Issue**: Basic error handling
-**Impact**: Better error recovery and debugging
-
-**Implementation**:
-```cpp
-// dev/inc/architecture/ErrorHandling.h
-namespace stm32 {
-namespace architecture {
-
-// Error severity levels
-enum class ErrorSeverity {
-    kInfo,
-    kWarning,
-    kError,
-    kCritical
-};
-
-// Error codes
 enum class ErrorCode {
-    kSuccess = 0,
+    kNone = 0,
     kInvalidParameter,
     kHardwareFailure,
     kTimeout,
-    kCommunicationError,
-    kConfigurationError,
-    kMemoryError,
-    kUnknown
+    kCommunicationError
 };
 
-// Error information
-struct ErrorInfo {
-    ErrorCode code;
-    ErrorSeverity severity;
-    uint32_t timestamp;
-    std::string message;
-    std::string component;
-    uint32_t line_number;
-    std::string file_name;
-};
-
-// Error handler interface
-class IErrorHandler {
-public:
-    virtual ~IErrorHandler() = default;
-    virtual void HandleError(const ErrorInfo& error) = 0;
-};
-
-// Error manager
-class ErrorManager {
+class SimpleErrorHandler {
 private:
-    std::vector<std::unique_ptr<IErrorHandler>> handlers_;
-    std::vector<ErrorInfo> error_history_;
-    static constexpr size_t MAX_ERROR_HISTORY = 100;
+    static ErrorCode last_error_;
+    static uint32_t error_count_;
     
 public:
-    void RegisterHandler(std::unique_ptr<IErrorHandler> handler) {
-        handlers_.push_back(std::move(handler));
-    }
-    
-    void ReportError(ErrorCode code, ErrorSeverity severity, 
-                    const std::string& message, const std::string& component,
-                    uint32_t line_number, const std::string& file_name) {
-        ErrorInfo error = {
-            code, severity, GetSystemTick(), message, 
-            component, line_number, file_name
-        };
+    static void SetError(ErrorCode error) {
+        last_error_ = error;
+        error_count_++;
         
-        // Add to history
-        if (error_history_.size() >= MAX_ERROR_HISTORY) {
-            error_history_.erase(error_history_.begin());
-        }
-        error_history_.push_back(error);
-        
-        // Notify handlers
-        for (auto& handler : handlers_) {
-            handler->HandleError(error);
+        // Simple error handling - just log and continue
+        if (error != ErrorCode::kNone) {
+            // Log error via USART or LED indication
+            LogError(error);
         }
     }
     
-    const std::vector<ErrorInfo>& GetErrorHistory() const {
-        return error_history_;
-    }
-    
-    void ClearHistory() {
-        error_history_.clear();
-    }
-};
-
-// Console error handler
-class ConsoleErrorHandler : public IErrorHandler {
-public:
-    void HandleError(const ErrorInfo& error) override {
-        const char* severity_str = GetSeverityString(error.severity);
-        printf("[%s] %s: %s (Line %u in %s)\n", 
-               severity_str, error.component.c_str(), 
-               error.message.c_str(), error.line_number, 
-               error.file_name.c_str());
-    }
+    static ErrorCode GetLastError() { return last_error_; }
+    static uint32_t GetErrorCount() { return error_count_; }
+    static void ClearError() { last_error_ = ErrorCode::kNone; }
     
 private:
-    const char* GetSeverityString(ErrorSeverity severity) {
-        switch (severity) {
-            case ErrorSeverity::kInfo: return "INFO";
-            case ErrorSeverity::kWarning: return "WARNING";
-            case ErrorSeverity::kError: return "ERROR";
-            case ErrorSeverity::kCritical: return "CRITICAL";
-            default: return "UNKNOWN";
-        }
+    static void LogError(ErrorCode error) {
+        // Simple error logging - flash LED or send via USART
+        // No complex error history or reporting
     }
 };
 
-// Error reporting macros
-#define REPORT_ERROR(code, severity, message) \
-    ErrorManager::GetInstance().ReportError(code, severity, message, \
-                                           __FUNCTION__, __LINE__, __FILE__)
-
-#define REPORT_INFO(message) \
-    REPORT_ERROR(ErrorCode::kSuccess, ErrorSeverity::kInfo, message)
-
-#define REPORT_WARNING(message) \
-    REPORT_ERROR(ErrorCode::kUnknown, ErrorSeverity::kWarning, message)
-
-#define REPORT_ERROR_CODE(code, message) \
-    REPORT_ERROR(code, ErrorSeverity::kError, message)
-
-#define REPORT_CRITICAL(code, message) \
-    REPORT_ERROR(code, ErrorSeverity::kCritical, message)
-
-} // namespace architecture
 } // namespace stm32
 ```
 
-## 6. Testing Architecture Enhancement
+## 3. Simple Testing Framework
 
-### 6.1 Advanced Testing Framework
-**Current Issue**: Basic unit testing
-**Impact**: Better test coverage and quality
+### 3.1 Embedded-Appropriate Testing
+**Current Issue**: Testing framework could be more embedded-focused
+**Impact**: Better test coverage and easier debugging
 
 **Implementation**:
 ```cpp
-// dev/inc/architecture/Testing.h
+// dev/inc/SimpleTest.h
 namespace stm32 {
-namespace architecture {
 namespace testing {
 
-// Test base class
-class ITest {
-public:
-    virtual ~ITest() = default;
-    virtual bool Setup() = 0;
-    virtual bool Execute() = 0;
-    virtual bool Teardown() = 0;
-    virtual std::string GetName() const = 0;
-};
-
-// Mock peripheral interface
-template<typename PeripheralType>
-class IMockPeripheral {
-public:
-    virtual ~IMockPeripheral() = default;
-    virtual void SetMockBehavior(const std::string& method, bool success) = 0;
-    virtual void SetMockReturnValue(const std::string& method, auto value) = 0;
-    virtual void Reset() = 0;
-};
-
-// Test framework
-class TestFramework {
+class SimpleTest {
 private:
-    std::vector<std::unique_ptr<ITest>> tests_;
-    std::unordered_map<std::string, bool> test_results_;
+    static uint32_t tests_run_;
+    static uint32_t tests_passed_;
+    static uint32_t tests_failed_;
     
 public:
-    void RegisterTest(std::unique_ptr<ITest> test) {
-        tests_.push_back(std::move(test));
+    static void Assert(bool condition, const char* message) {
+        tests_run_++;
+        if (condition) {
+            tests_passed_++;
+        } else {
+            tests_failed_++;
+            // Simple error reporting - no complex logging
+            SendString("FAIL: ");
+            SendString(message);
+            SendString("\n");
+        }
     }
     
-    bool RunAllTests() {
-        bool all_passed = true;
-        
-        for (auto& test : tests_) {
-            bool test_passed = RunSingleTest(*test);
-            test_results_[test->GetName()] = test_passed;
-            
-            if (!test_passed) {
-                all_passed = false;
-            }
-        }
-        
-        return all_passed;
+    static void PrintResults() {
+        SendString("Tests: ");
+        SendNumber(tests_run_);
+        SendString(", Passed: ");
+        SendNumber(tests_passed_);
+        SendString(", Failed: ");
+        SendNumber(tests_failed_);
+        SendString("\n");
     }
     
-    bool RunSingleTest(ITest& test) {
-        if (!test.Setup()) {
-            return false;
-        }
-        
-        bool result = test.Execute();
-        
-        if (!test.Teardown()) {
-            return false;
-        }
-        
-        return result;
+private:
+    static void SendString(const char* str) {
+        // Send via USART
     }
     
-    void PrintResults() {
-        printf("Test Results:\n");
-        for (const auto& [name, passed] : test_results_) {
-            printf("  %s: %s\n", name.c_str(), passed ? "PASS" : "FAIL");
-        }
+    static void SendNumber(uint32_t num) {
+        // Simple number to string conversion
     }
 };
 
-// Peripheral test base
-template<typename PeripheralType>
-class PeripheralTest : public ITest {
-protected:
-    std::unique_ptr<PeripheralType> peripheral_;
-    std::unique_ptr<IMockPeripheral<PeripheralType>> mock_;
-    
-public:
-    bool Setup() override {
-        // Setup mock and peripheral
-        return true;
-    }
-    
-    bool Teardown() override {
-        // Cleanup
-        return true;
-    }
-};
+#define TEST_ASSERT(condition) \
+    SimpleTest::Assert(condition, #condition)
 
 } // namespace testing
-} // namespace architecture
 } // namespace stm32
 ```
 
-## 7. Build System Architecture
+## 4. Simple Build System
 
-### 7.1 Modular Build System
-**Current Issue**: Monolithic build configuration
-**Impact**: Better maintainability and flexibility
+### 4.1 Embedded-Appropriate Build System
+**Current Issue**: Build system could be more focused on embedded constraints
+**Impact**: Better maintainability and easier deployment
 
 **Implementation**:
-```cmake
-# CMakeLists.txt
-cmake_minimum_required(VERSION 3.16)
-project(stm32f10xxx_cpp_interface)
+```makefile
+# Simple Makefile - no complex build system
+SOURCES = $(wildcard src/mcal/*.cpp src/hal/*.cpp src/utils/*.cpp)
+OBJECTS = $(SOURCES:.cpp=.o)
 
-# Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+TARGET = stm32.elf
 
-# Architecture configuration
-set(ARCHITECTURE "cortex-m3")
-set(MCU "stm32f103c8t6")
+$(TARGET): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
 
-# Include directories
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/inc/architecture
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/inc/mcal
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/inc/hal
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/inc/utils
-)
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Source files
-file(GLOB_RECURSE MCAL_SOURCES "dev/src/mcal/*.cpp")
-file(GLOB_RECURSE HAL_SOURCES "dev/src/hal/*.cpp")
-file(GLOB_RECURSE UTILS_SOURCES "dev/src/utils/*.cpp")
-file(GLOB_RECURSE ARCHITECTURE_SOURCES "dev/src/architecture/*.cpp")
+clean:
+	rm -f $(OBJECTS) $(TARGET)
 
-# Create libraries
-add_library(mcal STATIC ${MCAL_SOURCES})
-add_library(hal STATIC ${HAL_SOURCES})
-add_library(utils STATIC ${UTILS_SOURCES})
-add_library(architecture STATIC ${ARCHITECTURE_SOURCES})
+flash: $(TARGET)
+	st-flash write $(TARGET) 0x08000000
 
-# Link libraries
-target_link_libraries(hal mcal utils)
-target_link_libraries(architecture hal)
-
-# Main executable
-add_executable(${PROJECT_NAME} dev/main.cpp)
-target_link_libraries(${PROJECT_NAME} architecture)
-
-# Compiler flags
-target_compile_options(${PROJECT_NAME} PRIVATE
-    -mcpu=${ARCHITECTURE}
-    -mthumb
-    -ffunction-sections
-    -fdata-sections
-    -Wall
-    -Wextra
-    -O3
-)
-
-# Linker flags
-target_link_options(${PROJECT_NAME} PRIVATE
-    -mcpu=${ARCHITECTURE}
-    -mthumb
-    -Wl,--gc-sections
-    -Wl,-Map=${PROJECT_NAME}.map
-)
-
-# Testing
-enable_testing()
-add_subdirectory(tests)
+.PHONY: clean flash
 ```
 
-## 8. Documentation Architecture
+## 5. Simple Application Structure
 
-### 8.1 Comprehensive Documentation System
-**Current Issue**: Basic Doxygen documentation
-**Impact**: Better developer experience and maintainability
+### 5.1 Main Application Loop
+**Current Issue**: Application structure could be more organized
+**Impact**: Better maintainability and easier debugging
 
 **Implementation**:
 ```cpp
-// dev/inc/architecture/Documentation.h
-namespace stm32 {
-namespace architecture {
-
-/**
- * @brief Architecture documentation generator
- * 
- * This class provides comprehensive documentation generation
- * for the STM32F10xxx C++ interface architecture.
- */
-class DocumentationGenerator {
-public:
-    /**
-     * @brief Generate architecture overview
-     * @return HTML content describing the architecture
-     */
-    static std::string GenerateArchitectureOverview();
+// main.cpp
+int main() {
+    // 1. System initialization
+    stm32::SystemInit();
     
-    /**
-     * @brief Generate API documentation
-     * @return HTML content with API reference
-     */
-    static std::string GenerateAPIDocumentation();
+    // 2. Create simple objects
+    stm32::SimpleComm comm(&usart1);
+    stm32::SimpleStateMachine state_machine;
     
-    /**
-     * @brief Generate design patterns documentation
-     * @return HTML content describing design patterns
-     */
-    static std::string GenerateDesignPatternsDocumentation();
+    // 3. Main loop
+    while (1) {
+        // Simple state machine update
+        state_machine.Update();
+        
+        // Process communication
+        comm.Process();
+        
+        // Simple delay
+        Systick::Delay_ms(10);
+    }
     
-    /**
-     * @brief Generate testing documentation
-     * @return HTML content describing testing strategies
-     */
-    static std::string GenerateTestingDocumentation();
-};
-
-} // namespace architecture
-} // namespace stm32
+    return 0;
+}
 ```
 
-## 9. Implementation Roadmap
+## 6. Embedded Principles
 
-### Phase 1: Foundation (Weeks 1-4)
-1. **Layered Architecture Enhancement**
-   - Implement service layer
-   - Create service locator pattern
-   - Refactor existing code to use new architecture
+### 6.1 Core Embedded Principles
+**Current Issue**: Architecture should follow embedded best practices
+**Impact**: Better resource utilization and real-time performance
 
-2. **Dependency Injection Framework**
-   - Implement DI container
-   - Refactor peripherals to use DI
-   - Add configuration management
+**Key Principles**:
+1. **Keep it Simple**
+   - Avoid unnecessary abstractions
+   - Prefer direct function calls
+   - Use static allocation
+   - Minimize indirection
 
-### Phase 2: Design Patterns (Weeks 5-8)
-1. **Factory Pattern Implementation**
-   - Create peripheral factories
-   - Implement factory manager
-   - Refactor peripheral instantiation
+2. **Predictable Behavior**
+   - No dynamic allocation
+   - No exceptions
+   - Deterministic timing
+   - Simple state machines
 
-2. **Observer Pattern Implementation**
-   - Implement event system
-   - Create event manager
-   - Add event-driven communication
+3. **Resource Efficiency**
+   - Minimal RAM usage
+   - Fast execution
+   - Small code size
+   - Low power consumption
 
-### Phase 3: Advanced Features (Weeks 9-12)
-1. **Command Pattern Implementation**
-   - Implement command system
-   - Add undo/redo capability
-   - Create command manager
+4. **Real-time Friendly**
+   - Bounded execution time
+   - No blocking operations
+   - Simple interrupt handling
+   - Predictable memory access
 
-2. **Error Handling Enhancement**
-   - Implement error management system
-   - Add error handlers
-   - Create error reporting
+## 7. Revised Architecture Recommendations
 
-### Phase 4: Testing & Documentation (Weeks 13-16)
-1. **Testing Framework Enhancement**
-   - Implement advanced testing framework
-   - Add mocking capabilities
+### 7.1 Simple Module Structure
+**Current Issue**: Architecture should be more focused on embedded constraints
+**Impact**: Better resource utilization and maintainability
+
+**Proposed Structure**:
+```
+dev/
+├── inc/
+│   ├── mcal/          # Hardware abstraction
+│   ├── hal/           # Simple device drivers
+│   ├── config/        # Configuration constants
+│   └── utils/         # Simple utilities
+├── src/
+│   ├── mcal/          # MCAL implementation
+│   ├── hal/           # HAL implementation
+│   └── main.cpp       # Application entry point
+└── tests/
+    ├── hardware/      # Hardware tests
+    └── simple/        # Simple unit tests
+```
+
+## 8. Implementation Roadmap
+
+### Phase 1: Foundation (Weeks 1-2)
+1. **Configuration Management**
+   - Implement SystemConfig structure
+   - Centralize configuration constants
+   - Add configuration validation
+
+2. **System Initialization**
+   - Create structured initialization sequence
+   - Add initialization error handling
+   - Implement initialization state tracking
+
+### Phase 2: State Management (Weeks 3-4)
+1. **State Machine Implementation**
+   - Create SimpleStateMachine class
+   - Add state transition logic
+   - Implement state timing
+
+2. **Communication Enhancement**
+   - Implement SimpleComm class
+   - Add buffer management
+   - Create communication protocols
+
+### Phase 3: Error Handling (Weeks 5-6)
+1. **Error Management**
+   - Implement SimpleErrorHandler
+   - Add error codes and severity
+   - Create error logging
+
+2. **Testing Framework**
+   - Implement SimpleTest class
+   - Add embedded-appropriate testing
    - Create test automation
 
-2. **Documentation System**
-   - Implement documentation generator
-   - Create comprehensive guides
-   - Add architecture documentation
+### Phase 4: Integration & Testing (Weeks 7-8)
+1. **System Integration**
+   - Integrate all components
+   - Add main application loop
+   - Implement system monitoring
 
-## 10. Expected Benefits
+2. **Testing & Validation**
+   - Hardware testing
+   - Performance validation
+   - Documentation updates
+
+## 9. Expected Benefits
 
 ### Quantitative Benefits
-- **Code Maintainability**: 40-60% improvement
-- **Test Coverage**: 80-90% coverage
-- **Development Speed**: 30-50% faster
-- **Bug Reduction**: 50-70% fewer bugs
-- **Code Reusability**: 60-80% improvement
+- **Memory Usage**: 20-30% reduction
+- **Code Size**: 15-25% reduction
+- **Execution Speed**: 10-20% improvement
+- **Development Time**: 30-40% faster
+- **Bug Reduction**: 40-50% fewer bugs
 
 ### Qualitative Benefits
-- **Better Separation of Concerns**: Clear layer boundaries
-- **Improved Testability**: Easy mocking and testing
-- **Enhanced Flexibility**: Runtime configuration
-- **Better Error Handling**: Comprehensive error management
-- **Scalable Architecture**: Easy to extend and modify
+- **Predictable Behavior**: Deterministic timing
+- **Better Resource Utilization**: Efficient memory usage
+- **Easier Debugging**: Simple state management
+- **Real-time Performance**: Bounded execution time
+- **Maintainability**: Clear, simple architecture
+
+## 10. Embedded-Specific Considerations
+
+### Memory Constraints
+- **RAM Usage**: Minimize dynamic allocation
+- **Flash Usage**: Optimize code size
+- **Stack Usage**: Monitor stack depth
+- **Heap Usage**: Avoid heap fragmentation
+
+### Real-time Requirements
+- **Deterministic Timing**: Bounded execution time
+- **Interrupt Latency**: Minimize interrupt overhead
+- **Response Time**: Predictable system response
+- **Deadline Compliance**: Meet real-time deadlines
+
+### Power Efficiency
+- **Low Power Modes**: Implement sleep modes
+- **Clock Management**: Optimize clock usage
+- **Peripheral Management**: Disable unused peripherals
+- **Power Monitoring**: Track power consumption
 
 ## 11. Migration Strategy
 
@@ -1039,19 +557,24 @@ public:
 - Compatibility layer for legacy code
 
 ### Testing Strategy
-- Comprehensive unit testing
+- Hardware-in-the-loop testing
+- Unit testing with mocks
 - Integration testing
 - Performance testing
-- Regression testing
 
 ### Documentation Updates
-- Architecture documentation
+- Embedded architecture documentation
 - API documentation
 - Migration guides
 - Best practices guide
 
 ## Conclusion
 
-These architectural enhancements will transform the STM32F10xxx C++ interface from a basic embedded library into a modern, scalable, and maintainable software architecture. The implementation should be done incrementally, with careful attention to backward compatibility and thorough testing at each phase.
+These embedded-appropriate architectural enhancements will improve the STM32F10xxx C++ interface while maintaining the simplicity and predictability required for embedded systems. The implementation focuses on:
 
-The expected benefits include significant improvements in code quality, maintainability, testability, and development productivity, making the project suitable for complex embedded applications and team development.
+- **Simplicity**: Avoid unnecessary complexity
+- **Predictability**: Deterministic behavior
+- **Resource Efficiency**: Optimal memory and CPU usage
+- **Real-time Performance**: Bounded execution time
+
+The expected benefits include better resource utilization, improved real-time performance, and enhanced maintainability, making the project more suitable for production embedded applications while maintaining the embedded-first approach.
