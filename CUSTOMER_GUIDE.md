@@ -9,7 +9,7 @@ This guide explains how to use the STM32F10xxx C++ Interface Library in your emb
 ### Option 1: Use Pre-built Library (Recommended)
 
 #### 1. Download the Latest Release
-1. Go to the [Releases page](https://github.com/your-username/stm32f10xxx_cpp_interface/releases)
+1. Go to the [Releases page](https://github.com/abadr99/stm32f10xxx_cpp_interface/releases)
 2. Download `stm32f10xxx_cpp_interface_vX.X.X-library.tar.gz`
 3. Extract to your project directory:
    ```bash
@@ -395,7 +395,7 @@ cat stm32f10xxx_cpp_interface/README.md | grep "Version"
 
 The STM32F10xxx C++ Interface Library provides a modern, efficient way to develop embedded applications for STM32F10x microcontrollers. With its object-oriented design, comprehensive documentation, and extensive examples, you can quickly integrate it into your projects and focus on your application logic rather than low-level hardware details.
 
-For the latest updates, documentation, and examples, visit the [GitHub repository](https://github.com/your-username/stm32f10xxx_cpp_interface).
+For the latest updates, documentation, and examples, visit the [GitHub repository](https://github.com/abadr99/stm32f10xxx_cpp_interface).
 
 ---
 
