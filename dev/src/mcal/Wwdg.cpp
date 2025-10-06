@@ -20,35 +20,42 @@ using namespace stm32::registers::wwdg;
 
 #define TO_STRING(str_)  #str_
 
-#define WWDG_CONFIG_ERROR(error_) \
+#define WWDG_configERROR(error_) \
     TO_STRING(Invalid Wwdg error_)
 
 #define CHECK_WWDG_CONFIG() \
-    STM32_ASSERT((config_.windowValue < 0x80), WWDG_CONFIG_ERROR(Window Value)); \
-    STM32_ASSERT((config_.counterValue >= 0x40), WWDG_CONFIG_ERROR(Counter Value Lower Bound)); \
-    STM32_ASSERT((config_.counterValue < 0x80), WWDG_CONFIG_ERROR(Counter Value Upper Bound)); \
-    STM32_ASSERT((config_.counterValue > config_.windowValue), \
-                  WWDG_CONFIG_ERROR(Counter_and_Window Relationship)); \
-    STM32_ASSERT((config_.prescaler >= kDiv2) && (config_.prescaler <= kDiv8), \
-                  WWDG_CONFIG_ERROR(Prescaler));
+    STM32_ASSERT((config.windowValue < 0x80), WWDG_configERROR(Window Value)); \
+    STM32_ASSERT((config.counterValue >= 0x40), WWDG_configERROR(Counter Value Lower Bound)); \
+    STM32_ASSERT((config.counterValue < 0x80), WWDG_configERROR(Counter Value Upper Bound)); \
+    STM32_ASSERT((config.counterValue > config.windowValue), \
+                  WWDG_configERROR(Counter_and_Window Relationship)); \
+    STM32_ASSERT((config.prescaler >= kDiv2) && (config.prescaler <= kDiv8), \
+                  WWDG_configERROR(Prescaler));
 
 volatile WWDGRegDef* Wwdg::WWDG = nullptr;
 
-Wwdg::Wwdg(const Config& config) : config_(config) {
-    CHECK_WWDG_CONFIG();
-    WWDG = reinterpret_cast<volatile WWDGRegDef*>(Addr<Peripheral::kWWDG >::Get());
-    Init();
+template<typename T>
+volatile T* Wwdg::GetPtr() { return nullptr; }
+
+template<>
+volatile WWDGRegDef* Wwdg::GetPtr<WWDGRegDef>() {
+    return WWDG; 
 }
 
+
 void Wwdg::Init() {
+    WWDG = reinterpret_cast<volatile WWDGRegDef*>(Addr<Peripheral::kWWDG >::Get());
+}
+void Wwdg::ApplyConfig(const Config& config) {
+    CHECK_WWDG_CONFIG();
     // Set prescaler
-    WWDG->CFR.WDGTB = static_cast<RegWidth_t>(config_.prescaler);
+    WWDG->CFR.WDGTB = static_cast<RegWidth_t>(config.prescaler);
     
     // Set window value
-    WWDG->CFR.W = config_.windowValue;
+    WWDG->CFR.W = config.windowValue;
 
     // Set counter value and enable WWDG
-    WWDG->CR.T = config_.counterValue;
+    WWDG->CR.T = config.counterValue;
     WWDG->CR.WDGA = 1;
 }
 
