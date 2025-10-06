@@ -59,7 +59,7 @@ ASSERT_MEMBER_OFFSET(ADCRegDef, DR,        sizeof(RegWidth_t) * 19);
     STM32_ASSERT((config_.sampleTime >= kCycles_1_5) && (config_.sampleTime <=  kCycles_239_5), \
                   ADC_CONFIG_ERROR(Sample Time));
 
-ADC::ADC(const AdcConfig& config) : config_(config) {
+/*ADC::ADC(const AdcConfig& config) : config_(config) {
     switch (config_.number) {
         case kADC1 : ADC_reg = (reinterpret_cast<volatile ADCRegDef*>
                                 (Addr<Peripheral::kADC1 >::Get()));
@@ -69,8 +69,16 @@ ADC::ADC(const AdcConfig& config) : config_(config) {
                      break;
         default    : break;
     }
-}
+}*/
+volatile ADCRegDef* ADC::ADC_reg = nullptr;
 
+template<typename T>
+volatile T* ADC::GetPtr() { return nullptr; }
+
+template<>
+volatile ADCRegDef* ADC::GetPtr<ADCRegDef>() {
+  return ADC_reg; 
+}
 void ADC::Init() {
     //  Reset ADC configuration 
     ADC_reg->CR1.registerVal = 0;

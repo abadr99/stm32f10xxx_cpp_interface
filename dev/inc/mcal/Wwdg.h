@@ -51,44 +51,43 @@ struct Config {
  */
 class Wwdg {
  public:
-    /**
-     * @brief Constructs a WWDG object with the specified configuration.
-     * 
-     * @param config Reference to a Config structure containing the configuration settings.
-     */
-    explicit Wwdg(const Config& config);
+    using WWDGRegDef = stm32::registers::wwdg::WWDGRegDef;
+    template<typename T>
+    static volatile T* GetPtr();
+    
+    
+    static void Init();
+    static void ApplyConfig(const Config& config);
 
     /**
      * @brief Enables the WWDG early wakeup interrupt.
      */
-    void EnableInterrupt();
+    static void EnableInterrupt();
 
     /**
      * @brief Disables the WWDG early wakeup interrupt.
      */
-    void DisableInterrupt();
+    static void DisableInterrupt();
 
     /**
      * @brief Checks if the early wakeup flag is set.
      * 
      * @return true if the early wakeup flag is set, false otherwise.
      */
-    bool IsEarlyWakeupFlagSet();
+    static bool IsEarlyWakeupFlagSet();
 
     /**
      * @brief Clears the early wakeup flag.
      */
-    void ClearEarlyWakeupFlag();
+    static void ClearEarlyWakeupFlag();
 
  private:
-    using WWDGRegDef = stm32::registers::wwdg::WWDGRegDef;
     static stm32::type::RegType<WWDGRegDef>::ptr WWDG;
-    Config config_;  /**< Configuration settings for the WWDG peripheral */
+
 
     /**
      * @brief Initializes the WWDG peripheral with the provided configuration.
      */
-    void Init();
 };
 
 }   //  namespace wwdg

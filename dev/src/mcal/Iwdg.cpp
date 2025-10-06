@@ -21,13 +21,22 @@ using namespace stm32::registers::iwdg;
 
 volatile IWDGRegDef* Iwdg::IWDG = nullptr;
 
-Iwdg::Iwdg(Prescaler prescaler, uint16_t reloadVal) {
+template<typename T>
+volatile T* Iwdg::GetPtr() { return nullptr; }
+
+template<>
+volatile IWDGRegDef* Iwdg::GetPtr<IWDGRegDef>() {
+    return IWDG; 
+}
+void Iwdg::Init() {
     IWDG = reinterpret_cast<volatile IWDGRegDef*>(Addr<Peripheral::kIWDG >::Get());
+}
+Iwdg::Iwdg(Prescaler prescaler, uint16_t reloadVal) {
     IWDG->KR = 0x5555;
     util::BusyWait([&](){return IWDG->SR.PVU;});
     IWDG->PR = prescaler;
     util::BusyWait([&](){return IWDG->SR.RVU;});
-    IWDG->RLD = reloadVal;
+    IWDG->RLR = reloadVal;
     IWDG->KR = 0xCCCC;
 }
 void Iwdg::Refresh() {
