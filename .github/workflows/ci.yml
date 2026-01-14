@@ -103,7 +103,6 @@ jobs:
       run: sh tools/github/linux/configure.sh
     - name: Building For STM32f103 Target
       run:  make -C dev build  USE_FREERTOS=1
-
 # ========================== TEST BUILD STAGE ======================================
   build-hardware-tests-linux:
     runs-on: ubuntu-latest
